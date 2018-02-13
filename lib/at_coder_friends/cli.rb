@@ -9,7 +9,7 @@ module AtCoderFriends
       @options = parse_options!(args)
       handle_show_info_option
       usage 'command or path is not specified.' if args.size < 2
-      @config = ConfigLoader.load_config(dir)
+      @config = ConfigLoader.load_config(args[1])
       exec_command(*args)
     end
 
@@ -17,7 +17,9 @@ module AtCoderFriends
       options = {}
       op = OptionParser.new do |opts|
         opts.banner = 'Usage: at_coder_friends [options] [command] [path]'
-        opts.on('-v', '--version', 'Display version.') { options[:version] = true }
+        opts.on('-v', '--version', 'Display version.') do
+         options[:version] = true
+        end
       end
       self.class.class_eval do
         define_method(:usage) do |msg = nil|
@@ -55,19 +57,19 @@ module AtCoderFriends
     end
 
     def setup(path)
-      unless File.directory?(path)
-        puts "#{path} is not a directory."
-        return
+      if Dir.exist?(path)
+        raise StandardError, "#{path} already exists."
       end
-      unless Dir.empty?(path)
-        puts "#{path} is not empty."
-        return
-      end
-      ScrapingAgent.new(contest_name(path), @config).fetch_all do |pbm|
-        InputParser.new.parse(pbm)
-        RubyGenerator.new.generate(pbm)
-        CxxGenerator.new.generate(pbm)
-        Emitter.new(path).emit(pbm)
+      agent = ScrapingAgent.new(contest_name(path), @config)
+      parser = InputParser.new
+      rb_gen = RubyGenerator.new
+      cxx_gen = CxxGenerator.new
+      emitter = Emitter.new(path)
+      agent.fetch_all do |pbm|
+        parser.parse(pbm)
+        rb_gen.generate(pbm)
+        cxx_gen.generate(pbm)
+        emitter.emit(pbm)
       end
     end
 
@@ -89,7 +91,7 @@ module AtCoderFriends
     end
 
     def contest_name(path)
-      dir = File.directory?(path) ? path : File.dirname(path)
+      dir = File.file?(path) ? File.dirname(path) : path
       File.basename(dir)
     end
   end

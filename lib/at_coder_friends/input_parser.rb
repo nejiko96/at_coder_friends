@@ -7,7 +7,7 @@ module AtCoderFriends
       smpx = pbm
              .smps
              .select { |smp| smp.ext == :in }
-             .max_by(&:size)
+             .max_by { |smp| smp.txt.size }
       match_type(defs, smpx)
       pbm.defs = defs
     end
@@ -71,8 +71,8 @@ module AtCoderFriends
     end
 
     def match_type(inpdefs, smp)
-      return if smp.empty?
-      lines = smp.split("\n")
+      return if smp.nil?
+      lines = smp.txt.split("\n")
       inpdefs.each_with_index do |inpdef, i|
         next if inpdef.fmt != :number
         inpdef.fmt = :string if lines[i].split[0] =~ /[^\-0-9]/

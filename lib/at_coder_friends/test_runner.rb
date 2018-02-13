@@ -6,7 +6,7 @@ module AtCoderFriends
   class TestRunner
     def initialize(path)
       @path = path
-      dir, @prog = File.split(@path)
+      @dir, @prog = File.split(@path)
       @base, @ext = @prog.split('.')
     end
 

@@ -32,7 +32,7 @@ module AtCoderFriends
 
     def submit_src(q, lang_id, src)
       sleep 0.1
-      page = @agent.get(@url + 'submit')
+      page = @agent.get(@base_url + 'submit')
       form = page.forms[0]
       selectlist = form.field_with(name: 'task_id')
       task_id = selectlist.options.find { |opt| opt.text.start_with?(q) }.value
@@ -44,7 +44,7 @@ module AtCoderFriends
     end
 
     def fetch_assignments
-      url = @url + 'assignments'
+      url = @base_url + 'assignments'
       puts "fetch assignments from #{url} ..."
       sleep 0.1
       ret = {}
@@ -91,9 +91,9 @@ module AtCoderFriends
         pbm.desc += text
         pbm.fmt = code
       when /^入力例\s*(?<no>[\d０-９]+)$/
-        pbm.add_smp(no, :in, code)
+        pbm.add_smp($~[:no], :in, code)
       when /^出力例\s*(?<no>[\d０-９]+)$/
-        pbm.add_smp(no, :exp, code)
+        pbm.add_smp($~[:no], :exp, code)
       end
     end
 
@@ -118,6 +118,7 @@ module AtCoderFriends
       assignments.map do |q, url|
         pbm = fetch_problem(q, url)
         yield pbm if block_given?
+        pbm
       end
     end
   end

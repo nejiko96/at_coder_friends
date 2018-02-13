@@ -3,7 +3,7 @@
 require 'yaml'
 
 module AtCoderFriends
-  class ConfigNotFoundError < Error
+  class ConfigNotFoundError < StandardError
   end
 
   class ConfigLoader
@@ -20,7 +20,8 @@ module AtCoderFriends
           file = dir + filename
           return file.to_s if file.exist?
         end
-        nil
+        raise ConfigNotFoundError,
+              "Configuration file not found in: #{start_dir}"
       end
 
       def load_yaml(path)

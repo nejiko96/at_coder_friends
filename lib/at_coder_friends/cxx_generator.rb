@@ -2,43 +2,44 @@
 
 module AtCoderFriends
   class CxxGenerator
-    TEMPLATE = <<-EOS
-#include <cstdio>
+    TEMPLATE = <<~TEXT
+      #include <cstdio>
 
-using namespace std;
+      using namespace std;
 
-#define REP(i,n)   for(int i=0; i<(int)(n); i++)
-#define FOR(i,b,e) for(int i=(b); i<=(int)(e); i++)
+      #define REP(i,n)   for(int i=0; i<(int)(n); i++)
+      #define FOR(i,b,e) for(int i=(b); i<=(int)(e); i++)
 
-/*** CONSTS ***/
+      /*** CONSTS ***/
 
-/*** DCLS ***/
+      /*** DCLS ***/
 
-void solve() {
-  int ans = 0;
-  printf("%d\\n", ans);
-}
+      void solve() {
+        int ans = 0;
+        printf("%d\\n", ans);
+      }
 
-void input() {
-/*** READS ***/
-}
+      void input() {
+      /*** READS ***/
+      }
 
-int main() {
-  input();
-  solve();
-  return 0;
-}
-  EOS
+      int main() {
+        input();
+        solve();
+        return 0;
+      }
+    TEXT
 
     def generate(pbm)
       consts = gen_consts(pbm.desc)
       dcls = gen_decls(pbm.defs)
       reads = gen_reads(pbm.defs)
 
-      TEMPLATE
-        .sub('/*** CONSTS ***/', consts.join("\n"))
-        .sub('/*** DCLS ***/', dcls.join("\n"))
-        .sub('/*** READS ***/', reads.map { |s| '  ' + s }.join("\n"))
+      src = TEMPLATE
+            .sub('/*** CONSTS ***/', consts.join("\n"))
+            .sub('/*** DCLS ***/', dcls.join("\n"))
+            .sub('/*** READS ***/', reads.map { |s| '  ' + s }.join("\n"))
+      pbm.add_src(:cxx, src)
     end
 
     def gen_consts(desc)

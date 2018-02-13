@@ -2,17 +2,17 @@
 
 module AtCoderFriends
   class RubyGenerator
-    TEMPLATE = <<-EOS
-### DCLS ###
+    TEMPLATE = <<~TEXT
+      ### DCLS ###
 
-puts ans
-    EOS
+      puts ans
+    TEXT
 
     def generate(pbm)
       dcls = gen_decls(pbm.defs)
-      txt = TEMPLATE
-        .sub('### DCLS ###', dcls.join("\n"))
-      pbm.add_src(:rb, txt);
+      src = TEMPLATE
+            .sub('### DCLS ###', dcls.join("\n"))
+      pbm.add_src(:rb, src)
     end
 
     def gen_decls(inpdefs)

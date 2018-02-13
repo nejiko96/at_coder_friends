@@ -5,7 +5,7 @@ module AtCoderFriends
     def initialize(no, ext, txt)
       no = no.tr('０-９', '0-9').to_i
       txt = txt.lstrip.gsub("\r\n", "\n")
-      super.initialize(no, ext, txt)
+      super(no, ext, txt)
     end
   end
 
