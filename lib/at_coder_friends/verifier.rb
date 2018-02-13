@@ -7,8 +7,8 @@ module AtCoderFriends
     def initialize(path)
       @path = path
       dir, @file = File.split(path)
-      @vdir = "#{dir}/.tmp"
-      @vpath = "#{@vdir}/#{@file}.verified"
+      @vdir = File.join(dir, '.tmp')
+      @vpath = File.join(@vdir, "#{@file}.verified")
     end
 
     def verify

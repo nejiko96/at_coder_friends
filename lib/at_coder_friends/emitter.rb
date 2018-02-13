@@ -1,24 +1,38 @@
 # frozen_string_literal: true
 
 module AtCoderFriends
-  SMP_DIR = 'data'.freeze
-
   class Emitter
-    def initialize(path)
-      @path = path
-      @smpdir = Pathname.new(path).join(SMP_DIR)
+    SMP_DIR = 'data'
+
+    def initialize(dir)
+      @dir = dir
+      @smpdir = File.join(@dir, SMP_DIR)
     end
 
     def emit(pbm)
       Dir.mkdir(@smpdir) unless Dir.exist?(@smpdir)
-      pbm.smps.each { |smp| out_sample(smp) }
-      pbm.srcs.each { |smp| out_source(smp) }
+      pbm.smps.each { |smp| out_sample(pbm, smp) }
+      pbm.srcs.each { |src| out_source(pbm, src) }
     end
 
-    def out_sample(smp)
+    def out_sample(pbm, smp)
+      smpfile = format(
+        '%<q>s_%<n>03d.%<ext>s',
+        q: pbm.q, no: smp.no, ext: smp.ext
+      )
+      smppath = File.join(@smpdir, smpfile)
+      File.write(smppath, smp.txt)
+      puts smpfile
     end
 
-    def out_source(src)
+    def out_source(pbm, src)
+      srcfile = format(
+        '%<q>s.%<ext>s',
+        q: pbm.q, ext: src.ext
+      )
+      srcpath = File.join(@dir, srcfile)
+      File.write(srcpath, src.txt)
+      puts srcfile
     end
   end
 end

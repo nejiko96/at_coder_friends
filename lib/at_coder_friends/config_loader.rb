@@ -7,7 +7,8 @@ module AtCoderFriends
   end
 
   class ConfigLoader
-    DOTFILE = '.at_coder_friends.yml'.freeze
+    DOTFILE = '.at_coder_friends.yml'
+
     class << self
       def load_config(target_dir)
         path = find_file_upwards(DOTFILE, target_dir)

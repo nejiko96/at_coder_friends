@@ -89,7 +89,7 @@ module AtCoderFriends
     end
 
     def contest_name(path)
-      dir = File.directory?(path) ? path : File.dirname
+      dir = File.directory?(path) ? path : File.dirname(path)
       File.basename(dir)
     end
   end
