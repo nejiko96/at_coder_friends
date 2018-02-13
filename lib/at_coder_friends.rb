@@ -1,8 +1,13 @@
 # frozen_string_literal: true
 
-require 'at_coder_friends/agent'
 require 'at_coder_friends/cli'
-require 'at_coder_friends/generator'
+require 'at_coder_friends/config_loader'
+require 'at_coder_friends/cxx_generator'
+require 'at_coder_friends/emitter'
+require 'at_coder_friends/input_parser'
+require 'at_coder_friends/problem'
+require 'at_coder_friends/ruby_generator'
+require 'at_coder_friends/scraping_agent'
 require 'at_coder_friends/test_runner'
 require 'at_coder_friends/verifier'
 require 'at_coder_friends/version'
