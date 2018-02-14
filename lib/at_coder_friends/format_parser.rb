@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module AtCoderFriends
-  class InputParser
+  class FormatParser
     def parse(pbm)
       defs = parse_fmt(pbm.fmt)
       smpx = pbm

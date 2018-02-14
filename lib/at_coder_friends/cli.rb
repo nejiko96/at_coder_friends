@@ -61,7 +61,7 @@ module AtCoderFriends
         raise StandardError, "#{path} already exists."
       end
       agent = ScrapingAgent.new(contest_name(path), @config)
-      parser = InputParser.new
+      parser = FormatParser.new
       rb_gen = RubyGenerator.new
       cxx_gen = CxxGenerator.new
       emitter = Emitter.new(path)
