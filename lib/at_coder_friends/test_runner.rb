@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'rbconfig'
+
 module AtCoderFriends
   class TestRunner
     def initialize(path)
@@ -13,7 +15,6 @@ module AtCoderFriends
       1.upto(999) do |i|
         break unless test(i)
       end
-      Verifier.new(@path).verify
     end
 
     def test_one(n)

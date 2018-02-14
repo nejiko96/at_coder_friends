@@ -6,12 +6,13 @@ module AtCoderFriends
   class Verifier
     def initialize(path)
       @path = path
-      dir, @file = File.split(path)
-      @vdir = "#{dir}/.tmp"
-      @vpath = "#{@vdir}/#{@file}.verified"
+      @file = File.basename(path)
+      @vdir = File.join(File.dirname(path), '.tmp')
+      @vpath = File.join(@vdir, "#{@file}.verified")
     end
 
     def verify
+      return unless File.exist?(@path)
       Dir.mkdir(@vdir) unless Dir.exist?(@vdir)
       FileUtils.touch(@vpath)
     end
