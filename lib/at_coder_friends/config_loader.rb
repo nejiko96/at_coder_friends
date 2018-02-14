@@ -21,7 +21,7 @@ module AtCoderFriends
           return file.to_s if file.exist?
         end
         raise ConfigNotFoundError,
-              "Configuration file not found in: #{start_dir}"
+              "Configuration file not found: #{start_dir}"
       end
 
       def load_yaml(path)
