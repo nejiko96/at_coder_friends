@@ -41,20 +41,20 @@ module AtCoderFriends
         case f
         when /^(?<v>[a-z]+).(\s+\k<v>.)*\s*[\.…‥]+\s*\k<v>.$/i,
              /^(?<v>[a-z]+)[01](\s+\k<v>.)+$/i
-          inpdefs << InputDef.new(:harray, f[-1], :number, v)
+          inpdefs << InputDef.new(:harray, f[-1], :number, $~[:v])
         when /^(?<v>[a-z]+).(\k<v>.)*\s*[\.…‥]+\s*\k<v>.$/i,
              /^(?<v>[a-z]+)[01](\k<v>.)+$/i
-          inpdefs << InputDef.new(:harray, f[-1], :char, v)
+          inpdefs << InputDef.new(:harray, f[-1], :char, $~[:v])
         when /^(?<v>[a-z]+)..(\s+\k<v>..)*\s+[\.…‥]+\s+\k<v>..$/i
-          inpdefs << InputDef.new(:matrix, nil, :number, v)
+          inpdefs << InputDef.new(:matrix, nil, :number, $~[:v])
           re = /(^#{v}..(\s+#{v}..)*\s+[\.…‥]+\s+#{v}..|[:：…‥]|\.+)$/
           prev = f
         when /^(?<v>[a-z]+)..(\k<v>..)*\s*[\.…‥]+(\s*\k<v>..)+$/i
-          inpdefs << InputDef.new(:matrix, nil, :char, v)
+          inpdefs << InputDef.new(:matrix, nil, :char, $~[:v])
           re = /(^#{v}..(#{v}..)*\s*[\.…‥]+(\s*#{v}..)+|[:：…‥]|\.+)$/
           prev = f
         when /^(?<v>[a-z]+)[01][01](\s+\k<v>..)+$/i
-          inpdefs << InputDef.new(:matrix, nil, :number, v)
+          inpdefs << InputDef.new(:matrix, nil, :number, $~[:v])
           re = /(^#{v}..(\s+#{v}..)+|[:：…‥]|\.+)$/
           prev = f
         when /^[a-z]+(?<i>\d)(\s+[a-z]+\k<i>)*$/i
