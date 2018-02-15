@@ -2,15 +2,19 @@
 
 module AtCoderFriends
   class FormatParser
-    def parse(pbm)
-      defs = parse_fmt(pbm.fmt)
-      smpx = pbm
-             .smps
+
+    def process(pbm)
+      defs = parse(pbm.fmt, pbm.smps)
+      pbm.defs = defs
+    end
+
+    def parse(fmt, smps)
+      defs = parse_fmt(fmt)
+      smpx = smps
              .select { |smp| smp.ext == :in }
              .max_by { |smp| smp.txt.size }
              &.txt
-      match_type(defs, smpx)
-      defs
+      match_smp(defs, smpx)
     end
 
     def parse_fmt(fmt)
@@ -74,14 +78,16 @@ module AtCoderFriends
       inpdefs
     end
 
-    def match_type(inpdefs, smp)
+    def match_smp(inpdefs, smp)
       return unless smp
       lines = smp.split("\n")
       inpdefs.each_with_index do |inpdef, i|
+        break if i > lines.size
         next if inpdef.fmt != :number
         inpdef.fmt = :string if lines[i].split[0] =~ /[^\-0-9]/
         break if %i[varray matrix].include?(inpdef.type)
       end
+      inpdefs
     end
   end
 end

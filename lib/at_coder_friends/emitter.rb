@@ -17,7 +17,7 @@ module AtCoderFriends
     end
 
     def emit_sample(pbm, smp)
-      FileUtils.mkdirs(@smpdir) unless Dir.exist?(@smpdir)
+      FileUtils.makedirs(@smpdir) unless Dir.exist?(@smpdir)
       smpfile = format(
         '%<q>s_%<n>03d.%<ext>s',
         q: pbm.q, n: smp.no, ext: smp.ext
@@ -28,7 +28,7 @@ module AtCoderFriends
     end
 
     def emit_source(pbm, src)
-      FileUtils.mkdirs(@srcdir) unless Dir.exist?(@srcdir)
+      FileUtils.makedirs(@srcdir) unless Dir.exist?(@srcdir)
       srcfile = format(
         '%<q>s.%<ext>s',
         q: pbm.q, ext: src.ext

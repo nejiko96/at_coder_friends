@@ -30,16 +30,19 @@ module AtCoderFriends
       }
     TEXT
 
-    def generate(pbm)
-      consts = gen_consts(pbm.desc)
-      dcls = gen_decls(pbm.defs)
-      reads = gen_reads(pbm.defs)
-
-      src = TEMPLATE
-            .sub('/*** CONSTS ***/', consts.join("\n"))
-            .sub('/*** DCLS ***/', dcls.join("\n"))
-            .sub('/*** READS ***/', reads.map { |s| '  ' + s }.join("\n"))
+    def process(pbm)
+      src = generate(pbm.defs, pbm.desc)
       pbm.add_src(:cxx, src)
+    end
+
+    def generate(defs, desc)
+      consts = gen_consts(desc)
+      dcls = gen_decls(defs)
+      reads = gen_reads(defs)
+      TEMPLATE
+        .sub('/*** CONSTS ***/', consts.join("\n"))
+        .sub('/*** DCLS ***/', dcls.join("\n"))
+        .sub('/*** READS ***/', reads.map { |s| '  ' + s }.join("\n"))
     end
 
     def gen_consts(desc)

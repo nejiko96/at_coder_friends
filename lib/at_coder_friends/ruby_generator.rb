@@ -8,6 +8,11 @@ module AtCoderFriends
       puts ans
     TEXT
 
+    def process(pbm)
+      src = generate(pbm.defs)
+      pbm.add_src(:rb, src)
+    end
+
     def generate(defs)
       dcls = gen_decls(defs).join("\n")
       TEMPLATE.sub('### DCLS ###', dcls)

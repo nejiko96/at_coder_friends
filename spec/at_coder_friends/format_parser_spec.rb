@@ -5,20 +5,19 @@ RSpec.describe AtCoderFriends::FormatParser do
     described_class.new
   end
 
-  let(:pbm) do
-    pbm = AtCoderFriends::Problem.new('A')
-    pbm.fmt = fmt
-    pbm.add_smp('1', :in, '0')
-    pbm.add_smp('1', :exp, 'YES')
-    pbm.add_smp('2', :in, '#')
-    pbm.add_smp('3', :in, smp)
-    pbm
+  let(:smps) do
+    [
+      AtCoderFriends::DataSample.new('1', :in, '0'),
+      AtCoderFriends::DataSample.new('1', :exp, 'YES'),
+      AtCoderFriends::DataSample.new('2', :in, '#'),
+      AtCoderFriends::DataSample.new('3', :in, smp)
+    ]
   end
   let(:fmt) { '' }
   let(:smp) { '' }
 
   describe '#parse' do
-    subject { parser.parse(pbm) }
+    subject { parser.parse(fmt, smps) }
     context 'for case #1' do
       let(:fmt) do
         <<~FMT
