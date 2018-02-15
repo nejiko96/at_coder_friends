@@ -8,8 +8,9 @@ module AtCoderFriends
              .smps
              .select { |smp| smp.ext == :in }
              .max_by { |smp| smp.txt.size }
+             &.txt
       match_type(defs, smpx)
-      pbm.defs = defs
+      defs
     end
 
     def parse_fmt(fmt)
@@ -74,8 +75,8 @@ module AtCoderFriends
     end
 
     def match_type(inpdefs, smp)
-      return if smp.nil?
-      lines = smp.txt.split("\n")
+      return unless smp
+      lines = smp.split("\n")
       inpdefs.each_with_index do |inpdef, i|
         next if inpdef.fmt != :number
         inpdef.fmt = :string if lines[i].split[0] =~ /[^\-0-9]/

@@ -8,90 +8,85 @@ module AtCoderFriends
       puts ans
     TEXT
 
-    def generate(pbm)
-      dcls = gen_decls(pbm.defs)
-      src = TEMPLATE
-            .sub('### DCLS ###', dcls.join("\n"))
-      pbm.add_src(:rb, src)
+    def generate(defs)
+      dcls = gen_decls(defs).join("\n")
+      TEMPLATE.sub('### DCLS ###', dcls)
     end
 
     def gen_decls(inpdefs)
-      dcls = []
-      inpdefs.each do |inpdef|
-        vars = inpdef.vars
-        case inpdef.type
-        when :single
-          dcl = vars.join(', ')
-          case inpdef.fmt
-          when :number
-            if vars.size == 1
-              dcls << "#{dcl} = gets.to_i"
-            else
-              dcls << "#{dcl} = gets.split.map(&:to_i)"
-            end
-          when :string
-            if vars.size == 1
-              dcls << "#{dcl} = gets.chomp"
-            else
-              dcls << "#{dcl} = gets.chomp.split"
-            end
-          end
-        when :harray
-          dcl = "#{vars}s"
-          case inpdef.fmt
-          when :number
-            dcls << "#{dcl} = gets.split.map(&:to_i)"
-          when :string
-            dcls << "#{dcl} = gets.chomp.split"
-          when :char
-            dcls << "#{dcl} = gets.chomp"
-          end
-        when :varray
-          sz = inpdef.size
-          if vars.size == 1
-            dcl = "#{vars[0]}s"
-            case inpdef.fmt
-            when :number
-              dcls << "#{dcl} = Array.new(#{sz}) { gets.to_i }"
-            when :string
-              dcls << "#{dcl} = Array.new(#{sz}) { gets.chomp }"
-            end
-          else
-            vars.each do |v|
-              dcls << "#{v}s = Array.new(#{sz})"
-            end
-            dcl = vars.map { |v| "#{v}s[i]" }.join(', ')
-            dcls << "#{sz}.times do |i|"
-            case inpdef.fmt
-            when :number
-              if vars.size == 1
-                dcls << "  #{dcl} = gets.to_i"
-              else
-                dcls << "  #{dcl} = gets.split.map(&:to_i)"
-              end
-            when :string
-              if vars.size == 1
-                dcls << "  #{dcl} = gets.chomp"
-              else
-                dcls << "  #{dcl} = gets.chomp.split"
-              end
-            end
-            dcls << 'end'
-          end
-        when :matrix
-          sz = inpdef.size[0]
-          case inpdef.fmt
-          when :number
-            expr = 'gets.split.map(&:to_i)'
-          when :string
-            expr = 'gets.chomp.split'
-          when :char
-            expr = 'gets.chomp'
-          end
-          dcls << "#{vars}ss = Array.new(#{sz}) { #{expr} }"
+      inpdefs.map { |inpdef| gen_decl(inpdef) }.flatten
+    end
+
+    def gen_decl(inpdef)
+      case inpdef.type
+      when :single
+        gen_single_decl(inpdef)
+      when :harray
+        gen_harray_decl(inpdef)
+      when :varray
+        if inpdef.vars.size == 1
+          gen_varray_1_decl(inpdef)
+        else
+          gen_varray_n_decl(inpdef)
         end
+      when :matrix
+        gen_matrix_decl(inpdef)
       end
+    end
+
+    def gen_single_decl(inpdef)
+      vars = inpdef.vars
+      dcl = vars.join(', ')
+      expr = gen_expr(inpdef.fmt, vars.size > 1)
+      "#{dcl} = #{expr}"
+    end
+
+    def gen_harray_decl(inpdef)
+      vars = inpdef.vars
+      dcl = "#{vars}s"
+      expr = gen_expr(inpdef.fmt, true)
+      "#{dcl} = #{expr}"
+    end
+
+    def gen_varray_1_decl(inpdef)
+      vars = inpdef.vars
+      sz = inpdef.size
+      dcl = "#{vars[0]}s"
+      expr = gen_expr(inpdef.fmt, false)
+      "#{dcl} = Array.new(#{sz}) { #{expr} }"
+    end
+
+    def gen_varray_n_decl(inpdef)
+      vars = inpdef.vars
+      sz = inpdef.size
+      dcls = []
+      vars.each do |v|
+        dcls << "#{v}s = Array.new(#{sz})"
+      end
+      dcls << "#{sz}.times do |i|"
+      dcl = vars.map { |v| "#{v}s[i]" }.join(', ')
+      expr = gen_expr(inpdef.fmt, true)
+      dcls << "  #{dcl} = #{expr}"
+      dcls << 'end'
       dcls
+    end
+
+    def gen_matrix_decl(inpdef)
+      vars = inpdef.vars
+      sz = inpdef.size[0]
+      expr = gen_expr(inpdef.fmt, true)
+      "#{vars}ss = Array.new(#{sz}) { #{expr} }"
+    end
+
+    def gen_expr(fmt, multi)
+      case fmt
+      when :number
+        multi ? 'gets.split.map(&:to_i)' : 'gets.to_i'
+      when :string
+        multi ? 'gets.chomp.split' : 'gets.chomp'
+      when :char
+        'gets.chomp'
+      end
     end
   end
 end

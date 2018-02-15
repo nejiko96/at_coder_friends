@@ -66,9 +66,9 @@ module AtCoderFriends
       cxx_gen = CxxGenerator.new
       emitter = Emitter.new(path)
       agent.fetch_all do |pbm|
-        parser.parse(pbm)
-        rb_gen.generate(pbm)
-        cxx_gen.generate(pbm)
+        defs = parser.parse(pbm)
+        pbm.add_src(:rb, rb_gen.generate(defs))
+        pbm.add_src(:cxx, cxx_gen.generate(defs))
         emitter.emit(pbm)
       end
     end

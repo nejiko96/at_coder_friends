@@ -18,6 +18,7 @@ RSpec.describe AtCoderFriends::FormatParser do
   let(:smp) { '' }
 
   describe '#parse' do
+    subject { parser.parse(pbm) }
     context 'for case #1' do
       let(:fmt) do
         <<~FMT
@@ -43,7 +44,7 @@ RSpec.describe AtCoderFriends::FormatParser do
         SMP
       end
       it 'can parse format' do
-        defs = parser.parse(pbm)
+        defs = subject
         expect(defs.size).to eq(2)
         expect(defs[0]).to have_attributes(
           type: :single, fmt: :number, vars: %w[N M P Q R]
@@ -58,7 +59,7 @@ RSpec.describe AtCoderFriends::FormatParser do
       let(:fmt) { 'Deg Dis' }
       let(:smp) { '113 201' }
       it 'can parse format' do
-        defs = parser.parse(pbm)
+        defs = subject
         expect(defs.size).to eq(1)
         expect(defs[0]).to have_attributes(
           type: :single, fmt: :number, vars: %w[Deg Dis]
@@ -94,7 +95,7 @@ RSpec.describe AtCoderFriends::FormatParser do
         SMP
       end
       it 'can parse format' do
-        defs = parser.parse(pbm)
+        defs = subject
         expect(defs.size).to eq(4)
         expect(defs[0]).to have_attributes(
           type: :single, fmt: :number, vars: %w[N]
@@ -115,7 +116,7 @@ RSpec.describe AtCoderFriends::FormatParser do
       let(:fmt) { 'x_a y_a x_b y_b x_c y_c' }
       let(:smp) { '298 520 903 520 4 663' }
       it 'can parse format' do
-        defs = parser.parse(pbm)
+        defs = subject
         expect(defs.size).to eq(1)
         expect(defs[0]).to have_attributes(
           type: :single, fmt: :number, vars: %w[xa ya xb yb xc yc]
@@ -137,7 +138,7 @@ RSpec.describe AtCoderFriends::FormatParser do
         SMP
       end
       it 'can parse format' do
-        defs = parser.parse(pbm)
+        defs = subject
         expect(defs.size).to eq(2)
         expect(defs[0]).to have_attributes(
           type: :single, fmt: :number, vars: %w[N K]
@@ -172,7 +173,7 @@ RSpec.describe AtCoderFriends::FormatParser do
         SMP
       end
       it 'can parse format' do
-        defs = parser.parse(pbm)
+        defs = subject
         expect(defs.size).to eq(2)
         expect(defs[0]).to have_attributes(
           type: :single, fmt: :number, vars: %w[R C K]
@@ -187,7 +188,7 @@ RSpec.describe AtCoderFriends::FormatParser do
       let(:fmt) { 'X' }
       let(:smp) { 'atcoder' }
       it 'can parse format' do
-        defs = parser.parse(pbm)
+        defs = subject
         expect(defs.size).to eq(1)
         expect(defs[0]).to have_attributes(
           type: :single, fmt: :string, vars: %w[X]
@@ -211,7 +212,7 @@ RSpec.describe AtCoderFriends::FormatParser do
         SMP
       end
       it 'can parse format' do
-        defs = parser.parse(pbm)
+        defs = subject
         expect(defs.size).to eq(1)
         expect(defs[0]).to have_attributes(
           type: :varray, size: '3', fmt: :number, vars: %w[s e]
@@ -237,7 +238,7 @@ RSpec.describe AtCoderFriends::FormatParser do
         SMP
       end
       it 'can parse format' do
-        defs = parser.parse(pbm)
+        defs = subject
         expect(defs.size).to eq(1)
         expect(defs[0]).to have_attributes(
           type: :matrix, size: %w[3 3], fmt: :string, vars: 'c'
@@ -278,7 +279,7 @@ RSpec.describe AtCoderFriends::FormatParser do
         SMP
       end
       it 'can parse format' do
-        defs = parser.parse(pbm)
+        defs = subject
         expect(defs.size).to eq(4)
         expect(defs[0]).to have_attributes(
           type: :single, fmt: :number, vars: %w[N]
@@ -314,7 +315,7 @@ RSpec.describe AtCoderFriends::FormatParser do
         SMP
       end
       it 'can parse format' do
-        defs = parser.parse(pbm)
+        defs = subject
         expect(defs.size).to eq(2)
         expect(defs[0]).to have_attributes(
           type: :single, fmt: :number, vars: %w[H W T]
@@ -339,7 +340,7 @@ RSpec.describe AtCoderFriends::FormatParser do
         SMP
       end
       it 'can parse format' do
-        defs = parser.parse(pbm)
+        defs = subject
         expect(defs.size).to eq(2)
         expect(defs[0]).to have_attributes(
           type: :single, fmt: :number, vars: %w[N]
@@ -380,7 +381,7 @@ RSpec.describe AtCoderFriends::FormatParser do
         SMP
       end
       it 'can parse format' do
-        defs = parser.parse(pbm)
+        defs = subject
         expect(defs.size).to eq(2)
         expect(defs[0]).to have_attributes(
           type: :single, fmt: :number, vars: %w[N]
