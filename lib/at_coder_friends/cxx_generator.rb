@@ -46,14 +46,16 @@ module AtCoderFriends
     end
 
     def gen_consts(desc)
-      consts = []
-      desc = desc.gsub(/[,\\\(\)\{\}\|]/, '')
-      desc.scan(/([\da-z_]+)\s*(≤|≦|leq)\s*(\d+)(\^(\d+))?/i) do |v, _, sz, _, k|
-        sz = sz.to_i
-        sz **= k.to_i if k
-        consts << "const int #{v.upcase}_MAX = #{sz};"
-      end
-      consts
+      desc
+        .gsub(/[,\\\(\)\{\}\|]/, '')
+        .gsub(/(≤|leq)/i, '≦')
+        .scan(/([\da-z_]+)\s*≦\s*(\d+)(?:\^(\d+))?/i)
+        .map do |v, sz, k|
+          sz = sz.to_i
+          sz **= k.to_i if k
+          v.upcase!
+          "const int #{v}_MAX = #{sz};"
+        end
     end
 
     def gen_decls(inpdefs)
