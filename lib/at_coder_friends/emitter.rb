@@ -1,22 +1,23 @@
 # frozen_string_literal: true
 
+require 'fileutils'
+
 module AtCoderFriends
   class Emitter
     SMP_DIR = 'data'
 
     def initialize(dir)
-      @dir = dir
-      @smpdir = File.join(@dir, SMP_DIR)
+      @srcdir = dir
+      @smpdir = File.join(dir, SMP_DIR)
     end
 
     def emit(pbm)
-      Dir.mkdir(@dir) unless Dir.exist?(@dir)
-      Dir.mkdir(@smpdir) unless Dir.exist?(@smpdir)
-      pbm.smps.each { |smp| out_sample(pbm, smp) }
-      pbm.srcs.each { |src| out_source(pbm, src) }
+      pbm.smps.each { |smp| emit_sample(pbm, smp) }
+      pbm.srcs.each { |src| emit_source(pbm, src) }
     end
 
-    def out_sample(pbm, smp)
+    def emit_sample(pbm, smp)
+      FileUtils.mkdirs(@smpdir) unless Dir.exist?(@smpdir)
       smpfile = format(
         '%<q>s_%<n>03d.%<ext>s',
         q: pbm.q, n: smp.no, ext: smp.ext
@@ -26,12 +27,13 @@ module AtCoderFriends
       puts smpfile
     end
 
-    def out_source(pbm, src)
+    def emit_source(pbm, src)
+      FileUtils.mkdirs(@srcdir) unless Dir.exist?(@srcdir)
       srcfile = format(
         '%<q>s.%<ext>s',
         q: pbm.q, ext: src.ext
       )
-      srcpath = File.join(@dir, srcfile)
+      srcpath = File.join(@srcdir, srcfile)
       File.write(srcpath, src.txt)
       puts srcfile
     end
