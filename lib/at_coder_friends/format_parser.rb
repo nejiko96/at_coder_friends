@@ -34,7 +34,7 @@ module AtCoderFriends
           when :matrix
             inpdef.size = prev[-2..-1].chars.to_a
           when :varray
-            inpdef.size = prev =~ /(?<sz>\d+)$/ ? sz : prev[-1]
+            inpdef.size = prev =~ /(?<sz>\d+)$/ ? $~[:sz] : prev[-1]
           end
           re = prev = nil
         end
@@ -46,15 +46,18 @@ module AtCoderFriends
              /^(?<v>[a-z]+)[01](\k<v>.)+$/i
           inpdefs << InputDef.new(:harray, f[-1], :char, $~[:v])
         when /^(?<v>[a-z]+)..(\s+\k<v>..)*\s+[\.…‥]+\s+\k<v>..$/i
-          inpdefs << InputDef.new(:matrix, nil, :number, $~[:v])
+          v = $~[:v]
+          inpdefs << InputDef.new(:matrix, nil, :number, v)
           re = /(^#{v}..(\s+#{v}..)*\s+[\.…‥]+\s+#{v}..|[:：…‥]|\.+)$/
           prev = f
         when /^(?<v>[a-z]+)..(\k<v>..)*\s*[\.…‥]+(\s*\k<v>..)+$/i
-          inpdefs << InputDef.new(:matrix, nil, :char, $~[:v])
+          v = $~[:v]
+          inpdefs << InputDef.new(:matrix, nil, :char, v)
           re = /(^#{v}..(#{v}..)*\s*[\.…‥]+(\s*#{v}..)+|[:：…‥]|\.+)$/
           prev = f
         when /^(?<v>[a-z]+)[01][01](\s+\k<v>..)+$/i
-          inpdefs << InputDef.new(:matrix, nil, :number, $~[:v])
+          v = $~[:v]
+          inpdefs << InputDef.new(:matrix, nil, :number, v)
           re = /(^#{v}..(\s+#{v}..)+|[:：…‥]|\.+)$/
           prev = f
         when /^[a-z]+(?<i>\d)(\s+[a-z]+\k<i>)*$/i
