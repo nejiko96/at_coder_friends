@@ -18,8 +18,8 @@ module AtCoderFriends
       TEMPLATE.sub('### DCLS ###', dcls)
     end
 
-    def gen_decls(inpdefs)
-      inpdefs.map { |inpdef| gen_decl(inpdef) }.flatten
+    def gen_decls(defs)
+      defs.map { |inpdef| gen_decl(inpdef) }.flatten
     end
 
     def gen_decl(inpdef)
@@ -64,31 +64,32 @@ module AtCoderFriends
     def gen_varray_n_decl(inpdef)
       vars = inpdef.vars
       sz = inpdef.size
-      dcls = []
-      vars.each do |v|
-        dcls << "#{v}s = Array.new(#{sz})"
-      end
-      dcls << "#{sz}.times do |i|"
       dcl = vars.map { |v| "#{v}s[i]" }.join(', ')
       expr = gen_expr(inpdef.fmt, true)
-      dcls << "  #{dcl} = #{expr}"
-      dcls << 'end'
-      dcls
+      ret = []
+      vars.each do |v|
+        ret << "#{v}s = Array.new(#{sz})"
+      end
+      ret << "#{sz}.times do |i|"
+      ret << "  #{dcl} = #{expr}"
+      ret << 'end'
+      ret
     end
 
     def gen_matrix_decl(inpdef)
       vars = inpdef.vars
       sz = inpdef.size[0]
+      decl = "#{vars}ss"
       expr = gen_expr(inpdef.fmt, true)
-      "#{vars}ss = Array.new(#{sz}) { #{expr} }"
+      "#{decl} = Array.new(#{sz}) { #{expr} }"
     end
 
-    def gen_expr(fmt, multi)
+    def gen_expr(fmt, split)
       case fmt
       when :number
-        multi ? 'gets.split.map(&:to_i)' : 'gets.to_i'
+        split ? 'gets.split.map(&:to_i)' : 'gets.to_i'
       when :string
-        multi ? 'gets.chomp.split' : 'gets.chomp'
+        split ? 'gets.chomp.split' : 'gets.chomp'
       when :char
         'gets.chomp'
       end
