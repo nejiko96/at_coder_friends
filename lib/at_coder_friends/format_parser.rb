@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'English'
+
 module AtCoderFriends
   class FormatParser
 
@@ -19,19 +21,13 @@ module AtCoderFriends
     end
 
     def parse_fmt(fmt)
+      lines = split_trim(fmt)
+      lines << ''
       inpdefs = []
-      fmt = fmt
-            .gsub(/-1/, '') # N-1 -> N
-            .gsub(%r{(-|/|　)}, ' ') # a-b -> a b
-            .gsub(/\{.+?\}/) { |w| w.delete(' ') } # {1, 1} -> {1,1}
-            .gsub(/[_,\\\(\)\{\}]/, '')
-            .split("\n")
-            .map(&:strip)
-      fmt << ''
       re = prev = nil
-      fmt.each do |f|
+      lines.each do |f|
         if re
-          if f =~ re
+          if re =~ f
             prev = f
             next
           end
@@ -40,43 +36,49 @@ module AtCoderFriends
           when :matrix
             inpdef.size = prev[-2..-1].chars.to_a
           when :varray
-            inpdef.size = prev =~ /(?<sz>\d+)$/ ? $~[:sz] : prev[-1]
+            inpdef.size = /(?<sz>\d+)$/ =~ prev ? sz : prev[-1]
           end
           re = prev = nil
         end
         case f
-        when /^(?<v>[a-z]+).(\s+\k<v>.)*\s*[\.…‥]+\s*\k<v>.$/i,
-             /^(?<v>[a-z]+)[01](\s+\k<v>.)+$/i
-          inpdefs << InputDef.new(:harray, f[-1], :number, $~[:v])
-        when /^(?<v>[a-z]+).(\k<v>.)*\s*[\.…‥]+\s*\k<v>.$/i,
-             /^(?<v>[a-z]+)[01](\k<v>.)+$/i
-          inpdefs << InputDef.new(:harray, f[-1], :char, $~[:v])
-        when /^(?<v>[a-z]+)..(\s+\k<v>..)*\s+[\.…‥]+\s+\k<v>..$/i
-          v = $~[:v]
+        when /^(?<v>[a-z]+)[01](\s+\k<v>.)*(\s+\.+)?(\s+\k<v>.)+$/i
+          v = $LAST_MATCH_INFO[:v]
+          inpdefs << InputDef.new(:harray, f[-1], :number, v)
+        when /^(?<v>[a-z]+)[01](\k<v>.)*(\s*\.+\s*)?(\k<v>.)+$/i
+          v = $LAST_MATCH_INFO[:v]
+          inpdefs << InputDef.new(:harray, f[-1], :char, v)
+        when /^(?<v>[a-z]+)[01][01](\s+\k<v>..)*(\s+\.+)?(\s+\k<v>..)+$/i
+          v = $LAST_MATCH_INFO[:v]
           inpdefs << InputDef.new(:matrix, nil, :number, v)
-          re = /(^#{v}..(\s+#{v}..)*\s+[\.…‥]+\s+#{v}..|[:：…‥]|\.+)$/
+          re = /(^#{v}..(\s+#{v}..)*(\s+\.+)?(\s+#{v}..)+|\.+)$/
           prev = f
-        when /^(?<v>[a-z]+)..(\k<v>..)*\s*[\.…‥]+(\s*\k<v>..)+$/i
-          v = $~[:v]
+        when /^(?<v>[a-z]+)[01][01](\k<v>..)*(\s*\.+\s*)?(\k<v>..)+$/i
+          v = $LAST_MATCH_INFO[:v]
           inpdefs << InputDef.new(:matrix, nil, :char, v)
-          re = /(^#{v}..(#{v}..)*\s*[\.…‥]+(\s*#{v}..)+|[:：…‥]|\.+)$/
+          re = /(^#{v}..(#{v}..)*(\s*\.+\s*)?(#{v}..)+|\.+)$/
           prev = f
-        when /^(?<v>[a-z]+)[01][01](\s+\k<v>..)+$/i
-          v = $~[:v]
-          inpdefs << InputDef.new(:matrix, nil, :number, v)
-          re = /(^#{v}..(\s+#{v}..)+|[:：…‥]|\.+)$/
-          prev = f
-        when /^[a-z]+(?<i>\d)(\s+[a-z]+\k<i>)*$/i
-          vars = f.split.map { |v| v[0..-2] }
+        when /^[a-z]+(?<i>[01])(\s+[a-z]+\k<i>)*$/i
+          vars = f.split.map { |w| w[0..-2] }
           inpdefs << InputDef.new(:varray, nil, :number, vars)
-          pat = vars.map { |v| v + '.+' }.join('\s+')
-          re = /^(#{pat}|[:：…‥]|\.+)$/
+          pat = vars.map { |w| w + '.+' }.join('\s+')
+          re = /^(#{pat}|\.+)$/
           prev = f
         when /^[a-z]+(\s+[a-z]+)*$/i
           inpdefs << InputDef.new(:single, nil, :number, f.split)
         end
       end
       inpdefs
+    end
+
+    def split_trim(fmt)
+      fmt
+        .gsub(/-1/, '') # N-1 -> N
+        .gsub(%r{(-|/|　)}, ' ') # a-b -> a b
+        .gsub(/\{.+?\}/) { |w| w.delete(' ') } # {1, 1} -> {1,1}
+        .gsub(/[_,\\\(\)\{\}]/, '')
+        .gsub(/[:：…‥]/, '...')
+        .split("\n")
+        .map(&:strip)
     end
 
     def match_smp(inpdefs, smp)
