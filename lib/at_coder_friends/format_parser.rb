@@ -1,15 +1,21 @@
 # frozen_string_literal: true
 
 module AtCoderFriends
-  class InputParser
-    def parse(pbm)
-      defs = parse_fmt(pbm.fmt)
-      smpx = pbm
-             .smps
+  class FormatParser
+
+    def process(pbm)
+      defs = parse(pbm.fmt, pbm.smps)
+      pbm.defs = defs
+    end
+
+    def parse(fmt, smps)
+      defs = parse_fmt(fmt)
+      smpx = smps
              .select { |smp| smp.ext == :in }
              .max_by { |smp| smp.txt.size }
-      match_type(defs, smpx)
-      pbm.defs = defs
+             &.txt
+      return unless smpx
+      match_smp(defs, smpx)
     end
 
     def parse_fmt(fmt)
@@ -34,26 +40,29 @@ module AtCoderFriends
           when :matrix
             inpdef.size = prev[-2..-1].chars.to_a
           when :varray
-            inpdef.size = prev =~ /(?<sz>\d+)$/ ? sz : prev[-1]
+            inpdef.size = prev =~ /(?<sz>\d+)$/ ? $~[:sz] : prev[-1]
           end
           re = prev = nil
         end
         case f
         when /^(?<v>[a-z]+).(\s+\k<v>.)*\s*[\.…‥]+\s*\k<v>.$/i,
              /^(?<v>[a-z]+)[01](\s+\k<v>.)+$/i
-          inpdefs << InputDef.new(:harray, f[-1], :number, v)
+          inpdefs << InputDef.new(:harray, f[-1], :number, $~[:v])
         when /^(?<v>[a-z]+).(\k<v>.)*\s*[\.…‥]+\s*\k<v>.$/i,
              /^(?<v>[a-z]+)[01](\k<v>.)+$/i
-          inpdefs << InputDef.new(:harray, f[-1], :char, v)
+          inpdefs << InputDef.new(:harray, f[-1], :char, $~[:v])
         when /^(?<v>[a-z]+)..(\s+\k<v>..)*\s+[\.…‥]+\s+\k<v>..$/i
+          v = $~[:v]
           inpdefs << InputDef.new(:matrix, nil, :number, v)
           re = /(^#{v}..(\s+#{v}..)*\s+[\.…‥]+\s+#{v}..|[:：…‥]|\.+)$/
           prev = f
         when /^(?<v>[a-z]+)..(\k<v>..)*\s*[\.…‥]+(\s*\k<v>..)+$/i
+          v = $~[:v]
           inpdefs << InputDef.new(:matrix, nil, :char, v)
           re = /(^#{v}..(#{v}..)*\s*[\.…‥]+(\s*#{v}..)+|[:：…‥]|\.+)$/
           prev = f
         when /^(?<v>[a-z]+)[01][01](\s+\k<v>..)+$/i
+          v = $~[:v]
           inpdefs << InputDef.new(:matrix, nil, :number, v)
           re = /(^#{v}..(\s+#{v}..)+|[:：…‥]|\.+)$/
           prev = f
@@ -70,14 +79,15 @@ module AtCoderFriends
       inpdefs
     end
 
-    def match_type(inpdefs, smp)
-      return if smp.nil?
-      lines = smp.txt.split("\n")
+    def match_smp(inpdefs, smp)
+      lines = smp.split("\n")
       inpdefs.each_with_index do |inpdef, i|
+        break if i > lines.size
         next if inpdef.fmt != :number
         inpdef.fmt = :string if lines[i].split[0] =~ /[^\-0-9]/
         break if %i[varray matrix].include?(inpdef.type)
       end
+      inpdefs
     end
   end
 end

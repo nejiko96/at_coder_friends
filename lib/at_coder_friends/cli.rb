@@ -18,7 +18,7 @@ module AtCoderFriends
       op = OptionParser.new do |opts|
         opts.banner = 'Usage: at_coder_friends [options] [command] [path]'
         opts.on('-v', '--version', 'Display version.') do
-         options[:version] = true
+          options[:version] = true
         end
       end
       self.class.class_eval do
@@ -57,18 +57,16 @@ module AtCoderFriends
     end
 
     def setup(path)
-      if Dir.exist?(path)
-        raise StandardError, "#{path} already exists."
-      end
+      raise StandardError, "#{path} already exists." if Dir.exist?(path)
       agent = ScrapingAgent.new(contest_name(path), @config)
-      parser = InputParser.new
+      parser = FormatParser.new
       rb_gen = RubyGenerator.new
       cxx_gen = CxxGenerator.new
       emitter = Emitter.new(path)
       agent.fetch_all do |pbm|
-        parser.parse(pbm)
-        rb_gen.generate(pbm)
-        cxx_gen.generate(pbm)
+        parser.process(pbm)
+        rb_gen.process(pbm)
+        cxx_gen.process(pbm)
         emitter.emit(pbm)
       end
     end

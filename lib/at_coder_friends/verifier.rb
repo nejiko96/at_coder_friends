@@ -13,11 +13,12 @@ module AtCoderFriends
 
     def verify
       return unless File.exist?(@path)
-      Dir.mkdir(@vdir) unless Dir.exist?(@vdir)
+      FileUtils.makedirs(@vdir) unless Dir.exist?(@vdir)
       FileUtils.touch(@vpath)
     end
 
     def unverify
+      return unless File.exist?(@vpath)
       File.delete(@vpath)
     end
 

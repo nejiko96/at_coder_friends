@@ -73,7 +73,7 @@ module AtCoderFriends
           end
         else
           page.search('//*[./h3]').each do |section|
-            h3 = section.search('h3')
+            h3 = section.search('h3')[0]
             parse_section(pbm, h3, section)
           end
         end
@@ -81,7 +81,7 @@ module AtCoderFriends
     end
 
     def parse_section(pbm, h3, section)
-      title = h3[0].content.strip
+      title = h3.content.strip
       text = section.content
       code = section.search('pre')[0]&.content || ''
       case title
