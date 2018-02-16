@@ -14,6 +14,7 @@ module AtCoderFriends
              .select { |smp| smp.ext == :in }
              .max_by { |smp| smp.txt.size }
              &.txt
+      return unless smpx
       match_smp(defs, smpx)
     end
 
@@ -79,7 +80,6 @@ module AtCoderFriends
     end
 
     def match_smp(inpdefs, smp)
-      return unless smp
       lines = smp.split("\n")
       inpdefs.each_with_index do |inpdef, i|
         break if i > lines.size

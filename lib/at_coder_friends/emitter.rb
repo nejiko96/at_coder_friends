@@ -7,8 +7,8 @@ module AtCoderFriends
     SMP_DIR = 'data'
 
     def initialize(dir)
-      @srcdir = dir
-      @smpdir = File.join(dir, SMP_DIR)
+      @src_dir = dir
+      @smp_dir = File.join(dir, SMP_DIR)
     end
 
     def emit(pbm)
@@ -17,25 +17,29 @@ module AtCoderFriends
     end
 
     def emit_sample(pbm, smp)
-      FileUtils.makedirs(@smpdir) unless Dir.exist?(@smpdir)
-      smpfile = format(
+      makedirs_unless @smp_dir
+      smp_file = format(
         '%<q>s_%<n>03d.%<ext>s',
         q: pbm.q, n: smp.no, ext: smp.ext
       )
-      smppath = File.join(@smpdir, smpfile)
-      File.write(smppath, smp.txt)
-      puts smpfile
+      smp_path = File.join(@smp_dir, smp_file)
+      File.write(smp_path, smp.txt)
+      puts smp_file
     end
 
     def emit_source(pbm, src)
-      FileUtils.makedirs(@srcdir) unless Dir.exist?(@srcdir)
-      srcfile = format(
+      makedirs_unless @src_dir
+      src_file = format(
         '%<q>s.%<ext>s',
         q: pbm.q, ext: src.ext
       )
-      srcpath = File.join(@srcdir, srcfile)
-      File.write(srcpath, src.txt)
-      puts srcfile
+      src_path = File.join(@src_dir, src_file)
+      File.write(src_path, src.txt)
+      puts src_file
+    end
+
+    def makedirs_unless(dir)
+      FileUtils.makedirs(dir) unless Dir.exist?(dir)
     end
   end
 end
