@@ -146,12 +146,14 @@ module AtCoderFriends
     def gen_single_read(inpdef)
       vars = inpdef.vars
       fmt = gen_fmt(inpdef)
-      addr =  case inpdef.fmt
-              when :number
-                vars.map { |v| "&#{v}" }.join(', ')
-              when :string
-                vars.join(', ')
-              end
+      addr = (
+        case inpdef.fmt
+        when :number
+          vars.map { |v| "&#{v}" }.join(', ')
+        when :string
+          vars.join(', ')
+        end
+      )
       "scanf(\"#{fmt}\", #{addr});"
     end
 
@@ -159,14 +161,16 @@ module AtCoderFriends
       vars = inpdef.vars
       fmt = gen_fmt(inpdef)
       sz = inpdef.size
-      addr =  case inpdef.fmt
-              when :number
-                "#{vars} + i"
-              when :string
-                "#{vars}[i]"
-              when :char
-                vars
-              end
+      addr = (
+        case inpdef.fmt
+        when :number
+          "#{vars} + i"
+        when :string
+          "#{vars}[i]"
+        when :char
+          vars
+        end
+      )
       case inpdef.fmt
       when :number, :string
         "REP(i, #{sz}) scanf(\"#{fmt}\", #{addr});"
@@ -179,12 +183,14 @@ module AtCoderFriends
       vars = inpdef.vars
       fmt = gen_fmt(inpdef)
       sz = inpdef.size
-      addr =  case inpdef.fmt
-              when :number
-                vars.map { |v| "#{v} + i" }.join(', ')
-              when :string
-                vars.map { |v| "#{v}[i]" }.join(', ')
-              end
+      addr = (
+        case inpdef.fmt
+        when :number
+          vars.map { |v| "#{v} + i" }.join(', ')
+        when :string
+          vars.map { |v| "#{v}[i]" }.join(', ')
+        end
+      )
       "REP(i, #{sz}) scanf(\"#{fmt}\", #{addr});"
     end
 
@@ -192,14 +198,16 @@ module AtCoderFriends
       vars = inpdef.vars
       fmt = gen_fmt(inpdef)
       sz1, sz2 = inpdef.size
-      addr =  case inpdef.fmt
-              when :number
-                "&#{vars}[i][j]"
-              when :string
-                "#{vars}[i][j]"
-              when :char
-                "#{vars}[i]"
-              end
+      addr = (
+        case inpdef.fmt
+        when :number
+          "&#{vars}[i][j]"
+        when :string
+          "#{vars}[i][j]"
+        when :char
+          "#{vars}[i]"
+        end
+      )
       case inpdef.fmt
       when :number, :string
         "REP(i, #{sz1}) REP(j, #{sz2}) scanf(\"#{fmt}\", #{addr});"
@@ -209,12 +217,14 @@ module AtCoderFriends
     end
 
     def gen_fmt(inpdef)
-      fmt = case inpdef.fmt
-            when :number
-              '%d'
-            when :string, :char
-              '%s'
-            end
+      fmt = (
+        case inpdef.fmt
+        when :number
+          '%d'
+        when :string, :char
+          '%s'
+        end
+      )
       vars = inpdef.vars
       fmt *= vars.size if vars.instance_of?(Array)
       fmt

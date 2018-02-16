@@ -7,9 +7,11 @@ RSpec.describe AtCoderFriends::ConfigLoader do
   project_root = File.join(spec_root, 'fixtures/project')
   contest_root = File.join(project_root, 'contest')
 
+  subject(:loader) { described_class }
+
   describe '#load_config' do
     subject(:load_config) do
-      described_class.load_config(target_dir)
+      loader.load_config(target_dir)
     end
 
     context 'when the file exists in target directory' do

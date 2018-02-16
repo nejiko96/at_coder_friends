@@ -18,4 +18,9 @@ module FileHelper
       end
     end
   end
+
+  def rmdir_force(dir)
+    FileUtils.rm(Dir.glob(dir + '/*.*'))
+    Dir.rmdir(dir) if Dir.exist?(dir)
+  end
 end

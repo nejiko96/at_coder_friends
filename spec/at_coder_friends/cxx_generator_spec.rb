@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe AtCoderFriends::CxxGenerator do
-  subject(:generator) do
-    described_class.new
-  end
+  subject(:generator) { described_class.new }
 
   describe '#gen_consts' do
     subject { generator.gen_consts(desc) }

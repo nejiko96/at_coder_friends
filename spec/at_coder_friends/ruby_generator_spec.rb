@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe AtCoderFriends::RubyGenerator do
-  subject(:generator) do
-    described_class.new
-  end
+  subject(:generator) { described_class.new }
 
   describe '#gen_decl' do
     subject { generator.gen_decl(inpdef) }

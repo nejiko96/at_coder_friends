@@ -12,15 +12,20 @@ RSpec.describe AtCoderFriends::Verifier do
   let(:result_path) { File.join(tmpdir, "#{target_file}.verified") }
 
   before :each do
-    FileUtils.rm(Dir.glob(tmpdir + '/*.*'))
-    Dir.rmdir(tmpdir) if Dir.exist?(tmpdir)
+    rmdir_force(tmpdir)
+  end
+
+  after :all do
+    rmdir_force(tmpdir)
   end
 
   describe '#verify' do
+    subject { verifier.verify }
+
     context 'when the target exists' do
       let(:target_file) { 'A.rb' }
       it 'creates .verified file' do
-        expect { verifier.verify }.to change { File.exist?(result_path) }
+        expect { subject }.to change { File.exist?(result_path) }
           .from(false).to(true)
       end
     end
@@ -28,17 +33,19 @@ RSpec.describe AtCoderFriends::Verifier do
     context 'when the target does not exist' do
       let(:target_file) { 'not_exist.rb' }
       it 'does not create .verified' do
-        expect { verifier.verify }.not_to change { File.exist?(result_path) }
+        expect { subject }.not_to change { File.exist?(result_path) }
       end
     end
   end
 
   describe '#unverify' do
+    subject { verifier.unverify }
+
     context 'when .verified exists' do
       let(:target_file) { 'A.rb' }
       before { verifier.verify }
       it 'removes .verified' do
-        expect { verifier.unverify }.to change { File.exist?(result_path) }
+        expect { subject }.to change { File.exist?(result_path) }
           .from(true).to(false)
       end
     end
@@ -46,12 +53,14 @@ RSpec.describe AtCoderFriends::Verifier do
     context 'when .verified does not exist' do
       let(:target_file) { 'A.rb' }
       it 'does not remove .verified' do
-        expect { verifier.unverify }.not_to change { File.exist?(result_path) }
+        expect { subject }.not_to change { File.exist?(result_path) }
       end
     end
   end
 
   describe '#verified?' do
+    subject { verifier.verified? }
+
     context 'when the target is verified' do
       let(:target_file) { 'A.rb' }
       before do
@@ -59,7 +68,7 @@ RSpec.describe AtCoderFriends::Verifier do
       end
 
       it 'returns true' do
-        expect(verifier.verified?).to be true
+        expect(subject).to be true
       end
     end
 
@@ -67,11 +76,11 @@ RSpec.describe AtCoderFriends::Verifier do
       let(:target_file) { 'A.rb' }
 
       it 'returns false' do
-        expect(verifier.verified?).to be false
+        expect(subject).to be false
       end
 
       it 'shows message' do
-        expect { verifier.verified? }.to output("A.rb is not verified.\n")
+        expect { subject }.to output("A.rb is not verified.\n")
           .to_stdout
       end
     end
@@ -85,11 +94,11 @@ RSpec.describe AtCoderFriends::Verifier do
       end
 
       it 'returns false' do
-        expect(verifier.verified?).to be false
+        expect(subject).to be false
       end
 
       it 'shows message' do
-        expect { verifier.verified? }.to output("A.rb is not verified.\n")
+        expect { subject }.to output("A.rb is not verified.\n")
           .to_stdout
       end
     end

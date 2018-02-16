@@ -4,10 +4,14 @@ require 'rbconfig'
 
 module AtCoderFriends
   class TestRunner
+    SMP_DIR = 'data'
+
     def initialize(path)
       @path = path
       @dir, @prog = File.split(@path)
       @base, @ext = @prog.split('.')
+      @q = @base.split('_')[0]
+      @smpdir = File.join(@dir, SMP_DIR)
     end
 
     def test_all
@@ -23,17 +27,15 @@ module AtCoderFriends
     end
 
     def test(n)
-      q = @base.split('_')[0]
-      cs = format('%<q>s_%<n>03d', q: q, n: n)
-      csbase = "#{@dir}/data/#{cs}"
-      infile = "#{csbase}.in"
-      outfile = "#{csbase}.out"
-      expfile = "#{csbase}.exp"
+      cs = format('%<q>s_%<n>03d', q: @q, n: n)
+      basename = "#{@smpdir}/#{cs}"
+      infile = "#{basename}.in"
+      outfile = "#{basename}.out"
+      expfile = "#{basename}.exp"
 
       return false unless File.exist?(infile) && File.exist?(expfile)
 
-      cmd = edit_cmd
-      ec = system("#{cmd} < #{infile} > #{outfile}")
+      ec = system("#{edit_cmd} < #{infile} > #{outfile}")
 
       input = File.read(infile)
       result = File.read(outfile)
@@ -57,27 +59,43 @@ module AtCoderFriends
     end
 
     def edit_cmd
-      host_os = RbConfig::CONFIG['host_os']
       case @ext
       when 'java'
         "java -cp #{@dir} Main"
       when 'rb'
         "ruby #{@dir}/#{@base}.rb"
       when 'cs'
-        case host_os
-        when /mingw/
+        case which_os
+        when :windows
           "#{@dir}/#{@base}.exe"
         else
           "mono #{@dir}/#{@base}.exe"
         end
       else # c, cxx
-        case host_os
-        when /mingw/
+        case which_os
+        when :windows
           "#{@dir}/#{@base}.exe"
         else
           "#{@dir}/#{@base}"
         end
       end
+    end
+
+    def which_os
+      @os ||= (
+        case RbConfig::CONFIG['host_os']
+        when /mswin|msys|mingw|cygwin|bccwin|wince|emc/
+          :windows
+        when /darwin|mac os/
+          :macosx
+        when /linux/
+          :linux
+        when /solaris|bsd/
+          :unix
+        else
+          :unknown
+        end
+      )
     end
   end
 end
