@@ -9,7 +9,9 @@ RSpec.describe AtCoderFriends::Verifier do
 
   subject(:verifier) { described_class.new(target_path) }
   let(:target_path) { File.join(contest_root, target_file) }
-  let(:result_path) { File.join(tmpdir, "#{target_file}.verified") }
+  let(:result_path) { File.join(contest_root, result_file) }
+  let(:target_file) { 'A.rb' }
+  let(:result_file) { '.tmp/A.rb.verified' }
 
   before :each do
     rmdir_force(tmpdir)
@@ -23,7 +25,6 @@ RSpec.describe AtCoderFriends::Verifier do
     subject { verifier.verify }
 
     context 'when the target exists' do
-      let(:target_file) { 'A.rb' }
       it 'creates .verified file' do
         expect { subject }.to change { File.exist?(result_path) }
           .from(false).to(true)
@@ -31,9 +32,10 @@ RSpec.describe AtCoderFriends::Verifier do
     end
 
     context 'when the target does not exist' do
-      let(:target_file) { 'not_exist.rb' }
+      let(:target_file) { 'nothing.rb' }
       it 'does not create .verified' do
-        expect { subject }.not_to change { File.exist?(result_path) }
+        expect { subject }
+          .not_to change { Dir.exist?(tmpdir) && Dir.entries(tmpdir).size }
       end
     end
   end
@@ -42,8 +44,9 @@ RSpec.describe AtCoderFriends::Verifier do
     subject { verifier.unverify }
 
     context 'when .verified exists' do
-      let(:target_file) { 'A.rb' }
-      before { verifier.verify }
+      before do
+        create_file(File.join(contest_root, result_file), '')
+      end
       it 'removes .verified' do
         expect { subject }.to change { File.exist?(result_path) }
           .from(true).to(false)
@@ -51,9 +54,9 @@ RSpec.describe AtCoderFriends::Verifier do
     end
 
     context 'when .verified does not exist' do
-      let(:target_file) { 'A.rb' }
       it 'does not remove .verified' do
-        expect { subject }.not_to change { File.exist?(result_path) }
+        expect { subject }
+          .not_to change { Dir.exist?(tmpdir) && Dir.entries(tmpdir).size }
       end
     end
   end
@@ -62,9 +65,8 @@ RSpec.describe AtCoderFriends::Verifier do
     subject { verifier.verified? }
 
     context 'when the target is verified' do
-      let(:target_file) { 'A.rb' }
       before do
-        create_file(File.join(tmpdir, 'A.rb.verified'), '')
+        create_file(File.join(contest_root, result_file), '')
       end
 
       it 'returns true' do
@@ -73,8 +75,6 @@ RSpec.describe AtCoderFriends::Verifier do
     end
 
     context 'when the target is not verified' do
-      let(:target_file) { 'A.rb' }
-
       it 'returns false' do
         expect(subject).to be false
       end
@@ -86,11 +86,10 @@ RSpec.describe AtCoderFriends::Verifier do
     end
 
     context 'when the target is modified after verified' do
-      let(:target_file) { 'A.rb' }
       before do
-        create_file(File.join(tmpdir, 'A.rb.verified'), '')
+        create_file(File.join(contest_root, result_file), '')
         sleep 1
-        FileUtils.touch(File.join(contest_root, 'A.rb'))
+        FileUtils.touch(File.join(contest_root, target_file))
       end
 
       it 'returns false' do
