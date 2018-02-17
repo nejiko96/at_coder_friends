@@ -3,6 +3,7 @@
 require 'rbconfig'
 
 module AtCoderFriends
+  # run tests for the specified program.
   class TestRunner
     SMP_DIR = 'data'
 
@@ -82,7 +83,7 @@ module AtCoderFriends
     end
 
     def which_os
-      @os ||= (
+      @os ||= begin
         case RbConfig::CONFIG['host_os']
         when /mswin|msys|mingw|cygwin|bccwin|wince|emc/
           :windows
@@ -95,7 +96,7 @@ module AtCoderFriends
         else
           :unknown
         end
-      )
+      end
     end
   end
 end

@@ -1,5 +1,21 @@
 AllCops:
+  Exclude:
+    - 'spec/fixtures/**/*'
   TargetRubyVersion: 2.3
 
-Style/EndOfLine:
+Layout/EndOfLine:
   EnforcedStyle: lf
+
+Lint/AmbiguousBlockAssociation:
+  Exclude:
+    - 'spec/**/*.rb'
+
+Metrics/BlockLength:
+  Exclude:
+    - 'Rakefile'
+    - '**/*.rake'
+    - 'spec/**/*.rb'
+
+Metrics/ModuleLength:
+  Exclude:
+    - 'spec/**/*.rb'

@@ -3,6 +3,7 @@
 require 'fileutils'
 
 module AtCoderFriends
+  # marks and checks if the source has been verified.
   class Verifier
     def initialize(path)
       @path = path

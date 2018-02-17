@@ -17,6 +17,7 @@ module AtCoderFriends
 
   SourceSample = Struct.new(:ext, :txt)
 
+  # holds problem information
   class Problem
     attr_reader :q, :fmt
     attr_accessor :desc, :smps, :defs, :srcs

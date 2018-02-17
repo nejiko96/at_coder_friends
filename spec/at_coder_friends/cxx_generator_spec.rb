@@ -348,6 +348,7 @@ RSpec.describe AtCoderFriends::CxxGenerator do
 
     it 'generates c++ source' do
       expect(subject).to eq(
+        # rubocop:disable Layout/EmptyLinesAroundArguments
         <<~SRC
           #include <cstdio>
 
@@ -383,6 +384,7 @@ RSpec.describe AtCoderFriends::CxxGenerator do
             return 0;
           }
         SRC
+        # rubocop:enable Layout/EmptyLinesAroundArguments
       )
     end
   end

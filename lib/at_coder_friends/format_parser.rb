@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module AtCoderFriends
+  # Iterates through elements of an array
   class Iterator
     def initialize(array)
       @array = array
@@ -18,6 +19,7 @@ module AtCoderFriends
     end
   end
 
+  # parses input data format and generates input definitons
   class FormatParser
     PARSERS = [
       {
@@ -69,7 +71,7 @@ module AtCoderFriends
         pat: /^[a-z]+(\s+[a-z]+)*$/i,
         names: ->(m) { m[0].split },
         pat2: ->(_) { nil },
-        size: ->(_) { '' }
+        size: ->(_) { [] }
       }
     ].freeze
 
@@ -103,15 +105,11 @@ module AtCoderFriends
       cur = it.next
       Enumerator.new do |y|
         loop do
-          parser = PARSERS.find { |ps| ps[:pat] =~ cur }
-          unless parser
-            break unless it.next?
-            cur = it.next
-            next
+          unless (parser = PARSERS.find { |ps| ps[:pat] =~ cur })
+            (cur = it.next?) ? next : break
           end
           container, item = parser.values_at(:container, :item)
-          m = parser[:pat].match(cur)
-          names = parser[:names].call(m)
+          names = parser[:names].call(parser[:pat].match(cur))
           pat2 = parser[:pat2].call(names)
           loop do
             prv = cur

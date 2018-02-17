@@ -5,6 +5,9 @@ require 'logger'
 require 'English'
 
 module AtCoderFriends
+  # scrapes AtCoder contest site and
+  # - fetches problems
+  # - submits sources
   class ScrapingAgent
     BASE_URL_FMT = 'http://%<contest>s.contest.atcoder.jp/'
     LANG_TBL = {

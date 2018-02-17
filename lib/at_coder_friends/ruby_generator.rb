@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module AtCoderFriends
+  # generates C++ source code from definition
   class RubyGenerator
     TEMPLATE = <<~TEXT
       ### DCLS ###
@@ -67,9 +68,7 @@ module AtCoderFriends
       dcl = names.map { |v| "#{v}s[i]" }.join(', ')
       expr = gen_expr(inpdef.item, true)
       ret = []
-      names.each do |v|
-        ret << "#{v}s = Array.new(#{sz})"
-      end
+      names.each { |v| ret << "#{v}s = Array.new(#{sz})" }
       ret << "#{sz}.times do |i|"
       ret << "  #{dcl} = #{expr}"
       ret << 'end'

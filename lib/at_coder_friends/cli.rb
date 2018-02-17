@@ -5,12 +5,23 @@ require 'optparse'
 module AtCoderFriends
   # command line interface
   class CLI
+    class Finished < RuntimeError; end
+
+    EXITING_OPTIONS = %i[version].freeze
+    STATUS_SUCCESS  = 0
+    STATUS_ERROR    = 1
+
     def run(args = ARGV)
       @options = parse_options!(args)
-      handle_show_info_option
+      handle_exiting_option
       usage 'command or path is not specified.' if args.size < 2
       @config = ConfigLoader.load_config(args[1])
       exec_command(*args)
+    rescue AtCoderFriends::ConfigNotFoundError => e
+      warn e.message
+      STATUS_ERROR
+    rescue Finished
+      STATUS_SUCCESS
     end
 
     def parse_options!(args)
@@ -34,11 +45,10 @@ module AtCoderFriends
       usage e.message
     end
 
-    def handle_show_info_option
-      if @options[:version]
-        puts AtCoderFriends::VERSION
-        exit 0
-      end
+    def handle_exiting_option
+      return unless EXITING_OPTIONS.any? { |o| @options.key? o }
+      puts AtCoderFriends::VERSION if @options[:version]
+      raise Finished
     end
 
     def exec_command(command, path)
