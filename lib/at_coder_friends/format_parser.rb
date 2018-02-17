@@ -21,42 +21,42 @@ module AtCoderFriends
   class FormatParser
     PARSERS = [
       {
-        type: :harray,
-        fmt: :number,
+        container: :harray,
+        item: :number,
         pat: /^(?<v>[a-z]+)[01](\s+\k<v>.)*(\s+\.+)?(\s+\k<v>.)+$/i,
-        vars: ->(m) { m[:v] },
+        names: ->(m) { m[:v] },
         pat2: ->(_) { nil },
         size: ->(f) { f[-1] }
       },
       {
-        type: :harray,
-        fmt: :char,
+        container: :harray,
+        item: :char,
         pat: /^(?<v>[a-z]+)[01](\k<v>.)*(\s*\.+\s*)?(\k<v>.)+$/i,
-        vars: ->(m) { m[:v] },
+        names: ->(m) { m[:v] },
         pat2: ->(_) { nil },
         size: ->(f) { f[-1] }
       },
       {
-        type: :matrix,
-        fmt: :number,
+        container: :matrix,
+        item: :number,
         pat: /^(?<v>[a-z]+)[01][01](\s+\k<v>..)*(\s+\.+)?(\s+\k<v>..)+$/i,
-        vars: ->(m) { m[:v] },
+        names: ->(m) { m[:v] },
         pat2: ->(v) { /(^#{v}..(\s+#{v}..)*(\s+\.+)?(\s+#{v}..)+|\.+)$/ },
         size: ->(f) { f[-2..-1].chars.to_a }
       },
       {
-        type: :matrix,
-        fmt: :char,
+        container: :matrix,
+        item: :char,
         pat: /^(?<v>[a-z]+)[01][01](\k<v>..)*(\s*\.+\s*)?(\k<v>..)+$/i,
-        vars: ->(m) { m[:v] },
+        names: ->(m) { m[:v] },
         pat2: ->(v) { /(^#{v}..(#{v}..)*(\s*\.+\s*)?(#{v}..)+|\.+)$/ },
         size: ->(f) { f[-2..-1].chars.to_a }
       },
       {
-        type: :varray,
-        fmt: :number,
+        container: :varray,
+        item: :number,
         pat: /^[a-z]+(?<i>[01])(\s+[a-z]+\k<i>)*$/i,
-        vars: ->(m) { m[0].split.map { |w| w[0..-2] } },
+        names: ->(m) { m[0].split.map { |w| w[0..-2] } },
         pat2: lambda { |vs|
           pat = vs.map { |v| v + '.+' }.join('\s+')
           /^(#{pat}|\.+)$/
@@ -64,10 +64,10 @@ module AtCoderFriends
         size: ->(f) { /(?<sz>\d+)$/ =~ f ? sz : f[-1] }
       },
       {
-        type: :single,
-        fmt: :number,
+        container: :single,
+        item: :number,
         pat: /^[a-z]+(\s+[a-z]+)*$/i,
-        vars: ->(m) { m[0].split },
+        names: ->(m) { m[0].split },
         pat2: ->(_) { nil },
         size: ->(_) { '' }
       }
@@ -109,17 +109,17 @@ module AtCoderFriends
             cur = it.next
             next
           end
-          type, fmt = parser.values_at(:type, :fmt)
+          container, item = parser.values_at(:container, :item)
           m = parser[:pat].match(cur)
-          vars = parser[:vars].call(m)
-          pat2 = parser[:pat2].call(vars)
+          names = parser[:names].call(m)
+          pat2 = parser[:pat2].call(names)
           loop do
             prv = cur
             cur = it.next
             break unless pat2 && pat2 =~ cur
           end
           size = parser[:size].call(prv)
-          y << InputDef.new(type, size, fmt, vars)
+          y << InputDef.new(container, size, item, names)
         end
       end.to_a
     end
@@ -135,9 +135,9 @@ module AtCoderFriends
       lines = smp.split("\n")
       inpdefs.each_with_index do |inpdef, i|
         break if i > lines.size
-        next if inpdef.fmt != :number
-        inpdef.fmt = :string if lines[i].split[0] =~ /[^\-0-9]/
-        break if %i[varray matrix].include?(inpdef.type)
+        next if inpdef.item != :number
+        inpdef.item = :string if lines[i].split[0] =~ /[^\-0-9]/
+        break if %i[varray matrix].include?(inpdef.container)
       end
       inpdefs
     end

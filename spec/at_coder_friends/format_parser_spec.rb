@@ -46,10 +46,10 @@ RSpec.describe AtCoderFriends::FormatParser do
         defs = subject
         expect(defs.size).to eq(2)
         expect(defs[0]).to have_attributes(
-          type: :single, fmt: :number, vars: %w[N M P Q R]
+          container: :single, item: :number, names: %w[N M P Q R]
         )
         expect(defs[1]).to have_attributes(
-          type: :varray, size: 'R', fmt: :number, vars: %w[x y z]
+          container: :varray, size: 'R', item: :number, names: %w[x y z]
         )
       end
     end
@@ -61,7 +61,7 @@ RSpec.describe AtCoderFriends::FormatParser do
         defs = subject
         expect(defs.size).to eq(1)
         expect(defs[0]).to have_attributes(
-          type: :single, fmt: :number, vars: %w[Deg Dis]
+          container: :single, item: :number, names: %w[Deg Dis]
         )
       end
     end
@@ -97,16 +97,16 @@ RSpec.describe AtCoderFriends::FormatParser do
         defs = subject
         expect(defs.size).to eq(4)
         expect(defs[0]).to have_attributes(
-          type: :single, fmt: :number, vars: %w[N]
+          container: :single, item: :number, names: %w[N]
         )
         expect(defs[1]).to have_attributes(
-          type: :matrix, size: %w[N N], fmt: :number, vars: 'D'
+          container: :matrix, size: %w[N N], item: :number, names: 'D'
         )
         expect(defs[2]).to have_attributes(
-          type: :single, fmt: :number, vars: %w[Q]
+          container: :single, item: :number, names: %w[Q]
         )
         expect(defs[3]).to have_attributes(
-          type: :varray, size: 'Q', fmt: :number, vars: %w[P]
+          container: :varray, size: 'Q', item: :number, names: %w[P]
         )
       end
     end
@@ -118,7 +118,7 @@ RSpec.describe AtCoderFriends::FormatParser do
         defs = subject
         expect(defs.size).to eq(1)
         expect(defs[0]).to have_attributes(
-          type: :single, fmt: :number, vars: %w[xa ya xb yb xc yc]
+          container: :single, item: :number, names: %w[xa ya xb yb xc yc]
         )
       end
     end
@@ -140,10 +140,10 @@ RSpec.describe AtCoderFriends::FormatParser do
         defs = subject
         expect(defs.size).to eq(2)
         expect(defs[0]).to have_attributes(
-          type: :single, fmt: :number, vars: %w[N K]
+          container: :single, item: :number, names: %w[N K]
         )
         expect(defs[1]).to have_attributes(
-          type: :harray, size: 'N', fmt: :number, vars: 'R'
+          container: :harray, size: 'N', item: :number, names: 'R'
         )
       end
     end
@@ -175,10 +175,10 @@ RSpec.describe AtCoderFriends::FormatParser do
         defs = subject
         expect(defs.size).to eq(2)
         expect(defs[0]).to have_attributes(
-          type: :single, fmt: :number, vars: %w[R C K]
+          container: :single, item: :number, names: %w[R C K]
         )
         expect(defs[1]).to have_attributes(
-          type: :varray, size: 'R', fmt: :string, vars: %w[s]
+          container: :varray, size: 'R', item: :string, names: %w[s]
         )
       end
     end
@@ -190,7 +190,7 @@ RSpec.describe AtCoderFriends::FormatParser do
         defs = subject
         expect(defs.size).to eq(1)
         expect(defs[0]).to have_attributes(
-          type: :single, fmt: :string, vars: %w[X]
+          container: :single, item: :string, names: %w[X]
         )
       end
     end
@@ -214,7 +214,7 @@ RSpec.describe AtCoderFriends::FormatParser do
         defs = subject
         expect(defs.size).to eq(1)
         expect(defs[0]).to have_attributes(
-          type: :varray, size: '3', fmt: :number, vars: %w[s e]
+          container: :varray, size: '3', item: :number, names: %w[s e]
         )
       end
     end
@@ -240,7 +240,7 @@ RSpec.describe AtCoderFriends::FormatParser do
         defs = subject
         expect(defs.size).to eq(1)
         expect(defs[0]).to have_attributes(
-          type: :matrix, size: %w[3 3], fmt: :string, vars: 'c'
+          container: :matrix, size: %w[3 3], item: :string, names: 'c'
         )
       end
     end
@@ -281,16 +281,16 @@ RSpec.describe AtCoderFriends::FormatParser do
         defs = subject
         expect(defs.size).to eq(4)
         expect(defs[0]).to have_attributes(
-          type: :single, fmt: :number, vars: %w[N]
+          container: :single, item: :number, names: %w[N]
         )
         expect(defs[1]).to have_attributes(
-          type: :varray, size: 'N', fmt: :number, vars: %w[x y]
+          container: :varray, size: 'N', item: :number, names: %w[x y]
         )
         expect(defs[2]).to have_attributes(
-          type: :single, fmt: :number, vars: %w[Q]
+          container: :single, item: :number, names: %w[Q]
         )
         expect(defs[3]).to have_attributes(
-          type: :varray, size: 'Q', fmt: :number, vars: %w[a b]
+          container: :varray, size: 'Q', item: :number, names: %w[a b]
         )
       end
     end
@@ -317,10 +317,10 @@ RSpec.describe AtCoderFriends::FormatParser do
         defs = subject
         expect(defs.size).to eq(2)
         expect(defs[0]).to have_attributes(
-          type: :single, fmt: :number, vars: %w[H W T]
+          container: :single, item: :number, names: %w[H W T]
         )
         expect(defs[1]).to have_attributes(
-          type: :matrix, size: %w[H W], fmt: :char, vars: 's'
+          container: :matrix, size: %w[H W], item: :char, names: 's'
         )
       end
     end
@@ -342,10 +342,10 @@ RSpec.describe AtCoderFriends::FormatParser do
         defs = subject
         expect(defs.size).to eq(2)
         expect(defs[0]).to have_attributes(
-          type: :single, fmt: :number, vars: %w[N]
+          container: :single, item: :number, names: %w[N]
         )
         expect(defs[1]).to have_attributes(
-          type: :harray, size: 'N', fmt: :char, vars: 'c'
+          container: :harray, size: 'N', item: :char, names: 'c'
         )
       end
     end
@@ -383,10 +383,10 @@ RSpec.describe AtCoderFriends::FormatParser do
         defs = subject
         expect(defs.size).to eq(2)
         expect(defs[0]).to have_attributes(
-          type: :single, fmt: :number, vars: %w[N]
+          container: :single, item: :number, names: %w[N]
         )
         expect(defs[1]).to have_attributes(
-          type: :matrix, size: %w[N 9], fmt: :char, vars: 'x'
+          container: :matrix, size: %w[N 9], item: :char, names: 'x'
         )
       end
     end

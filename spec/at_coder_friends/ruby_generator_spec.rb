@@ -5,97 +5,97 @@ RSpec.describe AtCoderFriends::RubyGenerator do
 
   describe '#gen_decl' do
     subject { generator.gen_decl(inpdef) }
-    let(:inpdef) { AtCoderFriends::InputDef.new(type, size, fmt, vars) }
+    let(:inpdef) { AtCoderFriends::InputDef.new(container, size, item, names) }
     let(:size) { nil }
 
     context 'for a plain number' do
-      let(:type) { :single }
-      let(:fmt) { :number }
-      let(:vars) { %w[A] }
+      let(:container) { :single }
+      let(:item) { :number }
+      let(:names) { %w[A] }
       it 'generates decl' do
         expect(subject).to eq('A = gets.to_i')
       end
     end
 
     context 'for plain numbers' do
-      let(:type) { :single }
-      let(:fmt) { :number }
-      let(:vars) { %w[A B] }
+      let(:container) { :single }
+      let(:item) { :number }
+      let(:names) { %w[A B] }
       it 'generates decl' do
         expect(subject).to eq('A, B = gets.split.map(&:to_i)')
       end
     end
 
     context 'for a plain string' do
-      let(:type) { :single }
-      let(:fmt) { :string }
-      let(:vars) { %w[A] }
+      let(:container) { :single }
+      let(:item) { :string }
+      let(:names) { %w[A] }
       it 'generates decl' do
         expect(subject).to eq('A = gets.chomp')
       end
     end
 
     context 'for plain strings' do
-      let(:type) { :single }
-      let(:fmt) { :string }
-      let(:vars) { %w[A B] }
+      let(:container) { :single }
+      let(:item) { :string }
+      let(:names) { %w[A B] }
       it 'generates decl' do
         expect(subject).to eq('A, B = gets.chomp.split')
       end
     end
 
     context 'for a horizontal array of numbers' do
-      let(:type) { :harray }
-      let(:fmt) { :number }
-      let(:vars) { 'A' }
+      let(:container) { :harray }
+      let(:item) { :number }
+      let(:names) { 'A' }
       it 'generates decl' do
         expect(subject).to eq('As = gets.split.map(&:to_i)')
       end
     end
 
     context 'for a horizontal array of strings' do
-      let(:type) { :harray }
-      let(:fmt) { :string }
-      let(:vars) { 'A' }
+      let(:container) { :harray }
+      let(:item) { :string }
+      let(:names) { 'A' }
       it 'generates decl' do
         expect(subject).to eq('As = gets.chomp.split')
       end
     end
 
     context 'for a horizontal array of characters' do
-      let(:type) { :harray }
-      let(:fmt) { :char }
-      let(:vars) { 'A' }
+      let(:container) { :harray }
+      let(:item) { :char }
+      let(:names) { 'A' }
       it 'generates decl' do
         expect(subject).to eq('As = gets.chomp')
       end
     end
 
     context 'for single vertical array of numbers' do
-      let(:type) { :varray }
+      let(:container) { :varray }
       let(:size) { 'N' }
-      let(:fmt) { :number }
-      let(:vars) { %w[A] }
+      let(:item) { :number }
+      let(:names) { %w[A] }
       it 'generates decl' do
         expect(subject).to eq('As = Array.new(N) { gets.to_i }')
       end
     end
 
     context 'for single vertical array of strings' do
-      let(:type) { :varray }
+      let(:container) { :varray }
       let(:size) { 'N' }
-      let(:fmt) { :string }
-      let(:vars) { %w[A] }
+      let(:item) { :string }
+      let(:names) { %w[A] }
       it 'generates decl' do
         expect(subject).to eq('As = Array.new(N) { gets.chomp }')
       end
     end
 
     context 'for multiple vertical array of numbers' do
-      let(:type) { :varray }
+      let(:container) { :varray }
       let(:size) { 'N' }
-      let(:fmt) { :number }
-      let(:vars) { %w[A B] }
+      let(:item) { :number }
+      let(:names) { %w[A B] }
       it 'generates decl' do
         expect(subject).to match_array(
           [
@@ -110,10 +110,10 @@ RSpec.describe AtCoderFriends::RubyGenerator do
     end
 
     context 'for multple vertical array of strings' do
-      let(:type) { :varray }
+      let(:container) { :varray }
       let(:size) { 'N' }
-      let(:fmt) { :string }
-      let(:vars) { %w[A B] }
+      let(:item) { :string }
+      let(:names) { %w[A B] }
       it 'generates decl' do
         expect(subject).to match_array(
           [
@@ -128,30 +128,30 @@ RSpec.describe AtCoderFriends::RubyGenerator do
     end
 
     context 'for a matrix of numbers' do
-      let(:type) { :matrix }
+      let(:container) { :matrix }
       let(:size) { %w[R C] }
-      let(:fmt) { :number }
-      let(:vars) { 'A' }
+      let(:item) { :number }
+      let(:names) { 'A' }
       it 'generates decl' do
         expect(subject).to eq('Ass = Array.new(R) { gets.split.map(&:to_i) }')
       end
     end
 
     context 'for a matrix of strings' do
-      let(:type) { :matrix }
+      let(:container) { :matrix }
       let(:size) { %w[R C] }
-      let(:fmt) { :string }
-      let(:vars) { 'A' }
+      let(:item) { :string }
+      let(:names) { 'A' }
       it 'generates decl' do
         expect(subject).to eq('Ass = Array.new(R) { gets.chomp.split }')
       end
     end
 
     context 'for a matrix of characters' do
-      let(:type) { :matrix }
+      let(:container) { :matrix }
       let(:size) { %w[R C] }
-      let(:fmt) { :char }
-      let(:vars) { 'A' }
+      let(:item) { :char }
+      let(:names) { 'A' }
       it 'generates decl' do
         expect(subject).to eq('Ass = Array.new(R) { gets.chomp }')
       end

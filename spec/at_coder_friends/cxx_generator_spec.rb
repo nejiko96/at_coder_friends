@@ -32,40 +32,40 @@ RSpec.describe AtCoderFriends::CxxGenerator do
 
   describe '#gen_decl' do
     subject { generator.gen_decl(inpdef) }
-    let(:inpdef) { AtCoderFriends::InputDef.new(type, size, fmt, vars) }
+    let(:inpdef) { AtCoderFriends::InputDef.new(container, size, item, names) }
     let(:size) { nil }
 
     context 'for a plain number' do
-      let(:type) { :single }
-      let(:fmt) { :number }
-      let(:vars) { %w[A] }
+      let(:container) { :single }
+      let(:item) { :number }
+      let(:names) { %w[A] }
       it 'generates decl' do
         expect(subject).to eq('int A;')
       end
     end
 
     context 'for plain numbers' do
-      let(:type) { :single }
-      let(:fmt) { :number }
-      let(:vars) { %w[A B] }
+      let(:container) { :single }
+      let(:item) { :number }
+      let(:names) { %w[A B] }
       it 'generates decl' do
         expect(subject).to eq('int A, B;')
       end
     end
 
     context 'for a plain string' do
-      let(:type) { :single }
-      let(:fmt) { :string }
-      let(:vars) { %w[A] }
+      let(:container) { :single }
+      let(:item) { :string }
+      let(:names) { %w[A] }
       it 'generates decl' do
         expect(subject).to match_array(['char A[A_MAX + 1];'])
       end
     end
 
     context 'for plain strings' do
-      let(:type) { :single }
-      let(:fmt) { :string }
-      let(:vars) { %w[A B] }
+      let(:container) { :single }
+      let(:item) { :string }
+      let(:names) { %w[A B] }
       it 'generates decl' do
         expect(subject).to match_array(
           [
@@ -77,50 +77,50 @@ RSpec.describe AtCoderFriends::CxxGenerator do
     end
 
     context 'for a horizontal array of numbers' do
-      let(:type) { :harray }
+      let(:container) { :harray }
       let(:size) { 'N' }
-      let(:fmt) { :number }
-      let(:vars) { 'A' }
+      let(:item) { :number }
+      let(:names) { 'A' }
       it 'generates decl' do
         expect(subject).to eq('int A[N_MAX];')
       end
     end
 
     context 'for a horizontal array of numbers with size specified' do
-      let(:type) { :harray }
+      let(:container) { :harray }
       let(:size) { '10' }
-      let(:fmt) { :number }
-      let(:vars) { 'A' }
+      let(:item) { :number }
+      let(:names) { 'A' }
       it 'generates decl' do
         expect(subject).to eq('int A[10];')
       end
     end
 
     context 'for a horizontal array of strings' do
-      let(:type) { :harray }
+      let(:container) { :harray }
       let(:size) { 'N' }
-      let(:fmt) { :string }
-      let(:vars) { 'A' }
+      let(:item) { :string }
+      let(:names) { 'A' }
       it 'generates decl' do
         expect(subject).to eq('char A[N_MAX][A_MAX + 1];')
       end
     end
 
     context 'for a horizontal array of characters' do
-      let(:type) { :harray }
+      let(:container) { :harray }
       let(:size) { 'N' }
-      let(:fmt) { :char }
-      let(:vars) { 'A' }
+      let(:item) { :char }
+      let(:names) { 'A' }
       it 'generates decl' do
         expect(subject).to eq('char A[N_MAX + 1];')
       end
     end
 
     context 'for vertical array of numbers' do
-      let(:type) { :varray }
+      let(:container) { :varray }
       let(:size) { 'N' }
-      let(:fmt) { :number }
-      let(:vars) { %w[A B] }
+      let(:item) { :number }
+      let(:names) { %w[A B] }
       it 'generates decl' do
         expect(subject).to match_array(
           [
@@ -132,10 +132,10 @@ RSpec.describe AtCoderFriends::CxxGenerator do
     end
 
     context 'for vertical array of numbers with size specified' do
-      let(:type) { :varray }
+      let(:container) { :varray }
       let(:size) { '10' }
-      let(:fmt) { :number }
-      let(:vars) { %w[A B] }
+      let(:item) { :number }
+      let(:names) { %w[A B] }
       it 'generates decl' do
         expect(subject).to match_array(
           [
@@ -147,10 +147,10 @@ RSpec.describe AtCoderFriends::CxxGenerator do
     end
 
     context 'for vertical array of strings' do
-      let(:type) { :varray }
+      let(:container) { :varray }
       let(:size) { 'N' }
-      let(:fmt) { :string }
-      let(:vars) { %w[A B] }
+      let(:item) { :string }
+      let(:names) { %w[A B] }
       it 'generates decl' do
         expect(subject).to match_array(
           [
@@ -162,40 +162,40 @@ RSpec.describe AtCoderFriends::CxxGenerator do
     end
 
     context 'for a matrix of numbers' do
-      let(:type) { :matrix }
+      let(:container) { :matrix }
       let(:size) { %w[R C] }
-      let(:fmt) { :number }
-      let(:vars) { 'A' }
+      let(:item) { :number }
+      let(:names) { 'A' }
       it 'generates decl' do
         expect(subject).to eq('int A[R_MAX][C_MAX];')
       end
     end
 
     context 'for a matrix of numbers with size specified' do
-      let(:type) { :matrix }
+      let(:container) { :matrix }
       let(:size) { %w[8 8] }
-      let(:fmt) { :number }
-      let(:vars) { 'A' }
+      let(:item) { :number }
+      let(:names) { 'A' }
       it 'generates decl' do
         expect(subject).to eq('int A[8][8];')
       end
     end
 
     context 'for a matrix of strings' do
-      let(:type) { :matrix }
+      let(:container) { :matrix }
       let(:size) { %w[R C] }
-      let(:fmt) { :string }
-      let(:vars) { 'A' }
+      let(:item) { :string }
+      let(:names) { 'A' }
       it 'generates decl' do
         expect(subject).to eq('char A[R_MAX][C_MAX][A_MAX + 1];')
       end
     end
 
     context 'for a matrix of characters' do
-      let(:type) { :matrix }
+      let(:container) { :matrix }
       let(:size) { %w[R C] }
-      let(:fmt) { :char }
-      let(:vars) { 'A' }
+      let(:item) { :char }
+      let(:names) { 'A' }
       it 'generates decl' do
         expect(subject).to eq('char A[R_MAX][C_MAX + 1];')
       end
@@ -204,120 +204,120 @@ RSpec.describe AtCoderFriends::CxxGenerator do
 
   describe '#gen_read' do
     subject { generator.gen_read(inpdef) }
-    let(:inpdef) { AtCoderFriends::InputDef.new(type, size, fmt, vars) }
+    let(:inpdef) { AtCoderFriends::InputDef.new(container, size, item, names) }
     let(:size) { nil }
 
     context 'for a plain number' do
-      let(:type) { :single }
-      let(:fmt) { :number }
-      let(:vars) { %w[A] }
+      let(:container) { :single }
+      let(:item) { :number }
+      let(:names) { %w[A] }
       it 'generates read script' do
         expect(subject).to eq('scanf("%d", &A);')
       end
     end
 
     context 'for plain numbers' do
-      let(:type) { :single }
-      let(:fmt) { :number }
-      let(:vars) { %w[A B] }
+      let(:container) { :single }
+      let(:item) { :number }
+      let(:names) { %w[A B] }
       it 'generates read script' do
         expect(subject).to eq('scanf("%d%d", &A, &B);')
       end
     end
 
     context 'for a plain string' do
-      let(:type) { :single }
-      let(:fmt) { :string }
-      let(:vars) { %w[A] }
+      let(:container) { :single }
+      let(:item) { :string }
+      let(:names) { %w[A] }
       it 'generates read script' do
         expect(subject).to eq('scanf("%s", A);')
       end
     end
 
     context 'for plain strings' do
-      let(:type) { :single }
-      let(:fmt) { :string }
-      let(:vars) { %w[A B] }
+      let(:container) { :single }
+      let(:item) { :string }
+      let(:names) { %w[A B] }
       it 'generates read script' do
         expect(subject).to eq('scanf("%s%s", A, B);')
       end
     end
 
     context 'for a horizontal array of numbers' do
-      let(:type) { :harray }
+      let(:container) { :harray }
       let(:size) { 'N' }
-      let(:fmt) { :number }
-      let(:vars) { 'A' }
+      let(:item) { :number }
+      let(:names) { 'A' }
       it 'generates read script' do
         expect(subject).to eq('REP(i, N) scanf("%d", A + i);')
       end
     end
 
     context 'for a horizontal array of strings' do
-      let(:type) { :harray }
+      let(:container) { :harray }
       let(:size) { 'N' }
-      let(:fmt) { :string }
-      let(:vars) { 'A' }
+      let(:item) { :string }
+      let(:names) { 'A' }
       it 'generates read script' do
         expect(subject).to eq('REP(i, N) scanf("%s", A[i]);')
       end
     end
 
     context 'for a horizontal array of characters' do
-      let(:type) { :harray }
+      let(:container) { :harray }
       let(:size) { 'N' }
-      let(:fmt) { :char }
-      let(:vars) { 'A' }
+      let(:item) { :char }
+      let(:names) { 'A' }
       it 'generates read script' do
         expect(subject).to eq('scanf("%s", A);')
       end
     end
 
     context 'for vertical array of numbers' do
-      let(:type) { :varray }
+      let(:container) { :varray }
       let(:size) { 'N' }
-      let(:fmt) { :number }
-      let(:vars) { %w[A B] }
+      let(:item) { :number }
+      let(:names) { %w[A B] }
       it 'generates read script' do
         expect(subject).to eq('REP(i, N) scanf("%d%d", A + i, B + i);')
       end
     end
 
     context 'for vertical array of strings' do
-      let(:type) { :varray }
+      let(:container) { :varray }
       let(:size) { 'N' }
-      let(:fmt) { :string }
-      let(:vars) { %w[A B] }
+      let(:item) { :string }
+      let(:names) { %w[A B] }
       it 'generates read script' do
         expect(subject).to eq('REP(i, N) scanf("%s%s", A[i], B[i]);')
       end
     end
 
     context 'for a matrix of numbers' do
-      let(:type) { :matrix }
+      let(:container) { :matrix }
       let(:size) { %w[R C] }
-      let(:fmt) { :number }
-      let(:vars) { 'A' }
+      let(:item) { :number }
+      let(:names) { 'A' }
       it 'generates read script' do
         expect(subject).to eq('REP(i, R) REP(j, C) scanf("%d", &A[i][j]);')
       end
     end
 
     context 'for a matrix of strings' do
-      let(:type) { :matrix }
+      let(:container) { :matrix }
       let(:size) { %w[R C] }
-      let(:fmt) { :string }
-      let(:vars) { 'A' }
+      let(:item) { :string }
+      let(:names) { 'A' }
       it 'generates read script' do
         expect(subject).to eq('REP(i, R) REP(j, C) scanf("%s", A[i][j]);')
       end
     end
 
     context 'for a matrix of characters' do
-      let(:type) { :matrix }
+      let(:container) { :matrix }
       let(:size) { %w[R C] }
-      let(:fmt) { :char }
-      let(:vars) { 'A' }
+      let(:item) { :char }
+      let(:names) { 'A' }
       it 'generates read script' do
         expect(subject).to eq('REP(i, R) scanf("%s", A[i]);')
       end

@@ -9,7 +9,7 @@ module AtCoderFriends
     end
   end
 
-  InputDef = Struct.new(:type, :size, :fmt, :vars)
+  InputDef = Struct.new(:container, :size, :item, :names)
 
   SourceSample = Struct.new(:ext, :txt)
 

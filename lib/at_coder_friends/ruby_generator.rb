@@ -23,13 +23,13 @@ module AtCoderFriends
     end
 
     def gen_decl(inpdef)
-      case inpdef.type
+      case inpdef.container
       when :single
         gen_single_decl(inpdef)
       when :harray
         gen_harray_decl(inpdef)
       when :varray
-        if inpdef.vars.size == 1
+        if inpdef.names.size == 1
           gen_varray_1_decl(inpdef)
         else
           gen_varray_n_decl(inpdef)
@@ -40,34 +40,34 @@ module AtCoderFriends
     end
 
     def gen_single_decl(inpdef)
-      vars = inpdef.vars
-      dcl = vars.join(', ')
-      expr = gen_expr(inpdef.fmt, vars.size > 1)
+      names = inpdef.names
+      dcl = names.join(', ')
+      expr = gen_expr(inpdef.item, names.size > 1)
       "#{dcl} = #{expr}"
     end
 
     def gen_harray_decl(inpdef)
-      vars = inpdef.vars
-      dcl = "#{vars}s"
-      expr = gen_expr(inpdef.fmt, true)
+      names = inpdef.names
+      dcl = "#{names}s"
+      expr = gen_expr(inpdef.item, true)
       "#{dcl} = #{expr}"
     end
 
     def gen_varray_1_decl(inpdef)
-      vars = inpdef.vars
+      names = inpdef.names
       sz = inpdef.size
-      dcl = "#{vars[0]}s"
-      expr = gen_expr(inpdef.fmt, false)
+      dcl = "#{names[0]}s"
+      expr = gen_expr(inpdef.item, false)
       "#{dcl} = Array.new(#{sz}) { #{expr} }"
     end
 
     def gen_varray_n_decl(inpdef)
-      vars = inpdef.vars
+      names = inpdef.names
       sz = inpdef.size
-      dcl = vars.map { |v| "#{v}s[i]" }.join(', ')
-      expr = gen_expr(inpdef.fmt, true)
+      dcl = names.map { |v| "#{v}s[i]" }.join(', ')
+      expr = gen_expr(inpdef.item, true)
       ret = []
-      vars.each do |v|
+      names.each do |v|
         ret << "#{v}s = Array.new(#{sz})"
       end
       ret << "#{sz}.times do |i|"
@@ -77,15 +77,15 @@ module AtCoderFriends
     end
 
     def gen_matrix_decl(inpdef)
-      vars = inpdef.vars
+      names = inpdef.names
       sz = inpdef.size[0]
-      decl = "#{vars}ss"
-      expr = gen_expr(inpdef.fmt, true)
+      decl = "#{names}ss"
+      expr = gen_expr(inpdef.item, true)
       "#{decl} = Array.new(#{sz}) { #{expr} }"
     end
 
-    def gen_expr(fmt, split)
-      case fmt
+    def gen_expr(item, split)
+      case item
       when :number
         split ? 'gets.split.map(&:to_i)' : 'gets.to_i'
       when :string
