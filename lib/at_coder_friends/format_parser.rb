@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'English'
-
 module AtCoderFriends
   class Iterator
     def initialize(array)
@@ -81,46 +79,11 @@ module AtCoderFriends
     end
 
     def parse(fmt, smps)
-      defs = parse_fmt(fmt)
-      smpx = smps
-             .select { |smp| smp.ext == :in }
-             .max_by { |smp| smp.txt.size }
-             &.txt
-      return unless smpx
-      match_smp(defs, smpx)
-    end
-
-    def parse_fmt(fmt)
       lines = split_trim(fmt)
-      lines << '' # sentinel
-      it = Iterator.new(lines)
-      generator = Enumerator.new do |y|
-        cur = it.next
-        loop do
-          parser = PARSERS.find { |ps| ps[:pat] =~ cur }
-          unless parser
-            break unless it.next?
-            cur = it.next
-            next
-          end
-          type, fmt = parser.values_at(:type, :fmt)
-          m = parser[:pat].match(cur)
-          vars = parser[:vars].call(m)
-          pat2 = parser[:pat2].call(vars)
-          if pat2
-            while pat2 =~ cur
-              prv = cur
-              cur = it.next
-            end
-          else
-            prv = cur
-            cur = it.next
-          end
-          size = parser[:size].call(prv)
-          y << InputDef.new(type, size, fmt, vars)
-        end
-      end
-      generator.each.to_a
+      defs = parse_fmt(lines)
+      smpx = max_smp(smps)
+      return unless smpx
+      match_smp!(defs, smpx)
     end
 
     def split_trim(fmt)
@@ -134,7 +97,41 @@ module AtCoderFriends
         .map(&:strip)
     end
 
-    def match_smp(inpdefs, smp)
+    def parse_fmt(lines)
+      it = Iterator.new(lines + ['']) # sentinel
+      prv = nil
+      cur = it.next
+      Enumerator.new do |y|
+        loop do
+          parser = PARSERS.find { |ps| ps[:pat] =~ cur }
+          unless parser
+            break unless it.next?
+            cur = it.next
+            next
+          end
+          type, fmt = parser.values_at(:type, :fmt)
+          m = parser[:pat].match(cur)
+          vars = parser[:vars].call(m)
+          pat2 = parser[:pat2].call(vars)
+          loop do
+            prv = cur
+            cur = it.next
+            break unless pat2 && pat2 =~ cur
+          end
+          size = parser[:size].call(prv)
+          y << InputDef.new(type, size, fmt, vars)
+        end
+      end.to_a
+    end
+
+    def max_smp(smps)
+      smps
+        .select { |smp| smp.ext == :in }
+        .max_by { |smp| smp.txt.size }
+        &.txt
+    end
+
+    def match_smp!(inpdefs, smp)
       lines = smp.split("\n")
       inpdefs.each_with_index do |inpdef, i|
         break if i > lines.size

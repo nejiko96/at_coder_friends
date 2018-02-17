@@ -2,6 +2,7 @@
 
 require 'mechanize'
 require 'logger'
+require 'English'
 
 module AtCoderFriends
   class ScrapingAgent
@@ -91,9 +92,9 @@ module AtCoderFriends
         pbm.desc += text
         pbm.fmt = code
       when /^入力例\s*(?<no>[\d０-９]+)$/
-        pbm.add_smp($~[:no], :in, code)
+        pbm.add_smp($LAST_MATCH_INFO[:no], :in, code)
       when /^出力例\s*(?<no>[\d０-９]+)$/
-        pbm.add_smp($~[:no], :exp, code)
+        pbm.add_smp($LAST_MATCH_INFO[:no], :exp, code)
       end
     end
 
