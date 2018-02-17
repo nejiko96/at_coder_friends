@@ -5,6 +5,8 @@ require 'optparse'
 module AtCoderFriends
   # command line interface
   class CLI
+    include PathUtil
+
     class Finished < RuntimeError; end
 
     EXITING_OPTIONS = %i[version].freeze
@@ -24,6 +26,7 @@ module AtCoderFriends
       STATUS_SUCCESS
     end
 
+    # rubocop:disable Metrics/MethodLength
     def parse_options!(args)
       options = {}
       op = OptionParser.new do |opts|
@@ -36,7 +39,7 @@ module AtCoderFriends
         define_method(:usage) do |msg = nil|
           puts op.to_s
           puts "error: #{msg}" if msg
-          exit 1
+          raise Finished
         end
       end
       op.parse!(args)
@@ -44,6 +47,7 @@ module AtCoderFriends
     rescue OptionParser::InvalidOption => e
       usage e.message
     end
+    # rubocop:enable Metrics/MethodLength
 
     def handle_exiting_option
       return unless EXITING_OPTIONS.any? { |o| @options.key? o }
@@ -51,6 +55,7 @@ module AtCoderFriends
       raise Finished
     end
 
+    # rubocop:disable Metrics/MethodLength
     def exec_command(command, path)
       case command
       when 'setup'
@@ -65,7 +70,9 @@ module AtCoderFriends
         usage "wrong command: #{command}"
       end
     end
+    # rubocop:enable Metrics/MethodLength
 
+    # rubocop:disable Metrics/MethodLength
     def setup(path)
       raise StandardError, "#{path} already exists." if Dir.exist?(path)
       agent = ScrapingAgent.new(contest_name(path), @config)
@@ -80,6 +87,7 @@ module AtCoderFriends
         emitter.emit(pbm)
       end
     end
+    # rubocop:enable Metrics/MethodLength
 
     def test_one(path)
       TestRunner.new(path).test_one(1)
@@ -96,11 +104,6 @@ module AtCoderFriends
       return unless vf.verified?
       ScrapingAgent.new(contest_name(path), @config).submit(path)
       vf.unverify
-    end
-
-    def contest_name(path)
-      dir = File.file?(path) ? File.dirname(path) : path
-      File.basename(dir)
     end
   end
 end

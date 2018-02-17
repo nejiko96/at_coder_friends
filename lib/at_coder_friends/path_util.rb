@@ -5,6 +5,11 @@ module AtCoderFriends
   module PathUtil
     module_function
 
+    def contest_name(path)
+      dir = File.file?(path) ? File.dirname(path) : path
+      File.basename(dir).delete('#').downcase
+    end
+
     def split_prg_path(path)
       dir, prg = File.split(path)
       base, ext = prg.split('.')

@@ -99,6 +99,7 @@ module AtCoderFriends
         .map(&:strip)
     end
 
+    # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
     def parse_fmt(lines)
       it = Iterator.new(lines + ['']) # sentinel
       prv = nil
@@ -109,7 +110,8 @@ module AtCoderFriends
             (cur = it.next?) ? next : break
           end
           container, item = parser.values_at(:container, :item)
-          names = parser[:names].call(parser[:pat].match(cur))
+          m = parser[:pat].match(cur)
+          names = parser[:names].call(m)
           pat2 = parser[:pat2].call(names)
           loop do
             prv = cur
@@ -121,6 +123,7 @@ module AtCoderFriends
         end
       end.to_a
     end
+    # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
     def max_smp(smps)
       smps

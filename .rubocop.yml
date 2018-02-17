@@ -16,6 +16,13 @@ Metrics/BlockLength:
     - '**/*.rake'
     - 'spec/**/*.rb'
 
+Metrics/ClassLength:
+  Max: 200
+
+Metrics/MethodLength:
+  Exclude:
+    - 'spec/**/*.rb'
+
 Metrics/ModuleLength:
   Exclude:
     - 'spec/**/*.rb'

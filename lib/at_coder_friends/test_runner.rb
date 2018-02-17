@@ -25,20 +25,17 @@ module AtCoderFriends
       test(n)
     end
 
+    # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
     def test(n)
       cs = format('%<q>s_%<n>03d', q: @q, n: n)
-      basename = "#{@smpdir}/#{cs}"
-      infile = "#{basename}.in"
-      outfile = "#{basename}.out"
-      expfile = "#{basename}.exp"
+      files = %w[in out exp].map { |ext| "#{@smpdir}/#{cs}.#{ext}" }
+      infile, outfile, expfile = files
 
       return false unless File.exist?(infile) && File.exist?(expfile)
 
       ec = system("#{edit_cmd} < #{infile} > #{outfile}")
 
-      input = File.read(infile)
-      result = File.read(outfile)
-      expected = File.read(expfile)
+      input, result, expected = files.map { |file| File.read(file) }
 
       puts "==== #{cs} ===="
       puts '-- input --'
@@ -56,6 +53,7 @@ module AtCoderFriends
       end
       true
     end
+    # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
     # rubocop:disable Metrics/MethodLength
     def edit_cmd
