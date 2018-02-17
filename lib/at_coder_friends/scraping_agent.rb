@@ -9,6 +9,8 @@ module AtCoderFriends
   # - fetches problems
   # - submits sources
   class ScrapingAgent
+    include PathUtil
+
     BASE_URL_FMT = 'http://%<contest>s.contest.atcoder.jp/'
     LANG_TBL = {
       'cxx' => '3003',
@@ -102,16 +104,14 @@ module AtCoderFriends
     end
 
     def submit(path)
-      prog = File.basename(path)
-      base, ext = prog.split('.')
-      q = base.split('_')[0]
+      path, _dir, prg, _base, ext, q = split_prg_path(path)
       src = File.read(path, encoding: Encoding::UTF_8)
       lang_id = LANG_TBL[ext.downcase]
       unless lang_id
         puts ".#{ext} is not available."
         return
       end
-      puts "***** submit #{prog} *****"
+      puts "***** submit #{prg} *****"
       login
       submit_src(q, lang_id, src)
     end
