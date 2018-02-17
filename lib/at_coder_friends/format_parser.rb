@@ -119,7 +119,7 @@ module AtCoderFriends
             break unless pat2 && pat2 =~ cur
           end
           size = parser[:size].call(prv)
-          y << InputDef.new(container, size, item, names)
+          y << InputDef.new(container, item, names, size)
         end
       end.to_a
     end

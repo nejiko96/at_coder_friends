@@ -5,7 +5,7 @@ RSpec.describe AtCoderFriends::RubyGenerator do
 
   describe '#gen_decl' do
     subject { generator.gen_decl(inpdef) }
-    let(:inpdef) { AtCoderFriends::InputDef.new(container, size, item, names) }
+    let(:inpdef) { AtCoderFriends::InputDef.new(container, item, names, size) }
     let(:size) { nil }
 
     context 'for a plain number' do
@@ -162,10 +162,10 @@ RSpec.describe AtCoderFriends::RubyGenerator do
     subject { generator.generate(defs) }
     let(:defs) do
       [
-        AtCoderFriends::InputDef.new(:single, nil, :number, %w[N]),
-        AtCoderFriends::InputDef.new(:varray, 'N', :number, %w[x y]),
-        AtCoderFriends::InputDef.new(:single, nil, :string, %w[Q]),
-        AtCoderFriends::InputDef.new(:harray, 'Q', :string, 'a')
+        AtCoderFriends::InputDef.new(:single, :number, %w[N]),
+        AtCoderFriends::InputDef.new(:varray, :number, %w[x y], 'N'),
+        AtCoderFriends::InputDef.new(:single, :string, %w[Q]),
+        AtCoderFriends::InputDef.new(:harray, :string, 'a', 'Q')
       ]
     end
 

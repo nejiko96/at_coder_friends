@@ -9,7 +9,11 @@ module AtCoderFriends
     end
   end
 
-  InputDef = Struct.new(:container, :size, :item, :names)
+  InputDef = Struct.new(:container, :item, :names, :size) do
+    def initialize(container, item, names, size = nil)
+      super(container, item, names, size)
+    end
+  end
 
   SourceSample = Struct.new(:ext, :txt)
 

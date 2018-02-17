@@ -49,7 +49,7 @@ RSpec.describe AtCoderFriends::FormatParser do
           container: :single, item: :number, names: %w[N M P Q R]
         )
         expect(defs[1]).to have_attributes(
-          container: :varray, size: 'R', item: :number, names: %w[x y z]
+          container: :varray, item: :number, names: %w[x y z], size: 'R'
         )
       end
     end
@@ -100,13 +100,13 @@ RSpec.describe AtCoderFriends::FormatParser do
           container: :single, item: :number, names: %w[N]
         )
         expect(defs[1]).to have_attributes(
-          container: :matrix, size: %w[N N], item: :number, names: 'D'
+          container: :matrix, item: :number, names: 'D', size: %w[N N]
         )
         expect(defs[2]).to have_attributes(
           container: :single, item: :number, names: %w[Q]
         )
         expect(defs[3]).to have_attributes(
-          container: :varray, size: 'Q', item: :number, names: %w[P]
+          container: :varray, item: :number, names: %w[P], size: 'Q'
         )
       end
     end
@@ -143,7 +143,7 @@ RSpec.describe AtCoderFriends::FormatParser do
           container: :single, item: :number, names: %w[N K]
         )
         expect(defs[1]).to have_attributes(
-          container: :harray, size: 'N', item: :number, names: 'R'
+          container: :harray, item: :number, names: 'R', size: 'N'
         )
       end
     end
@@ -178,7 +178,7 @@ RSpec.describe AtCoderFriends::FormatParser do
           container: :single, item: :number, names: %w[R C K]
         )
         expect(defs[1]).to have_attributes(
-          container: :varray, size: 'R', item: :string, names: %w[s]
+          container: :varray, item: :string, names: %w[s], size: 'R'
         )
       end
     end
@@ -214,7 +214,7 @@ RSpec.describe AtCoderFriends::FormatParser do
         defs = subject
         expect(defs.size).to eq(1)
         expect(defs[0]).to have_attributes(
-          container: :varray, size: '3', item: :number, names: %w[s e]
+          container: :varray, item: :number, names: %w[s e], size: '3'
         )
       end
     end
@@ -240,7 +240,7 @@ RSpec.describe AtCoderFriends::FormatParser do
         defs = subject
         expect(defs.size).to eq(1)
         expect(defs[0]).to have_attributes(
-          container: :matrix, size: %w[3 3], item: :string, names: 'c'
+          container: :matrix, item: :string, names: 'c', size: %w[3 3]
         )
       end
     end
@@ -284,13 +284,13 @@ RSpec.describe AtCoderFriends::FormatParser do
           container: :single, item: :number, names: %w[N]
         )
         expect(defs[1]).to have_attributes(
-          container: :varray, size: 'N', item: :number, names: %w[x y]
+          container: :varray, item: :number, names: %w[x y], size: 'N'
         )
         expect(defs[2]).to have_attributes(
           container: :single, item: :number, names: %w[Q]
         )
         expect(defs[3]).to have_attributes(
-          container: :varray, size: 'Q', item: :number, names: %w[a b]
+          container: :varray, item: :number, names: %w[a b], size: 'Q'
         )
       end
     end
@@ -320,7 +320,7 @@ RSpec.describe AtCoderFriends::FormatParser do
           container: :single, item: :number, names: %w[H W T]
         )
         expect(defs[1]).to have_attributes(
-          container: :matrix, size: %w[H W], item: :char, names: 's'
+          container: :matrix, item: :char, names: 's', size: %w[H W]
         )
       end
     end
@@ -345,7 +345,7 @@ RSpec.describe AtCoderFriends::FormatParser do
           container: :single, item: :number, names: %w[N]
         )
         expect(defs[1]).to have_attributes(
-          container: :harray, size: 'N', item: :char, names: 'c'
+          container: :harray, item: :char, names: 'c', size: 'N'
         )
       end
     end
@@ -386,7 +386,7 @@ RSpec.describe AtCoderFriends::FormatParser do
           container: :single, item: :number, names: %w[N]
         )
         expect(defs[1]).to have_attributes(
-          container: :matrix, size: %w[N 9], item: :char, names: 'x'
+          container: :matrix, item: :char, names: 'x', size: %w[N 9]
         )
       end
     end
