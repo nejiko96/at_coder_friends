@@ -19,7 +19,7 @@ RSpec.describe AtCoderFriends::CxxGenerator do
     end
 
     it 'generates constant decls' do
-      expect(subject).to match_array(
+      expect(subject).to match(
         [
           'const int N_MAX = 10000;',
           'const int M_MAX = 10000;',
@@ -58,7 +58,7 @@ RSpec.describe AtCoderFriends::CxxGenerator do
       let(:item) { :string }
       let(:names) { %w[A] }
       it 'generates decl' do
-        expect(subject).to match_array(['char A[A_MAX + 1];'])
+        expect(subject).to match(['char A[A_MAX + 1];'])
       end
     end
 
@@ -67,7 +67,7 @@ RSpec.describe AtCoderFriends::CxxGenerator do
       let(:item) { :string }
       let(:names) { %w[A B] }
       it 'generates decl' do
-        expect(subject).to match_array(
+        expect(subject).to match(
           [
             'char A[A_MAX + 1];',
             'char B[B_MAX + 1];'
@@ -122,7 +122,7 @@ RSpec.describe AtCoderFriends::CxxGenerator do
       let(:names) { %w[A B] }
       let(:size) { 'N' }
       it 'generates decl' do
-        expect(subject).to match_array(
+        expect(subject).to match(
           [
             'int A[N_MAX];',
             'int B[N_MAX];'
@@ -137,7 +137,7 @@ RSpec.describe AtCoderFriends::CxxGenerator do
       let(:names) { %w[A B] }
       let(:size) { '10' }
       it 'generates decl' do
-        expect(subject).to match_array(
+        expect(subject).to match(
           [
             'int A[10];',
             'int B[10];'
@@ -152,7 +152,7 @@ RSpec.describe AtCoderFriends::CxxGenerator do
       let(:names) { %w[A B] }
       let(:size) { 'N' }
       it 'generates decl' do
-        expect(subject).to match_array(
+        expect(subject).to match(
           [
             'char A[N_MAX][A_MAX + 1];',
             'char B[N_MAX][B_MAX + 1];'

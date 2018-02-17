@@ -8,7 +8,7 @@ RSpec.describe AtCoderFriends::PathUtil do
     let(:path) { '/foo/bar/contest/A_v2.rb' }
 
     it 'splits given path' do
-      expect(subject).to match_array(
+      expect(subject).to match(
         [
           '/foo/bar/contest/A_v2.rb',
           '/foo/bar/contest',

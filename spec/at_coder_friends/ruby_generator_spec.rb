@@ -97,7 +97,7 @@ RSpec.describe AtCoderFriends::RubyGenerator do
       let(:item) { :number }
       let(:names) { %w[A B] }
       it 'generates decl' do
-        expect(subject).to match_array(
+        expect(subject).to match(
           [
             'As = Array.new(N)',
             'Bs = Array.new(N)',
@@ -115,7 +115,7 @@ RSpec.describe AtCoderFriends::RubyGenerator do
       let(:item) { :string }
       let(:names) { %w[A B] }
       it 'generates decl' do
-        expect(subject).to match_array(
+        expect(subject).to match(
           [
             'As = Array.new(N)',
             'Bs = Array.new(N)',
