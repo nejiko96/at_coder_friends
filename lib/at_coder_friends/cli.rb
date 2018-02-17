@@ -5,14 +5,28 @@ require 'optparse'
 module AtCoderFriends
   # command line interface
   class CLI
+    include PathUtil
+
+    class Finished < RuntimeError; end
+
+    EXITING_OPTIONS = %i[version].freeze
+    STATUS_SUCCESS  = 0
+    STATUS_ERROR    = 1
+
     def run(args = ARGV)
       @options = parse_options!(args)
-      handle_show_info_option
+      handle_exiting_option
       usage 'command or path is not specified.' if args.size < 2
       @config = ConfigLoader.load_config(args[1])
       exec_command(*args)
+    rescue AtCoderFriends::ConfigNotFoundError => e
+      warn e.message
+      STATUS_ERROR
+    rescue Finished
+      STATUS_SUCCESS
     end
 
+    # rubocop:disable Metrics/MethodLength
     def parse_options!(args)
       options = {}
       op = OptionParser.new do |opts|
@@ -25,7 +39,7 @@ module AtCoderFriends
         define_method(:usage) do |msg = nil|
           puts op.to_s
           puts "error: #{msg}" if msg
-          exit 1
+          raise Finished
         end
       end
       op.parse!(args)
@@ -33,14 +47,15 @@ module AtCoderFriends
     rescue OptionParser::InvalidOption => e
       usage e.message
     end
+    # rubocop:enable Metrics/MethodLength
 
-    def handle_show_info_option
-      if @options[:version]
-        puts AtCoderFriends::VERSION
-        exit 0
-      end
+    def handle_exiting_option
+      return unless EXITING_OPTIONS.any? { |o| @options.key? o }
+      puts AtCoderFriends::VERSION if @options[:version]
+      raise Finished
     end
 
+    # rubocop:disable Metrics/MethodLength
     def exec_command(command, path)
       case command
       when 'setup'
@@ -55,7 +70,9 @@ module AtCoderFriends
         usage "wrong command: #{command}"
       end
     end
+    # rubocop:enable Metrics/MethodLength
 
+    # rubocop:disable Metrics/MethodLength
     def setup(path)
       raise StandardError, "#{path} already exists." if Dir.exist?(path)
       agent = ScrapingAgent.new(contest_name(path), @config)
@@ -70,6 +87,7 @@ module AtCoderFriends
         emitter.emit(pbm)
       end
     end
+    # rubocop:enable Metrics/MethodLength
 
     def test_one(path)
       TestRunner.new(path).test_one(1)
@@ -86,11 +104,6 @@ module AtCoderFriends
       return unless vf.verified?
       ScrapingAgent.new(contest_name(path), @config).submit(path)
       vf.unverify
-    end
-
-    def contest_name(path)
-      dir = File.file?(path) ? File.dirname(path) : path
-      File.basename(dir)
     end
   end
 end

@@ -9,10 +9,15 @@ module AtCoderFriends
     end
   end
 
-  InputDef = Struct.new(:type, :size, :fmt, :vars)
+  InputDef = Struct.new(:container, :item, :names, :size) do
+    def initialize(container, item, names, size = [])
+      super(container, item, names, size)
+    end
+  end
 
   SourceSample = Struct.new(:ext, :txt)
 
+  # holds problem information
   class Problem
     attr_reader :q, :fmt
     attr_accessor :desc, :smps, :defs, :srcs

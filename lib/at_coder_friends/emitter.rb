@@ -3,6 +3,8 @@
 require 'fileutils'
 
 module AtCoderFriends
+  # emits source skeletons and sample input/output(s)
+  # of a problem to the specified directory.
   class Emitter
     SMP_DIR = 'data'
 

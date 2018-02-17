@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe AtCoderFriends::Emitter do
-
   subject(:emitter) { described_class.new(dir) }
   let(:pbm) do
     AtCoderFriends::Problem.new('A') do |pbm|
@@ -11,7 +10,7 @@ RSpec.describe AtCoderFriends::Emitter do
       pbm.add_src(:cxx, 'content of A.cxx')
     end
   end
-  let(:f) { -> (file) { File.join(dir, file) } }
+  let(:f) { ->(file) { File.join(dir, file) } }
 
   describe '#emit' do
     include_context :uses_temp_dir

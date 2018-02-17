@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module AtCoderFriends
+  # generates C++ source code from definition
   class RubyGenerator
     TEMPLATE = <<~TEXT
       ### DCLS ###
@@ -22,14 +23,15 @@ module AtCoderFriends
       defs.map { |inpdef| gen_decl(inpdef) }.flatten
     end
 
+    # rubocop:disable Metrics/MethodLength
     def gen_decl(inpdef)
-      case inpdef.type
+      case inpdef.container
       when :single
         gen_single_decl(inpdef)
       when :harray
         gen_harray_decl(inpdef)
       when :varray
-        if inpdef.vars.size == 1
+        if inpdef.names.size == 1
           gen_varray_1_decl(inpdef)
         else
           gen_varray_n_decl(inpdef)
@@ -38,38 +40,37 @@ module AtCoderFriends
         gen_matrix_decl(inpdef)
       end
     end
+    # rubocop:enable Metrics/MethodLength
 
     def gen_single_decl(inpdef)
-      vars = inpdef.vars
-      dcl = vars.join(', ')
-      expr = gen_expr(inpdef.fmt, vars.size > 1)
+      names = inpdef.names
+      dcl = names.join(', ')
+      expr = gen_expr(inpdef.item, names.size > 1)
       "#{dcl} = #{expr}"
     end
 
     def gen_harray_decl(inpdef)
-      vars = inpdef.vars
-      dcl = "#{vars}s"
-      expr = gen_expr(inpdef.fmt, true)
+      v = inpdef.names[0]
+      dcl = "#{v}s"
+      expr = gen_expr(inpdef.item, true)
       "#{dcl} = #{expr}"
     end
 
     def gen_varray_1_decl(inpdef)
-      vars = inpdef.vars
-      sz = inpdef.size
-      dcl = "#{vars[0]}s"
-      expr = gen_expr(inpdef.fmt, false)
+      v = inpdef.names[0]
+      sz = inpdef.size[0]
+      dcl = "#{v}s"
+      expr = gen_expr(inpdef.item, false)
       "#{dcl} = Array.new(#{sz}) { #{expr} }"
     end
 
     def gen_varray_n_decl(inpdef)
-      vars = inpdef.vars
-      sz = inpdef.size
-      dcl = vars.map { |v| "#{v}s[i]" }.join(', ')
-      expr = gen_expr(inpdef.fmt, true)
+      names = inpdef.names
+      sz = inpdef.size[0]
+      dcl = names.map { |v| "#{v}s[i]" }.join(', ')
+      expr = gen_expr(inpdef.item, true)
       ret = []
-      vars.each do |v|
-        ret << "#{v}s = Array.new(#{sz})"
-      end
+      ret += names.map { |v| "#{v}s = Array.new(#{sz})" }
       ret << "#{sz}.times do |i|"
       ret << "  #{dcl} = #{expr}"
       ret << 'end'
@@ -77,15 +78,15 @@ module AtCoderFriends
     end
 
     def gen_matrix_decl(inpdef)
-      vars = inpdef.vars
+      v = inpdef.names[0]
       sz = inpdef.size[0]
-      decl = "#{vars}ss"
-      expr = gen_expr(inpdef.fmt, true)
+      decl = "#{v}ss"
+      expr = gen_expr(inpdef.item, true)
       "#{decl} = Array.new(#{sz}) { #{expr} }"
     end
 
-    def gen_expr(fmt, split)
-      case fmt
+    def gen_expr(item, split)
+      case item
       when :number
         split ? 'gets.split.map(&:to_i)' : 'gets.to_i'
       when :string

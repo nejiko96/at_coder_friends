@@ -3,43 +3,39 @@
 require 'rbconfig'
 
 module AtCoderFriends
+  # run tests for the specified program.
   class TestRunner
+    include PathUtil
     SMP_DIR = 'data'
 
     def initialize(path)
-      @path = path
-      @dir, @prog = File.split(@path)
-      @base, @ext = @prog.split('.')
-      @q = @base.split('_')[0]
+      @path, @dir, @prg, @base, @ext, @q = split_prg_path(path)
       @smpdir = File.join(@dir, SMP_DIR)
     end
 
     def test_all
-      puts "***** test_all #{@prog} *****"
+      puts "***** test_all #{@prg} *****"
       1.upto(999) do |i|
         break unless test(i)
       end
     end
 
     def test_one(n)
-      puts "***** test_one #{@prog} *****"
+      puts "***** test_one #{@prg} *****"
       test(n)
     end
 
+    # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
     def test(n)
       cs = format('%<q>s_%<n>03d', q: @q, n: n)
-      basename = "#{@smpdir}/#{cs}"
-      infile = "#{basename}.in"
-      outfile = "#{basename}.out"
-      expfile = "#{basename}.exp"
+      files = %w[in out exp].map { |ext| "#{@smpdir}/#{cs}.#{ext}" }
+      infile, outfile, expfile = files
 
       return false unless File.exist?(infile) && File.exist?(expfile)
 
       ec = system("#{edit_cmd} < #{infile} > #{outfile}")
 
-      input = File.read(infile)
-      result = File.read(outfile)
-      expected = File.read(expfile)
+      input, result, expected = files.map { |file| File.read(file) }
 
       puts "==== #{cs} ===="
       puts '-- input --'
@@ -57,7 +53,9 @@ module AtCoderFriends
       end
       true
     end
+    # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
+    # rubocop:disable Metrics/MethodLength
     def edit_cmd
       case @ext
       when 'java'
@@ -80,9 +78,11 @@ module AtCoderFriends
         end
       end
     end
+    # rubocop:enable Metrics/MethodLength
 
+    # rubocop:disable Metrics/MethodLength
     def which_os
-      @os ||= (
+      @os ||= begin
         case RbConfig::CONFIG['host_os']
         when /mswin|msys|mingw|cygwin|bccwin|wince|emc/
           :windows
@@ -95,7 +95,8 @@ module AtCoderFriends
         else
           :unknown
         end
-      )
+      end
     end
+    # rubocop:enable Metrics/MethodLength
   end
 end

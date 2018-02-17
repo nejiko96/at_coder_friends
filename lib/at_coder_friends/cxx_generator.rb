@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 module AtCoderFriends
+  # generates C++ source code from definition
   class CxxGenerator
+    # rubocop:disable Style/FormatStringToken
     TEMPLATE = <<~TEXT
       #include <cstdio>
 
@@ -29,6 +31,38 @@ module AtCoderFriends
         return 0;
       }
     TEXT
+    # rubocop:enable Style/FormatStringToken
+
+    SCANF_FMTS = [
+      'scanf("%<fmt>s", %<addr>s);',
+      'REP(i, %<sz1>s) scanf("%<fmt>s", %<addr>s);',
+      'REP(i, %<sz1>s) REP(j, %<sz2>s) scanf("%<fmt>s", %<addr>s);'
+    ].freeze
+
+    # rubocop:disable Style/FormatStringToken
+    FMT_FMTS = { number: '%d', string: '%s', char: '%s' }.freeze
+    # rubocop:enable Style/FormatStringToken
+
+    ADDR_FMTS = {
+      single: {
+        number: '&%<v>s',
+        string: '%<v>s'
+      },
+      harray: {
+        number: '%<v>s + i',
+        string: '%<v>s[i]',
+        char: '%<v>s'
+      },
+      varray: {
+        number: '%<v>s + i',
+        string: '%<v>s[i]'
+      },
+      matrix: {
+        number: '&%<v>s[i][j]',
+        string: '%<v>s[i][j]',
+        char: '%<v>s[i]'
+      }
+    }.freeze
 
     def process(pbm)
       src = generate(pbm.defs, pbm.desc)
@@ -62,7 +96,7 @@ module AtCoderFriends
     end
 
     def gen_decl(inpdef)
-      case inpdef.type
+      case inpdef.container
       when :single
         gen_single_decl(inpdef)
       when :harray
@@ -75,55 +109,55 @@ module AtCoderFriends
     end
 
     def gen_single_decl(inpdef)
-      vars = inpdef.vars
-      case inpdef.fmt
+      names = inpdef.names
+      case inpdef.item
       when :number
-        dcl = vars.join(', ')
+        dcl = names.join(', ')
         "int #{dcl};"
       when :string
-        vars.map { |v| "char #{v}[#{v.upcase}_MAX + 1];" }
+        names.map { |v| "char #{v}[#{v.upcase}_MAX + 1];" }
       end
     end
 
     def gen_harray_decl(inpdef)
-      vars = inpdef.vars
-      sz = inpdef.size
-      sz = "#{sz.upcase}_MAX" if sz =~ /\D/
-      case inpdef.fmt
+      v = inpdef.names[0]
+      sz = gen_arr_size(inpdef.size)[0]
+      case inpdef.item
       when :number
-        "int #{vars}[#{sz}];"
+        "int #{v}[#{sz}];"
       when :string
-        "char #{vars}[#{sz}][#{vars.upcase}_MAX + 1];"
+        "char #{v}[#{sz}][#{v.upcase}_MAX + 1];"
       when :char
-        "char #{vars}[#{sz} + 1];"
+        "char #{v}[#{sz} + 1];"
       end
     end
 
     def gen_varray_decl(inpdef)
-      vars = inpdef.vars
-      sz = inpdef.size
-      sz = "#{sz.upcase}_MAX" if sz =~ /\D/
-      case inpdef.fmt
+      names = inpdef.names
+      sz = gen_arr_size(inpdef.size)[0]
+      case inpdef.item
       when :number
-        vars.map { |v| "int #{v}[#{sz}];" }
+        names.map { |v| "int #{v}[#{sz}];" }
       when :string
-        vars.map { |v| "char #{v}[#{sz}][#{v.upcase}_MAX + 1];" }
+        names.map { |v| "char #{v}[#{sz}][#{v.upcase}_MAX + 1];" }
       end
     end
 
     def gen_matrix_decl(inpdef)
-      vars = inpdef.vars
-      sz1, sz2 = inpdef.size
-      sz1 = "#{sz1.upcase}_MAX" if sz1 =~ /\D/
-      sz2 = "#{sz2.upcase}_MAX" if sz2 =~ /\D/
-      case inpdef.fmt
+      v = inpdef.names[0]
+      sz1, sz2 = gen_arr_size(inpdef.size)
+      case inpdef.item
       when :number
-        "int #{vars}[#{sz1}][#{sz2}];"
+        "int #{v}[#{sz1}][#{sz2}];"
       when :string
-        "char #{vars}[#{sz1}][#{sz2}][#{vars.upcase}_MAX + 1];"
+        "char #{v}[#{sz1}][#{sz2}][#{v.upcase}_MAX + 1];"
       when :char
-        "char #{vars}[#{sz1}][#{sz2} + 1];"
+        "char #{v}[#{sz1}][#{sz2} + 1];"
       end
+    end
+
+    def gen_arr_size(szs)
+      szs.map { |sz| sz =~ /\D/ ? "#{sz.upcase}_MAX" : sz }
     end
 
     def gen_reads(defs)
@@ -131,103 +165,25 @@ module AtCoderFriends
     end
 
     def gen_read(inpdef)
-      case inpdef.type
-      when :single
-        gen_single_read(inpdef)
-      when :harray
-        gen_harray_read(inpdef)
-      when :varray
-        gen_varray_read(inpdef)
-      when :matrix
-        gen_matrix_read(inpdef)
-      end
-    end
-
-    def gen_single_read(inpdef)
-      vars = inpdef.vars
-      fmt = gen_fmt(inpdef)
-      addr = (
-        case inpdef.fmt
-        when :number
-          vars.map { |v| "&#{v}" }.join(', ')
-        when :string
-          vars.join(', ')
-        end
-      )
-      "scanf(\"#{fmt}\", #{addr});"
-    end
-
-    def gen_harray_read(inpdef)
-      vars = inpdef.vars
-      fmt = gen_fmt(inpdef)
-      sz = inpdef.size
-      addr = (
-        case inpdef.fmt
-        when :number
-          "#{vars} + i"
-        when :string
-          "#{vars}[i]"
-        when :char
-          vars
-        end
-      )
-      case inpdef.fmt
-      when :number, :string
-        "REP(i, #{sz}) scanf(\"#{fmt}\", #{addr});"
-      when :char
-        "scanf(\"#{fmt}\", #{addr});"
-      end
-    end
-
-    def gen_varray_read(inpdef)
-      vars = inpdef.vars
-      fmt = gen_fmt(inpdef)
-      sz = inpdef.size
-      addr = (
-        case inpdef.fmt
-        when :number
-          vars.map { |v| "#{v} + i" }.join(', ')
-        when :string
-          vars.map { |v| "#{v}[i]" }.join(', ')
-        end
-      )
-      "REP(i, #{sz}) scanf(\"#{fmt}\", #{addr});"
-    end
-
-    def gen_matrix_read(inpdef)
-      vars = inpdef.vars
-      fmt = gen_fmt(inpdef)
+      scanf = gen_scanf_fmt(inpdef)
       sz1, sz2 = inpdef.size
-      addr = (
-        case inpdef.fmt
-        when :number
-          "&#{vars}[i][j]"
-        when :string
-          "#{vars}[i][j]"
-        when :char
-          "#{vars}[i]"
-        end
-      )
-      case inpdef.fmt
-      when :number, :string
-        "REP(i, #{sz1}) REP(j, #{sz2}) scanf(\"#{fmt}\", #{addr});"
-      when :char
-        "REP(i, #{sz1}) scanf(\"#{fmt}\", #{addr});"
-      end
+      fmt = gen_fmt(inpdef)
+      addr = gen_addr(inpdef)
+      format(scanf, sz1: sz1, sz2: sz2, fmt: fmt, addr: addr)
+    end
+
+    def gen_scanf_fmt(inpdef)
+      ix = inpdef.size.size - (inpdef.item == :char ? 1 : 0)
+      SCANF_FMTS[ix]
     end
 
     def gen_fmt(inpdef)
-      fmt = (
-        case inpdef.fmt
-        when :number
-          '%d'
-        when :string, :char
-          '%s'
-        end
-      )
-      vars = inpdef.vars
-      fmt *= vars.size if vars.instance_of?(Array)
-      fmt
+      FMT_FMTS[inpdef.item] * inpdef.names.size
+    end
+
+    def gen_addr(inpdef)
+      addr_fmt = ADDR_FMTS[inpdef.container][inpdef.item]
+      inpdef.names.map { |v| format(addr_fmt, v: v) }.join(', ')
     end
   end
 end
