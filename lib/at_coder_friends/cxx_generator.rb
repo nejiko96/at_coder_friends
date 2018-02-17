@@ -120,21 +120,21 @@ module AtCoderFriends
     end
 
     def gen_harray_decl(inpdef)
-      names = inpdef.names
-      sz = gen_max_size(inpdef.size)
+      v = inpdef.names[0]
+      sz = gen_arr_size(inpdef.size)[0]
       case inpdef.item
       when :number
-        "int #{names}[#{sz}];"
+        "int #{v}[#{sz}];"
       when :string
-        "char #{names}[#{sz}][#{names.upcase}_MAX + 1];"
+        "char #{v}[#{sz}][#{v.upcase}_MAX + 1];"
       when :char
-        "char #{names}[#{sz} + 1];"
+        "char #{v}[#{sz} + 1];"
       end
     end
 
     def gen_varray_decl(inpdef)
       names = inpdef.names
-      sz = gen_max_size(inpdef.size)
+      sz = gen_arr_size(inpdef.size)[0]
       case inpdef.item
       when :number
         names.map { |v| "int #{v}[#{sz}];" }
@@ -144,20 +144,20 @@ module AtCoderFriends
     end
 
     def gen_matrix_decl(inpdef)
-      names = inpdef.names
-      sz1, sz2 = inpdef.size.map { |sz| gen_max_size(sz) }
+      v = inpdef.names[0]
+      sz1, sz2 = gen_arr_size(inpdef.size)
       case inpdef.item
       when :number
-        "int #{names}[#{sz1}][#{sz2}];"
+        "int #{v}[#{sz1}][#{sz2}];"
       when :string
-        "char #{names}[#{sz1}][#{sz2}][#{names.upcase}_MAX + 1];"
+        "char #{v}[#{sz1}][#{sz2}][#{v.upcase}_MAX + 1];"
       when :char
-        "char #{names}[#{sz1}][#{sz2} + 1];"
+        "char #{v}[#{sz1}][#{sz2} + 1];"
       end
     end
 
-    def gen_max_size(sz)
-      sz =~ /\D/ ? "#{sz.upcase}_MAX" : sz
+    def gen_arr_size(szs)
+      szs.map { |sz| sz =~ /\D/ ? "#{sz.upcase}_MAX" : sz }
     end
 
     def gen_reads(defs)
@@ -165,33 +165,25 @@ module AtCoderFriends
     end
 
     def gen_read(inpdef)
+      scanf = gen_scanf_fmt(inpdef)
       sz1, sz2 = inpdef.size
       fmt = gen_fmt(inpdef)
       addr = gen_addr(inpdef)
-      scanf = scanf_fmt(inpdef)
       format(scanf, sz1: sz1, sz2: sz2, fmt: fmt, addr: addr)
     end
 
+    def gen_scanf_fmt(inpdef)
+      ix = inpdef.size.size - (inpdef.item == :char ? 1 : 0)
+      SCANF_FMTS[ix]
+    end
+
     def gen_fmt(inpdef)
-      names = inpdef.names
-      item = FMT_FMTS[inpdef.item]
-      item *= names.size if names.instance_of?(Array)
-      item
+      FMT_FMTS[inpdef.item] * inpdef.names.size
     end
 
     def gen_addr(inpdef)
       addr_fmt = ADDR_FMTS[inpdef.container][inpdef.item]
-      if inpdef.names.instance_of?(Array)
-        inpdef.names.map { |v| format(addr_fmt, v: v) }.join(', ')
-      else
-        format(addr_fmt, v: inpdef.names)
-      end
-    end
-
-    def scanf_fmt(inpdef)
-      ix = inpdef.size ? inpdef.size.instance_of?(Array) ? 2 : 1 : 0
-      ix -= 1 if inpdef.item == :char
-      SCANF_FMTS[ix]
+      inpdef.names.map { |v| format(addr_fmt, v: v) }.join(', ')
     end
   end
 end

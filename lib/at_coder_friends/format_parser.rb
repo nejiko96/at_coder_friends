@@ -26,23 +26,23 @@ module AtCoderFriends
         container: :harray,
         item: :number,
         pat: /^(?<v>[a-z]+)[01](\s+\k<v>.)*(\s+\.+)?(\s+\k<v>.)+$/i,
-        names: ->(m) { m[:v] },
+        names: ->(m) { [m[:v]] },
         pat2: ->(_) { nil },
-        size: ->(f) { f[-1] }
+        size: ->(f) { [f[-1]] }
       },
       {
         container: :harray,
         item: :char,
         pat: /^(?<v>[a-z]+)[01](\k<v>.)*(\s*\.+\s*)?(\k<v>.)+$/i,
-        names: ->(m) { m[:v] },
+        names: ->(m) { [m[:v]] },
         pat2: ->(_) { nil },
-        size: ->(f) { f[-1] }
+        size: ->(f) { [f[-1]] }
       },
       {
         container: :matrix,
         item: :number,
         pat: /^(?<v>[a-z]+)[01][01](\s+\k<v>..)*(\s+\.+)?(\s+\k<v>..)+$/i,
-        names: ->(m) { m[:v] },
+        names: ->(m) { [m[:v]] },
         pat2: ->(v) { /(^#{v}..(\s+#{v}..)*(\s+\.+)?(\s+#{v}..)+|\.+)$/ },
         size: ->(f) { f[-2..-1].chars.to_a }
       },
@@ -50,7 +50,7 @@ module AtCoderFriends
         container: :matrix,
         item: :char,
         pat: /^(?<v>[a-z]+)[01][01](\k<v>..)*(\s*\.+\s*)?(\k<v>..)+$/i,
-        names: ->(m) { m[:v] },
+        names: ->(m) { [m[:v]] },
         pat2: ->(v) { /(^#{v}..(#{v}..)*(\s*\.+\s*)?(#{v}..)+|\.+)$/ },
         size: ->(f) { f[-2..-1].chars.to_a }
       },
@@ -63,7 +63,7 @@ module AtCoderFriends
           pat = vs.map { |v| v + '.+' }.join('\s+')
           /^(#{pat}|\.+)$/
         },
-        size: ->(f) { /(?<sz>\d+)$/ =~ f ? sz : f[-1] }
+        size: ->(f) { /(?<sz>\d+)$/ =~ f ? [sz] : [f[-1]] }
       },
       {
         container: :single,

@@ -10,7 +10,7 @@ module AtCoderFriends
   end
 
   InputDef = Struct.new(:container, :item, :names, :size) do
-    def initialize(container, item, names, size = nil)
+    def initialize(container, item, names, size = [])
       super(container, item, names, size)
     end
   end

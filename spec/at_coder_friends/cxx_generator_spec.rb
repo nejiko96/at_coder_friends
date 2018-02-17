@@ -33,12 +33,12 @@ RSpec.describe AtCoderFriends::CxxGenerator do
   describe '#gen_decl' do
     subject { generator.gen_decl(inpdef) }
     let(:inpdef) { AtCoderFriends::InputDef.new(container, item, names, size) }
-    let(:size) { nil }
+    let(:size) { [] }
+    let(:names) { %w[A] }
 
     context 'for a plain number' do
       let(:container) { :single }
       let(:item) { :number }
-      let(:names) { %w[A] }
       it 'generates decl' do
         expect(subject).to eq('int A;')
       end
@@ -56,7 +56,6 @@ RSpec.describe AtCoderFriends::CxxGenerator do
     context 'for a plain string' do
       let(:container) { :single }
       let(:item) { :string }
-      let(:names) { %w[A] }
       it 'generates decl' do
         expect(subject).to match(['char A[A_MAX + 1];'])
       end
@@ -79,8 +78,7 @@ RSpec.describe AtCoderFriends::CxxGenerator do
     context 'for a horizontal array of numbers' do
       let(:container) { :harray }
       let(:item) { :number }
-      let(:names) { 'A' }
-      let(:size) { 'N' }
+      let(:size) { %w[N] }
       it 'generates decl' do
         expect(subject).to eq('int A[N_MAX];')
       end
@@ -89,8 +87,7 @@ RSpec.describe AtCoderFriends::CxxGenerator do
     context 'for a horizontal array of numbers with size specified' do
       let(:container) { :harray }
       let(:item) { :number }
-      let(:names) { 'A' }
-      let(:size) { '10' }
+      let(:size) { %w[10] }
       it 'generates decl' do
         expect(subject).to eq('int A[10];')
       end
@@ -99,8 +96,7 @@ RSpec.describe AtCoderFriends::CxxGenerator do
     context 'for a horizontal array of strings' do
       let(:container) { :harray }
       let(:item) { :string }
-      let(:names) { 'A' }
-      let(:size) { 'N' }
+      let(:size) { %w[N] }
       it 'generates decl' do
         expect(subject).to eq('char A[N_MAX][A_MAX + 1];')
       end
@@ -109,8 +105,7 @@ RSpec.describe AtCoderFriends::CxxGenerator do
     context 'for a horizontal array of characters' do
       let(:container) { :harray }
       let(:item) { :char }
-      let(:names) { 'A' }
-      let(:size) { 'N' }
+      let(:size) { %w[N] }
       it 'generates decl' do
         expect(subject).to eq('char A[N_MAX + 1];')
       end
@@ -120,7 +115,7 @@ RSpec.describe AtCoderFriends::CxxGenerator do
       let(:container) { :varray }
       let(:item) { :number }
       let(:names) { %w[A B] }
-      let(:size) { 'N' }
+      let(:size) { %w[N] }
       it 'generates decl' do
         expect(subject).to match(
           [
@@ -135,7 +130,7 @@ RSpec.describe AtCoderFriends::CxxGenerator do
       let(:container) { :varray }
       let(:item) { :number }
       let(:names) { %w[A B] }
-      let(:size) { '10' }
+      let(:size) { %w[10] }
       it 'generates decl' do
         expect(subject).to match(
           [
@@ -150,7 +145,7 @@ RSpec.describe AtCoderFriends::CxxGenerator do
       let(:container) { :varray }
       let(:item) { :string }
       let(:names) { %w[A B] }
-      let(:size) { 'N' }
+      let(:size) { %w[N] }
       it 'generates decl' do
         expect(subject).to match(
           [
@@ -164,7 +159,6 @@ RSpec.describe AtCoderFriends::CxxGenerator do
     context 'for a matrix of numbers' do
       let(:container) { :matrix }
       let(:item) { :number }
-      let(:names) { 'A' }
       let(:size) { %w[R C] }
       it 'generates decl' do
         expect(subject).to eq('int A[R_MAX][C_MAX];')
@@ -174,7 +168,6 @@ RSpec.describe AtCoderFriends::CxxGenerator do
     context 'for a matrix of numbers with size specified' do
       let(:container) { :matrix }
       let(:item) { :number }
-      let(:names) { 'A' }
       let(:size) { %w[8 8] }
       it 'generates decl' do
         expect(subject).to eq('int A[8][8];')
@@ -184,7 +177,6 @@ RSpec.describe AtCoderFriends::CxxGenerator do
     context 'for a matrix of strings' do
       let(:container) { :matrix }
       let(:item) { :string }
-      let(:names) { 'A' }
       let(:size) { %w[R C] }
       it 'generates decl' do
         expect(subject).to eq('char A[R_MAX][C_MAX][A_MAX + 1];')
@@ -194,7 +186,6 @@ RSpec.describe AtCoderFriends::CxxGenerator do
     context 'for a matrix of characters' do
       let(:container) { :matrix }
       let(:item) { :char }
-      let(:names) { 'A' }
       let(:size) { %w[R C] }
       it 'generates decl' do
         expect(subject).to eq('char A[R_MAX][C_MAX + 1];')
@@ -205,12 +196,12 @@ RSpec.describe AtCoderFriends::CxxGenerator do
   describe '#gen_read' do
     subject { generator.gen_read(inpdef) }
     let(:inpdef) { AtCoderFriends::InputDef.new(container, item, names, size) }
-    let(:size) { nil }
+    let(:size) { [] }
+    let(:names) { %w[A] }
 
     context 'for a plain number' do
       let(:container) { :single }
       let(:item) { :number }
-      let(:names) { %w[A] }
       it 'generates read script' do
         expect(subject).to eq('scanf("%d", &A);')
       end
@@ -228,7 +219,6 @@ RSpec.describe AtCoderFriends::CxxGenerator do
     context 'for a plain string' do
       let(:container) { :single }
       let(:item) { :string }
-      let(:names) { %w[A] }
       it 'generates read script' do
         expect(subject).to eq('scanf("%s", A);')
       end
@@ -246,8 +236,7 @@ RSpec.describe AtCoderFriends::CxxGenerator do
     context 'for a horizontal array of numbers' do
       let(:container) { :harray }
       let(:item) { :number }
-      let(:names) { 'A' }
-      let(:size) { 'N' }
+      let(:size) { %w[N] }
       it 'generates read script' do
         expect(subject).to eq('REP(i, N) scanf("%d", A + i);')
       end
@@ -256,8 +245,7 @@ RSpec.describe AtCoderFriends::CxxGenerator do
     context 'for a horizontal array of strings' do
       let(:container) { :harray }
       let(:item) { :string }
-      let(:names) { 'A' }
-      let(:size) { 'N' }
+      let(:size) { %w[N] }
       it 'generates read script' do
         expect(subject).to eq('REP(i, N) scanf("%s", A[i]);')
       end
@@ -266,8 +254,7 @@ RSpec.describe AtCoderFriends::CxxGenerator do
     context 'for a horizontal array of characters' do
       let(:container) { :harray }
       let(:item) { :char }
-      let(:names) { 'A' }
-      let(:size) { 'N' }
+      let(:size) { %w[N] }
       it 'generates read script' do
         expect(subject).to eq('scanf("%s", A);')
       end
@@ -277,7 +264,7 @@ RSpec.describe AtCoderFriends::CxxGenerator do
       let(:container) { :varray }
       let(:item) { :number }
       let(:names) { %w[A B] }
-      let(:size) { 'N' }
+      let(:size) { %w[N] }
       it 'generates read script' do
         expect(subject).to eq('REP(i, N) scanf("%d%d", A + i, B + i);')
       end
@@ -287,7 +274,7 @@ RSpec.describe AtCoderFriends::CxxGenerator do
       let(:container) { :varray }
       let(:item) { :string }
       let(:names) { %w[A B] }
-      let(:size) { 'N' }
+      let(:size) { %w[N] }
       it 'generates read script' do
         expect(subject).to eq('REP(i, N) scanf("%s%s", A[i], B[i]);')
       end
@@ -296,7 +283,6 @@ RSpec.describe AtCoderFriends::CxxGenerator do
     context 'for a matrix of numbers' do
       let(:container) { :matrix }
       let(:item) { :number }
-      let(:names) { 'A' }
       let(:size) { %w[R C] }
       it 'generates read script' do
         expect(subject).to eq('REP(i, R) REP(j, C) scanf("%d", &A[i][j]);')
@@ -306,7 +292,6 @@ RSpec.describe AtCoderFriends::CxxGenerator do
     context 'for a matrix of strings' do
       let(:container) { :matrix }
       let(:item) { :string }
-      let(:names) { 'A' }
       let(:size) { %w[R C] }
       it 'generates read script' do
         expect(subject).to eq('REP(i, R) REP(j, C) scanf("%s", A[i][j]);')
@@ -316,7 +301,6 @@ RSpec.describe AtCoderFriends::CxxGenerator do
     context 'for a matrix of characters' do
       let(:container) { :matrix }
       let(:item) { :char }
-      let(:names) { 'A' }
       let(:size) { %w[R C] }
       it 'generates read script' do
         expect(subject).to eq('REP(i, R) scanf("%s", A[i]);')
@@ -329,7 +313,7 @@ RSpec.describe AtCoderFriends::CxxGenerator do
     let(:defs) do
       [
         AtCoderFriends::InputDef.new(:single, :number, %w[N M]),
-        AtCoderFriends::InputDef.new(:varray, :number, %w[A B C T], 'M')
+        AtCoderFriends::InputDef.new(:varray, :number, %w[A B C T], %w[M])
       ]
     end
 

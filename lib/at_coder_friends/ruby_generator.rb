@@ -23,6 +23,7 @@ module AtCoderFriends
       defs.map { |inpdef| gen_decl(inpdef) }.flatten
     end
 
+    # rubocop:disable Metrics/MethodLength
     def gen_decl(inpdef)
       case inpdef.container
       when :single
@@ -39,6 +40,7 @@ module AtCoderFriends
         gen_matrix_decl(inpdef)
       end
     end
+    # rubocop:enable Metrics/MethodLength
 
     def gen_single_decl(inpdef)
       names = inpdef.names
@@ -48,27 +50,27 @@ module AtCoderFriends
     end
 
     def gen_harray_decl(inpdef)
-      names = inpdef.names
-      dcl = "#{names}s"
+      v = inpdef.names[0]
+      dcl = "#{v}s"
       expr = gen_expr(inpdef.item, true)
       "#{dcl} = #{expr}"
     end
 
     def gen_varray_1_decl(inpdef)
-      names = inpdef.names
-      sz = inpdef.size
-      dcl = "#{names[0]}s"
+      v = inpdef.names[0]
+      sz = inpdef.size[0]
+      dcl = "#{v}s"
       expr = gen_expr(inpdef.item, false)
       "#{dcl} = Array.new(#{sz}) { #{expr} }"
     end
 
     def gen_varray_n_decl(inpdef)
       names = inpdef.names
-      sz = inpdef.size
+      sz = inpdef.size[0]
       dcl = names.map { |v| "#{v}s[i]" }.join(', ')
       expr = gen_expr(inpdef.item, true)
       ret = []
-      names.each { |v| ret << "#{v}s = Array.new(#{sz})" }
+      ret += names.map { |v| "#{v}s = Array.new(#{sz})" }
       ret << "#{sz}.times do |i|"
       ret << "  #{dcl} = #{expr}"
       ret << 'end'
@@ -76,9 +78,9 @@ module AtCoderFriends
     end
 
     def gen_matrix_decl(inpdef)
-      names = inpdef.names
+      v = inpdef.names[0]
       sz = inpdef.size[0]
-      decl = "#{names}ss"
+      decl = "#{v}ss"
       expr = gen_expr(inpdef.item, true)
       "#{decl} = Array.new(#{sz}) { #{expr} }"
     end

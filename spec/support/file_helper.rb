@@ -2,10 +2,10 @@
 
 require 'fileutils'
 
+# Common methods for dealing with files.
 module FileHelper
   def create_file(file_path, content)
     file_path = File.expand_path(file_path)
-
     dir_path = File.dirname(file_path)
     FileUtils.makedirs dir_path unless File.exist?(dir_path)
 
