@@ -6,9 +6,9 @@ module AtCoderFriends
   # marks and checks if the source has been verified.
   class Verifier
     def initialize(path)
-      @path = path
-      @file = File.basename(path)
-      @vdir = File.join(File.dirname(path), '.tmp')
+      @path = File.expand_path(path)
+      @file = File.basename(@path)
+      @vdir = File.join(File.dirname(@path), '.tmp')
       @vpath = File.join(@vdir, "#{@file}.verified")
     end
 

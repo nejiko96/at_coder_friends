@@ -43,4 +43,13 @@ RSpec.describe AtCoderFriends::PathUtil do
       )
     end
   end
+
+  describe '#smp_dir' do
+    subject { path_util.smp_dir(path) }
+    let(:path) { '/foo/bar/contest' }
+
+    it 'returns samples directory' do
+      expect(subject).to eq('/foo/bar/contest/data')
+    end
+  end
 end

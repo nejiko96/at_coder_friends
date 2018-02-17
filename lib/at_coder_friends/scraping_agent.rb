@@ -19,8 +19,8 @@ module AtCoderFriends
     }.freeze
 
     def initialize(contest, config)
-      @config = config
       @contest = contest
+      @config = config
       @base_url = format(BASE_URL_FMT, contest: contest)
       @agent = Mechanize.new
       # @agent.log = Logger.new(STDERR)
