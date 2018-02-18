@@ -35,16 +35,16 @@ module AtCoderFriends
           @options[:version] = true
         end
       end
+      @usage = op.to_s
       @options = {}
       op.parse!(args)
-      @usage = op.to_s
     rescue OptionParser::InvalidOption => e
       usage e.message
     end
 
     def usage(msg = nil)
-      puts @usage
-      puts "error: #{msg}" if msg
+      warn @usage
+      warn "error: #{msg}" if msg
       exit STATUS_ERROR
     end
 
