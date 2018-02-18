@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.describe AtCoderFriends::PathUtil do
-  subject(:path_util) { described_class }
+  include_context :atcoder_env
 
-  spec_root = File.expand_path('..', __dir__)
-  contest_root = File.join(spec_root, 'fixtures/project/ARC#001')
+  subject(:path_util) { described_class }
 
   describe '#contest_name' do
     subject { path_util.contest_name(path) }

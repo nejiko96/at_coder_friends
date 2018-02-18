@@ -3,8 +3,7 @@
 require 'yaml'
 
 module AtCoderFriends
-  class ConfigNotFoundError < StandardError
-  end
+  class ConfigNotFoundError < StandardError; end
 
   # loads configuration file from the specified directory.
   class ConfigLoader

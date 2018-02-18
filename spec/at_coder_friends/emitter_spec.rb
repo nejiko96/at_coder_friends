@@ -14,8 +14,8 @@ RSpec.describe AtCoderFriends::Emitter do
 
   describe '#emit' do
     include_context :uses_temp_dir
-    subject { emitter.emit(pbm) }
 
+    subject { emitter.emit(pbm) }
     let(:dir) { temp_dir }
 
     it 'writes files' do
