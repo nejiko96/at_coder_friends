@@ -19,8 +19,8 @@ module AtCoderFriends
 
   # holds problem information
   class Problem
-    attr_reader :q, :fmt
-    attr_accessor :desc, :smps, :defs, :srcs
+    attr_reader :q, :fmt, :smps, :srcs
+    attr_accessor :desc, :defs
 
     def initialize(q)
       @q = q
