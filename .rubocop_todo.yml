@@ -1,0 +1,8 @@
+Metrics/AbcSize:
+  Max: 20
+
+Metrics/ClassLength:
+  Max: 142
+
+Metrics/MethodLength:
+  Max: 15

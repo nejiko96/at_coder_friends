@@ -1,3 +1,5 @@
+inherit_from: .rubocop_todo.yml
+
 AllCops:
   Exclude:
     - 'spec/fixtures/**/*'
@@ -15,9 +17,6 @@ Metrics/BlockLength:
     - 'Rakefile'
     - '**/*.rake'
     - 'spec/**/*.rb'
-
-Metrics/ClassLength:
-  Max: 200
 
 Metrics/MethodLength:
   Exclude:

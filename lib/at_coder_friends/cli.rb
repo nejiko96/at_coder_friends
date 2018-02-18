@@ -26,7 +26,6 @@ module AtCoderFriends
       STATUS_SUCCESS
     end
 
-    # rubocop:disable Metrics/MethodLength
     def parse_options!(args)
       options = {}
       op = OptionParser.new do |opts|
@@ -35,19 +34,18 @@ module AtCoderFriends
           options[:version] = true
         end
       end
-      self.class.class_eval do
-        define_method(:usage) do |msg = nil|
-          puts op.to_s
-          puts "error: #{msg}" if msg
-          raise Finished
-        end
-      end
+      @usage = op.to_s
       op.parse!(args)
       options
     rescue OptionParser::InvalidOption => e
       usage e.message
     end
-    # rubocop:enable Metrics/MethodLength
+
+    def usage(msg = nil)
+      puts @usage
+      puts "error: #{msg}" if msg
+      raise Finished
+    end
 
     def handle_exiting_option
       return unless EXITING_OPTIONS.any? { |o| @options.key? o }
@@ -55,7 +53,6 @@ module AtCoderFriends
       raise Finished
     end
 
-    # rubocop:disable Metrics/MethodLength
     def exec_command(command, path)
       case command
       when 'setup'
@@ -70,9 +67,7 @@ module AtCoderFriends
         usage "wrong command: #{command}"
       end
     end
-    # rubocop:enable Metrics/MethodLength
 
-    # rubocop:disable Metrics/MethodLength
     def setup(path)
       raise StandardError, "#{path} already exists." if Dir.exist?(path)
       agent = ScrapingAgent.new(contest_name(path), @config)
@@ -87,7 +82,6 @@ module AtCoderFriends
         emitter.emit(pbm)
       end
     end
-    # rubocop:enable Metrics/MethodLength
 
     def test_one(path)
       TestRunner.new(path).test_one(1)

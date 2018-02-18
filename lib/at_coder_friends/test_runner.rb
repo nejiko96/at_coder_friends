@@ -79,7 +79,6 @@ module AtCoderFriends
     end
     # rubocop:enable Metrics/MethodLength
 
-    # rubocop:disable Metrics/MethodLength
     def which_os
       @os ||= begin
         case RbConfig::CONFIG['host_os']
@@ -96,6 +95,5 @@ module AtCoderFriends
         end
       end
     end
-    # rubocop:enable Metrics/MethodLength
   end
 end

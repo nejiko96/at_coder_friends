@@ -23,7 +23,6 @@ module AtCoderFriends
       defs.map { |inpdef| gen_decl(inpdef) }.flatten
     end
 
-    # rubocop:disable Metrics/MethodLength
     def gen_decl(inpdef)
       case inpdef.container
       when :single
@@ -40,7 +39,6 @@ module AtCoderFriends
         gen_matrix_decl(inpdef)
       end
     end
-    # rubocop:enable Metrics/MethodLength
 
     def gen_single_decl(inpdef)
       names = inpdef.names
