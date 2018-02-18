@@ -7,14 +7,12 @@ module AtCoderFriends
   class CLI
     include PathUtil
 
-    class Finished < RuntimeError; end
-
     EXITING_OPTIONS = %i[version].freeze
     STATUS_SUCCESS  = 0
     STATUS_ERROR    = 1
 
     def run(args = ARGV)
-      @options = parse_options!(args)
+      parse_options!(args)
       handle_exiting_option
       usage 'command or path is not specified.' if args.size < 2
       @config = ConfigLoader.load_config(args[1])
@@ -22,21 +20,24 @@ module AtCoderFriends
     rescue AtCoderFriends::ConfigNotFoundError => e
       warn e.message
       STATUS_ERROR
-    rescue Finished
-      STATUS_SUCCESS
+    rescue StandardError, SyntaxError, LoadError => e
+      warn e.message
+      warn e.backtrace
+      STATUS_ERROR
+    rescue SystemExit => e
+      e.status
     end
 
     def parse_options!(args)
-      options = {}
       op = OptionParser.new do |opts|
         opts.banner = 'Usage: at_coder_friends [options] [command] [path]'
         opts.on('-v', '--version', 'Display version.') do
-          options[:version] = true
+          @options[:version] = true
         end
       end
-      @usage = op.to_s
+      @options = {}
       op.parse!(args)
-      options
+      @usage = op.to_s
     rescue OptionParser::InvalidOption => e
       usage e.message
     end
@@ -44,13 +45,13 @@ module AtCoderFriends
     def usage(msg = nil)
       puts @usage
       puts "error: #{msg}" if msg
-      raise Finished
+      exit STATUS_ERROR
     end
 
     def handle_exiting_option
       return unless EXITING_OPTIONS.any? { |o| @options.key? o }
       puts AtCoderFriends::VERSION if @options[:version]
-      raise Finished
+      exit STATUS_SUCCESS
     end
 
     def exec_command(command, path)

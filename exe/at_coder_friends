@@ -3,4 +3,6 @@
 
 require 'at_coder_friends'
 
-AtCoderFriends::CLI.new.run
+ec = AtCoderFriends::CLI.new.run
+
+exit ec
