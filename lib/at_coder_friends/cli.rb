@@ -17,6 +17,7 @@ module AtCoderFriends
       usage 'command or path is not specified.' if args.size < 2
       @config = ConfigLoader.load_config(args[1])
       exec_command(*args)
+      STATUS_SUCCESS
     rescue AtCoderFriends::ConfigNotFoundError => e
       warn e.message
       STATUS_ERROR
