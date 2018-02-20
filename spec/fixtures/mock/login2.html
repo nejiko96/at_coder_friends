@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>practice contest
+ - practice contest | AtCoder</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="
+">
+    <meta name="keyword" content="AtCoder,アットコーダー,あっとこーだー,プログラミングコンテスト
+">
+    <meta name="author" content="Atcoder" />
+    <meta name="copyright" content="Copyright (C) 2012 Atcoder" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <link rel="stylesheet" type="text/css" href="/css/all.css?v=2">
+    <link rel="stylesheet" type="text/css" href="/css/print.css?v=1" media="print">
+        <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <script src="/js/jquery.js"></script>
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-30554866-3']);
+  _gaq.push(['_setDomainName', 'atcoder.jp']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>    
+    <!--[if lt IE 9]><style>.navbar-fixed-top{ position: relative!important; }</style><![endif]-->
+
+  </head>
+
+
+  <body>
+          <div class="navbar navbar-fixed-top">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </a>
+              <a class="brand" href="/"><span class="contest-name">practice contest</span><span class="bland-small"><time>2012/06/24 15:00:00 +0000</time> ~ <time>2038/01/19 03:14:07 +0000</time></span></a>
+      
+      <div class="nav-collapse">
+                <ul class="nav">
+          <li class="divider-vertical"></li>
+          <li><a href="http://atcoder.jp" target="_blank"><span class="lang"><span class="lang-en">back to atcoder.jp</span><span class="lang-ja">AtCoderへ戻る</span></span></a></li>
+        </ul>
+                            <ul  id="nav-right-logined" class="nav pull-right" style="display:none;">
+            <li class="dropdown">
+              <a href="#" lang="ja" class="dropdown-toggle static-nav-language-selector-dropdown" data-toggle="dropdown" style="display:none;">
+                <i class="flag-ja"></i> 日本語 <b class="caret"></b>
+              </a>
+              <a href="#" lang="en" class="dropdown-toggle static-nav-language-selector-dropdown"  data-toggle="dropdown" style="display:none;">
+                <i class="flag-en"></i> English <b class="caret"></b>
+              </a>
+              <a href="#" lang="ko" class="dropdown-toggle static-nav-language-selector-dropdown"  data-toggle="dropdown" style="display:none;">
+                <i class="flag-ko"></i> 한국어 <b class="caret"></b>
+              </a>
+              <ul class="dropdown-menu">
+                <li> <a lang="ja" class="static-nav-language-selector" href="#"><i class="flag-ja"></i> 日本語</a></li>
+                <li> <a lang="en" class="static-nav-language-selector" href="#"><i class="flag-en"></i> English</a></li>
+                <li> <a lang="ko" class="static-nav-language-selector" href="#"><i class="flag-ko"></i> 한국어</a></li>
+              </ul>
+            </li>
+            <li class="divider-vertical"></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-cog icon-white"></i> <span id="nav-right-username"></span><b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="/me"><span class="lang"><span class="lang-en">My Profile</span><span class="lang-ja">マイプロフィール</span></span></a></li>
+                                	<li><a href="/settings"><span class="lang"><span class="lang-en">Settings</span><span class="lang-ja">設定</span></span></a></li>
+                    <li><a href="/settings/password"><span class="lang"><span class="lang-en">Change password</span><span class="lang-ja">パスワードの変更</span></span></a></li>
+                	                	<li class="divider"></li>
+                                <li><a href="/logout"><span class="lang"><span class="lang-en">Sign out</span><span class="lang-ja">ログアウト</span></span></a></li>
+             </ul>
+            </li>
+          </ul>
+          <ul id="nav-right-not-login" class="nav pull-right" style="display:none;">
+            <li class="dropdown">
+              <a href="#" lang="ja" class="dropdown-toggle static-nav-language-selector-dropdown" data-toggle="dropdown" style="display:none;">
+                <i class="flag-ja"></i> 日本語 <b class="caret"></b>
+              </a>
+              <a href="#" lang="en" class="dropdown-toggle static-nav-language-selector-dropdown"  data-toggle="dropdown" style="display:none;">
+                <i class="flag-en"></i> English <b class="caret"></b>
+              </a>
+              <a href="#" lang="ko" class="dropdown-toggle static-nav-language-selector-dropdown"  data-toggle="dropdown" style="display:none;">
+                <i class="flag-ko"></i> 한국어 <b class="caret"></b>
+              </a>
+              <ul class="dropdown-menu">
+                <li> <a lang="ja" class="static-nav-language-selector" href="#"><i class="flag-ja"></i> 日本語</a></li>
+                <li> <a lang="en" class="static-nav-language-selector" href="#"><i class="flag-en"></i> English</a></li>
+                <li> <a lang="ko" class="static-nav-language-selector" href="#"><i class="flag-ko"></i> 한국어</a></li>
+              </ul>
+            </li>
+                        <li class="divider-vertical"></li>
+            <li><a href="/register"><span class="lang"><span class="lang-en">Sign up</span><span class="lang-ja">新規登録</span></span></a></li>
+                        <li class="divider-vertical"></li>
+            <li><a href="/login"><span class="lang"><span class="lang-en">Sign in</span><span class="lang-ja">ログイン</span></span></a></li>
+          </ul>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="modal hide fade" style="display:none;" id="modal-contest-end">
+  <div class="modal-header">
+    <a class="close" data-dismiss="modal">×</a>
+    <h3><span class="lang"><span class="lang-en">practice contest has ended</span><span class="lang-ja">practice contestが終了しました</span></span></h3>
+  </div>
+  <div class="modal-body">
+    <p><span class="lang"><span class="lang-en">Contest has ended</span><span class="lang-ja">コンテスト終了です</span></span></p>
+  </div>
+  <div class="modal-footer">
+    <a href="#" class="btn" data-dismiss="modal"><span class="lang"><span class="lang-en">Close</span><span class="lang-ja">閉じる</span></span></a>
+  </div>
+</div>
+
+<div class="modal hide fade" style="display:none;" id="modal-contest-begin">
+  <div class="modal-header">
+    <a class="close" data-dismiss="modal">×</a>
+    <h3><span class="lang"><span class="lang-en">practice contest is now opening</span><span class="lang-ja">practice contestの開催時間になりました</span></span></h3>
+  </div>
+  <div class="modal-body">
+    <p><span class="lang"><span class="lang-en">Contest has started</span><span class="lang-ja">問題一覧のページへ移動してください</span></span></p>
+  </div>
+  <div class="modal-footer">
+    <a href="/assignments" class="btn btn-primary"><span class="lang"><span class="lang-en">Go to the task list page</span><span class="lang-ja">問題一覧のページへ移動</span></span></a>
+  </div>
+</div>
+    
+    <div id="outer-inner" class="container">
+      <h1 class="site-title">
+          practice contest
+      </h1>
+                      <time style="display:none" id="contest-start-time">2012/06/24 15:00:00 +0000</time>
+        <time style="display:none" id="contest-end-time">2038/01/19 03:14:07 +0000</time>
+        <time style="display:none" id="server-current-time">2018/02/20 22:41:40 +0000</time>
+
+            
+      <ul class="nav nav-tabs">
+                            <li class="active"><a href="https://practice.contest.atcoder.jp/"><i class="icon-home"></i> <span class="lang"><span class="lang-en">Home</span><span class="lang-ja">トップページ</span><span class="lang-ko">톱 페이지</span></span></a></li>
+                                          <li><a href="https://practice.contest.atcoder.jp/assignments"><i class="icon-list-alt"></i> <span class="lang"><span class="lang-en">Tasks</span><span class="lang-ja">問題</span><span class="lang-ko">문제</span></span></a></li>
+                                          <li><a href="https://practice.contest.atcoder.jp/submit"><i class="icon-upload"></i> <span class="lang"><span class="lang-en">Submit</span><span class="lang-ja">提出</span><span class="lang-ko">제출</span></span></a></li>
+                                          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+              <b class="caret"></b><i class="icon-download-alt"></i> <span class="lang"><span class="lang-en">Results</span><span class="lang-ja">結果</span><span class="lang-ko">채점 결과</span></span>
+            </a>
+            <ul class="dropdown-menu">
+                              <li><a href="https://practice.contest.atcoder.jp/submissions/me"><span class="lang"><span class="lang-en">My submissions</span><span class="lang-ja">自分の結果</span><span class="lang-ko">자신의 결과</span></span></a></li>
+                          </ul>
+          </li>
+                                          <li><a href="/custom_test"><i class="icon-user"></i> <span class="lang"><span class="lang-en">Custom Test</span><span class="lang-ja">コードテスト</span></span></a></li>
+                      </ul>
+        <div id="alert_box" class="alert alert-block" style="display:none">
+  <a class="close" data-dismiss="alert">×</a>
+  <h4 id="alert_box_heading" class="alert-heading" style="display:none"></h4>
+  <p id="alert_box_content"></p>
+</div>
+
+      
+<div class="insert-participant-box">
+<h1>practice contest</h1>
+</div>
+
+
+
+<div id="contest-statement"><style>
+    p{font-size: medium;}
+</style>
+<span class="lang">
+    <span class="lang-ja">
+        <h3>このコンテストはAtCoderの練習用ページです</h3>
+        <section>
+            <p>
+                実際のコンテストへ参加する前に、ソースコードを提出する練習をしてみましょう！
+            </p>
+        </section>
+        <h3>コンテストに参加する前に</h3>
+        <section>
+            <ol>
+                <li>
+                    ユーザ登録を行っていない参加者は、<a href="/register">ユーザ登録</a>を行いましょう。
+                </li>
+                <li>
+                    その後、<a href="http://practice.contest.atcoder.jp/login">ログイン</a>してください。
+                </li>
+                <li>
+                    ログイン後にコンテストトップページ下部に表示される<a class="btn btn-primary">参加ボタン</a>を押すことで参加登録できます。
+                </li>
+            </ol>
+        </section>
+        <h3>問題を解いて提出しよう</h3>
+        <section>
+            <p>
+                参加登録が完了しましたら<a href="/tutorial">チュートリアル</a>を参考にして問題を解き、回答を提出してみましょう
+            </p>
+        </section>
+    </span>
+    <span class="lang-en">
+        <h3>This is practice page of AtCoder</h3>
+        <section>
+            <p>
+                Let's practice submitting your source code before you join contest!
+            </p>
+        </section>
+        <h3>Before the contest</h3>
+        <section>
+            <ol>
+                <li>
+                    Please <a href="/register">make your account</a> if you've not have your account yet.
+                </li>
+                <li>
+                    After that, you can <a href="http://practice.contest.atcoder.jp/login">sign in</a>.
+                </li>
+                <li>
+                    Last of all, please click <a class="btn btn-primary">that button </a> , and then you can join our contest.
+                </li>
+            </ol>
+        </section>
+        <h3>Sample problem</h3>
+        <section>
+            <p>
+                If you've registered this practice contest, let's solve a sample problem from <a href="/assignments">Tasks</a> and submit your source code referring this <a href="/tutorial">tutorial</a>.
+            </p>
+        </section>
+        <h3>Judge status</h3>
+        <section>
+            <p>
+                Our system judges your source code whether it is correct or incorrect and returns a result of yours.
+            </p>
+            <p>
+                Details are shown below tables. Don't forget to see these information.
+            </p>
+                <table class="table table-bordered table-striped table-wb table-center">
+                    <thead>
+                    <tr>
+                        <th class="span3">
+                            Status
+                        </th>
+                        <th>
+                            Explanation
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>
+                            <span class="label tooltip-label label-warning" rel="tooltip" data-title="Compilation Error" data-original-title="">CE</span>
+                        </td>
+                        <td>
+                            Compilation Error. Our judge system couldn't compile your code. So, your source code is incorrect.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="label tooltip-label label-warning" rel="tooltip" data-title="Memory Limit Exceeded" data-original-title="">MLE</span>
+                        </td>
+                        <td>
+                            Memory Limit Exceeded. Each problems are restricted memory limit which your program can use. That is 256MB usually.<br>
+                            Your source code is incorrect because your source code exceeded the limit.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="label tooltip-label label-warning" rel="tooltip" data-title="Time Limit Exceeded" data-original-title="">TLE</span>
+                        </td>
+                        <td>
+                            Time Limit Exceeded. Each problems have time limit.<br>
+                            If execution time of your code exceeds this limit, the status of judge returns TLE.<br>
+                            Your source code is wrong for that reason.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="label tooltip-label label-warning" rel="tooltip" data-title="Runtime Error" data-original-title="">RE</span>
+                        </td>
+                        <td>
+                            Your source code is wrong.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="label tooltip-label label-warning" rel="tooltip" data-title="Output Limit Exceeded" data-original-title="">OLE</span>
+                        </td>
+                        <td>
+                            Your source code is wrong.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="label tooltip-label label-warning" rel="tooltip" data-title="Internal Error" data-original-title="">IE</span>
+                        </td>
+                        <td>
+                            Your source code is wrong.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="label tooltip-label label-warning" rel="tooltip" data-title="Wrong Answer" data-original-title="">WA</span>
+                        </td>
+                        <td>
+                            Your source code is wrong.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="label label-success tooltip-label" rel="tooltip" data-title="Accepted" data-original-title="">AC</span>
+                        </td>
+                        <td>
+                            Your source code was accepted correctly.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+        </section>
+    </span>
+</span>
+</div>
+
+
+
+
+
+
+
+    </div>
+
+    <footer>
+      <ul>
+  <li><a href="/tos"><span class="lang"><span class="lang-en">Terms of service</span><span class="lang-ja">利用規約</span></span></a></li>
+  <li><a href="/privacy"><span class="lang"><span class="lang-en">Privacy</span><span class="lang-ja">プライバシーポリシー</span></span></a></li>
+  <li><a href="/personal"><span class="lang"><span class="lang-en">Personal Information</span><span class="lang-ja">個人情報保護方針</span></span></a></li>
+  <li><a href="/tutorial"><span class="lang"><span class="lang-en">Tutorial</span><span class="lang-ja">チュートリアル</span></span></a></li>
+  <li><a href="/rules"><span class="lang"><span class="lang-en">Rules</span><span class="lang-ja">ルール</span></span></a></li>
+  <li><a href="/glossary"><span class="lang"><span class="lang-en">Glossary</span><span class="lang-ja">用語集</span></span></a></li>
+  <li><a href="/faq"><span class="lang"><span class="lang-en">FAQ</span><span class="lang-ja">よくある質問</span></span></a></li>
+</ul>
+<p id="copyright">&copy; 2017 AtCoder Inc. All rights reserved.</p>
+    </footer>
+
+    <p id="fixed-server-timer" style="display: none;"></p>
+
+        <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/prettify.js"></script>
+    <script src="/js/lang-vb.js"></script>
+    <script src="/js/lang-hs.js"></script>
+    <script src="/js/varmath.js"></script>
+    <script src="/js/script.js?v=2"></script>
+  </body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <title>Sign in - practice contest | AtCoder</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="
+">
+    <meta name="keyword" content="AtCoder,アットコーダー,あっとこーだー,プログラミングコンテスト
+">
+    <meta name="author" content="Atcoder" />
+    <meta name="copyright" content="Copyright (C) 2012 Atcoder" />
+    <meta name="format-detection" content="telephone=no" />
+
+
+    <link href="/css/all.css" rel="stylesheet">
+    
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <script src="/js/jquery.js"></script>
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-30554866-3']);
+  _gaq.push(['_setDomainName', 'atcoder.jp']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>    
+    <!--[if lt IE 9]><style>.navbar-fixed-top{ position: relative!important; }</style><![endif]-->
+  </head>
+
+  <body>
+          <div class="navbar navbar-fixed-top">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </a>
+              <a class="brand" href="/"><span class="contest-name">practice contest</span><span class="bland-small"><time>2012/06/24 15:00:00 +0000</time> ~ <time>2038/01/19 03:14:07 +0000</time></span></a>
+      
+      <div class="nav-collapse">
+                <ul class="nav">
+          <li class="divider-vertical"></li>
+          <li><a href="http://atcoder.jp" target="_blank"><span class="lang"><span class="lang-en">back to atcoder.jp</span><span class="lang-ja">AtCoderへ戻る</span></span></a></li>
+        </ul>
+                            <ul  id="nav-right-logined" class="nav pull-right" style="display:none;">
+            <li class="dropdown">
+              <a href="#" lang="ja" class="dropdown-toggle static-nav-language-selector-dropdown" data-toggle="dropdown" style="display:none;">
+                <i class="flag-ja"></i> 日本語 <b class="caret"></b>
+              </a>
+              <a href="#" lang="en" class="dropdown-toggle static-nav-language-selector-dropdown"  data-toggle="dropdown" style="display:none;">
+                <i class="flag-en"></i> English <b class="caret"></b>
+              </a>
+              <a href="#" lang="ko" class="dropdown-toggle static-nav-language-selector-dropdown"  data-toggle="dropdown" style="display:none;">
+                <i class="flag-ko"></i> 한국어 <b class="caret"></b>
+              </a>
+              <ul class="dropdown-menu">
+                <li> <a lang="ja" class="static-nav-language-selector" href="#"><i class="flag-ja"></i> 日本語</a></li>
+                <li> <a lang="en" class="static-nav-language-selector" href="#"><i class="flag-en"></i> English</a></li>
+                <li> <a lang="ko" class="static-nav-language-selector" href="#"><i class="flag-ko"></i> 한국어</a></li>
+              </ul>
+            </li>
+            <li class="divider-vertical"></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-cog icon-white"></i> <span id="nav-right-username"></span><b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="/me"><span class="lang"><span class="lang-en">My Profile</span><span class="lang-ja">マイプロフィール</span></span></a></li>
+                                	<li><a href="/settings"><span class="lang"><span class="lang-en">Settings</span><span class="lang-ja">設定</span></span></a></li>
+                    <li><a href="/settings/password"><span class="lang"><span class="lang-en">Change password</span><span class="lang-ja">パスワードの変更</span></span></a></li>
+                	                	<li class="divider"></li>
+                                <li><a href="/logout"><span class="lang"><span class="lang-en">Sign out</span><span class="lang-ja">ログアウト</span></span></a></li>
+             </ul>
+            </li>
+          </ul>
+          <ul id="nav-right-not-login" class="nav pull-right" style="display:none;">
+            <li class="dropdown">
+              <a href="#" lang="ja" class="dropdown-toggle static-nav-language-selector-dropdown" data-toggle="dropdown" style="display:none;">
+                <i class="flag-ja"></i> 日本語 <b class="caret"></b>
+              </a>
+              <a href="#" lang="en" class="dropdown-toggle static-nav-language-selector-dropdown"  data-toggle="dropdown" style="display:none;">
+                <i class="flag-en"></i> English <b class="caret"></b>
+              </a>
+              <a href="#" lang="ko" class="dropdown-toggle static-nav-language-selector-dropdown"  data-toggle="dropdown" style="display:none;">
+                <i class="flag-ko"></i> 한국어 <b class="caret"></b>
+              </a>
+              <ul class="dropdown-menu">
+                <li> <a lang="ja" class="static-nav-language-selector" href="#"><i class="flag-ja"></i> 日本語</a></li>
+                <li> <a lang="en" class="static-nav-language-selector" href="#"><i class="flag-en"></i> English</a></li>
+                <li> <a lang="ko" class="static-nav-language-selector" href="#"><i class="flag-ko"></i> 한국어</a></li>
+              </ul>
+            </li>
+                        <li class="divider-vertical"></li>
+            <li><a href="/register"><span class="lang"><span class="lang-en">Sign up</span><span class="lang-ja">新規登録</span></span></a></li>
+                        <li class="divider-vertical"></li>
+            <li><a href="/login"><span class="lang"><span class="lang-en">Sign in</span><span class="lang-ja">ログイン</span></span></a></li>
+          </ul>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    <div id="outer-inner" class="container">
+      <div id="alert_box" class="alert alert-block" style="display:none">
+  <a class="close" data-dismiss="alert">×</a>
+  <h4 id="alert_box_heading" class="alert-heading" style="display:none"></h4>
+  <p id="alert_box_content"></p>
+</div>
+
+      
+<div class="row">
+  <div class="span10 offset1 well form-2c">
+    <form class="form-horizontal" method="POST" action="/login">
+      <fieldset>
+        <legend><span class="lang"><span class="lang-en">Sign in</span><span class="lang-ja">ログイン</span></span></legend>
+        <div class="control-group">
+          <label class="control-label" for="name"><span class="lang"><span class="lang-en">User ID</span><span class="lang-ja">ユーザID</span></span></label>
+          <div class="controls">
+            <input type="text" id="name" class="input-xlarge" name="name" value="" autocomplete="off">
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label class="control-label" for="name"><span class="lang"><span class="lang-en">Password</span><span class="lang-ja">パスワード</span></span></label>
+          <div class="controls">
+            <input type="password" id="name" class="input-xlarge" name="password" value="" autocomplete="off">
+          </div>
+        </div>
+
+                  <p><a href="/password/recovery"><span class="lang"><span class="lang-en">Forgot your password?</span><span class="lang-ja">パスワードを忘れた方はこちら</span></span></a></p>
+        
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary btn-large"><span class="lang"><span class="lang-en">Sign in</span><span class="lang-ja">ログイン</span></span></button>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+
+    <div class="span10 offset1 well">
+    <p style="text-align:center;"><span class="lang"><span class="lang-en">Please sign up if you have not.</span><span class="lang-ja">アカウント登録をしていない方はこちらから</span></span></p>
+    <p style="text-align:center;"><a class="btn btn-large" href="/register"><span class="lang"><span class="lang-en">Sign up</span><span class="lang-ja">新規登録</span></span></a></p>
+  </div>
+  </div>
+    </div>
+
+    <footer>
+      <ul>
+  <li><a href="/tos"><span class="lang"><span class="lang-en">Terms of service</span><span class="lang-ja">利用規約</span></span></a></li>
+  <li><a href="/privacy"><span class="lang"><span class="lang-en">Privacy</span><span class="lang-ja">プライバシーポリシー</span></span></a></li>
+  <li><a href="/personal"><span class="lang"><span class="lang-en">Personal Information</span><span class="lang-ja">個人情報保護方針</span></span></a></li>
+  <li><a href="/tutorial"><span class="lang"><span class="lang-en">Tutorial</span><span class="lang-ja">チュートリアル</span></span></a></li>
+  <li><a href="/rules"><span class="lang"><span class="lang-en">Rules</span><span class="lang-ja">ルール</span></span></a></li>
+  <li><a href="/glossary"><span class="lang"><span class="lang-en">Glossary</span><span class="lang-ja">用語集</span></span></a></li>
+  <li><a href="/faq"><span class="lang"><span class="lang-en">FAQ</span><span class="lang-ja">よくある質問</span></span></a></li>
+</ul>
+<p id="copyright">&copy; 2017 AtCoder Inc. All rights reserved.</p>
+    </footer>
+
+        <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/prettify.js"></script>
+    <script src="/js/varmath.js"></script>
+    <script src="/js/script.js"></script>
+  </body>
+</html>

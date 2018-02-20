@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>B: インタラクティブ練習 (Interactive Sorting)
+ - practice contest | AtCoder</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="
+">
+    <meta name="keyword" content="AtCoder,アットコーダー,あっとこーだー,プログラミングコンテスト
+">
+    <meta name="author" content="Atcoder" />
+    <meta name="copyright" content="Copyright (C) 2012 Atcoder" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <link rel="stylesheet" type="text/css" href="/css/all.css?v=2">
+    <link rel="stylesheet" type="text/css" href="/css/print.css?v=1" media="print">
+        <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <script src="/js/jquery.js"></script>
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-30554866-3']);
+  _gaq.push(['_setDomainName', 'atcoder.jp']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>    
+    <!--[if lt IE 9]><style>.navbar-fixed-top{ position: relative!important; }</style><![endif]-->
+
+  </head>
+
+
+  <body>
+          <div class="navbar navbar-fixed-top">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </a>
+              <a class="brand" href="/"><span class="contest-name">practice contest</span><span class="bland-small"><time>2012/06/24 15:00:00 +0000</time> ~ <time>2038/01/19 03:14:07 +0000</time></span></a>
+      
+      <div class="nav-collapse">
+                <ul class="nav">
+          <li class="divider-vertical"></li>
+          <li><a href="http://atcoder.jp" target="_blank"><span class="lang"><span class="lang-en">back to atcoder.jp</span><span class="lang-ja">AtCoderへ戻る</span></span></a></li>
+        </ul>
+                            <ul  id="nav-right-logined" class="nav pull-right" style="display:none;">
+            <li class="dropdown">
+              <a href="#" lang="ja" class="dropdown-toggle static-nav-language-selector-dropdown" data-toggle="dropdown" style="display:none;">
+                <i class="flag-ja"></i> 日本語 <b class="caret"></b>
+              </a>
+              <a href="#" lang="en" class="dropdown-toggle static-nav-language-selector-dropdown"  data-toggle="dropdown" style="display:none;">
+                <i class="flag-en"></i> English <b class="caret"></b>
+              </a>
+              <a href="#" lang="ko" class="dropdown-toggle static-nav-language-selector-dropdown"  data-toggle="dropdown" style="display:none;">
+                <i class="flag-ko"></i> 한국어 <b class="caret"></b>
+              </a>
+              <ul class="dropdown-menu">
+                <li> <a lang="ja" class="static-nav-language-selector" href="#"><i class="flag-ja"></i> 日本語</a></li>
+                <li> <a lang="en" class="static-nav-language-selector" href="#"><i class="flag-en"></i> English</a></li>
+                <li> <a lang="ko" class="static-nav-language-selector" href="#"><i class="flag-ko"></i> 한국어</a></li>
+              </ul>
+            </li>
+            <li class="divider-vertical"></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-cog icon-white"></i> <span id="nav-right-username"></span><b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="/me"><span class="lang"><span class="lang-en">My Profile</span><span class="lang-ja">マイプロフィール</span></span></a></li>
+                                	<li><a href="/settings"><span class="lang"><span class="lang-en">Settings</span><span class="lang-ja">設定</span></span></a></li>
+                    <li><a href="/settings/password"><span class="lang"><span class="lang-en">Change password</span><span class="lang-ja">パスワードの変更</span></span></a></li>
+                	                	<li class="divider"></li>
+                                <li><a href="/logout"><span class="lang"><span class="lang-en">Sign out</span><span class="lang-ja">ログアウト</span></span></a></li>
+             </ul>
+            </li>
+          </ul>
+          <ul id="nav-right-not-login" class="nav pull-right" style="display:none;">
+            <li class="dropdown">
+              <a href="#" lang="ja" class="dropdown-toggle static-nav-language-selector-dropdown" data-toggle="dropdown" style="display:none;">
+                <i class="flag-ja"></i> 日本語 <b class="caret"></b>
+              </a>
+              <a href="#" lang="en" class="dropdown-toggle static-nav-language-selector-dropdown"  data-toggle="dropdown" style="display:none;">
+                <i class="flag-en"></i> English <b class="caret"></b>
+              </a>
+              <a href="#" lang="ko" class="dropdown-toggle static-nav-language-selector-dropdown"  data-toggle="dropdown" style="display:none;">
+                <i class="flag-ko"></i> 한국어 <b class="caret"></b>
+              </a>
+              <ul class="dropdown-menu">
+                <li> <a lang="ja" class="static-nav-language-selector" href="#"><i class="flag-ja"></i> 日本語</a></li>
+                <li> <a lang="en" class="static-nav-language-selector" href="#"><i class="flag-en"></i> English</a></li>
+                <li> <a lang="ko" class="static-nav-language-selector" href="#"><i class="flag-ko"></i> 한국어</a></li>
+              </ul>
+            </li>
+                        <li class="divider-vertical"></li>
+            <li><a href="/register"><span class="lang"><span class="lang-en">Sign up</span><span class="lang-ja">新規登録</span></span></a></li>
+                        <li class="divider-vertical"></li>
+            <li><a href="/login"><span class="lang"><span class="lang-en">Sign in</span><span class="lang-ja">ログイン</span></span></a></li>
+          </ul>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="modal hide fade" style="display:none;" id="modal-contest-end">
+  <div class="modal-header">
+    <a class="close" data-dismiss="modal">×</a>
+    <h3><span class="lang"><span class="lang-en">practice contest has ended</span><span class="lang-ja">practice contestが終了しました</span></span></h3>
+  </div>
+  <div class="modal-body">
+    <p><span class="lang"><span class="lang-en">Contest has ended</span><span class="lang-ja">コンテスト終了です</span></span></p>
+  </div>
+  <div class="modal-footer">
+    <a href="#" class="btn" data-dismiss="modal"><span class="lang"><span class="lang-en">Close</span><span class="lang-ja">閉じる</span></span></a>
+  </div>
+</div>
+
+<div class="modal hide fade" style="display:none;" id="modal-contest-begin">
+  <div class="modal-header">
+    <a class="close" data-dismiss="modal">×</a>
+    <h3><span class="lang"><span class="lang-en">practice contest is now opening</span><span class="lang-ja">practice contestの開催時間になりました</span></span></h3>
+  </div>
+  <div class="modal-body">
+    <p><span class="lang"><span class="lang-en">Contest has started</span><span class="lang-ja">問題一覧のページへ移動してください</span></span></p>
+  </div>
+  <div class="modal-footer">
+    <a href="/assignments" class="btn btn-primary"><span class="lang"><span class="lang-en">Go to the task list page</span><span class="lang-ja">問題一覧のページへ移動</span></span></a>
+  </div>
+</div>
+    
+    <div id="outer-inner" class="container">
+      <h1 class="site-title">
+          practice contest
+      </h1>
+                      <time style="display:none" id="contest-start-time">2012/06/24 15:00:00 +0000</time>
+        <time style="display:none" id="contest-end-time">2038/01/19 03:14:07 +0000</time>
+        <time style="display:none" id="server-current-time">2018/02/20 21:57:26 +0000</time>
+
+            
+      <ul class="nav nav-tabs">
+                            <li><a href="https://practice.contest.atcoder.jp/"><i class="icon-home"></i> <span class="lang"><span class="lang-en">Home</span><span class="lang-ja">トップページ</span><span class="lang-ko">톱 페이지</span></span></a></li>
+                                          <li class="active"><a href="https://practice.contest.atcoder.jp/assignments"><i class="icon-list-alt"></i> <span class="lang"><span class="lang-en">Tasks</span><span class="lang-ja">問題</span><span class="lang-ko">문제</span></span></a></li>
+                                          <li><a href="https://practice.contest.atcoder.jp/submit"><i class="icon-upload"></i> <span class="lang"><span class="lang-en">Submit</span><span class="lang-ja">提出</span><span class="lang-ko">제출</span></span></a></li>
+                                          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+              <b class="caret"></b><i class="icon-download-alt"></i> <span class="lang"><span class="lang-en">Results</span><span class="lang-ja">結果</span><span class="lang-ko">채점 결과</span></span>
+            </a>
+            <ul class="dropdown-menu">
+                              <li><a href="https://practice.contest.atcoder.jp/submissions/me"><span class="lang"><span class="lang-en">My submissions</span><span class="lang-ja">自分の結果</span><span class="lang-ko">자신의 결과</span></span></a></li>
+                          </ul>
+          </li>
+                                          <li><a href="/custom_test"><i class="icon-user"></i> <span class="lang"><span class="lang-en">Custom Test</span><span class="lang-ja">コードテスト</span></span></a></li>
+                      </ul>
+        <div id="alert_box" class="alert alert-block" style="display:none">
+  <a class="close" data-dismiss="alert">×</a>
+  <h4 id="alert_box_heading" class="alert-heading" style="display:none"></h4>
+  <p id="alert_box_content"></p>
+</div>
+
+      <h2>B - インタラクティブ練習 (Interactive Sorting)</h2>
+<hr />
+<p><span class="lang"><span class="lang-en">Time limit</span><span class="lang-ja">時間制限</span></span> : 2sec / <span class="lang"><span class="lang-en">Memory limit</span><span class="lang-ja">メモリ制限</span></span> : 256MB</p>
+
+<div id="task-statement">
+  <span class="lang">
+<span class="lang-ja">
+<p>配点 : <var>300</var> 点</p>
+
+<div class="part">
+<section>
+<h3>問題文</h3><p><font color="red"><strong>これはインタラクティブな問題です。初心者向け問題ではありませんので注意してください。</strong></font></p>
+<p>最初の <var>N</var> 個の大文字でラベルの付いた <var>N</var> 個のボールがあります。
+どの二つのボールの重さも異なります。</p>
+<p>あなたは <var>Q</var> 回クエリを質問することができます。
+各クエリでは、二つのボールの重さを比べることができます。(詳しくは入出力セクションを見てください)</p>
+<p>ボールを軽い順にソートしてください。</p>
+</section>
+</div>
+
+<div class="part">
+<section>
+<h3>制約</h3><ul>
+<li><var>(N, Q) = (26, 1000)</var>, <var>(26, 100)</var>, <var>(5, 7)</var> のいずれかである。</li>
+</ul>
+</section>
+</div>
+
+<div class="part">
+<section>
+<h3>部分点</h3><p>三つのテストセットがある。各セットは <var>100</var> 点ずつである。</p>
+<ul>
+<li>テストセット 1: <var>N = 26</var>, <var>Q = 1000</var></li>
+<li>テストセット 2: <var>N = 26</var>, <var>Q = 100</var></li>
+<li>テストセット 3: <var>N = 5</var>, <var>Q = 7</var></li>
+</ul>
+</section>
+</div>
+
+<div class="part">
+<section>
+<h3>入出力</h3><p>最初に、標準入力から <var>N</var> と <var>Q</var> が以下の形式で与えられる:</p>
+<pre><var>N</var> <var>Q</var>
+</pre>
+
+<p>次に、あなたは <var>Q</var> 回以下クエリを質問する。
+各クエリは、標準出力に以下の形式で出力されなければならない:</p>
+<pre>? <var>c_1</var> <var>c_2</var>
+</pre>
+
+<p>ここで <var>c_1</var> と <var>c_2</var> は異なる最初の <var>N</var> 個の大文字のどれかでなければならない。</p>
+<p>次に、クエリの答えが標準入力から以下の形式で与えられる:</p>
+<pre><var>ans</var>
+</pre>
+
+<p>ここで <var>ans</var> は <code>&lt;</code> または <code>&gt;</code> である。
+<code>&lt;</code> のときは <var>c_2</var> のほうが重く、<code>&gt;</code> のときは <var>c_1</var> のほうが重い。</p>
+<p>最後に、答えを以下の形式で出力しなければならない：</p>
+<pre>! <var>ans</var>
+</pre>
+
+<p>ここで <var>ans</var> は <var>N</var> 文字の文字列であり、最初の <var>N</var> 個の大文字を軽い順に並べたものでなければならない。</p>
+</section>
+</div>
+
+<div class="part">
+<section>
+<h3>ジャッジ</h3><ul>
+<li><font color="red"><strong>出力のあと、標準出力を flush しなければならない。</strong></font> そうでないときは <code>TLE</code> の可能性がある。</li>
+<li>答えを出力した後、プログラムをすぐに終了しなければならない。そうでないときの挙動は定義されていない。</li>
+<li>出力の答えが間違っている場合の挙動は定義されていない (<code>WA</code>とは限らない)。</li>
+</ul>
+</section>
+</div>
+
+<div class="part">
+<section>
+<h3>コード例</h3><p>以下のコードは、C++ で <var>100</var> 点を獲得するための例です。
+<div class='prettyprint'></p>
+<pre>#include &lt;cstdio&gt;
+#include &lt;string&gt;
+
+using namespace std;
+
+int main(void){
+  int N,Q,i,j;
+
+  scanf(&quot;%d%d&quot;, &amp;N, &amp;Q);
+
+  string s;
+  for(i=0;i&lt;N;i++) s += (char)('A' + i);
+
+  for(i=0;i&lt;N;i++) for(j=0;j&lt;N-1;j++){
+    printf(&quot;? %c %c\n&quot;, s[j], s[j+1]);
+    fflush(stdout);
+    char ans;
+    scanf(&quot; %c&quot;, &amp;ans);
+    if(ans == '&gt;') swap(s[j], s[j+1]);
+  }
+
+  printf(&quot;! %s\n&quot;, s.c_str());
+  fflush(stdout);
+
+  return 0;
+}
+</pre>
+
+<p></div>
+<script>$('div.prettyprint pre').addClass('prettyprint');</script></p>
+</section>
+</div>
+
+<div class="part">
+<section>
+<h3>サンプル</h3><p>このサンプルでは <var>N = 3</var>, <var>Q = 10</var> で、答えは <code>BAC</code> である。</p>
+<table class="table table-bordered">
+<thead>
+<tr>
+<th align="left">Input</th>
+<th align="left">Output</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><var>3</var> <var>10</var></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"><var>?</var> <var>A</var> <var>B</var></td>
+</tr>
+<tr>
+<td align="left"><var>&gt;</var></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"><var>?</var> <var>C</var> <var>B</var></td>
+</tr>
+<tr>
+<td align="left"><var>&gt;</var></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"><var>?</var> <var>A</var> <var>C</var></td>
+</tr>
+<tr>
+<td align="left"><var>&lt;</var></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"><var>!</var> <var>BAC</var></td>
+</tr>
+</tbody>
+</table></section>
+</div>
+</span>
+<span class="lang-en">
+<p>Score : <var>300</var> points</p>
+
+<div class="part">
+<section>
+<h3>Problem Statement</h3><style>
+   #nck {
+      width: 30px;
+      height: auto;
+   }
+</style>
+
+<p><font color="red"><strong>This is an interactive task.</strong></font></p>
+<p>There are <var>N</var> balls labeled with the first <var>N</var> uppercase letters.
+The balls have pairwise distinct weights.</p>
+<p>You are allowed to ask at most <var>Q</var> queries.
+In each query, you can compare the weights of two balls (see Input/Output section for details).</p>
+<p>Sort the balls in the ascending order of their weights.</p>
+</section>
+</div>
+
+<div class="part">
+<section>
+<h3>Constraints</h3><ul>
+<li><var>(N, Q) = (26, 1000)</var>, <var>(26, 100)</var>, or <var>(5, 7)</var>.</li>
+</ul>
+</section>
+</div>
+
+<div class="part">
+<section>
+<h3>Partial Score</h3><p>There are three testsets. Each testset is worth 100 points.</p>
+<ul>
+<li>In testset 1, <var>N = 26</var> and <var>Q = 1000</var>.</li>
+<li>In testset 2, <var>N = 26</var> and <var>Q = 100</var>.</li>
+<li>In testset 3, <var>N = 5</var> and <var>Q = 7</var>.</li>
+</ul>
+</section>
+</div>
+
+<div class="part">
+<section>
+<h3>Input and Output</h3><p>First, you are given <var>N</var> and <var>Q</var> from Standard Input in the following format:</p>
+<pre><var>N</var> <var>Q</var>
+</pre>
+
+<p>Then, you start asking queries (at most <var>Q</var> times).
+Each query must be printed to Standard Output in the following format:</p>
+<pre>? <var>c_1</var> <var>c_2</var>
+</pre>
+
+<p>Here each of <var>c_1</var> and <var>c_2</var> must be one of the first <var>N</var> uppercase letters, and <var>c_1</var> and <var>c_2</var> must be distinct.</p>
+<p>Then, you are given the answer to the query from Standard Input in the following format:</p>
+<pre><var>ans</var>
+</pre>
+
+<p>Here <var>ans</var> is either <code>&lt;</code> or <code>&gt;</code>.
+When <var>ans</var> is <code>&lt;</code>, the ball <var>c_2</var> is heavier than the ball <var>c_1</var>, and otherwise the ball <var>c_1</var> is heavier than the ball <var>c_2</var>.</p>
+<p>Finally, you must print the answer to Standard Output in the following format:</p>
+<pre>! <var>ans</var>
+</pre>
+
+<p>Here <var>ans</var> must be a string of length <var>N</var>, and it must contain each of the first <var>N</var> uppercase letters once.
+It must represent the weights of the balls in the ascending order.</p>
+</section>
+</div>
+
+<div class="part">
+<section>
+<h3>Judgement</h3><ul>
+<li><font color="red"><strong>After each output, you must flush Standard Output.</strong></font> Otherwise you may get <code>TLE</code>.</li>
+<li>After you print the answer, the program must be terminated immediately. Otherwise, the behavior of the judge is undefined.</li>
+<li>When your output is invalid or incorrect, the behavior of the judge is undefined (it does not necessarily give <code>WA</code>).</li>
+</ul>
+</section>
+</div>
+
+<div class="part">
+<section>
+<h3>Sample Code</h3><p>Here is a sample solution for 100 points:
+<div class='prettyprint'></p>
+<pre>#include &lt;cstdio&gt;
+#include &lt;string&gt;
+
+using namespace std;
+
+int main(void){
+  int N,Q,i,j;
+
+  scanf(&quot;%d%d&quot;, &amp;N, &amp;Q);
+
+  string s;
+  for(i=0;i&lt;N;i++) s += (char)('A' + i);
+
+  for(i=0;i&lt;N;i++) for(j=0;j&lt;N-1;j++){
+    printf(&quot;? %c %c\n&quot;, s[j], s[j+1]);
+    fflush(stdout);
+    char ans;
+    scanf(&quot; %c&quot;, &amp;ans);
+    if(ans == '&gt;') swap(s[j], s[j+1]);
+  }
+
+  printf(&quot;! %s\n&quot;, s.c_str());
+  fflush(stdout);
+
+  return 0;
+}
+</pre>
+
+<p></div>
+<script>$('div.prettyprint pre').addClass('prettyprint');</script></p>
+</section>
+</div>
+
+<div class="part">
+<section>
+<h3>Sample</h3><p>In this sample <var>N = 3</var>, <var>Q = 10</var>, and the answer is <code>BAC</code>.</p>
+<table class="table table-bordered">
+<thead>
+<tr>
+<th align="left">Input</th>
+<th align="left">Output</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><var>3</var> <var>10</var></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"><var>?</var> <var>A</var> <var>B</var></td>
+</tr>
+<tr>
+<td align="left"><var>&gt;</var></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"><var>?</var> <var>C</var> <var>B</var></td>
+</tr>
+<tr>
+<td align="left"><var>&gt;</var></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"><var>?</var> <var>A</var> <var>C</var></td>
+</tr>
+<tr>
+<td align="left"><var>&lt;</var></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"><var>!</var> <var>BAC</var></td>
+</tr>
+</tbody>
+</table></section>
+</div>
+</span>
+</span>
+
+</div>
+
+
+<hr/>
+<p><a class="btn btn-primary btn-large" href="/submit?task_id=2520"><span class="lang"><span class="lang-en">Submit</span><span class="lang-ja">提出する</span></span></a></p>
+
+<script>$(function(){document.queryCommandSupported("copy")&&($("h3+pre").before('<div class="div-sample-copy"><span class="btn-sample-copy" tabindex="0" data-toggle="tooltip" data-trigger="manual" title="Copied!">Copy</span></div>'),$(".btn-sample-copy").click(function(){window.getSelection().removeAllRanges();try{var e=document.createRange();e.selectNode($(this).parent().next("pre").get()[0]),window.getSelection().addRange(e),document.execCommand("copy"),$(this).tooltip("show");var t=this;setTimeout(function(){$(t).tooltip("hide")},800)}catch(o){console.log(o)}window.getSelection().removeAllRanges()}))});</script>
+
+    </div>
+
+    <footer>
+      <ul>
+  <li><a href="/tos"><span class="lang"><span class="lang-en">Terms of service</span><span class="lang-ja">利用規約</span></span></a></li>
+  <li><a href="/privacy"><span class="lang"><span class="lang-en">Privacy</span><span class="lang-ja">プライバシーポリシー</span></span></a></li>
+  <li><a href="/personal"><span class="lang"><span class="lang-en">Personal Information</span><span class="lang-ja">個人情報保護方針</span></span></a></li>
+  <li><a href="/tutorial"><span class="lang"><span class="lang-en">Tutorial</span><span class="lang-ja">チュートリアル</span></span></a></li>
+  <li><a href="/rules"><span class="lang"><span class="lang-en">Rules</span><span class="lang-ja">ルール</span></span></a></li>
+  <li><a href="/glossary"><span class="lang"><span class="lang-en">Glossary</span><span class="lang-ja">用語集</span></span></a></li>
+  <li><a href="/faq"><span class="lang"><span class="lang-en">FAQ</span><span class="lang-ja">よくある質問</span></span></a></li>
+</ul>
+<p id="copyright">&copy; 2017 AtCoder Inc. All rights reserved.</p>
+    </footer>
+
+    <p id="fixed-server-timer" style="display: none;"></p>
+
+        <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/prettify.js"></script>
+    <script src="/js/lang-vb.js"></script>
+    <script src="/js/lang-hs.js"></script>
+    <script src="/js/varmath.js"></script>
+    <script src="/js/script.js?v=2"></script>
+  </body>
+</html>
