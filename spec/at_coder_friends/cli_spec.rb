@@ -94,4 +94,18 @@ RSpec.describe AtCoderFriends::CLI do
       end
     end
   end
+
+  describe 'setup' do
+    let(:args) { ['setup', path] }
+
+    context 'when the folder exists' do
+      let(:path) { contest_root }
+      it 'shows error' do
+        expect { subject }.to output(
+          "#{contest_root} already exists.\n"
+        ).to_stderr
+        expect(subject).to eq(1)
+      end
+    end
+  end
 end

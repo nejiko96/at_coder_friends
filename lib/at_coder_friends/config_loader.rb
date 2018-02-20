@@ -4,8 +4,6 @@ require 'pathname'
 require 'yaml'
 
 module AtCoderFriends
-  class ConfigNotFoundError < StandardError; end
-
   # loads configuration file from the specified directory.
   class ConfigLoader
     DOTFILE = '.at_coder_friends.yml'

@@ -23,25 +23,19 @@ module AtCoderFriends
     def run(args = ARGV)
       parse_options!(args)
       handle_exiting_option
-      usage 'command or path is not specified.' if args.size < 2
+      raise ParameterError, 'command or path is not specified.' if args.size < 2
       @config = ConfigLoader.load_config(args[1])
       exec_command(*args)
       STATUS_SUCCESS
-    rescue AtCoderFriends::ConfigNotFoundError => e
-      warn e.message
+    rescue AtCoderFriends::ParameterError => e
+      warn @usage
+      warn "error: #{e.message}"
       STATUS_ERROR
-    rescue StandardError, SyntaxError, LoadError => e
+    rescue AtCoderFriends::ApplicationError => e
       warn e.message
-      warn e.backtrace
       STATUS_ERROR
     rescue SystemExit => e
       e.status
-    end
-
-    def usage(msg = nil)
-      warn @usage
-      warn "error: #{msg}" if msg
-      exit STATUS_ERROR
     end
 
     def parse_options!(args)
@@ -55,7 +49,7 @@ module AtCoderFriends
       @options = {}
       op.parse!(args)
     rescue OptionParser::InvalidOption => e
-      usage e.message
+      raise ParameterError, e.message
     end
 
     def handle_exiting_option
@@ -75,12 +69,12 @@ module AtCoderFriends
       when 'submit'
         submit(path)
       else
-        usage "unknown command: #{command}"
+        raise ParameterError, "unknown command: #{command}"
       end
     end
 
     def setup(path)
-      raise StandardError, "#{path} already exists." if Dir.exist?(path)
+      raise ApplicationError, "#{path} already exists." if Dir.exist?(path)
       agent = ScrapingAgent.new(contest_name(path), @config)
       parser = FormatParser.new
       rb_gen = RubyGenerator.new
