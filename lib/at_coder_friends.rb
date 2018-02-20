@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'at_coder_friends/version'
+require 'at_coder_friends/errors'
 require 'at_coder_friends/path_util'
 require 'at_coder_friends/config_loader'
 require 'at_coder_friends/verifier'

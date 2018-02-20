@@ -8,22 +8,31 @@ module AtCoderFriends
     include PathUtil
 
     EXITING_OPTIONS = %i[version].freeze
+    OPTION_BANNER =
+      <<~TEXT
+        Usage:
+          at_coder_friends setup    path/contest       # setup contest folder
+          at_coder_friends test-one path/contest/src   # run 1st test case
+          at_coder_friends test-all path/contest/src   # run all test cases
+          at_coder_friends submit   path/contest/src   # submit source code
+        Options:
+      TEXT
     STATUS_SUCCESS  = 0
     STATUS_ERROR    = 1
 
     def run(args = ARGV)
       parse_options!(args)
       handle_exiting_option
-      usage 'command or path is not specified.' if args.size < 2
+      raise ParamError, 'command or path is not specified.' if args.size < 2
       @config = ConfigLoader.load_config(args[1])
       exec_command(*args)
       STATUS_SUCCESS
-    rescue AtCoderFriends::ConfigNotFoundError => e
-      warn e.message
+    rescue AtCoderFriends::ParamError => e
+      warn @usage
+      warn "error: #{e.message}"
       STATUS_ERROR
-    rescue StandardError, SyntaxError, LoadError => e
+    rescue AtCoderFriends::AppError => e
       warn e.message
-      warn e.backtrace
       STATUS_ERROR
     rescue SystemExit => e
       e.status
@@ -31,7 +40,7 @@ module AtCoderFriends
 
     def parse_options!(args)
       op = OptionParser.new do |opts|
-        opts.banner = 'Usage: at_coder_friends [options] [command] [path]'
+        opts.banner = OPTION_BANNER
         opts.on('-v', '--version', 'Display version.') do
           @options[:version] = true
         end
@@ -40,13 +49,7 @@ module AtCoderFriends
       @options = {}
       op.parse!(args)
     rescue OptionParser::InvalidOption => e
-      usage e.message
-    end
-
-    def usage(msg = nil)
-      warn @usage
-      warn "error: #{msg}" if msg
-      exit STATUS_ERROR
+      raise ParamError, e.message
     end
 
     def handle_exiting_option
@@ -66,12 +69,12 @@ module AtCoderFriends
       when 'submit'
         submit(path)
       else
-        usage "wrong command: #{command}"
+        raise ParamError, "unknown command: #{command}"
       end
     end
 
     def setup(path)
-      raise StandardError, "#{path} already exists." if Dir.exist?(path)
+      raise AppError, "#{path} already exists." if Dir.exist?(path)
       agent = ScrapingAgent.new(contest_name(path), @config)
       parser = FormatParser.new
       rb_gen = RubyGenerator.new
@@ -90,14 +93,13 @@ module AtCoderFriends
     end
 
     def test_all(path)
-      vf = Verifier.new(path)
       TestRunner.new(path).test_all
-      vf.verify
+      Verifier.new(path).verify
     end
 
     def submit(path)
       vf = Verifier.new(path)
-      return unless vf.verified?
+      raise AppError, "#{vf.file} has not been tested." unless vf.verified?
       ScrapingAgent.new(contest_name(path), @config).submit(path)
       vf.unverify
     end
