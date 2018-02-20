@@ -1,9 +1,16 @@
 # frozen_string_literal: true
 
 RSpec.describe AtCoderFriends::CLI do
+  include FileHelper
+
   include_context :atcoder_env
 
   subject(:cli) { described_class.new }
+  let(:args) { [command, path] }
+  let(:path) { File.join(contest_root, src) }
+  let(:src) { 'A.rb' }
+
+  after(:all) { rmdir_force(tmp_dir) }
 
   USAGE = <<~TEXT
     Usage:
@@ -73,8 +80,8 @@ RSpec.describe AtCoderFriends::CLI do
       end
     end
 
-    context 'with a wrong command' do
-      let(:args) { ['init', contest_root] }
+    context 'with a unknown command' do
+      let(:command) { 'init' }
       it 'shows usage' do
         expect { subject }.to output(
           USAGE +
@@ -85,7 +92,8 @@ RSpec.describe AtCoderFriends::CLI do
     end
 
     context 'when config file is not found' do
-      let(:args) { ['setup', '/foo/bar'] }
+      let(:command) { 'setup' }
+      let(:path) { '/foo/bar' }
       it 'shows error' do
         expect { subject }.to output(
           "Configuration file not found: /foo/bar\n"
@@ -96,8 +104,7 @@ RSpec.describe AtCoderFriends::CLI do
   end
 
   describe 'setup' do
-    let(:args) { ['setup', path] }
-
+    let(:command) { 'setup' }
     context 'when the folder exists' do
       let(:path) { contest_root }
       it 'shows error' do
@@ -110,19 +117,71 @@ RSpec.describe AtCoderFriends::CLI do
   end
 
   describe 'test-one' do
-    let(:args) { ['test-one', path] }
+    let(:command) { 'test-one' }
+    it 'runs 1st test case' do
+      expect { subject }.to output(
+        <<~OUTPUT
+          ***** test_one A.rb *****
+          ==== A_001 ====
+          -- input --
+          1
+          2 3
+          test
+          -- expected --
+          6 test
+          -- result --
+          6 test
+          << OK >>
+        OUTPUT
+      ).to_stdout
+    end
   end
 
   describe 'test-all' do
-    let(:args) { ['test-all', path] }
+    let(:command) { 'test-all' }
+
+    it 'runs all test cases' do
+      expect { subject }.to output(
+        <<~OUTPUT
+          ***** test_all A.rb *****
+          ==== A_001 ====
+          -- input --
+          1
+          2 3
+          test
+          -- expected --
+          6 test
+          -- result --
+          6 test
+          << OK >>
+          ==== A_002 ====
+          -- input --
+          72
+          128 256
+          myonmyon
+          -- expected --
+          456 myonmyon
+          -- result --
+          456 myonmyon
+          << OK >>
+        OUTPUT
+      ).to_stdout
+    end
+
+    context 'if the source has not been tested' do
+      let(:result_path) { File.join(tmp_dir, 'A.rb.verified') }
+      before { rmdir_force(tmp_dir) }
+      it 'mark the source as verified' do
+        expect { subject }.to change { File.exist?(result_path) }
+          .from(false).to(true)
+      end
+    end
   end
 
   describe 'submit' do
-    let(:args) { ['submit', path] }
-    let(:path) { File.join(contest_root, src) }
-
+    let(:command) { 'submit' }
     context 'when the source has not been tested' do
-      let(:src) { 'A.rb' }
+      before { rmdir_force(tmp_dir) }
       it 'shows error' do
         expect { subject }.to output(
           "A.rb has not been tested.\n"

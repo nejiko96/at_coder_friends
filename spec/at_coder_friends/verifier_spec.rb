@@ -11,13 +11,8 @@ RSpec.describe AtCoderFriends::Verifier do
   let(:target_file) { 'A.rb' }
   let(:result_file) { '.tmp/A.rb.verified' }
 
-  before :each do
-    rmdir_force(tmp_dir)
-  end
-
-  after :all do
-    rmdir_force(tmp_dir)
-  end
+  before(:each) { rmdir_force(tmp_dir) }
+  after(:all) { rmdir_force(tmp_dir) }
 
   describe '#verify' do
     subject { verifier.verify }

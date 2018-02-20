@@ -93,9 +93,8 @@ module AtCoderFriends
     end
 
     def test_all(path)
-      vf = Verifier.new(path)
       TestRunner.new(path).test_all
-      vf.verify
+      Verifier.new(path).verify
     end
 
     def submit(path)
