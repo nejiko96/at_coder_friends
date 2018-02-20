@@ -8,6 +8,15 @@ module AtCoderFriends
     include PathUtil
 
     EXITING_OPTIONS = %i[version].freeze
+    OPTION_BANNER =
+      <<~TEXT
+        Usage:
+          at_coder_friends setup    path/contest       # setup contest folder
+          at_coder_friends test-one path/contest/src   # run 1st test case
+          at_coder_friends test-all path/contest/src   # run all test cases
+          at_coder_friends submit   path/contest/src   # submit source code
+        Options:
+      TEXT
     STATUS_SUCCESS  = 0
     STATUS_ERROR    = 1
 
@@ -29,9 +38,15 @@ module AtCoderFriends
       e.status
     end
 
+    def usage(msg = nil)
+      warn @usage
+      warn "error: #{msg}" if msg
+      exit STATUS_ERROR
+    end
+
     def parse_options!(args)
       op = OptionParser.new do |opts|
-        opts.banner = 'Usage: at_coder_friends [options] [command] [path]'
+        opts.banner = OPTION_BANNER
         opts.on('-v', '--version', 'Display version.') do
           @options[:version] = true
         end
@@ -41,12 +56,6 @@ module AtCoderFriends
       op.parse!(args)
     rescue OptionParser::InvalidOption => e
       usage e.message
-    end
-
-    def usage(msg = nil)
-      warn @usage
-      warn "error: #{msg}" if msg
-      exit STATUS_ERROR
     end
 
     def handle_exiting_option
@@ -66,7 +75,7 @@ module AtCoderFriends
       when 'submit'
         submit(path)
       else
-        usage "wrong command: #{command}"
+        usage "unknown command: #{command}"
       end
     end
 

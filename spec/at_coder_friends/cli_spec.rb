@@ -1,14 +1,26 @@
 # frozen_string_literal: true
 
 RSpec.describe AtCoderFriends::CLI do
+  include_context :atcoder_env
+
   subject(:cli) { described_class.new }
+
+  USAGE = <<~TEXT
+    Usage:
+      at_coder_friends setup    path/contest       # setup contest folder
+      at_coder_friends test-one path/contest/src   # run 1st test case
+      at_coder_friends test-all path/contest/src   # run all test cases
+      at_coder_friends submit   path/contest/src   # submit source code
+    Options:
+        -v, --version                    Display version.
+  TEXT
 
   subject { cli.run(args) }
   describe 'exiting options' do
     context '-v' do
       let(:args) { ['-v'] }
       it 'shows version' do
-        expect { subject }.to output("0.1.0\n").to_stdout
+        expect { subject }.to output("#{AtCoderFriends::VERSION}\n").to_stdout
         expect(subject).to eq(0)
       end
     end
@@ -16,7 +28,7 @@ RSpec.describe AtCoderFriends::CLI do
     context '--version' do
       let(:args) { ['--version'] }
       it 'shows version' do
-        expect { subject }.to output("0.1.0\n").to_stdout
+        expect { subject }.to output("#{AtCoderFriends::VERSION}\n").to_stdout
         expect(subject).to eq(0)
       end
     end
@@ -24,12 +36,7 @@ RSpec.describe AtCoderFriends::CLI do
     context '-h' do
       let(:args) { ['-h'] }
       it 'shows usage' do
-        expect { subject }.to output(
-          <<~OUTPUT
-            Usage: at_coder_friends [options] [command] [path]
-                -v, --version                    Display version.
-          OUTPUT
-        ).to_stdout
+        expect { subject }.to output(USAGE).to_stdout
         expect(subject).to eq(0)
       end
     end
@@ -37,12 +44,7 @@ RSpec.describe AtCoderFriends::CLI do
     context '--help' do
       let(:args) { ['--help'] }
       it 'shows usage' do
-        expect { subject }.to output(
-          <<~OUTPUT
-            Usage: at_coder_friends [options] [command] [path]
-                -v, --version                    Display version.
-          OUTPUT
-        ).to_stdout
+        expect { subject }.to output(USAGE).to_stdout
         expect(subject).to eq(0)
       end
     end
@@ -53,11 +55,8 @@ RSpec.describe AtCoderFriends::CLI do
       let(:args) { ['--nothing'] }
       it 'shows usage' do
         expect { subject }.to output(
-          <<~OUTPUT
-            Usage: at_coder_friends [options] [command] [path]
-                -v, --version                    Display version.
-            error: invalid option: --nothing
-          OUTPUT
+          USAGE +
+          "error: invalid option: --nothing\n"
         ).to_stderr
         expect(subject).to eq(1)
       end
@@ -67,11 +66,29 @@ RSpec.describe AtCoderFriends::CLI do
       let(:args) { ['setup'] }
       it 'shows usage' do
         expect { subject }.to output(
-          <<~OUTPUT
-            Usage: at_coder_friends [options] [command] [path]
-                -v, --version                    Display version.
-            error: command or path is not specified.
-          OUTPUT
+          USAGE +
+          "error: command or path is not specified.\n"
+        ).to_stderr
+        expect(subject).to eq(1)
+      end
+    end
+
+    context 'with a wrong command' do
+      let(:args) { ['init', contest_root] }
+      it 'shows usage' do
+        expect { subject }.to output(
+          USAGE +
+          "error: unknown command: init\n"
+        ).to_stderr
+        expect(subject).to eq(1)
+      end
+    end
+
+    context 'when config file is not found' do
+      let(:args) { ['setup', '/foo/bar'] }
+      it 'shows error' do
+        expect { subject }.to output(
+          "Configuration file not found: /foo/bar\n"
         ).to_stderr
         expect(subject).to eq(1)
       end
