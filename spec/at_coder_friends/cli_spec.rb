@@ -108,4 +108,27 @@ RSpec.describe AtCoderFriends::CLI do
       end
     end
   end
+
+  describe 'test-one' do
+    let(:args) { ['test-one', path] }
+  end
+
+  describe 'test-all' do
+    let(:args) { ['test-all', path] }
+  end
+
+  describe 'submit' do
+    let(:args) { ['submit', path] }
+    let(:path) { File.join(contest_root, src) }
+
+    context 'when the source has not been tested' do
+      let(:src) { 'A.rb' }
+      it 'shows error' do
+        expect { subject }.to output(
+          "A.rb has not been tested.\n"
+        ).to_stderr
+        expect(subject).to eq(1)
+      end
+    end
+  end
 end

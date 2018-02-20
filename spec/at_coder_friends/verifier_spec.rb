@@ -76,11 +76,6 @@ RSpec.describe AtCoderFriends::Verifier do
       it 'returns false' do
         expect(subject).to be false
       end
-
-      it 'shows message' do
-        expect { subject }.to output("A.rb is not verified.\n")
-          .to_stdout
-      end
     end
 
     context 'when the target is modified after verified' do
@@ -92,11 +87,6 @@ RSpec.describe AtCoderFriends::Verifier do
 
       it 'returns false' do
         expect(subject).to be false
-      end
-
-      it 'shows message' do
-        expect { subject }.to output("A.rb is not verified.\n")
-          .to_stdout
       end
     end
   end
