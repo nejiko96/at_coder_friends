@@ -1,13 +1,12 @@
 # frozen_string_literal: true
 
 RSpec.describe AtCoderFriends::TestRunner do
-  spec_root = File.expand_path('..', __dir__)
-  contest_root = File.join(spec_root, 'fixtures/project/contest')
+  include_context :atcoder_env
 
-  subject(:runner) do
-    described_class.new(File.join(contest_root, prog))
-  end
+  subject(:runner) { described_class.new(File.join(contest_root, prog)) }
   let(:prog) { 'A.rb' }
+
+  after(:all) { FileUtils.rm(Dir.glob(smp_dir + '/*.out')) }
 
   describe '#edit_cmd' do
     subject { runner.edit_cmd }

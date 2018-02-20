@@ -3,9 +3,7 @@
 RSpec.describe AtCoderFriends::Verifier do
   include FileHelper
 
-  spec_root = File.expand_path('..', __dir__)
-  contest_root = File.join(spec_root, 'fixtures/project/contest')
-  tmpdir = File.join(contest_root, '.tmp')
+  include_context :atcoder_env
 
   subject(:verifier) { described_class.new(target_path) }
   let(:target_path) { File.join(contest_root, target_file) }
@@ -14,11 +12,11 @@ RSpec.describe AtCoderFriends::Verifier do
   let(:result_file) { '.tmp/A.rb.verified' }
 
   before :each do
-    rmdir_force(tmpdir)
+    rmdir_force(tmp_dir)
   end
 
   after :all do
-    rmdir_force(tmpdir)
+    rmdir_force(tmp_dir)
   end
 
   describe '#verify' do
@@ -35,7 +33,7 @@ RSpec.describe AtCoderFriends::Verifier do
       let(:target_file) { 'nothing.rb' }
       it 'does not create .verified' do
         expect { subject }
-          .not_to change { Dir.exist?(tmpdir) && Dir.entries(tmpdir).size }
+          .not_to change { Dir.exist?(tmp_dir) && Dir.entries(tmp_dir).size }
       end
     end
   end
@@ -56,7 +54,7 @@ RSpec.describe AtCoderFriends::Verifier do
     context 'when .verified does not exist' do
       it 'does not remove .verified' do
         expect { subject }
-          .not_to change { Dir.exist?(tmpdir) && Dir.entries(tmpdir).size }
+          .not_to change { Dir.exist?(tmp_dir) && Dir.entries(tmp_dir).size }
       end
     end
   end

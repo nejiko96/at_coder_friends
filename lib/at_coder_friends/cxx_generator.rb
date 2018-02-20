@@ -164,26 +164,16 @@ module AtCoderFriends
       defs.map { |inpdef| gen_read(inpdef) }.flatten
     end
 
+    # rubocop:disable Metrics/AbcSize
     def gen_read(inpdef)
-      scanf = gen_scanf_fmt(inpdef)
+      dim = inpdef.size.size - (inpdef.item == :char ? 1 : 0)
+      scanf = SCANF_FMTS[dim]
       sz1, sz2 = inpdef.size
-      fmt = gen_fmt(inpdef)
-      addr = gen_addr(inpdef)
+      fmt = FMT_FMTS[inpdef.item] * inpdef.names.size
+      addr_fmt = ADDR_FMTS[inpdef.container][inpdef.item]
+      addr = inpdef.names.map { |v| format(addr_fmt, v: v) }.join(', ')
       format(scanf, sz1: sz1, sz2: sz2, fmt: fmt, addr: addr)
     end
-
-    def gen_scanf_fmt(inpdef)
-      ix = inpdef.size.size - (inpdef.item == :char ? 1 : 0)
-      SCANF_FMTS[ix]
-    end
-
-    def gen_fmt(inpdef)
-      FMT_FMTS[inpdef.item] * inpdef.names.size
-    end
-
-    def gen_addr(inpdef)
-      addr_fmt = ADDR_FMTS[inpdef.container][inpdef.item]
-      inpdef.names.map { |v| format(addr_fmt, v: v) }.join(', ')
-    end
+    # rubocop:enable Metrics/AbcSize
   end
 end

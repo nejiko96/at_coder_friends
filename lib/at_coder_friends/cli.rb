@@ -7,55 +7,54 @@ module AtCoderFriends
   class CLI
     include PathUtil
 
-    class Finished < RuntimeError; end
-
     EXITING_OPTIONS = %i[version].freeze
     STATUS_SUCCESS  = 0
     STATUS_ERROR    = 1
 
     def run(args = ARGV)
-      @options = parse_options!(args)
+      parse_options!(args)
       handle_exiting_option
       usage 'command or path is not specified.' if args.size < 2
       @config = ConfigLoader.load_config(args[1])
       exec_command(*args)
+      STATUS_SUCCESS
     rescue AtCoderFriends::ConfigNotFoundError => e
       warn e.message
       STATUS_ERROR
-    rescue Finished
-      STATUS_SUCCESS
+    rescue StandardError, SyntaxError, LoadError => e
+      warn e.message
+      warn e.backtrace
+      STATUS_ERROR
+    rescue SystemExit => e
+      e.status
     end
 
-    # rubocop:disable Metrics/MethodLength
     def parse_options!(args)
-      options = {}
       op = OptionParser.new do |opts|
         opts.banner = 'Usage: at_coder_friends [options] [command] [path]'
         opts.on('-v', '--version', 'Display version.') do
-          options[:version] = true
+          @options[:version] = true
         end
       end
-      self.class.class_eval do
-        define_method(:usage) do |msg = nil|
-          puts op.to_s
-          puts "error: #{msg}" if msg
-          raise Finished
-        end
-      end
+      @usage = op.to_s
+      @options = {}
       op.parse!(args)
-      options
     rescue OptionParser::InvalidOption => e
       usage e.message
     end
-    # rubocop:enable Metrics/MethodLength
+
+    def usage(msg = nil)
+      warn @usage
+      warn "error: #{msg}" if msg
+      exit STATUS_ERROR
+    end
 
     def handle_exiting_option
       return unless EXITING_OPTIONS.any? { |o| @options.key? o }
       puts AtCoderFriends::VERSION if @options[:version]
-      raise Finished
+      exit STATUS_SUCCESS
     end
 
-    # rubocop:disable Metrics/MethodLength
     def exec_command(command, path)
       case command
       when 'setup'
@@ -70,9 +69,7 @@ module AtCoderFriends
         usage "wrong command: #{command}"
       end
     end
-    # rubocop:enable Metrics/MethodLength
 
-    # rubocop:disable Metrics/MethodLength
     def setup(path)
       raise StandardError, "#{path} already exists." if Dir.exist?(path)
       agent = ScrapingAgent.new(contest_name(path), @config)
@@ -87,7 +84,6 @@ module AtCoderFriends
         emitter.emit(pbm)
       end
     end
-    # rubocop:enable Metrics/MethodLength
 
     def test_one(path)
       TestRunner.new(path).test_one(1)

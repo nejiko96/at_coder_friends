@@ -12,4 +12,3 @@ require 'at_coder_friends/ruby_generator'
 require 'at_coder_friends/cxx_generator'
 require 'at_coder_friends/emitter'
 require 'at_coder_friends/cli'
-

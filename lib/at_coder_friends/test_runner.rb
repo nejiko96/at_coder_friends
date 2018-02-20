@@ -6,11 +6,10 @@ module AtCoderFriends
   # run tests for the specified program.
   class TestRunner
     include PathUtil
-    SMP_DIR = 'data'
 
     def initialize(path)
       @path, @dir, @prg, @base, @ext, @q = split_prg_path(path)
-      @smpdir = File.join(@dir, SMP_DIR)
+      @smp_dir = smp_dir(@dir)
     end
 
     def test_all
@@ -28,7 +27,7 @@ module AtCoderFriends
     # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
     def test(n)
       cs = format('%<q>s_%<n>03d', q: @q, n: n)
-      files = %w[in out exp].map { |ext| "#{@smpdir}/#{cs}.#{ext}" }
+      files = %w[in out exp].map { |ext| "#{@smp_dir}/#{cs}.#{ext}" }
       infile, outfile, expfile = files
 
       return false unless File.exist?(infile) && File.exist?(expfile)
@@ -80,7 +79,6 @@ module AtCoderFriends
     end
     # rubocop:enable Metrics/MethodLength
 
-    # rubocop:disable Metrics/MethodLength
     def which_os
       @os ||= begin
         case RbConfig::CONFIG['host_os']
@@ -97,6 +95,5 @@ module AtCoderFriends
         end
       end
     end
-    # rubocop:enable Metrics/MethodLength
   end
 end

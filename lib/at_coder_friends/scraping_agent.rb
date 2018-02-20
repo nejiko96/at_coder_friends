@@ -19,8 +19,8 @@ module AtCoderFriends
     }.freeze
 
     def initialize(contest, config)
-      @config = config
       @contest = contest
+      @config = config
       @base_url = format(BASE_URL_FMT, contest: contest)
       @agent = Mechanize.new
       # @agent.log = Logger.new(STDERR)
@@ -36,7 +36,6 @@ module AtCoderFriends
       form.submit
     end
 
-    # rubocop:disable Metrics/AbcSize
     def submit_src(q, lang_id, src)
       sleep 0.1
       page = @agent.get(@base_url + 'submit')
@@ -49,7 +48,6 @@ module AtCoderFriends
       sleep 0.1
       form.submit
     end
-    # rubocop:enable Metrics/AbcSize
 
     def fetch_assignments
       url = @base_url + 'assignments'
@@ -62,7 +60,6 @@ module AtCoderFriends
       end
     end
 
-    # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
     def fetch_problem(q, url)
       puts "fetch problem from #{url} ..."
       sleep 0.1
@@ -85,9 +82,7 @@ module AtCoderFriends
         end
       end
     end
-    # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
-    # rubocop:disable Metrics/MethodLength
     def parse_section(pbm, h3, section)
       title = h3.content.strip
       text = section.content
@@ -104,7 +99,6 @@ module AtCoderFriends
         pbm.add_smp($LAST_MATCH_INFO[:no], :exp, code)
       end
     end
-    # rubocop:enable Metrics/MethodLength
 
     def submit(path)
       path, _dir, prg, _base, ext, q = split_prg_path(path)
