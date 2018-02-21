@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 StubRequest = Struct.new(:method, :path, :query, :body) do
-  BASE_URL = 'http://arc001.contest.atcoder.jp/'
+  URL_FMT = 'http://%<contest>s.contest.atcoder.jp/'
 
   def initialize(method, path, query = nil, body = '')
     super(method, path, query, body)
@@ -13,13 +13,15 @@ StubRequest = Struct.new(:method, :path, :query, :body) do
     File.read(file, encoding: Encoding::UTF_8)
   end
 
-  def url
-    ret = "#{BASE_URL}#{path}"
+  def url_for(contest)
+    ret = format(URL_FMT, contest: contest)
+    ret += path
     ret += "?#{query}" if query
     ret
   end
 end
 
+CONTESTS = %w[practice arc001].freeze
 REQS = [
   StubRequest.new(:get, 'login'),
   StubRequest.new(:get, 'assignments'),
@@ -36,6 +38,7 @@ REQS = [
     task_id: '207',
     language_id_207: '3024',
     language_id_2520: '3003',
+    # rubocop:disable Layout/EmptyLinesAroundArguments
     source_code:
       <<~SRC
         a = gets.to_i
@@ -44,6 +47,7 @@ REQS = [
 
         puts "\#{a + b + c} \#{s}"
       SRC
+    # rubocop:enable Layout/EmptyLinesAroundArguments
   )
 ].freeze
 
@@ -55,22 +59,34 @@ RSpec.describe AtCoderFriends::ScrapingAgent do
   let(:config) { { 'user' => 'abc', 'password' => 'xyz' } }
 
   before :each do
-    REQS.each do |req|
-      stub_request(req.method, req.url)
-        .with(body: req.body) # hash_including(req.body)
-        .to_return(
-          status: 200,
-          headers: { content_type: 'text/html' },
-          body: req.mock
-        )
+    CONTESTS.each do |contest|
+      REQS.each do |req|
+        stub_request(req.method, req.url_for(contest))
+          .with(body: req.body)
+          .to_return(
+            status: 200,
+            headers: { content_type: 'text/html' },
+            body: req.mock
+          )
+      end
     end
   end
 
   describe '#fetch_all' do
     subject { agent.fetch_all }
 
-    it 'fetches problems' do
-      expect(subject).not_to be_nil
+    context 'from ARC#001' do
+      it 'fetches problems' do
+        expect(subject.size).to eq(2)
+      end
+    end
+
+    context 'from practice' do
+      let(:contest) { 'practice' }
+
+      it 'fetches problems' do
+        expect(subject.size).to eq(2)
+      end
     end
   end
 
@@ -78,8 +94,8 @@ RSpec.describe AtCoderFriends::ScrapingAgent do
     subject { agent.submit(File.join(contest_root, prg)) }
     let(:prg) { 'A.rb' }
 
-    it 'submits src' do
-      expect(subject).not_to be_nil
+    it 'posts the source' do
+      expect(subject).to be_a(Mechanize::Page)
     end
   end
 end

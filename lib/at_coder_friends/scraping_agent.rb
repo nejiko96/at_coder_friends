@@ -12,10 +12,12 @@ module AtCoderFriends
     include PathUtil
 
     BASE_URL_FMT = 'http://%<contest>s.contest.atcoder.jp/'
+    XPATH_SECTION = '//h3[.="%<title>s"]/following-sibling::section'
     LANG_TBL = {
-      'cxx' => '3003',
-      'cs'  => '3006',
-      'rb'  => '3024'
+      'cxx'  => '3003',
+      'cs'   => '3006',
+      'java' => '3016',
+      'rb'   => '3024'
     }.freeze
 
     def initialize(contest, config)
@@ -26,32 +28,39 @@ module AtCoderFriends
       # @agent.log = Logger.new(STDERR)
     end
 
+    def fetch_all
+      login
+      fetch_assignments.map do |q, url|
+        pbm = fetch_problem(q, url)
+        yield pbm if block_given?
+        pbm
+      end
+    end
+
+    def submit(path)
+      path, _dir, prg, _base, ext, q = split_prg_path(path)
+      lang_id = LANG_TBL[ext.downcase]
+      raise AppError ".#{ext} is not available." unless lang_id
+      src = File.read(path, encoding: Encoding::UTF_8)
+
+      puts "***** submit #{prg} *****"
+      login
+      post_src(q, lang_id, src)
+    end
+
     def login
       sleep 0.1
       page = @agent.get(@base_url + 'login')
-      form = page.forms[0]
+      form = page.forms.first
       form.field_with(name: 'name').value = @config['user']
       form.field_with(name: 'password').value = @config['password']
       sleep 0.1
       form.submit
     end
 
-    def submit_src(q, lang_id, src)
-      sleep 0.1
-      page = @agent.get(@base_url + 'submit')
-      form = page.forms[0]
-      selectlist = form.field_with(name: 'task_id')
-      task_id = selectlist.options.find { |opt| opt.text.start_with?(q) }.value
-      selectlist.value = task_id
-      form.field_with(name: "language_id_#{task_id}").value = lang_id
-      form.field_with(name: 'source_code').value = src
-      sleep 0.1
-      form.submit
-    end
-
     def fetch_assignments
       url = @base_url + 'assignments'
-      puts "fetch assignments from #{url} ..."
+      puts "fetch list from #{url} ..."
       sleep 0.1
       page = @agent.get(url)
       ('A'..'Z').each_with_object({}) do |q, h|
@@ -67,12 +76,9 @@ module AtCoderFriends
       Problem.new(q) do |pbm|
         if @contest == 'arc001'
           page.search('//h3').each do |h3|
-            sections = page.search(
-              '//h3[.="' + h3.content + '"]/following-sibling::section'
-            )
-            next if sections.empty?
-            section = sections[0]
-            parse_section(pbm, h3, section)
+            query = format(XPATH_SECTION, title: h3.content)
+            sections = page.search(query)
+            sections[0] && parse_section(pbm, h3, sections[0])
           end
         else
           page.search('//*[./h3]').each do |section|
@@ -100,27 +106,17 @@ module AtCoderFriends
       end
     end
 
-    def submit(path)
-      path, _dir, prg, _base, ext, q = split_prg_path(path)
-      src = File.read(path, encoding: Encoding::UTF_8)
-      lang_id = LANG_TBL[ext.downcase]
-      unless lang_id
-        puts ".#{ext} is not available."
-        return
+    def post_src(q, lang_id, src)
+      sleep 0.1
+      page = @agent.get(@base_url + 'submit')
+      form = page.forms.first
+      task_id = form.field_with(name: 'task_id') do |sel|
+        sel.options.find { |opt| opt.text.start_with?(q) }.select
       end
-      puts "***** submit #{prg} *****"
-      login
-      submit_src(q, lang_id, src)
-    end
-
-    def fetch_all
-      login
-      assignments = fetch_assignments
-      assignments.map do |q, url|
-        pbm = fetch_problem(q, url)
-        yield pbm if block_given?
-        pbm
-      end
+      form.field_with(name: 'language_id_' + task_id.value).value = lang_id
+      form.field_with(name: 'source_code').value = src
+      sleep 0.1
+      form.submit
     end
   end
 end
