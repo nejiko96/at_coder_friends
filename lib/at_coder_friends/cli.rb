@@ -75,7 +75,7 @@ module AtCoderFriends
 
     def setup(path)
       raise AppError, "#{path} is not empty." \
-        unless !Dir.exist?(path) || Dir.empty?(path)
+        unless !Dir.exist?(path) || Dir["#{path}/*"].empty?
       agent = ScrapingAgent.new(contest_name(path), @config)
       parser = FormatParser.new
       rb_gen = RubyGenerator.new
