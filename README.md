@@ -2,13 +2,13 @@
 
 ## Description
 
-AtCoderFriends supports following operations
+AtCoderFriends automates following operations
 related to [AtCoder](https://atcoder.jp/) programming contest:
 
 - Download example data
 - Generate source skeleton
 - Run test cases
-- Source submission
+- Submit code
 
 ## Dependencies
 
@@ -37,7 +37,8 @@ Or install it yourself as:
 
 ## Configuration
 
-Create ```.at_coder_friends.yml``` and place it in the (parent of) working directory.
+Create ```.at_coder_friends.yml``` and place it in the working directory  
+(or parent of working directory).
 
 ```yaml
 user: <user>
@@ -55,39 +56,38 @@ at_coder_friends setup     /path/to/contest
 Creates contest folder, and generates example data and source skeletons into the folder.
 
 
-### Run tests
-
-- first test case only
+### Run first test case
 
 ```
-at_coder_friends test-one  /path/to/contest/src
+at_coder_friends test-one  /path/to/contest/source_file
 ```
 
-- all test cases
+### Run all test cases
 
 ```
-at_coder_friends test-all  /path/to/contest/src
+at_coder_friends test-all  /path/to/contest/source_file
 ```
 
 ### Submit code
 
 ```
-at_coder_friends submit    /path/to/contest/src
+at_coder_friends submit    /path/to/contest/source_file
 ```
 
 ### Naming Convention
 
-- Contest folder name will be used as part of the URL of the contest site.  
-  For example, if ```arc001``` folder is specified, AtCoderFriends will connect to  
+- Contest folder name will be used as part of the contest site URL.  
+  For example, if ```arc001``` folder is specified, AtCoderFriends will access to  
   ```arc001.contest.atcoder.jp```.
 - Source file name should be ```[problem ID].[language specific extension]```(e.g. ```A.rb```),  
-  so that AtCoderFriends can decide which test data to use, or fill the submission form automatically.
-- In order to have another solution, suffixes (begins with underscore) can be added to the file name (e.g. ```A_v2.rb```).
+  so that AtCoderFriends can decide which example data to use, or fill the submission form automatically.
+- Suffixes (start with underscore) can be added to the file name (e.g. ```A_v2.rb```),  
+  so that you can try multiple codes for one problem.
 
 ### Notes
 
 - Source compilation is not supported.
-- Source generation supports only ruby and C++.
+- Source generator and test runner supports only ruby and C++.
 
 ## For Sublime Text User
 
