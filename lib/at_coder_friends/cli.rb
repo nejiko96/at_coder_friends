@@ -74,7 +74,8 @@ module AtCoderFriends
     end
 
     def setup(path)
-      raise AppError, "#{path} already exists." if Dir.exist?(path)
+      raise AppError, "#{path} is not empty." \
+        unless !Dir.exist?(path) || Dir.empty?(path)
       agent = ScrapingAgent.new(contest_name(path), @config)
       parser = FormatParser.new
       rb_gen = RubyGenerator.new

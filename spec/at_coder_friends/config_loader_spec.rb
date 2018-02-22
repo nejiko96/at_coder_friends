@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe AtCoderFriends::ConfigLoader do
-  include FileHelper
   include_context :atcoder_env
 
   subject(:loader) { described_class }

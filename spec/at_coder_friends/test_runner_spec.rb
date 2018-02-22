@@ -6,8 +6,6 @@ RSpec.describe AtCoderFriends::TestRunner do
   subject(:runner) { described_class.new(File.join(contest_root, prog)) }
   let(:prog) { 'A.rb' }
 
-  after(:all) { FileUtils.rm(Dir.glob(smp_dir + '/*.out')) }
-
   describe '#edit_cmd' do
     subject { runner.edit_cmd }
 

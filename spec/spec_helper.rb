@@ -4,8 +4,8 @@ require 'bundler/setup'
 
 # Coverage support needs to be required *before* the RuboCop code is required!
 require 'support/coverage'
-
 require 'at_coder_friends'
+require 'webmock/rspec'
 
 # Requires supporting files with custom matchers and macros, etc,
 # in ./support/ and its subdirectories.
