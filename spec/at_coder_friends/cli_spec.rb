@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe AtCoderFriends::CLI do
-  include FileHelper
 
   include_context :atcoder_env
 
@@ -9,8 +8,6 @@ RSpec.describe AtCoderFriends::CLI do
   let(:args) { [command, path] }
   let(:path) { File.join(contest_root, src) }
   let(:src) { 'A.rb' }
-
-  after(:all) { rmdir_force(tmp_dir) }
 
   USAGE = <<~TEXT
     Usage:
@@ -99,6 +96,7 @@ RSpec.describe AtCoderFriends::CLI do
 
   describe 'setup' do
     let(:command) { 'setup' }
+
     context 'when the folder is not empty' do
       let(:path) { contest_root }
       it 'shows error' do
@@ -107,10 +105,26 @@ RSpec.describe AtCoderFriends::CLI do
         expect(subject).to eq(1)
       end
     end
+
+    # context 'normal cases' do
+    #   include_context :uses_temp_dir
+    #   include_context :atcoder_stub
+
+    #   context 'when the folder does not exist' do
+    #     let(:path) { File.join(temp_dir, ) }
+
+    #   end
+
+    #   context 'when the folder is empty' do
+    #   end
+    # end
+
+
   end
 
   describe 'test-one' do
     let(:command) { 'test-one' }
+
     it 'runs 1st test case' do
       expect { subject }.to output(
         <<~OUTPUT
@@ -162,23 +176,43 @@ RSpec.describe AtCoderFriends::CLI do
     end
 
     context 'if the source has not been tested' do
-      let(:result_path) { File.join(tmp_dir, 'A.rb.verified') }
-      before { rmdir_force(tmp_dir) }
+      let(:vf_path) { File.join(tmp_dir, 'A.rb.verified') }
+
       it 'mark the source as verified' do
         expect { subject }.to \
-          change { File.exist?(result_path) }.from(false).to(true)
+          change { File.exist?(vf_path) }.from(false).to(true)
       end
     end
   end
 
   describe 'submit' do
     let(:command) { 'submit' }
+
     context 'when the source has not been tested' do
-      before { rmdir_force(tmp_dir) }
       it 'shows error' do
         expect { subject }.to \
           output("A.rb has not been tested.\n").to_stderr
         expect(subject).to eq(1)
+      end
+    end
+
+    context 'normal cases' do
+      include_context :atcoder_stub
+
+      context 'when the source has been tested' do
+        let(:vf_path) { File.join(tmp_dir, 'A.rb.verified') }
+
+        before { AtCoderFriends::Verifier.new(path).verify }
+
+        it 'posts the source' do
+          expect { subject }.to \
+            output("***** submit A.rb *****\n").to_stdout
+        end
+
+        it 'deletes .verified file' do
+          expect { subject }.to \
+            change { File.exist?(vf_path) }.from(true).to(false)
+        end
       end
     end
   end

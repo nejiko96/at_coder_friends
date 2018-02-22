@@ -6,7 +6,7 @@ RSpec.describe AtCoderFriends::ScrapingAgent do
 
   subject(:agent) { described_class.new(contest, config) }
   let(:contest) { 'arc001' }
-  let(:config) { { 'user' => 'abc', 'password' => 'xyz' } }
+  let(:config) { { 'user' => 'foo', 'password' => 'bar' } }
 
   describe '#fetch_all' do
     subject { agent.fetch_all }

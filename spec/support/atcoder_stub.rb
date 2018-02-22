@@ -29,7 +29,7 @@ REQS = [
   StubRequest.new(:get, 'submit'),
   StubRequest.new(
     :post, 'login', nil,
-    name: 'abc', password: 'xyz'
+    name: 'foo', password: 'bar'
   ),
   StubRequest.new(
     :post, 'submit', 'task_id=207',
