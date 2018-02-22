@@ -11,6 +11,8 @@ RSpec.describe AtCoderFriends::Emitter do
     end
   end
   let(:f) { ->(file) { File.join(dir, file) } }
+  let(:e) { ->(file) { File.exist?(f[file]) } }
+  let(:c) { ->(file) { File.read(f[file]) } }
 
   describe '#emit' do
     include_context :uses_temp_dir
@@ -27,14 +29,14 @@ RSpec.describe AtCoderFriends::Emitter do
           A.cxx
         OUTPUT
       ).to_stdout
-      expect(File.exist?(f['data/A_001.in'])).to be true
-      expect(File.exist?(f['data/A_001.exp'])).to be true
-      expect(File.exist?(f['A.rb'])).to be true
-      expect(File.exist?(f['A.cxx'])).to be true
-      expect(File.read(f['data/A_001.in'])).to eq('content of A_001.in')
-      expect(File.read(f['data/A_001.exp'])).to eq('content of A_001.exp')
-      expect(File.read(f['A.rb'])).to eq('content of A.rb')
-      expect(File.read(f['A.cxx'])).to eq('content of A.cxx')
+      expect(e['data/A_001.in']).to be true
+      expect(e['data/A_001.exp']).to be true
+      expect(e['A.rb']).to be true
+      expect(e['A.cxx']).to be true
+      expect(c['data/A_001.in']).to eq('content of A_001.in')
+      expect(c['data/A_001.exp']).to eq('content of A_001.exp')
+      expect(c['A.rb']).to eq('content of A.rb')
+      expect(c['A.cxx']).to eq('content of A.cxx')
     end
   end
 end

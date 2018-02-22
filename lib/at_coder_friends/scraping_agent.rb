@@ -112,7 +112,7 @@ module AtCoderFriends
       form = page.forms.first
       task_id = form.field_with(name: 'task_id') do |sel|
         option = sel.options.find { |op| op.text.start_with?(q) }
-        option&.select || (raise AppError, "problem #{q} not found.")
+        option&.select || (raise AppError, "unknown problem:#{q}.")
       end
       form.field_with(name: 'language_id_' + task_id.value).value = lang_id
       form.field_with(name: 'source_code').value = src

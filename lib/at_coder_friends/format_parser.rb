@@ -84,7 +84,7 @@ module AtCoderFriends
       lines = split_trim(fmt)
       defs = parse_fmt(lines)
       smpx = max_smp(smps)
-      return unless smpx
+      return defs unless smpx
       match_smp!(defs, smpx)
     end
 

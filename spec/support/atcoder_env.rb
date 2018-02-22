@@ -1,5 +1,10 @@
 # frozen_string_literal: true
 
+def rmdir_force(dir)
+  FileUtils.rm(Dir.glob(dir + '/*.*'))
+  Dir.rmdir(dir) if Dir.exist?(dir)
+end
+
 shared_context :atcoder_env do
   include FileHelper
 

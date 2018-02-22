@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe AtCoderFriends::CLI do
-
+  include FileHelper
   include_context :atcoder_env
 
   subject(:cli) { described_class.new }
@@ -106,20 +106,61 @@ RSpec.describe AtCoderFriends::CLI do
       end
     end
 
-    # context 'normal cases' do
-    #   include_context :uses_temp_dir
-    #   include_context :atcoder_stub
+    context 'when there is no error' do
+      include_context :uses_temp_dir
+      include_context :atcoder_stub
 
-    #   context 'when the folder does not exist' do
-    #     let(:path) { File.join(temp_dir, ) }
+      let(:path) { File.join(temp_dir, 'practice') }
+      before :each do
+        create_file(
+          File.join(temp_dir, '.at_coder_friends.yml'),
+          <<~TEXT
+            user: foo
+            password: bar
+          TEXT
+        )
+      end
+      let(:f) { ->(file) { File.join(path, file) } }
+      let(:e) { ->(file) { File.exist?(f[file]) } }
 
-    #   end
+      shared_examples 'normal case' do
+        it 'generates examples and sources' do
+          expect { subject }.to output(
+            <<~OUTPUT
+              ***** fetch_all practice *****
+              fetch list from http://practice.contest.atcoder.jp/assignments ...
+              fetch problem from /tasks/practice_1 ...
+              A_001.in
+              A_001.exp
+              A_002.in
+              A_002.exp
+              A.rb
+              A.cxx
+              fetch problem from /tasks/practice_2 ...
+              B.rb
+              B.cxx
+            OUTPUT
+          ).to_stdout
+          expect(e['data/A_001.in']).to be true
+          expect(e['data/A_001.exp']).to be true
+          expect(e['data/A_002.in']).to be true
+          expect(e['data/A_002.exp']).to be true
+          expect(e['A.rb']).to be true
+          expect(e['A.cxx']).to be true
+          expect(e['B.rb']).to be true
+          expect(e['B.cxx']).to be true
+        end
+      end
 
-    #   context 'when the folder is empty' do
-    #   end
-    # end
+      context 'when the folder does not exist' do
+        it_behaves_like 'normal case'
+      end
 
-
+      context 'when the folder is empty' do
+        before { Dir.mkdir(path) }
+        it_behaves_like 'normal case'
+      end
+    end
   end
 
   describe 'test-one' do
@@ -196,23 +237,21 @@ RSpec.describe AtCoderFriends::CLI do
       end
     end
 
-    context 'normal cases' do
+    context 'when there is no error' do
       include_context :atcoder_stub
 
-      context 'when the source has been tested' do
-        let(:vf_path) { File.join(tmp_dir, 'A.rb.verified') }
+      let(:vf_path) { File.join(tmp_dir, 'A.rb.verified') }
 
-        before { AtCoderFriends::Verifier.new(path).verify }
+      before { AtCoderFriends::Verifier.new(path).verify }
 
-        it 'posts the source' do
-          expect { subject }.to \
-            output("***** submit A.rb *****\n").to_stdout
-        end
+      it 'posts the source' do
+        expect { subject }.to \
+          output("***** submit A.rb *****\n").to_stdout
+      end
 
-        it 'deletes .verified file' do
-          expect { subject }.to \
-            change { File.exist?(vf_path) }.from(true).to(false)
-        end
+      it 'mark the source as unverified' do
+        expect { subject }.to \
+          change { File.exist?(vf_path) }.from(true).to(false)
       end
     end
   end

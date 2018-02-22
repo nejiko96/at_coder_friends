@@ -86,7 +86,7 @@ RSpec.describe AtCoderFriends::ScrapingAgent do
 
       it 'show error' do
         expect { subject }.to \
-          raise_error(AtCoderFriends::AppError, 'problem C not found.')
+          raise_error(AtCoderFriends::AppError, 'unknown problem:C.')
       end
     end
   end

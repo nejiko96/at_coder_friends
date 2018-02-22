@@ -34,9 +34,8 @@ RSpec.describe AtCoderFriends::Verifier do
     subject { verifier.unverify }
 
     context 'when .verified exists' do
-      before do
-        create_file(File.join(contest_root, result_file), '')
-      end
+      before { create_file(result_path, '') }
+
       it 'removes .verified' do
         expect { subject }.to change { File.exist?(result_path) }
           .from(true).to(false)
@@ -72,9 +71,9 @@ RSpec.describe AtCoderFriends::Verifier do
 
     context 'when the target is modified after verified' do
       before do
-        create_file(File.join(contest_root, result_file), '')
+        create_file(result_path, '')
         sleep 1
-        FileUtils.touch(File.join(contest_root, target_file))
+        FileUtils.touch(target_path)
       end
 
       it 'returns false' do
