@@ -1,8 +1,19 @@
 # AtCoderFriends
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/at_coder_friends`. To experiment with that code, run `bin/console` for an interactive prompt.
+## Description
 
-TODO: Delete this and the text above, and describe your gem
+AtCoderFriends supports following operations
+related to [AtCoder](https://atcoder.jp/) programming contest:
+
+- Download example data
+- Generate source skeleton
+- Run test cases
+- Source submission
+
+## Dependencies
+
+- Ruby 2.3 or newer
+- [Mechanize](https://github.com/sparklemotion/mechanize)
 
 ## Installation
 
@@ -24,14 +35,53 @@ Or install it yourself as:
     $ gem install at_coder_friends 
 -->
 
+## Configuration
+
+Create ```.at_coder_friends.yml``` and place it in the (parent of) working directory.
+
+```.at_coder_friends.yml
+user: <user>
+password: <password>
+```
+
 ## Usage
 
+### Setup
+
+The following command creates contest directory, and generates example data and source skeletons into the directory.
+
 ```
-at_coder_friends setup    path/contest       # setup contest folder
-at_coder_friends test-one path/contest/src   # run 1st test case
-at_coder_friends test-all path/contest/src   # run all test cases
-at_coder_friends submit   path/contest/src   # submit source code
+at_coder_friends setup     /path/contest
 ```
+
+### Run test (1st test case only)
+
+```
+at_coder_friends test-one  /path/contest/src
+```
+
+### Run test (all test cases)
+
+```
+at_coder_friends test-all  /path/contest/src
+```
+
+### Submit code
+
+```
+at_coder_friends submit    /path/contest/src
+```
+
+## With Sublime Text
+
+It is convenient to use with
+(sublime_at_coder_friends)[https://github.com/nejiko96/sublime_at_coder_friends],
+Sublime Text plug-in.
+
+## Notes
+
+- Source compilation is not supported.
+- Source generation supports ruby/C++
 
 ## Development
 
