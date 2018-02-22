@@ -29,6 +29,7 @@ module AtCoderFriends
     end
 
     def fetch_all
+      puts "***** fetch_all #{@contest} *****"
       login
       fetch_assignments.map do |q, url|
         pbm = fetch_problem(q, url)
@@ -39,13 +40,10 @@ module AtCoderFriends
 
     def submit(path)
       path, _dir, prg, _base, ext, q = split_prg_path(path)
-      lang_id = LANG_TBL[ext.downcase]
-      raise AppError ".#{ext} is not available." unless lang_id
-      src = File.read(path, encoding: Encoding::UTF_8)
-
       puts "***** submit #{prg} *****"
+      src = File.read(path, encoding: Encoding::UTF_8)
       login
-      post_src(q, lang_id, src)
+      post_src(q, ext, src)
     end
 
     def login
@@ -106,12 +104,15 @@ module AtCoderFriends
       end
     end
 
-    def post_src(q, lang_id, src)
+    def post_src(q, ext, src)
       sleep 0.1
+      lang_id = LANG_TBL[ext.downcase]
+      raise AppError, ".#{ext} is not available." unless lang_id
       page = @agent.get(@base_url + 'submit')
       form = page.forms.first
       task_id = form.field_with(name: 'task_id') do |sel|
-        sel.options.find { |opt| opt.text.start_with?(q) }.select
+        option = sel.options.find { |op| op.text.start_with?(q) }
+        option&.select || (raise AppError, "problem #{q} not found.")
       end
       form.field_with(name: 'language_id_' + task_id.value).value = lang_id
       form.field_with(name: 'source_code').value = src

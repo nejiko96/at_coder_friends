@@ -61,10 +61,8 @@ RSpec.describe AtCoderFriends::CLI do
     context 'when the option does not exist' do
       let(:args) { ['--nothing'] }
       it 'shows usage' do
-        expect { subject }.to output(
-          USAGE +
-          "error: invalid option: --nothing\n"
-        ).to_stderr
+        expect { subject }.to \
+          output(USAGE + "error: invalid option: --nothing\n").to_stderr
         expect(subject).to eq(1)
       end
     end
@@ -72,10 +70,9 @@ RSpec.describe AtCoderFriends::CLI do
     context 'when the number of arguments is wrong' do
       let(:args) { ['setup'] }
       it 'shows usage' do
-        expect { subject }.to output(
-          USAGE +
-          "error: command or path is not specified.\n"
-        ).to_stderr
+        expect { subject }.to \
+          output(USAGE + "error: command or path is not specified.\n")
+          .to_stderr
         expect(subject).to eq(1)
       end
     end
@@ -83,10 +80,8 @@ RSpec.describe AtCoderFriends::CLI do
     context 'with a unknown command' do
       let(:command) { 'init' }
       it 'shows usage' do
-        expect { subject }.to output(
-          USAGE +
-          "error: unknown command: init\n"
-        ).to_stderr
+        expect { subject }.to \
+          output(USAGE + "error: unknown command: init\n").to_stderr
         expect(subject).to eq(1)
       end
     end
@@ -95,9 +90,8 @@ RSpec.describe AtCoderFriends::CLI do
       let(:command) { 'setup' }
       let(:path) { '/foo/bar' }
       it 'shows error' do
-        expect { subject }.to output(
-          "Configuration file not found: /foo/bar\n"
-        ).to_stderr
+        expect { subject }.to \
+          output("Configuration file not found: /foo/bar\n").to_stderr
         expect(subject).to eq(1)
       end
     end
@@ -105,12 +99,11 @@ RSpec.describe AtCoderFriends::CLI do
 
   describe 'setup' do
     let(:command) { 'setup' }
-    context 'when the folder exists' do
+    context 'when the folder is not empty' do
       let(:path) { contest_root }
       it 'shows error' do
-        expect { subject }.to output(
-          "#{contest_root} already exists.\n"
-        ).to_stderr
+        expect { subject }.to \
+          output("#{contest_root} is not empty.\n").to_stderr
         expect(subject).to eq(1)
       end
     end
@@ -172,8 +165,8 @@ RSpec.describe AtCoderFriends::CLI do
       let(:result_path) { File.join(tmp_dir, 'A.rb.verified') }
       before { rmdir_force(tmp_dir) }
       it 'mark the source as verified' do
-        expect { subject }.to change { File.exist?(result_path) }
-          .from(false).to(true)
+        expect { subject }.to \
+          change { File.exist?(result_path) }.from(false).to(true)
       end
     end
   end
@@ -183,9 +176,8 @@ RSpec.describe AtCoderFriends::CLI do
     context 'when the source has not been tested' do
       before { rmdir_force(tmp_dir) }
       it 'shows error' do
-        expect { subject }.to output(
-          "A.rb has not been tested.\n"
-        ).to_stderr
+        expect { subject }.to \
+          output("A.rb has not been tested.\n").to_stderr
         expect(subject).to eq(1)
       end
     end
