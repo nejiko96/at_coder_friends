@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'uri'
 require 'mechanize'
 require 'logger'
 require 'English'
@@ -20,12 +21,21 @@ module AtCoderFriends
       'rb'   => '3024'
     }.freeze
 
+    attr_reader :contest, :config, :agent
+
     def initialize(contest, config)
       @contest = contest
       @config = config
-      @base_url = format(BASE_URL_FMT, contest: contest)
       @agent = Mechanize.new
       # @agent.log = Logger.new(STDERR)
+    end
+
+    def base_url
+      @base_url ||= format(BASE_URL_FMT, contest: contest)
+    end
+
+    def sub_url(path)
+      URI.join(base_url, path)
     end
 
     def fetch_all
@@ -48,19 +58,19 @@ module AtCoderFriends
 
     def login
       sleep 0.1
-      page = @agent.get(@base_url + 'login')
+      page = agent.get(sub_url('login'))
       form = page.forms.first
-      form.field_with(name: 'name').value = @config['user']
-      form.field_with(name: 'password').value = @config['password']
+      form.field_with(name: 'name').value = config['user']
+      form.field_with(name: 'password').value = config['password']
       sleep 0.1
       form.submit
     end
 
     def fetch_assignments
-      url = @base_url + 'assignments'
+      url = sub_url('assignments')
       puts "fetch list from #{url} ..."
       sleep 0.1
-      page = @agent.get(url)
+      page = agent.get(url)
       ('A'..'Z').each_with_object({}) do |q, h|
         link = page.link_with(text: q)
         link && h[q] = link.href
@@ -70,7 +80,7 @@ module AtCoderFriends
     def fetch_problem(q, url)
       puts "fetch problem from #{url} ..."
       sleep 0.1
-      page = @agent.get(url)
+      page = agent.get(url)
       Problem.new(q) do |pbm|
         pbm.html = page.body
         if @contest == 'arc001'
@@ -90,12 +100,13 @@ module AtCoderFriends
 
     def parse_section(pbm, h3, section)
       title = h3.content.strip
+      title.delete!("\u008f\u0090") # agc002
       text = section.content
       code = section.search('pre')[0]&.content || ''
       case title
       when /^制約$/
         pbm.desc += text
-      when /^入力$/, /^入出力$/
+      when /^入出?力$/
         pbm.desc += text
         pbm.fmt = code
       when /^入力例\s*(?<no>[\d０-９]+)$/
@@ -106,10 +117,10 @@ module AtCoderFriends
     end
 
     def post_src(q, ext, src)
-      sleep 0.1
       lang_id = LANG_TBL[ext.downcase]
       raise AppError, ".#{ext} is not available." unless lang_id
-      page = @agent.get(@base_url + 'submit')
+      sleep 0.1
+      page = agent.get(sub_url('submit'))
       form = page.forms.first
       task_id = form.field_with(name: 'task_id') do |sel|
         option = sel.options.find { |op| op.text.start_with?(q) }
