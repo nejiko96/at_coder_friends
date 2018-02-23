@@ -20,10 +20,11 @@ module AtCoderFriends
   # holds problem information
   class Problem
     attr_reader :q, :fmt, :smps, :srcs
-    attr_accessor :desc, :defs
+    attr_accessor :html, :desc, :defs
 
     def initialize(q)
       @q = q
+      @html = ''
       @desc = ''
       @fmt = ''
       @smps = []
