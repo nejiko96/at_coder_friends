@@ -2,10 +2,9 @@
 
 ## Description
 
-AtCoderFriends automates following operations
-related to [AtCoder](https://atcoder.jp/) programming contest:
+AtCoderFriends automates tasks about [AtCoder](https://atcoder.jp/) programming contest such as:
 
-- Download example data
+- Download example input/output
 - Generate source skeleton
 - Run test cases
 - Submit code
@@ -37,8 +36,7 @@ Or install it yourself as:
 
 ## Configuration
 
-Create ```.at_coder_friends.yml``` and place it in the working directory  
-(or parent of working directory).
+Create ```.at_coder_friends.yml``` and place it in the working directory (or parent of working directory).
 
 ```yaml
 user: <user>
@@ -76,22 +74,21 @@ at_coder_friends submit    /path/to/contest/source_file
 
 ### Naming Convention
 
-- Contest folder name will be used as part of the contest site URL.  
-  For example, if ```arc001``` folder is specified, AtCoderFriends will access to  
-  ```arc001.contest.atcoder.jp```.
-- Source file name should be ```[problem ID].[language specific extension]```(e.g. ```A.rb```),  
-  so that AtCoderFriends can decide which example data to use, or fill the submission form automatically.
-- Suffixes (start with underscore) can be added to the file name (e.g. ```A_v2.rb```),  
+- Contest folder name will be used in the contest site URL.  
+  For example, if ```arc001``` folder is specified, AtCoderFriends will use  ```arc001.contest.atcoder.jp```.
+- Source file should be named ```[problem ID].[language specific extension]```(e.g. ```A.rb```),  
+  in order to let AtCoderFriends find test cases or fill the submission form.
+- Suffixes (start with underscore) may be added to the file name (e.g. ```A_v2.rb```),  
   so that you can try multiple codes for one problem.
 
 ### Notes
 
-- Source compilation is not supported.
+- Compilation is not supported.
 - Source generator and test runner supports only ruby and C++.
 
 ## For Sublime Text User
 
-It is convenient to use AtCoderFriends from Sublime Text plug-in.
+It is convenient to use AtCoderFriends from Sublime Text plugin.
 
 - [sublime_at_coder_friends](https://github.com/nejiko96/sublime_at_coder_friends)
 
