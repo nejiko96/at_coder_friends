@@ -72,6 +72,7 @@ module AtCoderFriends
       sleep 0.1
       page = @agent.get(url)
       Problem.new(q) do |pbm|
+        pbm.html = page.body
         if @contest == 'arc001'
           page.search('//h3').each do |h3|
             query = format(XPATH_SECTION, title: h3.content)
