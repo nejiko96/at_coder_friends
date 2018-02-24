@@ -57,7 +57,7 @@ module AtCoderFriends
       {
         container: :varray,
         item: :number,
-        pat: /^[a-z]+(?<i>[01])(\s+[a-z]+\k<i>)*$/i,
+        pat: /^[a-z]+(?<i>[0-9])(\s+[a-z]+\k<i>)*$/i,
         names: ->(m) { m[0].split.map { |w| w[0..-2] } },
         pat2: lambda { |vs|
           pat = vs.map { |v| v + '.+' }.join('\s+')
@@ -90,11 +90,12 @@ module AtCoderFriends
 
     def split_trim(fmt)
       fmt
-        .gsub(/-1/, '') # N-1 -> N
-        .gsub(%r{(-|/|　)}, ' ') # a-b -> a b
-        .gsub(/\{.+?\}/) { |w| w.delete(' ') } # {1, 1} -> {1,1}
+        .gsub(/[+-]1/, '') # N-1, N+1 -> N
+        .gsub(%r{[-/　]}, ' ') # a-b, a/b -> a b
+        .gsub(/\{.*?\}/) { |w| w.delete(' ') } # {1, 1} -> {1,1} shortest match
         .gsub(/[_,\\\(\)\{\}]/, '')
-        .gsub(/[:：…‥]/, '...')
+        .gsub(/[:：…‥]+/, '..')
+        .gsub(/^[\.\s]+$/, '..')
         .split("\n")
         .map(&:strip)
     end
@@ -107,7 +108,8 @@ module AtCoderFriends
       Enumerator.new do |y|
         loop do
           unless (parser = PARSERS.find { |ps| ps[:pat] =~ cur })
-            (cur = it.next?) ? next : break
+            puts "unknown format: #{cur}" unless cur.empty?
+            (cur = it.next) ? next : break
           end
           container, item = parser.values_at(:container, :item)
           m = parser[:pat].match(cur)
