@@ -93,7 +93,7 @@ module AtCoderFriends
         .gsub(/[+-]1/, '') # N-1, N+1 -> N
         .gsub(%r{[-/　]}, ' ') # a-b, a/b -> a b
         .gsub(/\{.*?\}/) { |w| w.delete(' ') } # {1, 1} -> {1,1} shortest match
-        .gsub(/[_,\\\(\)\{\}]/, '')
+        .gsub(/[_,'\\\(\)\{\}]/, '')
         .gsub(/[:：…‥]+/, '..')
         .gsub(/^[\.\s]+$/, '..')
         .split("\n")
