@@ -166,22 +166,47 @@ RSpec.describe AtCoderFriends::CLI do
   describe 'test-one' do
     let(:command) { 'test-one' }
 
-    it 'runs 1st test case' do
-      expect { subject }.to output(
-        <<~OUTPUT
-          ***** test_one A.rb *****
-          ==== A_001 ====
-          -- input --
-          1
-          2 3
-          test
-          -- expected --
-          6 test
-          -- result --
-          6 test
-          << OK >>
-        OUTPUT
-      ).to_stdout
+    context 'if the test no. is not specified' do
+      it 'runs 1st test case' do
+        expect { subject }.to output(
+          <<~OUTPUT
+            ***** test_one A.rb *****
+            ==== A_001 ====
+            -- input --
+            1
+            2 3
+            test
+            -- expected --
+            6 test
+            -- result --
+            6 test
+            << OK >>
+          OUTPUT
+        ).to_stdout
+      end
+    end
+
+    context 'if the test no. is specified' do
+      let(:args) { [command, path, id] }
+      let(:id) { '2' }
+
+      it 'runs specified test case' do
+        expect { subject }.to output(
+          <<~OUTPUT
+            ***** test_one A.rb *****
+            ==== A_002 ====
+            -- input --
+            72
+            128 256
+            myonmyon
+            -- expected --
+            456 myonmyon
+            -- result --
+            456 myonmyon
+            << OK >>
+          OUTPUT
+        ).to_stdout
+      end
     end
   end
 
@@ -215,14 +240,61 @@ RSpec.describe AtCoderFriends::CLI do
         OUTPUT
       ).to_stdout
     end
+  end
 
-    context 'if the source has not been tested' do
-      let(:vf_path) { File.join(tmp_dir, 'A.rb.verified') }
+  describe 'judge-one' do
+    let(:args) { [command, path, id] }
+    let(:command) { 'judge-one' }
+    let(:id) { '00_sample_1' }
 
-      it 'mark the source as verified' do
-        expect { subject }.to \
-          change { File.exist?(vf_path) }.from(false).to(true)
-      end
+    it 'runs specified test case' do
+      expect { subject }.to output(
+        <<~OUTPUT
+          ***** judge_one A.rb *****
+          ==== 00_sample_1 ====
+          -- input --
+          1
+          2 3
+          test
+          -- expected --
+          6 test
+          -- result --
+          6 test
+          << OK >>
+        OUTPUT
+      ).to_stdout
+    end
+  end
+
+  describe 'judge-all' do
+    let(:command) { 'judge-all' }
+
+    it 'runs all test cases' do
+      expect { subject }.to output(
+        <<~OUTPUT
+          ***** judge_all A.rb *****
+          ==== 00_sample_1 ====
+          -- input --
+          1
+          2 3
+          test
+          -- expected --
+          6 test
+          -- result --
+          6 test
+          << OK >>
+          ==== 00_sample_2 ====
+          -- input --
+          72
+          128 256
+          myonmyon
+          -- expected --
+          456 myonmyon
+          -- result --
+          456 myonmyon
+          << OK >>
+        OUTPUT
+      ).to_stdout
     end
   end
 
