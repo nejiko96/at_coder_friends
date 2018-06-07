@@ -9,34 +9,17 @@ module AtCoderFriends
 
     def initialize(path)
       @path, @dir, @prg, @base, @ext, @q = split_prg_path(path)
-      @smp_dir = smp_dir(@dir)
-    end
-
-    def test_all
-      puts "***** test_all #{@prg} *****"
-      1.upto(999) do |i|
-        break unless test(i)
-      end
-    end
-
-    def test_one(n)
-      puts "***** test_one #{@prg} *****"
-      test(n)
     end
 
     # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
-    def test(n)
-      cs = format('%<q>s_%<n>03d', q: @q, n: n)
-      files = %w[in out exp].map { |ext| "#{@smp_dir}/#{cs}.#{ext}" }
-      infile, outfile, expfile = files
-
+    def run_test(id, infile, outfile, expfile)
       return false unless File.exist?(infile) && File.exist?(expfile)
 
+      puts "==== #{id} ===="
       ec = system("#{edit_cmd} < #{infile} > #{outfile}")
 
-      input, result, expected = files.map { |file| File.read(file) }
-
-      puts "==== #{cs} ===="
+      input, result, expected =
+        [infile, outfile, expfile].map { |file| File.read(file) }
       puts '-- input --'
       print input
       puts '-- expected --'

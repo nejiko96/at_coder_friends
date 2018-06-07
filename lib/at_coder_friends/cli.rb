@@ -58,16 +58,20 @@ module AtCoderFriends
       exit STATUS_SUCCESS
     end
 
-    def exec_command(command, path)
+    def exec_command(command, path, id = nil)
       case command
       when 'setup'
         setup(path)
       when 'test-one'
-        test_one(path)
+        test_one(path, id)
       when 'test-all'
         test_all(path)
       when 'submit'
         submit(path)
+      when 'judge-one'
+        judge_one(path, id)
+      when 'judge-all'
+        judge_all(path)
       else
         raise ParamError, "unknown command: #{command}"
       end
@@ -75,7 +79,7 @@ module AtCoderFriends
 
     def setup(path)
       raise AppError, "#{path} is not empty." \
-        unless !Dir.exist?(path) || Dir["#{path}/*"].empty?
+        if Dir.exist?(path) && !Dir["#{path}/*"].empty?
       agent = ScrapingAgent.new(contest_name(path), @config)
       parser = FormatParser.new
       rb_gen = RubyGenerator.new
@@ -89,12 +93,13 @@ module AtCoderFriends
       end
     end
 
-    def test_one(path)
-      TestRunner.new(path).test_one(1)
+    def test_one(path, id)
+      id ||= 1
+      SampleTestRunner.new(path).test_one(id)
     end
 
     def test_all(path)
-      TestRunner.new(path).test_all
+      SampleTestRunner.new(path).test_all
       Verifier.new(path).verify
     end
 
@@ -103,6 +108,15 @@ module AtCoderFriends
       raise AppError, "#{vf.file} has not been tested." unless vf.verified?
       ScrapingAgent.new(contest_name(path), @config).submit(path)
       vf.unverify
+    end
+
+    def judge_one(path, id)
+      id ||= ''
+      JudgeTestRunner.new(path).judge_one(id)
+    end
+
+    def judge_all(path)
+      JudgeTestRunner.new(path).judge_all
     end
   end
 end

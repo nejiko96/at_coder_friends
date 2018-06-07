@@ -51,4 +51,13 @@ RSpec.describe AtCoderFriends::PathUtil do
       expect(subject).to eq('/foo/bar/contest/data')
     end
   end
+
+  describe '#cases_dir' do
+    subject { path_util.cases_dir(path) }
+    let(:path) { '/foo/bar/contest' }
+
+    it 'returns cases directory' do
+      expect(subject).to eq('/foo/bar/contest/cases')
+    end
+  end
 end

@@ -6,6 +6,7 @@ module AtCoderFriends
     module_function
 
     SMP_DIR = 'data'
+    CASES_DIR = 'cases'
 
     def contest_name(path)
       path = File.expand_path(path)
@@ -23,6 +24,10 @@ module AtCoderFriends
 
     def smp_dir(dir)
       File.join(dir, SMP_DIR)
+    end
+
+    def cases_dir(dir)
+      File.join(dir, CASES_DIR)
     end
   end
 end

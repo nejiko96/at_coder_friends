@@ -70,9 +70,12 @@ RSpec.describe AtCoderFriends::TestRunner do
     end
   end
 
-  describe '#test' do
-    subject { runner.test(no) }
-    let(:no) { 1 }
+  describe '#run_test' do
+    subject { runner.run_test(id, infile, outfile, expfile) }
+    let(:infile) { "#{smp_dir}/#{id}.in" }
+    let(:outfile) { "#{smp_dir}/#{id}.out" }
+    let(:expfile) { "#{smp_dir}/#{id}.exp" }
+    let(:id) { 'A_001' }
 
     context 'when the test case exists' do
       it 'returns true' do
@@ -81,8 +84,8 @@ RSpec.describe AtCoderFriends::TestRunner do
     end
 
     context 'when the test case does not exist' do
-      let(:no) { 3 }
-      it 'returns true' do
+      let(:id) { 'A_003' }
+      it 'returns false' do
         expect(subject).to be false
       end
     end
@@ -145,60 +148,6 @@ RSpec.describe AtCoderFriends::TestRunner do
           OUTPUT
         ).to_stdout
       end
-    end
-  end
-
-  describe '#test_one' do
-    subject { runner.test_one(1) }
-
-    it 'shows result' do
-      expect { subject }.to output(
-        <<~OUTPUT
-          ***** test_one A.rb *****
-          ==== A_001 ====
-          -- input --
-          1
-          2 3
-          test
-          -- expected --
-          6 test
-          -- result --
-          6 test
-          << OK >>
-        OUTPUT
-      ).to_stdout
-    end
-  end
-
-  describe '#test_all' do
-    subject { runner.test_all }
-
-    it 'shows result' do
-      expect { subject }.to output(
-        <<~OUTPUT
-          ***** test_all A.rb *****
-          ==== A_001 ====
-          -- input --
-          1
-          2 3
-          test
-          -- expected --
-          6 test
-          -- result --
-          6 test
-          << OK >>
-          ==== A_002 ====
-          -- input --
-          72
-          128 256
-          myonmyon
-          -- expected --
-          456 myonmyon
-          -- result --
-          456 myonmyon
-          << OK >>
-        OUTPUT
-      ).to_stdout
     end
   end
 end
