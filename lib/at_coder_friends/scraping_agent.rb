@@ -12,7 +12,7 @@ module AtCoderFriends
   class ScrapingAgent
     include PathUtil
 
-    BASE_URL_FMT = 'http://%<contest>s.contest.atcoder.jp/'
+    BASE_URL = 'https://beta.atcoder.jp/'
     XPATH_SECTION = '//h3[.="%<title>s"]/following-sibling::section'
     LANG_TBL = {
       'cxx'  => '3003',
@@ -30,12 +30,12 @@ module AtCoderFriends
       # @agent.log = Logger.new(STDERR)
     end
 
-    def base_url
-      @base_url ||= format(BASE_URL_FMT, contest: contest)
+    def common_url(path)
+      File.join(BASE_URL, path)
     end
 
-    def sub_url(path)
-      URI.join(base_url, path)
+    def contest_url(path)
+      File.join(BASE_URL, 'contests', contest, path)
     end
 
     def fetch_all
@@ -58,16 +58,16 @@ module AtCoderFriends
 
     def login
       sleep 0.1
-      page = agent.get(sub_url('login'))
-      form = page.forms.first
-      form.field_with(name: 'name').value = config['user']
+      page = agent.get(common_url('login'))
+      form = page.forms[1]
+      form.field_with(name: 'username').value = config['user']
       form.field_with(name: 'password').value = config['password']
       sleep 0.1
       form.submit
     end
 
     def fetch_assignments
-      url = sub_url('assignments')
+      url = contest_url('tasks')
       puts "fetch list from #{url} ..."
       sleep 0.1
       page = agent.get(url)
@@ -83,7 +83,7 @@ module AtCoderFriends
       page = agent.get(url)
       Problem.new(q) do |pbm|
         pbm.html = page.body
-        if @contest == 'arc001'
+        if contest == 'arc001'
           page.search('//h3').each do |h3|
             query = format(XPATH_SECTION, title: h3.content)
             sections = page.search(query)
@@ -120,14 +120,14 @@ module AtCoderFriends
       lang_id = LANG_TBL[ext.downcase]
       raise AppError, ".#{ext} is not available." unless lang_id
       sleep 0.1
-      page = agent.get(sub_url('submit'))
-      form = page.forms.first
-      task_id = form.field_with(name: 'task_id') do |sel|
+      page = agent.get(contest_url('submit'))
+      form = page.forms[1]
+      form.field_with(name: 'data.TaskScreenName') do |sel|
         option = sel.options.find { |op| op.text.start_with?(q) }
         option&.select || (raise AppError, "unknown problem:#{q}.")
       end
-      form.field_with(name: 'language_id_' + task_id.value).value = lang_id
-      form.field_with(name: 'source_code').value = src
+      form.add_field!('data.LanguageId', lang_id)
+      form.field_with(name: 'sourceCode').value = src
       sleep 0.1
       form.submit
     end

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module AtCoderFriends
   # run test cases for the specified program with actual input/output.
   class JudgeTestRunner < TestRunner

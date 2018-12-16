@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 StubRequest = Struct.new(:method, :path, :query, :body) do
-  URL_FMT = 'http://%<contest>s.contest.atcoder.jp/'
+  BASE_URL = 'https://beta.atcoder.jp/'
 
   def initialize(method, path, query = nil, body = '')
     super(method, path, query, body)
@@ -14,8 +14,8 @@ StubRequest = Struct.new(:method, :path, :query, :body) do
   end
 
   def url_for(contest)
-    ret = format(URL_FMT, contest: contest)
-    ret += path
+    ret = path == 'login' ? BASE_URL : File.join(BASE_URL, 'contests', contest)
+    ret = File.join(ret, path)
     ret += "?#{query}" if query
     ret
   end
@@ -23,22 +23,23 @@ end
 
 REQS = [
   StubRequest.new(:get, 'login'),
-  StubRequest.new(:get, 'assignments'),
+  StubRequest.new(:get, 'tasks'),
   StubRequest.new(:get, 'tasks/practice_1'),
   StubRequest.new(:get, 'tasks/practice_2'),
   StubRequest.new(:get, 'submit'),
   StubRequest.new(
     :post, 'login', nil,
-    name: 'foo', password: 'bar'
+    username: 'foo',
+    password: 'bar',
+    csrf_token: '2yXslAOpndNWTpYmjqZ7C+JAT3pWB4zz90FYWkwcs7I='
   ),
   StubRequest.new(
-    :post, 'submit', 'task_id=207',
-    __session: 'f3c011467c2a8db6242e48e3eea35eac',
-    task_id: '207',
-    language_id_207: '3024',
-    language_id_2520: '3003',
+    :post, 'submit', nil,
+    'data.TaskScreenName': 'practice_1',
+    'data.LanguageId': '3024',
+    csrf_token: '2yXslAOpndNWTpYmjqZ7C+JAT3pWB4zz90FYWkwcs7I=',
     # rubocop:disable Layout/EmptyLinesAroundArguments
-    source_code:
+    sourceCode:
       <<~SRC
         a = gets.to_i
         b, c = gets.split.map(&:to_i)
