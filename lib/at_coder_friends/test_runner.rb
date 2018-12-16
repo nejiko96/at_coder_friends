@@ -11,7 +11,7 @@ module AtCoderFriends
       @path, @dir, @prg, @base, @ext, @q = split_prg_path(path)
     end
 
-    # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+    # rubocop:disable Metrics/MethodLength
     def run_test(id, infile, outfile, expfile)
       return false unless File.exist?(infile) && File.exist?(expfile)
 
@@ -35,7 +35,7 @@ module AtCoderFriends
       end
       true
     end
-    # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
+    # rubocop:enable Metrics/MethodLength
 
     # rubocop:disable Metrics/MethodLength
     def edit_cmd
