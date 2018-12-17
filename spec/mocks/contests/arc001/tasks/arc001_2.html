@@ -1,0 +1,539 @@
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>B - リモコン</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Language" content='ja'>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta name="format-detection" content="telephone=no">
+
+
+  <meta name="description" content="プログラミング初級者から上級者まで楽しめる、プログラミングコンテストサイト「AtCoder」。オンラインで毎週開催プログラミングコンテストを開催しています。競技プログラミングを用いて、客観的に自分のスキルを計ることのできるサービスです。">
+  <meta name="author" content="AtCoder Inc.">
+  <link rel="canonical" href="https://beta.atcoder.jp/">
+
+  <meta property="og:site_name" content="AtCoder">
+
+  <meta property="og:title" content="B - リモコン" />
+  <meta property="og:description" content="プログラミング初級者から上級者まで楽しめる、プログラミングコンテストサイト「AtCoder」。オンラインで毎週開催プログラミングコンテストを開催しています。競技プログラミングを用いて、客観的に自分のスキルを計ることのできるサービスです。" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://beta.atcoder.jp/contests/arc001/tasks/arc001_2" />
+  <meta property="og:image" content="https://beta.atcoder.jp/public/img/atcoder.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@atcoder" />
+
+  <meta property="twitter:title" content="B - リモコン" />
+
+  <link href='//fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" type="text/css" href='/public/css/bootstrap.min.css?v=201812141832'>
+  <link rel="stylesheet" type="text/css" href='/public/css/base.css?v=201812141832'>
+  <link rel="shortcut icon" type="image/png" href="/public/img/favicon.png">
+  <link rel="apple-touch-icon" href="/public/img/favicon.png">
+  <script src='/public/js/lib/jquery-1.9.1.min.js?v=201812141832'></script>
+  <script src='/public/js/lib/bootstrap.min.js?v=201812141832'></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/js-cookie/2.1.4/js.cookie.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/locale/ja.js"></script>
+  <script>
+    var LANG = "ja";
+    var userScreenName = "nejiko96";
+  </script>
+  <script src='/public/js/utils.js?v=201812141832'></script>
+
+
+    <script src='/public/js/contest.js?v=201812141832'></script>
+    <link href='/public/css/contest.css?v=201812141832' rel="stylesheet" />
+    <script>
+      var contestScreenName = "arc001";
+      var remainingText = "残り時間";
+      var countDownText = "開始まであと";
+      var startTime = moment("2012-04-14T21:00:00+09:00");
+      var endTime = moment("2012-04-15T02:00:00+09:00");
+    </script>
+
+
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({messageStyle:"none",tex2jax:{skipTags:["script","noscript","style","textarea","code"],inlineMath:[['\\(','\\)']]}});</script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script src='/public/js/task.js?v=201812141832'></script>
+
+
+
+
+    <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+    <link href="//cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css" rel="stylesheet" />
+    <script src='/public/js/lib/select2.min.js?v=201812141832'></script>
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.38.0/codemirror.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.38.0/codemirror.min.js"></script>
+    <script src='/public/js/codeMirror/merged.js?v=201812141832'></script>
+
+
+    <script src="//cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+
+
+
+
+
+
+
+  <script src='/public/js/base.js?v=201812141832'></script>
+  <script src='/public/js/ga.js?v=201812141832'></script>
+</head>
+
+<body>
+<div id="modal-contest-start" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">コンテスト開始</h4>
+      </div>
+      <div class="modal-body">
+        <p>AtCoder Regular Contest 001が開始されました。</p>
+      </div>
+      <div class="modal-footer">
+
+          <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+
+      </div>
+    </div>
+  </div>
+</div>
+<div id="modal-contest-end" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">コンテスト終了</h4>
+      </div>
+      <div class="modal-body">
+        <p>AtCoder Regular Contest 001は終了しました。</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="main-div" class="float-container">
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false">
+          <span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/"></a>
+      </div>
+      <div class="collapse navbar-collapse" id="navbar-collapse">
+        <ul class="nav navbar-nav">
+
+          <li><a class="contest-title" href='/contests/arc001'>AtCoder Regular Contest 001</a></li>
+
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+
+          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+              <img src='/public/img/flag-lang/ja.png'> 日本語 <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a href='/contests/arc001/tasks/arc001_2?lang=ja'><img src='/public/img/flag-lang/ja.png'> 日本語</a></li>
+              <li><a href='/contests/arc001/tasks/arc001_2?lang=en'><img src='/public/img/flag-lang/en.png'> English</a></li>
+            </ul>
+          </li>
+
+
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> ねじこ (Guest) <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu">
+                <li><a href='/users/nejiko96'>マイプロフィール</a></li>
+                <li class="divider"></li>
+                <li><a href='/settings'>基本設定</a></li>
+                <li><a href='/settings/icon'>アイコン設定</a></li>
+                <li><a href='/settings/password'>パスワードの変更</a></li>
+
+
+                <li class="divider"></li>
+                <li><a href='javascript:form_logout.submit()'>ログアウト</a></li>
+              </ul>
+            </li>
+
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <form method="POST" name="form_logout" action='/logout'>
+    <input type="hidden" name="csrf_token" value='ZD8/jxTUFqgfOUYq0Y&#43;/m7AygPqElU6UEV7nvp1mgEg=' />
+  </form>
+  <div id="main-container" class='container' style="padding-top:50px;">
+
+
+<div class="row">
+  <div id="contest-nav-tabs" class="col-sm-12 mb-2 cnvtb-fixed">
+  <div>
+    <small class="contest-duration">コンテスト時間: <a href='http://www.timeanddate.com/worldclock/fixedtime.html?iso=20120414T2100&p1=248' target='blank'><time class='fixtime fixtime-full'>2012-04-14 21:00:00+0900</time></a> ~ <a href='http://www.timeanddate.com/worldclock/fixedtime.html?iso=20120415T0200&p1=248' target='blank'><time class='fixtime fixtime-full'>2012-04-15 02:00:00+0900</time></a> </small>
+    <small class="back-to-home pull-right"><a href='/'>AtCoderホームへ戻る</a></small>
+  </div>
+  <ul class="nav nav-tabs">
+    <li><a href='/contests/arc001'><span class="glyphicon glyphicon-home" aria-hidden="true"></span> トップ</a></li>
+
+      <li class="active"><a href='/contests/arc001/tasks'><span class="glyphicon glyphicon-tasks" aria-hidden="true"></span> 問題</a></li>
+
+
+
+      <li><a href='/contests/arc001/clarifications'><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> 質問 <span id="clar-badge" class="badge"></span></a></li>
+
+
+
+      <li><a href='/contests/arc001/submit?taskScreenName=arc001_2'><span class="glyphicon glyphicon-send" aria-hidden="true"></span> 提出</a></li>
+
+
+
+      <li>
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-list" aria-hidden="true"></span> 提出一覧<span class="caret"></span></a>
+        <ul class="dropdown-menu">
+          <li><a href='/contests/arc001/submissions'><span class="glyphicon glyphicon-globe" aria-hidden="true"></span> すべての提出</a></li>
+          <li><a href='/contests/arc001/submissions/me'><span class="glyphicon glyphicon-user" aria-hidden="true"></span> 自分の提出</a></li>
+        </ul>
+      </li>
+
+
+
+      <li><a href='/contests/arc001/standings'><span class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span> 順位表</a></li>
+
+
+
+      <li><a href='/contests/arc001/custom_test'><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> コードテスト</a></li>
+
+
+
+      <li><a href='http://www.slideshare.net/chokudai/arc001' target="_blank"><span class="glyphicon glyphicon-book" aria-hidden="true"></span> 解説</a></li>
+
+
+    <li class="pull-right"><a id="fix-cnvtb" href="javascript:void(0)"><span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span></a></li>
+  </ul>
+</div>
+  <div class="col-sm-12">
+    <span class="h2">B - リモコン</span>
+    <hr />
+    <p>実行時間制限: 2 sec / メモリ制限: 64 MB</p>
+
+    <div id="task-statement">
+      <h3>問題文</h3>
+<section>
+高橋君は、エアコンの設定温度を変更しようとしています。現在の設定温度は <var>A</var> 度ですが、これを <var>B</var> 度に設定したいと思っています。<br/>
+エアコンのリモコンは <var>1</var> 回ボタンを押すことで、</br>
+<ul>
+  <li><var>1</var> 度設定温度を下げる、もしくは上げる</li>
+  <li><var>5</var> 度設定温度を下げる、もしくは上げる</li>
+  <li><var>10</var> 度設定温度を下げる、もしくは上げる</li>
+</ul>
+の、<var>6</var> 種類の操作のいずれか <var>1</var> つを実行することが出来ます。<br/>
+高橋君が設定温度を <var>A</var> 度から <var>B</var> 度に変更するために押すボタンの最小回数を求めなさい。
+</section>
+
+<hr/>
+<h3>入力</h3>
+<section>
+入力は以下の形式で与えられる。
+
+<pre>
+<var>A</var> <var>B</var>
+</pre>
+
+<ul>
+<li><var>1</var> 行目は現在の設定温度を表す整数 <var>A</var> (<var>0 ≤ A ≤ 40</var>) と、設定したい温度を表す整数 <var>B</var> (<var>0 ≤ B ≤ 40</var>) が与えられる。</li>
+</ul>
+
+</section>
+
+<h3>出力</h3>
+<section>
+高橋君がボタンを押す必要のある回数の最小値を <var>1</var> 行に出力せよ。
+
+</section>
+
+<hr/>
+<h3>入力例 1</h3>
+<section>
+
+<pre class="prettyprint linenums">
+7 34
+</pre>
+
+</section>
+
+<h3>出力例 1</h3>
+<section>
+
+<pre class="prettyprint linenums">
+5
+</pre>
+
+<ul>
+<li><var>10</var> 度、<var>10</var> 度、<var>5</var> 度、<var>1</var> 度、<var>1</var> 度の順で上げていくと、<var>5</var> 回で設定することが出来ます。</li>
+</ul>
+
+</section>
+
+<hr/>
+<h3>入力例 2</h3>
+<section>
+
+<pre class="prettyprint linenums">
+19 28
+</pre>
+
+</section>
+
+<h3>出力例 2</h3>
+<section>
+
+<pre class="prettyprint linenums">
+2
+</pre>
+
+<ul>
+<li><var>10</var> 度上げた後に、<var>1</var> 度下げることで、<var>2</var> 回で設定することが出来ます。</li>
+</ul>
+
+</section>
+
+<hr/>
+<h3>入力例 3</h3>
+<section>
+
+<pre class="prettyprint linenums">
+10 10
+</pre>
+
+</section>
+
+<h3>出力例 3</h3>
+<pre class="prettyprint linenums">
+0
+</pre>
+
+<ul>
+<li>同じ温度の時は、設定温度を変える必要はありません。</li>
+</ul>
+    </div>
+
+
+      <hr/>
+      <h3>出典</h3>
+      <a href='' target="blank">ARC 001</a>
+
+
+
+    <hr/>
+    <form class="form-horizontal" action='/contests/arc001/submit' method="POST">
+      <input type="hidden" name="data.TaskScreenName" value='arc001_2' />
+
+      <div class="form-group ">
+        <label class="control-label col-sm-2" for="select-lang">言語</label>
+        <div id="select-lang" class="col-sm-5" data-name='data.LanguageId'>
+          <select class="form-control current" name='data.LanguageId'>
+
+              <option value='3003' data-mime='text/x-c&#43;&#43;src'>C&#43;&#43;14 (GCC 5.4.1)</option>
+
+              <option value='3001' data-mime='text/x-sh'>Bash (GNU bash v4.3.11)</option>
+
+              <option value='3002' data-mime='text/x-csrc'>C (GCC 5.4.1)</option>
+
+              <option value='3004' data-mime='text/x-csrc'>C (Clang 3.8.0)</option>
+
+              <option value='3029' data-mime='text/x-c&#43;&#43;src'>C&#43;&#43; (GCC 5.4.1)</option>
+
+              <option value='3030' data-mime='text/x-c&#43;&#43;src'>C&#43;&#43; (Clang 3.8.0)</option>
+
+              <option value='3005' data-mime='text/x-c&#43;&#43;src'>C&#43;&#43;14 (Clang 3.8.0)</option>
+
+              <option value='3006' data-mime='text/x-csharp'>C# (Mono 4.6.2.0)</option>
+
+              <option value='3007' data-mime='text/x-clojure'>Clojure (1.8.0)</option>
+
+              <option value='3008' data-mime='text/x-common-lisp'>Common Lisp (SBCL 1.1.14)</option>
+
+              <option value='3009' data-mime='text/x-d'>D (DMD64 v2.070.1)</option>
+
+              <option value='3010' data-mime='text/x-d'>D (LDC 0.17.0)</option>
+
+              <option value='3011' data-mime='text/x-d'>D (GDC 4.9.4)</option>
+
+              <option value='3012' data-mime='text/x-fortran'>Fortran (gfortran v4.8.4)</option>
+
+              <option value='3013' data-mime='text/x-go'>Go (1.6)</option>
+
+              <option value='3014' data-mime='text/x-haskell'>Haskell (GHC 7.10.3)</option>
+
+              <option value='3015' data-mime='text/x-java'>Java7 (OpenJDK 1.7.0)</option>
+
+              <option value='3016' data-mime='text/x-java'>Java8 (OpenJDK 1.8.0)</option>
+
+              <option value='3017' data-mime='text/javascript'>JavaScript (node.js v5.12)</option>
+
+              <option value='3018' data-mime='text/x-ocaml'>OCaml (4.02.3)</option>
+
+              <option value='3019' data-mime='text/x-pascal'>Pascal (FPC 2.6.2)</option>
+
+              <option value='3020' data-mime='text/x-perl'>Perl (v5.18.2)</option>
+
+              <option value='3021' data-mime='text/x-php'>PHP (5.6.30)</option>
+
+              <option value='3022' data-mime='text/x-python'>Python2 (2.7.6)</option>
+
+              <option value='3023' data-mime='text/x-python'>Python3 (3.4.3)</option>
+
+              <option value='3024' data-mime='text/x-ruby'>Ruby (2.3.3)</option>
+
+              <option value='3025' data-mime='text/x-scala'>Scala (2.11.7)</option>
+
+              <option value='3026' data-mime='text/x-scheme'>Scheme (Gauche 0.9.3.3)</option>
+
+              <option value='3027' data-mime='text/plain'>Text (cat)</option>
+
+              <option value='3028' data-mime='text/x-vb'>Visual Basic (Mono 4.0.1)</option>
+
+              <option value='3501' data-mime='text/x-objectivec'>Objective-C (GCC 5.3.0)</option>
+
+              <option value='3502' data-mime='text/x-objectivec'>Objective-C (Clang3.8.0)</option>
+
+              <option value='3503' data-mime='text/x-swift'>Swift (swift-2.2-RELEASE)</option>
+
+              <option value='3504' data-mime='text/x-rust'>Rust (1.15.1)</option>
+
+              <option value='3505' data-mime='text/x-sh'>Sed (GNU sed 4.2.2)</option>
+
+              <option value='3506' data-mime='text/x-sh'>Awk (mawk 1.3.3)</option>
+
+              <option value='3507' data-mime='text/x-brainfuck'>Brainfuck (bf 20041219)</option>
+
+              <option value='3508' data-mime='text/x-sml'>Standard ML (MLton 20100608)</option>
+
+              <option value='3509' data-mime='text/x-python'>PyPy2 (5.6.0)</option>
+
+              <option value='3510' data-mime='text/x-python'>PyPy3 (2.4.0)</option>
+
+              <option value='3511' data-mime='text/x-crystal'>Crystal (0.20.5)</option>
+
+              <option value='3512' data-mime='text/x-fsharp'>F# (Mono 4.0)</option>
+
+              <option value='3513' data-mime='text/x-unlambda'>Unlambda (0.1.3)</option>
+
+              <option value='3514' data-mime='text/x-lua'>Lua (5.3.2)</option>
+
+              <option value='3515' data-mime='text/x-lua'>LuaJIT (2.0.4)</option>
+
+              <option value='3516' data-mime='text/x-moonscript'>MoonScript (0.5.0)</option>
+
+              <option value='3517' data-mime='text/x-ceylon'>Ceylon (1.2.1)</option>
+
+              <option value='3518' data-mime='text/x-julia'>Julia (0.5.0)</option>
+
+              <option value='3519' data-mime='text/x-octave'>Octave (4.0.2)</option>
+
+              <option value='3520' data-mime='text/x-nim'>Nim (0.13.0)</option>
+
+              <option value='3521' data-mime='text/typescript'>TypeScript (2.1.6)</option>
+
+              <option value='3522' data-mime='text/x-perl'>Perl6 (rakudo-star 2016.01)</option>
+
+              <option value='3523' data-mime='text/x-kotlin'>Kotlin (1.0.0)</option>
+
+              <option value='3524' data-mime='text/x-php'>PHP7 (7.0.15)</option>
+
+          </select>
+          <span class="error"></span>
+        </div>
+      </div>
+      <script>var currentLang = getLS('defaultLang');</script>
+
+
+<div class="form-group">
+  <label class="control-label col-sm-2" for='sourceCode'>ソースコード</label>
+  <div class="col-sm-7" id='sourceCode'>
+    <div class="div-editor">
+      <textarea class="form-control editor" name='sourceCode'></textarea>
+    </div>
+    <textarea class="form-control plain-textarea" style="display:none;"></textarea>
+    <p>
+      <span class="gray">※ 512 KiB まで</span><br>
+      <span class="gray">※ ソースコードは「Main.<i>拡張子</i>」で保存されます</span>
+    </p>
+  </div>
+  <div class="col-sm-3 editor-buttons">
+    <p><button id="btn-open-file" type="button" class="btn btn-default btn-sm">
+      <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span> &nbsp; ファイルを開く
+    </button></p>
+    <p><button type="button" class="btn btn-default btn-sm btn-toggle-editor" data-toggle="button" aria-pressed="false" autocomplete="off">
+      エディタ切り替え
+    </button></p>
+    <p><button type="button" class="btn btn-default btn-sm btn-auto-height" data-toggle="button" aria-pressed="false" autocomplete="off">
+      高さ自動調節
+    </button></p>
+  </div>
+  <input id="input-open-file" type="file" style="display:none;">
+</div>
+
+      <input type="hidden" name="csrf_token" value='ZD8/jxTUFqgfOUYq0Y&#43;/m7AygPqElU6UEV7nvp1mgEg=' />
+      <div class="form-group">
+        <label class="control-label col-sm-2" for="submit"></label>
+        <div class="col-sm-5">
+          <button type="submit" class="btn btn-primary" id="submit">提出</button>
+        </div>
+      </div>
+    </form>
+
+  </div>
+</div>
+
+    <hr>
+    <div class="pull-right">
+      <a class="share-button" target="_blank" onclick="share_button('facebook','\/contests\/arc001\/tasks\/arc001_2','B - リモコン',600,400)" style="background-image:url(/public/img/share/facebook.png);"></a>
+      <a class="share-button" target="_blank" onclick="share_button('twitter','\/contests\/arc001\/tasks\/arc001_2','B - リモコン',512,256)" style="background-image:url(/public/img/share/twitter.png);"></a>
+      <a class="share-button" target="_blank" onclick="share_button('google_plus','\/contests\/arc001\/tasks\/arc001_2','B - リモコン',512,450)" style="background-image:url(/public/img/share/google.png);"></a>
+      <a class="share-button" target="_blank" onclick="share_button('hatena','\/contests\/arc001\/tasks\/arc001_2','B - リモコン',512,360)" style="background-image:url(/public/img/share/hatena.png);"></a>
+    </div>
+
+  </div>
+  <hr>
+</div>
+<div class="container">
+    <footer class="footer">
+
+      <ul>
+        <li><a href='/contests/arc001/rule'>ルール</a></li>
+        <li><a href='/contests/arc001/glossary'>用語集</a></li>
+        <li><a href='/contests/arc001/faq'>よくある質問</a></li>
+      </ul>
+
+    <ul>
+      <li><a href='/tos'>利用規約</a></li>
+      <li><a href='/privacy'>プライバシーポリシー</a></li>
+      <li><a href='/personal'>個人情報保護方針</a></li>
+      <li><a href='/company'>企業情報</a></li>
+      <li><a href='/contact'>お問い合わせ</a></li>
+      <li><a href='/documents/request'>資料請求</a></li>
+    </ul>
+    <div class="text-center">
+        <small id="copyright">Copyright 2018 &copy;<a href="http://atcoder.co.jp">AtCoder Inc.</a> All rights reserved.</small>
+    </div>
+    </footer>
+</div>
+<p id="fixed-server-timer" class='contest-timer'></p>
+<div id="scroll-page-top" style="display:none;"><span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span> ページトップ</div>
+</body>
+</html>

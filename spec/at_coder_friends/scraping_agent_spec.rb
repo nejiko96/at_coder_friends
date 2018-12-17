@@ -19,14 +19,18 @@ RSpec.describe AtCoderFriends::ScrapingAgent do
         expect { subject }.to output(
           <<~TEXT
             ***** fetch_all arc001 *****
-            fetch list from https://beta.atcoder.jp/contests/arc001/tasks ...
-            fetch problem from /contests/practice/tasks/practice_1 ...
-            fetch problem from /contests/practice/tasks/practice_2 ...
+            fetch list from https://atcoder.jp/contests/arc001/tasks ...
+            fetch problem from /contests/arc001/tasks/arc001_1 ...
+            fetch problem from /contests/arc001/tasks/arc001_2 ...
+            fetch problem from /contests/arc001/tasks/arc001_3 ...
+            fetch problem from /contests/arc001/tasks/arc001_4 ...
           TEXT
         ).to_stdout
-        expect(subject.size).to eq(2)
+        expect(subject.size).to eq(4)
         expect(subject[0]).to have_attributes(q: 'A')
         expect(subject[1]).to have_attributes(q: 'B')
+        expect(subject[2]).to have_attributes(q: 'C')
+        expect(subject[3]).to have_attributes(q: 'D')
       end
     end
 
@@ -37,7 +41,7 @@ RSpec.describe AtCoderFriends::ScrapingAgent do
         expect { subject }.to output(
           <<~TEXT
             ***** fetch_all practice *****
-            fetch list from https://beta.atcoder.jp/contests/practice/tasks ...
+            fetch list from https://atcoder.jp/contests/practice/tasks ...
             fetch problem from /contests/practice/tasks/practice_1 ...
             fetch problem from /contests/practice/tasks/practice_2 ...
           TEXT
@@ -82,11 +86,11 @@ RSpec.describe AtCoderFriends::ScrapingAgent do
     end
 
     context 'for non-existent problem' do
-      let(:prg) { 'C.rb' }
+      let(:prg) { 'Z.rb' }
 
       it 'show error' do
         expect { subject }.to \
-          raise_error(AtCoderFriends::AppError, 'unknown problem:C.')
+          raise_error(AtCoderFriends::AppError, 'unknown problem:Z.')
       end
     end
   end

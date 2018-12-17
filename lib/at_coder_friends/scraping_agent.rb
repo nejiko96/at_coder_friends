@@ -12,7 +12,7 @@ module AtCoderFriends
   class ScrapingAgent
     include PathUtil
 
-    BASE_URL = 'https://beta.atcoder.jp/'
+    BASE_URL = 'https://atcoder.jp/'
     XPATH_SECTION = '//h3[.="%<title>s"]/following-sibling::section'
     LANG_TBL = {
       'cxx'  => '3003',
