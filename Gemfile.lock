@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    at_coder_friends (0.3.0)
+    at_coder_friends (0.3.1)
       mechanize (~> 2.0)
 
 GEM
