@@ -16,9 +16,10 @@ AtCoderFriends automates tasks about [AtCoder](https://atcoder.jp/) programming 
 
 ## Installation
 
-See [Development](#Develoment).
-
 <!-- 
+See [Development](#Develoment).
+-->
+
 Add this line to your application's Gemfile:
 
 ```ruby
@@ -32,7 +33,6 @@ And then execute:
 Or install it yourself as:
 
     $ gem install at_coder_friends 
--->
 
 ## Configuration
 
