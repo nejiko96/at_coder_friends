@@ -71,10 +71,12 @@ module AtCoderFriends
       puts "fetch list from #{url} ..."
       sleep 0.1
       page = agent.get(url)
-      ('A'..'Z').each_with_object({}) do |q, h|
-        link = page.link_with(text: q)
-        link && h[q] = link.href
-      end
+      page
+        .search('//table//a')
+        .select { |a| a.text =~ /^[A-Z0-9]+$/ }
+        .each_with_object({}) do |a, h|
+          h[a.text] = a[:href]
+        end
     end
 
     def fetch_problem(q, url)
