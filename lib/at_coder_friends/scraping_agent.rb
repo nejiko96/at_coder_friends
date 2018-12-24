@@ -39,6 +39,22 @@ module AtCoderFriends
       File.join(BASE_URL, 'contests', contest, path)
     end
 
+    def constraints_pat
+      config['constraints_pat'] || '^制約$'
+    end
+
+    def input_fmt_pat
+      config['input_fmt_pat'] || '^入出?力$'
+    end
+
+    def input_smp_pat
+      config['input_smp_pat'] || '^入力例\s*(?<no>[\d０-９]+)$'
+    end
+
+    def output_smp_pat
+      config['output_smp_pat'] || '^出力例\s*(?<no>[\d０-９]+)$'
+    end
+
     def fetch_all
       puts "***** fetch_all #{@contest} *****"
       login
@@ -102,14 +118,14 @@ module AtCoderFriends
       text = section.content
       code = section.search('pre')[0]&.content || ''
       case title
-      when /^制約$/
+      when /#{constraints_pat}/
         pbm.desc += text
-      when /^入出?力$/
+      when /#{input_fmt_pat}/
         pbm.desc += text
         pbm.fmt = code
-      when /^入力例\s*(?<no>[\d０-９]+)$/
+      when /#{input_smp_pat}/
         pbm.add_smp($LAST_MATCH_INFO[:no], :in, code)
-      when /^出力例\s*(?<no>[\d０-９]+)$/
+      when /#{output_smp_pat}/
         pbm.add_smp($LAST_MATCH_INFO[:no], :exp, code)
       end
     end
