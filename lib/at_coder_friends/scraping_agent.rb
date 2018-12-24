@@ -27,6 +27,7 @@ module AtCoderFriends
       @contest = contest
       @config = config
       @agent = Mechanize.new
+      @agent.pre_connect_hooks << proc { sleep 0.1 }
       # @agent.log = Logger.new(STDERR)
     end
 
@@ -57,19 +58,16 @@ module AtCoderFriends
     end
 
     def login
-      sleep 0.1
       page = agent.get(common_url('login'))
       form = page.forms[1]
       form.field_with(name: 'username').value = config['user']
       form.field_with(name: 'password').value = config['password']
-      sleep 0.1
       form.submit
     end
 
     def fetch_assignments
       url = contest_url('tasks')
       puts "fetch list from #{url} ..."
-      sleep 0.1
       page = agent.get(url)
       page
         .search('//table[1]//td[1]//a')
@@ -80,7 +78,6 @@ module AtCoderFriends
 
     def fetch_problem(q, url)
       puts "fetch problem from #{url} ..."
-      sleep 0.1
       page = agent.get(url)
       Problem.new(q) do |pbm|
         pbm.html = page.body
@@ -120,7 +117,6 @@ module AtCoderFriends
     def post_src(q, ext, src)
       lang_id = LANG_TBL[ext.downcase]
       raise AppError, ".#{ext} is not available." unless lang_id
-      sleep 0.1
       page = agent.get(contest_url('submit'))
       form = page.forms[1]
       form.field_with(name: 'data.TaskScreenName') do |sel|
@@ -129,7 +125,6 @@ module AtCoderFriends
       end
       form.add_field!('data.LanguageId', lang_id)
       form.field_with(name: 'sourceCode').value = src
-      sleep 0.1
       form.submit
     end
   end
