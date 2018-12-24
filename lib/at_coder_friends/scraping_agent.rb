@@ -72,8 +72,7 @@ module AtCoderFriends
       sleep 0.1
       page = agent.get(url)
       page
-        .search('//table//a')
-        .select { |a| a.text =~ /^[A-Z0-9]+$/ }
+        .search('//table[1]//td[1]//a')
         .each_with_object({}) do |a, h|
           h[a.text] = a[:href]
         end
