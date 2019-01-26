@@ -95,6 +95,7 @@ module AtCoderFriends
         .gsub(/\{.*?\}/) { |w| w.delete(' ') } # {1, 1} -> {1,1} shortest match
         .gsub(/[_,'\\(){}]/, '')
         .gsub(/[:：…‥]+/, '..')
+        .gsub(/ldots/, '..')
         .gsub(/^[.\s]+$/, '..')
         .split("\n")
         .map(&:strip)
