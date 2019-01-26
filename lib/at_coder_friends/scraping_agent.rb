@@ -27,6 +27,7 @@ module AtCoderFriends
       @contest = contest
       @config = config
       @agent = Mechanize.new
+      @agent.pre_connect_hooks << proc { sleep 0.1 }
       # @agent.log = Logger.new(STDERR)
     end
 
@@ -36,6 +37,22 @@ module AtCoderFriends
 
     def contest_url(path)
       File.join(BASE_URL, 'contests', contest, path)
+    end
+
+    def constraints_pat
+      config['constraints_pat'] || '^制約$'
+    end
+
+    def input_fmt_pat
+      config['input_fmt_pat'] || '^入出?力$'
+    end
+
+    def input_smp_pat
+      config['input_smp_pat'] || '^入力例\s*(?<no>[\d０-９]+)$'
+    end
+
+    def output_smp_pat
+      config['output_smp_pat'] || '^出力例\s*(?<no>[\d０-９]+)$'
     end
 
     def fetch_all
@@ -57,29 +74,26 @@ module AtCoderFriends
     end
 
     def login
-      sleep 0.1
       page = agent.get(common_url('login'))
       form = page.forms[1]
       form.field_with(name: 'username').value = config['user']
       form.field_with(name: 'password').value = config['password']
-      sleep 0.1
       form.submit
     end
 
     def fetch_assignments
       url = contest_url('tasks')
       puts "fetch list from #{url} ..."
-      sleep 0.1
       page = agent.get(url)
-      ('A'..'Z').each_with_object({}) do |q, h|
-        link = page.link_with(text: q)
-        link && h[q] = link.href
-      end
+      page
+        .search('//table[1]//td[1]//a')
+        .each_with_object({}) do |a, h|
+          h[a.text] = a[:href]
+        end
     end
 
     def fetch_problem(q, url)
       puts "fetch problem from #{url} ..."
-      sleep 0.1
       page = agent.get(url)
       Problem.new(q) do |pbm|
         pbm.html = page.body
@@ -104,14 +118,14 @@ module AtCoderFriends
       text = section.content
       code = section.search('pre')[0]&.content || ''
       case title
-      when /^制約$/
+      when /#{constraints_pat}/
         pbm.desc += text
-      when /^入出?力$/
+      when /#{input_fmt_pat}/
         pbm.desc += text
         pbm.fmt = code
-      when /^入力例\s*(?<no>[\d０-９]+)$/
+      when /#{input_smp_pat}/
         pbm.add_smp($LAST_MATCH_INFO[:no], :in, code)
-      when /^出力例\s*(?<no>[\d０-９]+)$/
+      when /#{output_smp_pat}/
         pbm.add_smp($LAST_MATCH_INFO[:no], :exp, code)
       end
     end
@@ -119,7 +133,6 @@ module AtCoderFriends
     def post_src(q, ext, src)
       lang_id = LANG_TBL[ext.downcase]
       raise AppError, ".#{ext} is not available." unless lang_id
-      sleep 0.1
       page = agent.get(contest_url('submit'))
       form = page.forms[1]
       form.field_with(name: 'data.TaskScreenName') do |sel|
@@ -128,7 +141,6 @@ module AtCoderFriends
       end
       form.add_field!('data.LanguageId', lang_id)
       form.field_with(name: 'sourceCode').value = src
-      sleep 0.1
       form.submit
     end
   end
