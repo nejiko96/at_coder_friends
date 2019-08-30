@@ -11,10 +11,11 @@ RSpec.describe AtCoderFriends::CLI do
 
   USAGE = <<~TEXT
     Usage:
-      at_coder_friends setup    path/contest       # setup contest folder
-      at_coder_friends test-one path/contest/src   # run 1st test case
-      at_coder_friends test-all path/contest/src   # run all test cases
-      at_coder_friends submit   path/contest/src   # submit source code
+      at_coder_friends setup        path/contest       # setup contest folder
+      at_coder_friends test-one     path/contest/src   # run 1st test case
+      at_coder_friends test-all     path/contest/src   # run all test cases
+      at_coder_friends submit       path/contest/src   # submit source code
+      at_coder_friends open-contest path/contest/src   # open contest page
     Options:
         -v, --version                    Display version.
   TEXT
