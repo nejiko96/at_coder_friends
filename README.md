@@ -53,6 +53,13 @@ at_coder_friends setup     /path/to/contest
 
 Creates contest folder, and generates example data and source skeletons into the folder.
 
+### Open Contest Page
+
+```
+at_coder_friends open-contest  /path/to/contest/source_file
+```
+
+Opens the contet page which the contest folder linked to.
 
 ### Run first test case
 
