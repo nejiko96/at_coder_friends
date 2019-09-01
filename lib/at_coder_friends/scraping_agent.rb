@@ -4,6 +4,7 @@ require 'uri'
 require 'mechanize'
 require 'logger'
 require 'English'
+require 'launchy'
 
 module AtCoderFriends
   # scrapes AtCoder contest site and
@@ -142,6 +143,10 @@ module AtCoderFriends
       form.add_field!('data.LanguageId', lang_id)
       form.field_with(name: 'sourceCode').value = src
       form.submit
+    end
+
+    def open_contest
+      Launchy.open(contest_url(''))
     end
   end
 end

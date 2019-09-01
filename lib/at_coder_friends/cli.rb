@@ -11,10 +11,11 @@ module AtCoderFriends
     OPTION_BANNER =
       <<~TEXT
         Usage:
-          at_coder_friends setup    path/contest       # setup contest folder
-          at_coder_friends test-one path/contest/src   # run 1st test case
-          at_coder_friends test-all path/contest/src   # run all test cases
-          at_coder_friends submit   path/contest/src   # submit source code
+          at_coder_friends setup        path/contest       # setup contest folder
+          at_coder_friends test-one     path/contest/src   # run 1st test case
+          at_coder_friends test-all     path/contest/src   # run all test cases
+          at_coder_friends submit       path/contest/src   # submit source code
+          at_coder_friends open-contest path/contest/src   # open contest page
         Options:
       TEXT
     STATUS_SUCCESS  = 0
@@ -72,6 +73,8 @@ module AtCoderFriends
         judge_one(path, id)
       when 'judge-all'
         judge_all(path)
+      when 'open-contest'
+        open_contest(path)
       else
         raise ParamError, "unknown command: #{command}"
       end
@@ -117,6 +120,10 @@ module AtCoderFriends
 
     def judge_all(path)
       JudgeTestRunner.new(path).judge_all
+    end
+
+    def open_contest(path)
+      ScrapingAgent.new(contest_name(path), @config).open_contest
     end
   end
 end
