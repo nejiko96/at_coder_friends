@@ -16,10 +16,6 @@ AtCoderFriends automates tasks about [AtCoder](https://atcoder.jp/) programming 
 
 ## Installation
 
-<!-- 
-See [Development](#Develoment).
--->
-
 Add this line to your application's Gemfile:
 
 ```ruby
@@ -32,7 +28,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install at_coder_friends 
+    $ gem install at_coder_friends
 
 ## Configuration
 
@@ -82,7 +78,7 @@ at_coder_friends submit    /path/to/contest/source_file
 ### Naming Convention
 
 - Contest folder name will be used in the contest site URL.  
-  For example, if ```arc001``` folder is specified, AtCoderFriends will use  ```arc001.contest.atcoder.jp```.
+  For example, if ```arc001``` folder is specified, AtCoderFriends will use  ```https://atcoder.jp/contests/arc001/```.
 - Source file should be named ```[problem ID].[language specific extension]```(e.g. ```A.rb```),  
   in order to let AtCoderFriends find test cases or fill the submission form.
 - Suffixes (start with underscore) may be added to the file name (e.g. ```A_v2.rb```),  
@@ -104,9 +100,10 @@ It is convenient to use AtCoderFriends from Sublime Text plugin.
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
 To install this gem onto your local machine, run `bundle exec rake install`.
-<!---
+
+<!--
 To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org). 
---->
+-->
 
 ## Contributing
 
