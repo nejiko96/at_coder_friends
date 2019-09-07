@@ -52,7 +52,9 @@ REQS = [
         puts "\#{a + b + c} \#{s}"
       SRC
     # rubocop:enable Layout/EmptyLinesAroundArguments
-  )
+  ),
+  StubRequest.new(:get, 'contests/tdpc/tasks'),
+  StubRequest.new(:get, 'contests/tdpc/tasks/tdpc_contest')
 ].freeze
 
 shared_context :atcoder_stub do
