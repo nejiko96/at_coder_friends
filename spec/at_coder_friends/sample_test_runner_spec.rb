@@ -3,8 +3,11 @@
 RSpec.describe AtCoderFriends::SampleTestRunner do
   include_context :atcoder_env
 
-  subject(:runner) { described_class.new(File.join(contest_root, prog)) }
+  subject(:runner) do
+    described_class.new(File.join(contest_root, prog), config)
+  end
   let(:prog) { 'A.rb' }
+  let(:config) { AtCoderFriends::ConfigLoader.load_config(contest_root) }
 
   describe '#test' do
     subject { runner.test(no) }

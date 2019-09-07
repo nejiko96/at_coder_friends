@@ -12,15 +12,8 @@ module AtCoderFriends
   # - submits sources
   class ScrapingAgent
     include PathUtil
-
     BASE_URL = 'https://atcoder.jp/'
     XPATH_SECTION = '//h3[.="%<title>s"]/following-sibling::section'
-    LANG_TBL = {
-      'cxx'  => '3003',
-      'cs'   => '3006',
-      'java' => '3016',
-      'rb'   => '3024'
-    }.freeze
 
     attr_reader :contest, :config, :agent
 
@@ -75,6 +68,9 @@ module AtCoderFriends
     end
 
     def login
+      return unless config['user'] && !config['user'].empty?
+      return unless config['password'] && !config['password'].empty?
+
       page = agent.get(common_url('login'))
       form = page.forms[1]
       form.field_with(name: 'username').value = config['user']
@@ -132,8 +128,9 @@ module AtCoderFriends
     end
 
     def post_src(q, ext, src)
-      lang_id = LANG_TBL[ext.downcase]
+      lang_id = config['ext_settings'][ext.downcase]&.dig('submit_lang')
       raise AppError, ".#{ext} is not available." unless lang_id
+
       page = agent.get(contest_url('submit'))
       form = page.forms[1]
       form.field_with(name: 'data.TaskScreenName') do |sel|

@@ -3,7 +3,6 @@
 module AtCoderFriends
   # generates C++ source code from definition
   class CxxGenerator
-    # rubocop:disable Style/FormatStringToken
     TEMPLATE = <<~TEXT
       #include <cstdio>
 
@@ -31,7 +30,6 @@ module AtCoderFriends
         return 0;
       }
     TEXT
-    # rubocop:enable Style/FormatStringToken
 
     SCANF_FMTS = [
       'scanf("%<fmt>s", %<addr>s);',
@@ -39,9 +37,7 @@ module AtCoderFriends
       'REP(i, %<sz1>s) REP(j, %<sz2>s) scanf("%<fmt>s", %<addr>s);'
     ].freeze
 
-    # rubocop:disable Style/FormatStringToken
     FMT_FMTS = { number: '%d', string: '%s', char: '%s' }.freeze
-    # rubocop:enable Style/FormatStringToken
 
     ADDR_FMTS = {
       single: {

@@ -85,6 +85,7 @@ module AtCoderFriends
       defs = parse_fmt(lines)
       smpx = max_smp(smps)
       return defs unless smpx
+
       match_smp!(defs, smpx)
     end
 
@@ -140,6 +141,7 @@ module AtCoderFriends
       inpdefs.each_with_index do |inpdef, i|
         break if i > lines.size
         next if inpdef.item != :number
+
         inpdef.item = :string if lines[i].split[0] =~ /[^\-0-9]/
         break if %i[varray matrix].include?(inpdef.container)
       end

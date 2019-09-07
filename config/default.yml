@@ -1,0 +1,21 @@
+user: ''
+password: ''
+ext_settings:
+  'cs':
+    submit_lang: '3006' # C# (Mono)
+    test_cmd:
+      default: 'mono {dir}/{base}.exe'
+      windows: '{dir}/{base}.exe'
+  'cxx':
+    submit_lang: '3003' # C++14 (GCC)
+    test_cmd:
+      default: '{dir}/{base}'
+      windows: '{dir}/{base}.exe'
+  'java':
+    submit_lang: '3016' # Java8 (OpenJDK)
+    test_cmd:
+      default: 'java -cp {dir} Main'
+  'rb':
+    submit_lang: '3024' # Ruby
+    test_cmd:
+      default: 'ruby {dir}/{base}.rb'

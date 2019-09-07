@@ -162,7 +162,6 @@ RSpec.describe AtCoderFriends::RubyGenerator do
 
     it 'generates ruby source' do
       expect(subject).to eq(
-        # rubocop:disable Layout/EmptyLinesAroundArguments
         <<~SRC
           N = gets.to_i
           xs = Array.new(N)
@@ -175,7 +174,6 @@ RSpec.describe AtCoderFriends::RubyGenerator do
 
           puts ans
         SRC
-        # rubocop:enable Layout/EmptyLinesAroundArguments
       )
     end
   end

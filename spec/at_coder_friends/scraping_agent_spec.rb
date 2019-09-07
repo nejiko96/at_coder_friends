@@ -6,12 +6,10 @@ RSpec.describe AtCoderFriends::ScrapingAgent do
 
   subject(:agent) { described_class.new(contest, config) }
   let(:contest) { 'arc001' }
-  let(:config) { { 'user' => 'foo', 'password' => 'bar' } }
+  let(:config) { AtCoderFriends::ConfigLoader.load_config(contest_root) }
 
   describe '#fetch_all' do
     subject { agent.fetch_all }
-
-    after(:all) { FileUtils.rm(Dir.glob(smp_dir + '/*.out')) }
 
     # TODO: yield test
     context 'from ARC#001' do
@@ -55,14 +53,14 @@ RSpec.describe AtCoderFriends::ScrapingAgent do
     context 'from tdpc' do
       let(:contest) { 'tdpc' }
       let(:config) do
-        {
-          'user' => 'foo',
-          'password' => 'bar',
-          'constraints_pat' => '^Constraints$',
-          'input_fmt_pat' => '^Input Format$',
-          'input_smp_pat' => '^Sample Input\s*(?<no>[\d０-９]+)$',
-          'output_smp_pat' => '^Sample Output\s*(?<no>[\d０-９]+)$'
-        }
+        AtCoderFriends::ConfigLoader
+          .load_config(contest_root)
+          .merge(
+            'constraints_pat' => '^Constraints$',
+            'input_fmt_pat' => '^Input Format$',
+            'input_smp_pat' => '^Sample Input\s*(?<no>[\d０-９]+)$',
+            'output_smp_pat' => '^Sample Output\s*(?<no>[\d０-９]+)$'
+          )
       end
 
       it 'handles irregular titles' do
