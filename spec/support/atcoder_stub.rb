@@ -42,7 +42,6 @@ REQS = [
     'data.TaskScreenName': 'arc001_1',
     'data.LanguageId': '3024',
     csrf_token: 'ZD8/jxTUFqgfOUYq0Y+/m7AygPqElU6UEV7nvp1mgEg=',
-    # rubocop:disable Layout/EmptyLinesAroundArguments
     sourceCode:
       <<~SRC
         a = gets.to_i
@@ -51,7 +50,6 @@ REQS = [
 
         puts "\#{a + b + c} \#{s}"
       SRC
-    # rubocop:enable Layout/EmptyLinesAroundArguments
   ),
   StubRequest.new(:get, 'contests/tdpc/tasks'),
   StubRequest.new(:get, 'contests/tdpc/tasks/tdpc_contest')

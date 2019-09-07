@@ -25,6 +25,7 @@ module AtCoderFriends
       parse_options!(args)
       handle_exiting_option
       raise ParamError, 'command or path is not specified.' if args.size < 2
+
       @config = ConfigLoader.load_config(args[1])
       exec_command(*args)
       STATUS_SUCCESS
@@ -55,6 +56,7 @@ module AtCoderFriends
 
     def handle_exiting_option
       return unless EXITING_OPTIONS.any? { |o| @options.key? o }
+
       puts AtCoderFriends::VERSION if @options[:version]
       exit STATUS_SUCCESS
     end
@@ -83,6 +85,7 @@ module AtCoderFriends
     def setup(path)
       raise AppError, "#{path} is not empty." \
         if Dir.exist?(path) && !Dir["#{path}/*"].empty?
+
       agent = ScrapingAgent.new(contest_name(path), @config)
       parser = FormatParser.new
       rb_gen = RubyGenerator.new
@@ -98,28 +101,29 @@ module AtCoderFriends
 
     def test_one(path, id)
       id ||= 1
-      SampleTestRunner.new(path).test_one(id)
+      SampleTestRunner.new(path, @config).test_one(id)
     end
 
     def test_all(path)
-      SampleTestRunner.new(path).test_all
+      SampleTestRunner.new(path, @config).test_all
       Verifier.new(path).verify
     end
 
     def submit(path)
       vf = Verifier.new(path)
       raise AppError, "#{vf.file} has not been tested." unless vf.verified?
+
       ScrapingAgent.new(contest_name(path), @config).submit(path)
       vf.unverify
     end
 
     def judge_one(path, id)
       id ||= ''
-      JudgeTestRunner.new(path).judge_one(id)
+      JudgeTestRunner.new(path, @config).judge_one(id)
     end
 
     def judge_all(path)
-      JudgeTestRunner.new(path).judge_all
+      JudgeTestRunner.new(path, @config).judge_all
     end
 
     def open_contest(path)

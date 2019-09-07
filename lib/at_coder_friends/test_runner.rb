@@ -7,8 +7,9 @@ module AtCoderFriends
   class TestRunner
     include PathUtil
 
-    def initialize(path)
+    def initialize(path, config)
       @path, @dir, @prg, @base, @ext, @q = split_prg_path(path)
+      @config = config
     end
 
     # rubocop:disable Metrics/MethodLength
@@ -16,7 +17,7 @@ module AtCoderFriends
       return false unless File.exist?(infile) && File.exist?(expfile)
 
       puts "==== #{id} ===="
-      ec = system("#{edit_cmd} < #{infile} > #{outfile}")
+      ec = system("#{test_cmd} < #{infile} > #{outfile}")
 
       input, result, expected =
         [infile, outfile, expfile].map { |file| File.read(file) }
@@ -37,33 +38,19 @@ module AtCoderFriends
     end
     # rubocop:enable Metrics/MethodLength
 
-    # rubocop:disable Metrics/MethodLength
-    def edit_cmd
-      case @ext
-      when 'java'
-        "java -cp #{@dir} Main"
-      when 'rb'
-        "ruby #{@dir}/#{@base}.rb"
-      when 'cs'
-        case which_os
-        when :windows
-          "#{@dir}/#{@base}.exe"
-        else
-          "mono #{@dir}/#{@base}.exe"
-        end
-      else # c, cxx
-        case which_os
-        when :windows
-          "#{@dir}/#{@base}.exe"
-        else
-          "#{@dir}/#{@base}"
-        end
-      end
+    def test_cmd
+      cmds = @config['ext_settings'][@ext.downcase]&.dig('test_cmd')
+      raise AppError, "test command for .#{@ext} not defined" unless cmds
+
+      os = which_os.to_s
+      cmd = cmds[os] || cmds['default']
+      raise AppError, "test command for .#{@ext}(#{os}) not defined" unless cmd
+
+      cmd.gsub('{dir}', @dir).gsub('{base}', @base)
     end
-    # rubocop:enable Metrics/MethodLength
 
     def which_os
-      @os ||= begin
+      @which_os ||= begin
         case RbConfig::CONFIG['host_os']
         when /mswin|msys|mingw|cygwin|bccwin|wince|emc/
           :windows

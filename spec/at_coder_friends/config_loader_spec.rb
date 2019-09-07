@@ -28,12 +28,9 @@ RSpec.describe AtCoderFriends::ConfigLoader do
     context 'when the file does not exist' do
       let(:target_dir) { 'otherdir' }
 
-      it 'show error message' do
-        expect { subject }.to raise_error(
-          AtCoderFriends::ConfigNotFoundError
-        ) do |e|
-          expect(e.message).to(match(/\AConfiguration file not found: .+\z/))
-        end
+      it 'loads config from default.xml' do
+        expect(subject['user']).to be_empty
+        expect(subject['password']).to be_empty
       end
     end
   end

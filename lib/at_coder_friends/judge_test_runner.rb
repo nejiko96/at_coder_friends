@@ -5,8 +5,8 @@ module AtCoderFriends
   class JudgeTestRunner < TestRunner
     include PathUtil
 
-    def initialize(path)
-      super(path)
+    def initialize(path, config)
+      super(path, config)
       @cases_dir = cases_dir(@dir)
       @smp_dir = smp_dir(@dir)
     end

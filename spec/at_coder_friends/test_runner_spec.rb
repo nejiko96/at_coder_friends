@@ -3,11 +3,14 @@
 RSpec.describe AtCoderFriends::TestRunner do
   include_context :atcoder_env
 
-  subject(:runner) { described_class.new(File.join(contest_root, prog)) }
+  subject(:runner) do
+    described_class.new(File.join(contest_root, prog), config)
+  end
   let(:prog) { 'A.rb' }
+  let(:config) { AtCoderFriends::ConfigLoader.load_config(contest_root) }
 
-  describe '#edit_cmd' do
-    subject { runner.edit_cmd }
+  describe '#test_cmd' do
+    subject { runner.test_cmd }
 
     context 'for .java' do
       let(:prog) { 'A.java' }
@@ -40,20 +43,20 @@ RSpec.describe AtCoderFriends::TestRunner do
         before do
           allow(runner).to receive(:which_os) { :macosx }
         end
+
         it 'returns command' do
           expect(subject).to eq("mono #{contest_root}/A.exe")
         end
       end
     end
 
-    context 'for others' do
+    context 'for .cxx' do
       let(:prog) { 'A.cxx' }
 
       context 'on Windows' do
         before do
           allow(runner).to receive(:which_os) { :windows }
         end
-
         it 'returns command' do
           expect(subject).to eq("#{contest_root}/A.exe")
         end
@@ -65,6 +68,42 @@ RSpec.describe AtCoderFriends::TestRunner do
         end
         it 'returns command' do
           expect(subject).to eq("#{contest_root}/A")
+        end
+      end
+    end
+
+    context 'for .js' do
+      let(:prog) { 'A.js' }
+
+      context 'on Windows' do
+        before do
+          allow(runner).to receive(:which_os) { :windows }
+        end
+        it 'show error message' do
+          expect { subject }.to raise_error(AtCoderFriends::AppError) do |e|
+            expect(e.message).to(
+              eq('test command for .js(windows) not defined')
+            )
+          end
+        end
+      end
+
+      context 'on Mac' do
+        before do
+          allow(runner).to receive(:which_os) { :macosx }
+        end
+        it 'returns command' do
+          expect(subject).to eq("node #{contest_root}/A.js")
+        end
+      end
+    end
+
+    context 'for others' do
+      let(:prog) { 'A.c' }
+
+      it 'show error message' do
+        expect { subject }.to raise_error(AtCoderFriends::AppError) do |e|
+          expect(e.message).to(eq('test command for .c not defined'))
         end
       end
     end

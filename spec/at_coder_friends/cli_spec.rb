@@ -83,16 +83,6 @@ RSpec.describe AtCoderFriends::CLI do
         expect(subject).to eq(1)
       end
     end
-
-    context 'when config file is not found' do
-      let(:command) { 'setup' }
-      let(:path) { '/foo/bar' }
-      it 'shows error' do
-        expect { subject }.to \
-          output("Configuration file not found: /foo/bar\n").to_stderr
-        expect(subject).to eq(1)
-      end
-    end
   end
 
   describe 'setup' do

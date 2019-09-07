@@ -1,2 +1,7 @@
 user: foo
 password: bar
+ext_settings:
+  'js':
+    submit_lang: '3017' # JavaScript (node.js)
+    test_cmd:
+      macosx: 'node {dir}/{base}.js'

@@ -15,18 +15,21 @@ module AtCoderFriends
 
     def verify
       return unless File.exist?(path)
+
       FileUtils.makedirs(vdir) unless Dir.exist?(vdir)
       FileUtils.touch(vpath)
     end
 
     def unverify
       return unless File.exist?(vpath)
+
       File.delete(vpath)
     end
 
     def verified?
       return false unless File.exist?(vpath)
       return false if File.mtime(vpath) < File.mtime(path)
+
       true
     end
   end
