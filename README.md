@@ -54,7 +54,7 @@ at_coder_friends setup     /path/to/contest
 
 Creates contest folder, and generates example data and source skeletons into the folder.
 
-### Open Contest Page
+### Open contest page
 
 ```
 at_coder_friends open-contest  /path/to/contest/source_file
@@ -80,7 +80,7 @@ at_coder_friends test-all  /path/to/contest/source_file
 at_coder_friends submit    /path/to/contest/source_file
 ```
 
-### Naming Convention
+### Naming convention
 
 - Contest folder name will be used in the contest site URL.
   For example, if ```arc001``` folder is specified, AtCoderFriends will use  ```https://atcoder.jp/contests/arc001/```.
@@ -94,11 +94,56 @@ at_coder_friends submit    /path/to/contest/source_file
 - Compilation is not supported.
 - Source generator and test runner supports only ruby and C++.
 
-## For Sublime Text User
+## For Sublime Text user
 
 It is convenient to use AtCoderFriends from Sublime Text plugin.
 
 - [sublime_at_coder_friends](https://github.com/nejiko96/sublime_at_coder_friends)
+
+## For Visual Studio Code user
+
+- Run **Configure Tasks** from the global Terminal menu.
+- Select the **Create tasks.json file from template** entry.
+- Select **Others** from the list.
+- Add following tasks to ```tasks.json```.
+
+```JSON
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "af test-one",
+      "type": "shell",
+      "command": "at_coder_friends",
+      "args": [
+        "test-one",
+        "${file}"
+      ],
+      "group": "none",
+    },
+    {
+      "label": "af test-all",
+      "type": "shell",
+      "command": "at_coder_friends",
+      "args": [
+        "test-all",
+        "${file}"
+      ],
+      "group": "none"
+    },
+    {
+      "label": "af submit",
+      "type": "shell",
+      "command": "at_coder_friends",
+      "args": [
+        "submit",
+        "${file}"
+      ],
+      "group": "none",
+    }
+  ]
+}
+```
 
 ## Development
 
