@@ -31,15 +31,10 @@ REQS = [
   StubRequest.new(:get, 'contests/practice/tasks'),
   StubRequest.new(:get, 'contests/practice/tasks/practice_1'),
   StubRequest.new(:get, 'contests/practice/tasks/practice_2'),
-  StubRequest.new(:get, 'contests/arc001/tasks'),
-  StubRequest.new(:get, 'contests/arc001/tasks/arc001_1'),
-  StubRequest.new(:get, 'contests/arc001/tasks/arc001_2'),
-  StubRequest.new(:get, 'contests/arc001/tasks/arc001_3'),
-  StubRequest.new(:get, 'contests/arc001/tasks/arc001_4'),
-  StubRequest.new(:get, 'contests/arc001/submit'),
+  StubRequest.new(:get, 'contests/practice/submit'),
   StubRequest.new(
-    :post, 'contests/arc001/submit', nil,
-    'data.TaskScreenName': 'arc001_1',
+    :post, 'contests/practice/submit', nil,
+    'data.TaskScreenName': 'practice_1',
     'data.LanguageId': '3024',
     csrf_token: 'ZD8/jxTUFqgfOUYq0Y+/m7AygPqElU6UEV7nvp1mgEg=',
     sourceCode:
@@ -51,6 +46,12 @@ REQS = [
         puts "\#{a + b + c} \#{s}"
       SRC
   ),
+  StubRequest.new(:get, 'contests/arc001/tasks'),
+  StubRequest.new(:get, 'contests/arc001/tasks/arc001_1'),
+  StubRequest.new(:get, 'contests/arc001/tasks/arc001_2'),
+  StubRequest.new(:get, 'contests/arc001/tasks/arc001_3'),
+  StubRequest.new(:get, 'contests/arc001/tasks/arc001_4'),
+
   StubRequest.new(:get, 'contests/tdpc/tasks'),
   StubRequest.new(:get, 'contests/tdpc/tasks/tdpc_contest')
 ].freeze

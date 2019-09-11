@@ -12,7 +12,7 @@ RSpec.describe AtCoderFriends::PathUtil do
       let(:path) { File.join(contest_root, 'A.rb') }
 
       it 'returns contest name' do
-        expect(subject).to eq('arc001')
+        expect(subject).to eq('practice')
       end
     end
 
@@ -20,7 +20,7 @@ RSpec.describe AtCoderFriends::PathUtil do
       let(:path) { contest_root }
 
       it 'returns contest name' do
-        expect(subject).to eq('arc001')
+        expect(subject).to eq('practice')
       end
     end
   end

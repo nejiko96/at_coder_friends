@@ -5,7 +5,7 @@ RSpec.describe AtCoderFriends::ScrapingAgent do
   include_context :atcoder_stub
 
   subject(:agent) { described_class.new(contest, config) }
-  let(:contest) { 'arc001' }
+  let(:contest) { 'practice' }
   let(:config) { AtCoderFriends::ConfigLoader.load_config(contest_root) }
 
   describe '#fetch_all' do
@@ -13,6 +13,8 @@ RSpec.describe AtCoderFriends::ScrapingAgent do
 
     # TODO: yield test
     context 'from ARC#001' do
+      let(:contest) { 'arc001' }
+
       it 'fetches problems' do
         expect { subject }.to output(
           <<~TEXT
