@@ -97,7 +97,7 @@ RSpec.describe AtCoderFriends::CLI do
       end
     end
 
-    context 'when there is no error' do
+    context 'with no errors' do
       include_context :uses_temp_dir
       include_context :atcoder_stub
 
@@ -162,7 +162,7 @@ RSpec.describe AtCoderFriends::CLI do
         expect { subject }.to output(
           <<~OUTPUT
             ***** test_one A.rb *****
-            ==== A_001 ====
+            ==== A_001 (local) ====
             -- input --
             1
             2 3
@@ -185,7 +185,7 @@ RSpec.describe AtCoderFriends::CLI do
         expect { subject }.to output(
           <<~OUTPUT
             ***** test_one A.rb *****
-            ==== A_002 ====
+            ==== A_002 (local) ====
             -- input --
             72
             128 256
@@ -208,7 +208,7 @@ RSpec.describe AtCoderFriends::CLI do
       expect { subject }.to output(
         <<~OUTPUT
           ***** test_all A.rb *****
-          ==== A_001 ====
+          ==== A_001 (local) ====
           -- input --
           1
           2 3
@@ -218,7 +218,7 @@ RSpec.describe AtCoderFriends::CLI do
           -- result --
           6 test
           << OK >>
-          ==== A_002 ====
+          ==== A_002 (local) ====
           -- input --
           72
           128 256
@@ -242,7 +242,7 @@ RSpec.describe AtCoderFriends::CLI do
       expect { subject }.to output(
         <<~OUTPUT
           ***** judge_one A.rb *****
-          ==== 00_sample_1 ====
+          ==== 00_sample_1 (local) ====
           -- input --
           1
           2 3
@@ -264,7 +264,7 @@ RSpec.describe AtCoderFriends::CLI do
       expect { subject }.to output(
         <<~OUTPUT
           ***** judge_all A.rb *****
-          ==== 00_sample_1 ====
+          ==== 00_sample_1 (local) ====
           -- input --
           1
           2 3
@@ -274,7 +274,7 @@ RSpec.describe AtCoderFriends::CLI do
           -- result --
           6 test
           << OK >>
-          ==== 00_sample_2 ====
+          ==== 00_sample_2 (local) ====
           -- input --
           72
           128 256

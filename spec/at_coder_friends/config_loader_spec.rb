@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe AtCoderFriends::ConfigLoader do
+  include FileHelper
   include_context :atcoder_env
 
   subject(:loader) { described_class }
@@ -31,6 +32,30 @@ RSpec.describe AtCoderFriends::ConfigLoader do
       it 'loads config from default.xml' do
         expect(subject['user']).to be_empty
         expect(subject['password']).to be_empty
+      end
+    end
+
+    context 'when user setting overwrites default' do
+      include_context :uses_temp_dir
+      let(:target_dir) { temp_dir }
+      before :each do
+        create_file(
+          File.join(temp_dir, '.at_coder_friends.yml'),
+          <<~TEXT
+            ext_settings:
+              'cs':
+                test_cmd: null
+              'xxx':
+                submit_lang: '9999'
+          TEXT
+        )
+      end
+
+      it 'merges user setting and default' do
+        expect(subject['ext_settings']['rb']).not_to eq nil
+        expect(subject['ext_settings']['cs']['submit_lang']).not_to eq nil
+        expect(subject['ext_settings']['cs']['test_cmd']).to eq nil
+        expect(subject['ext_settings']['xxx']).not_to eq nil
       end
     end
   end

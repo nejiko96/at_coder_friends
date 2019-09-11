@@ -30,7 +30,7 @@ RSpec.describe AtCoderFriends::SampleTestRunner do
       it 'shows result' do
         expect { subject }.to output(
           <<~OUTPUT
-            ==== A_001 ====
+            ==== A_001 (local) ====
             -- input --
             1
             2 3
@@ -53,7 +53,7 @@ RSpec.describe AtCoderFriends::SampleTestRunner do
       expect { subject }.to output(
         <<~OUTPUT
           ***** test_one A.rb *****
-          ==== A_001 ====
+          ==== A_001 (local) ====
           -- input --
           1
           2 3
@@ -75,7 +75,7 @@ RSpec.describe AtCoderFriends::SampleTestRunner do
       expect { subject }.to output(
         <<~OUTPUT
           ***** test_all A.rb *****
-          ==== A_001 ====
+          ==== A_001 (local) ====
           -- input --
           1
           2 3
@@ -85,7 +85,7 @@ RSpec.describe AtCoderFriends::SampleTestRunner do
           -- result --
           6 test
           << OK >>
-          ==== A_002 ====
+          ==== A_002 (local) ====
           -- input --
           72
           128 256

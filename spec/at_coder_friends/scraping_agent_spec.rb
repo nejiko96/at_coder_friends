@@ -5,7 +5,7 @@ RSpec.describe AtCoderFriends::ScrapingAgent do
   include_context :atcoder_stub
 
   subject(:agent) { described_class.new(contest, config) }
-  let(:contest) { 'arc001' }
+  let(:contest) { 'practice' }
   let(:config) { AtCoderFriends::ConfigLoader.load_config(contest_root) }
 
   describe '#fetch_all' do
@@ -13,6 +13,8 @@ RSpec.describe AtCoderFriends::ScrapingAgent do
 
     # TODO: yield test
     context 'from ARC#001' do
+      let(:contest) { 'arc001' }
+
       it 'fetches problems' do
         expect { subject }.to output(
           <<~TEXT
@@ -84,7 +86,7 @@ RSpec.describe AtCoderFriends::ScrapingAgent do
   describe '#submit' do
     subject { agent.submit(File.join(contest_root, prg)) }
 
-    context 'when there is no error' do
+    context 'with no errors' do
       let(:prg) { 'A.rb' }
 
       it 'posts the source' do
@@ -105,11 +107,12 @@ RSpec.describe AtCoderFriends::ScrapingAgent do
     end
 
     context 'for unsupported extension' do
-      let(:prg) { 'A.py' }
+      let(:prg) { 'A.xxx' }
 
       it 'show error' do
-        expect { subject }.to \
-          raise_error(AtCoderFriends::AppError, '.py is not available.')
+        expect { subject }.to raise_error(
+          AtCoderFriends::AppError, 'LanguageId for .xxx is not specified.'
+        )
       end
     end
 
@@ -119,6 +122,32 @@ RSpec.describe AtCoderFriends::ScrapingAgent do
       it 'show error' do
         expect { subject }.to \
           raise_error(AtCoderFriends::AppError, 'unknown problem:Z.')
+      end
+    end
+  end
+
+  describe '#code_test' do
+    let(:config) { AtCoderFriends::ConfigLoader.load_config(contest_root) }
+    subject { agent.code_test(File.join(contest_root, prg), infile) }
+    let(:infile) { File.join(smp_dir, 'A_001.in') }
+    let(:expfile) { File.join(smp_dir, 'A_001.exp') }
+
+    context 'with no errors' do
+      let(:prg) { 'A.py' }
+
+      it 'returns result' do
+        expect(subject['Result']['ExitCode']).to eq 0
+        expect(subject['Stdout']).to eq File.read(expfile)
+      end
+    end
+
+    context 'for unsupported extension' do
+      let(:prg) { 'A.xxx' }
+
+      it 'show error' do
+        expect { subject }.to raise_error(
+          AtCoderFriends::AppError, 'LanguageId for .xxx is not specified.'
+        )
       end
     end
   end
