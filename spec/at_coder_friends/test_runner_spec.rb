@@ -2,6 +2,7 @@
 
 RSpec.describe AtCoderFriends::TestRunner do
   include_context :atcoder_env
+  include_context :atcoder_stub
 
   subject(:runner) do
     described_class.new(File.join(contest_root, prog), config)
@@ -15,14 +16,14 @@ RSpec.describe AtCoderFriends::TestRunner do
     context 'for .java' do
       let(:prog) { 'A.java' }
       it 'returns command' do
-        expect(subject).to eq("java -cp #{contest_root} Main")
+        expect(subject).to eq("java -cp \"#{contest_root}\" Main")
       end
     end
 
     context 'for .rb' do
       let(:prog) { 'A.rb' }
       it 'returns command' do
-        expect(subject).to eq("ruby #{contest_root}/A.rb")
+        expect(subject).to eq("ruby \"#{contest_root}/A.rb\"")
       end
     end
 
@@ -35,7 +36,7 @@ RSpec.describe AtCoderFriends::TestRunner do
         end
 
         it 'returns command' do
-          expect(subject).to eq("#{contest_root}/A.exe")
+          expect(subject).to eq("\"#{contest_root}/A.exe\"")
         end
       end
 
@@ -45,7 +46,7 @@ RSpec.describe AtCoderFriends::TestRunner do
         end
 
         it 'returns command' do
-          expect(subject).to eq("mono #{contest_root}/A.exe")
+          expect(subject).to eq("mono \"#{contest_root}/A.exe\"")
         end
       end
     end
@@ -58,7 +59,7 @@ RSpec.describe AtCoderFriends::TestRunner do
           allow(runner).to receive(:which_os) { :windows }
         end
         it 'returns command' do
-          expect(subject).to eq("#{contest_root}/A.exe")
+          expect(subject).to eq("\"#{contest_root}/A.exe\"")
         end
       end
 
@@ -67,44 +68,16 @@ RSpec.describe AtCoderFriends::TestRunner do
           allow(runner).to receive(:which_os) { :macosx }
         end
         it 'returns command' do
-          expect(subject).to eq("#{contest_root}/A")
+          expect(subject).to eq("\"#{contest_root}/A\"")
         end
       end
     end
 
-    context 'for .js' do
-      let(:prog) { 'A.js' }
+    context 'extension without test_cmd setting' do
+      let(:prog) { 'A.py' }
 
-      context 'on Windows' do
-        before do
-          allow(runner).to receive(:which_os) { :windows }
-        end
-        it 'show error message' do
-          expect { subject }.to raise_error(AtCoderFriends::AppError) do |e|
-            expect(e.message).to(
-              eq('test command for .js(windows) not defined')
-            )
-          end
-        end
-      end
-
-      context 'on Mac' do
-        before do
-          allow(runner).to receive(:which_os) { :macosx }
-        end
-        it 'returns command' do
-          expect(subject).to eq("node #{contest_root}/A.js")
-        end
-      end
-    end
-
-    context 'for others' do
-      let(:prog) { 'A.c' }
-
-      it 'show error message' do
-        expect { subject }.to raise_error(AtCoderFriends::AppError) do |e|
-          expect(e.message).to(eq('test command for .c not defined'))
-        end
+      it 'returns nil' do
+        expect(subject).to eq nil
       end
     end
   end
@@ -129,63 +102,142 @@ RSpec.describe AtCoderFriends::TestRunner do
       end
     end
 
-    context 'when the result is OK' do
-      it 'shows result' do
-        expect { subject }.to output(
-          <<~OUTPUT
-            ==== A_001 ====
-            -- input --
-            1
-            2 3
-            test
-            -- expected --
-            6 test
-            -- result --
-            6 test
-            << OK >>
-          OUTPUT
-        ).to_stdout
+    context 'extension with test_cmd setting' do
+      context 'when the result is OK' do
+        it 'shows result' do
+          expect { subject }.to output(
+            <<~OUTPUT
+              ==== A_001 (local) ====
+              -- input --
+              1
+              2 3
+              test
+              -- expected --
+              6 test
+              -- result --
+              6 test
+              << OK >>
+            OUTPUT
+          ).to_stdout
+        end
+      end
+
+      context 'when the result is WA' do
+        let(:prog) { 'A_WA.rb' }
+
+        it 'shows result' do
+          expect { subject }.to output(
+            <<~OUTPUT
+              ==== A_001 (local) ====
+              -- input --
+              1
+              2 3
+              test
+              -- expected --
+              6 test
+              -- result --
+              6_test
+              !!!!! WA !!!!!
+            OUTPUT
+          ).to_stdout
+        end
+      end
+
+      context 'when the result is RE' do
+        let(:prog) { 'A_RE.rb' }
+
+        it 'shows result' do
+          expect { subject }.to output(
+            <<~OUTPUT
+              ==== A_001 (local) ====
+              -- input --
+              1
+              2 3
+              test
+              -- expected --
+              6 test
+              -- result --
+              !!!!! RE !!!!!
+            OUTPUT
+          ).to_stdout
+        end
       end
     end
 
-    context 'when the result is WA' do
-      let(:prog) { 'A_WA.rb' }
+    context 'extension without test_cmd setting' do
+      context 'when the result is OK' do
+        let(:prog) { 'A.py' }
 
-      it 'shows result' do
-        expect { subject }.to output(
-          <<~OUTPUT
-            ==== A_001 ====
-            -- input --
-            1
-            2 3
-            test
-            -- expected --
-            6 test
-            -- result --
-            6_test
-            !!!!! WA !!!!!
-          OUTPUT
-        ).to_stdout
+        it 'shows result' do
+          expect { subject }.to output(
+            <<~OUTPUT
+              ==== A_001 (remote) ====
+              Exit code: 0
+              Time: 17ms
+              Memory: 5536KB
+              -- input --
+              1
+              2 3
+              test
+              -- expected --
+              6 test
+              -- result --
+              6 test
+              << OK >>
+            OUTPUT
+          ).to_stdout
+        end
       end
-    end
 
-    context 'when the result is RE' do
-      let(:prog) { 'A_RE.rb' }
+      context 'when the result is WA' do
+        let(:prog) { 'A_WA.py' }
+        let(:test_result) { 'WA' }
+        it 'shows result' do
+          expect { subject }.to output(
+            <<~OUTPUT
+              ==== A_001 (remote) ====
+              Exit code: 0
+              Time: 17ms
+              Memory: 5536KB
+              -- input --
+              1
+              2 3
+              test
+              -- expected --
+              6 test
+              -- result --
+              6_test
+              !!!!! WA !!!!!
+            OUTPUT
+          ).to_stdout
+        end
+      end
 
-      it 'shows result' do
-        expect { subject }.to output(
-          <<~OUTPUT
-            ==== A_001 ====
-            -- input --
-            1
-            2 3
-            test
-            -- expected --
-            6 test
-            -- result --
-            !!!!! RE !!!!!
-          OUTPUT
-        ).to_stdout
+      context 'when the result is RE' do
+        let(:prog) { 'A_RE.py' }
+        let(:test_result) { 'RE' }
+        it 'shows result' do
+          expect { subject }.to output(
+            <<~OUTPUT
+              ==== A_001 (remote) ====
+              Exit code: 256
+              Time: 17ms
+              Memory: 5524KB
+              -- input --
+              1
+              2 3
+              test
+              -- expected --
+              6 test
+              -- result --
+              Traceback (most recent call last):
+                File "./Main.py", line 9, in <module>
+                  print(ans)
+              NameError: name 'ans' is not defined
+              !!!!! RE !!!!!
+            OUTPUT
+          ).to_stdout
+        end
       end
     end
   end

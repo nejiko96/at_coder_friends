@@ -43,11 +43,11 @@ module AtCoderFriends
       end
 
       def merge(base_hash, derived_hash)
-        res = base_hash.merge(derived_hash)
-        common_keys = base_hash.keys & derived_hash.keys
-        common_keys.each do |key|
-          if base_hash[key].is_a?(Hash)
-            res[key] = merge(base_hash[key], derived_hash[key])
+        res = base_hash.merge(derived_hash) do |_, base_val, derived_val|
+          if base_val.is_a?(Hash) && derived_val.is_a?(Hash)
+            merge(base_val, derived_val)
+          else
+            derived_val
           end
         end
         res

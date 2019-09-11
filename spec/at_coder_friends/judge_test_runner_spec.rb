@@ -29,7 +29,7 @@ RSpec.describe AtCoderFriends::JudgeTestRunner do
       it 'shows result' do
         expect { subject }.to output(
           <<~OUTPUT
-            ==== 00_sample_1 ====
+            ==== 00_sample_1 (local) ====
             -- input --
             1
             2 3
@@ -52,7 +52,7 @@ RSpec.describe AtCoderFriends::JudgeTestRunner do
       expect { subject }.to output(
         <<~OUTPUT
           ***** judge_one A.rb *****
-          ==== 00_sample_1 ====
+          ==== 00_sample_1 (local) ====
           -- input --
           1
           2 3
@@ -74,7 +74,7 @@ RSpec.describe AtCoderFriends::JudgeTestRunner do
       expect { subject }.to output(
         <<~OUTPUT
           ***** judge_all A.rb *****
-          ==== 00_sample_1 ====
+          ==== 00_sample_1 (local) ====
           -- input --
           1
           2 3
@@ -84,7 +84,7 @@ RSpec.describe AtCoderFriends::JudgeTestRunner do
           -- result --
           6 test
           << OK >>
-          ==== 00_sample_2 ====
+          ==== 00_sample_2 (local) ====
           -- input --
           72
           128 256

@@ -5,6 +5,7 @@ require 'mechanize'
 require 'logger'
 require 'English'
 require 'launchy'
+require 'json'
 
 module AtCoderFriends
   # scrapes AtCoder contest site and
@@ -65,6 +66,14 @@ module AtCoderFriends
       src = File.read(path, encoding: Encoding::UTF_8)
       login
       post_src(q, ext, src)
+    end
+
+    def code_test(path, infile)
+      path, _dir, _prg, _base, ext, _q = split_prg_path(path)
+      src = File.read(path, encoding: Encoding::UTF_8)
+      data = File.read(infile)
+      login
+      code_test_loop(ext, src, data)
     end
 
     def login
@@ -128,18 +137,48 @@ module AtCoderFriends
     end
 
     def post_src(q, ext, src)
-      lang_id = config['ext_settings'][ext.downcase]&.dig('submit_lang')
-      raise AppError, ".#{ext} is not available." unless lang_id
-
       page = agent.get(contest_url('submit'))
       form = page.forms[1]
       form.field_with(name: 'data.TaskScreenName') do |sel|
         option = sel.options.find { |op| op.text.start_with?(q) }
         option&.select || (raise AppError, "unknown problem:#{q}.")
       end
-      form.add_field!('data.LanguageId', lang_id)
+      form.add_field!('data.LanguageId', lang_id(ext))
       form.field_with(name: 'sourceCode').value = src
       form.submit
+    end
+
+    def code_test_loop(ext, src, data)
+      page = agent.get(contest_url('custom_test'))
+      script = page.search('script').text
+      csrf_token = script.scan(/var csrfToken = "(.*)"/)[0][0]
+      payload = {
+        'data.LanguageId' => lang_id(ext),
+        'sourceCode' => src,
+        'input' => data,
+        'csrf_token' => csrf_token
+      }
+
+      page = agent.post(contest_url('custom_test/submit/json'), payload)
+      msg = page.body
+      raise AppError, msg unless msg.empty?
+
+      100.times do
+        page = agent.get(contest_url('custom_test/json?reload=true'))
+        data = JSON.parse(page.body)
+        return nil unless data.is_a?(Hash) && data['Result']
+        return data if data.dig('Result', 'Status') == 3
+        return data unless data['Interval']
+
+        sleep 1.0 * data['Interval'] / 1000
+      end
+
+      nil
+    end
+
+    def lang_id(ext)
+      config.dig('ext_settings', ext, 'submit_lang') ||
+        (raise AppError, "LanguageId for .#{ext} is not specified.")
     end
 
     def open_contest
