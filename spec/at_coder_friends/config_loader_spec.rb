@@ -52,7 +52,6 @@ RSpec.describe AtCoderFriends::ConfigLoader do
       end
 
       it 'merges user setting and default' do
-        p subject
         expect(subject['ext_settings']['rb']).not_to eq nil
         expect(subject['ext_settings']['cs']['submit_lang']).not_to eq nil
         expect(subject['ext_settings']['cs']['test_cmd']).to eq nil
