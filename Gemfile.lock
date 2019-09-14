@@ -41,9 +41,11 @@ GEM
       connection_pool (~> 2.2)
     nokogiri (1.10.4)
       mini_portile2 (~> 2.4.0)
+    nokogiri (1.10.4-x64-mingw32)
+      mini_portile2 (~> 2.4.0)
     ntlm-http (0.1.1)
     public_suffix (3.0.3)
-    rake (10.5.0)
+    rake (12.3.3)
     rspec (3.8.0)
       rspec-core (~> 3.8.0)
       rspec-expectations (~> 3.8.0)
@@ -79,7 +81,7 @@ PLATFORMS
 DEPENDENCIES
   at_coder_friends!
   bundler (~> 1.16)
-  rake (~> 10.0)
+  rake (~> 12.3)
   rspec (~> 3.0)
   simplecov (~> 0.10)
   webmock (~> 3.0)
