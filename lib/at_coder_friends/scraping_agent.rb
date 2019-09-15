@@ -176,9 +176,28 @@ module AtCoderFriends
       nil
     end
 
+    def lang_list
+      page = agent.get(contest_url('custom_test'))
+      form = page.forms[1]
+      sel = form.field_with(name: 'data.LanguageId')
+      return '(failed to fetch)' unless sel
+
+      sel
+        .options
+        .reject { |opt| opt.value.empty? }
+        .map { |opt| "#{opt.value} - #{opt.text}" }
+        .join("\n")
+    end
+
     def lang_id(ext)
-      config.dig('ext_settings', ext, 'submit_lang') ||
-        (raise AppError, "LanguageId for .#{ext} is not specified.")
+      config.dig('ext_settings', ext, 'submit_lang') || (
+        msg = <<~MSG
+          LanguageId for .#{ext} is not specified.
+          Available languages:
+          #{lang_list}
+        MSG
+        raise AppError, msg
+      )
     end
 
     def open_contest
