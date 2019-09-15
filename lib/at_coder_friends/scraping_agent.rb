@@ -177,24 +177,31 @@ module AtCoderFriends
     end
 
     def lang_list
-      page = agent.get(contest_url('custom_test'))
-      form = page.forms[1]
-      sel = form.field_with(name: 'data.LanguageId')
-      return '(failed to fetch)' unless sel
+      @lang_list ||= begin
+        page = agent.get(contest_url('custom_test'))
+        form = page.forms[1]
+        sel = form.field_with(name: 'data.LanguageId')
+        sel && sel
+          .options
+          .reject { |opt| opt.value.empty? }
+          .map do |opt|
+            { v: opt.value, t: opt.text }
+          end
+      end
+    end
 
-      sel
-        .options
-        .reject { |opt| opt.value.empty? }
-        .map { |opt| "#{opt.value} - #{opt.text}" }
-        .join("\n")
+    def lang_list_txt
+      lang_list
+        &.map { |opt| "#{opt[:v]} - #{opt[:t]}" }
+        &.join("\n")
     end
 
     def lang_id(ext)
       config.dig('ext_settings', ext, 'submit_lang') || (
         msg = <<~MSG
-          LanguageId for .#{ext} is not specified.
+          submit_lang for .#{ext} is not specified.
           Available languages:
-          #{lang_list}
+          #{lang_list_txt || '(failed to fetch)'}
         MSG
         raise AppError, msg
       )

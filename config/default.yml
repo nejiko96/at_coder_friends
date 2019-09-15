@@ -1,5 +1,5 @@
-user: ''
-password: ''
+user: ~
+password: ~
 ext_settings:
   'awk':
     submit_lang: '3506' # Awk (mawk)

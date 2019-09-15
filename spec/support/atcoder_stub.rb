@@ -1,21 +1,22 @@
 # frozen_string_literal: true
 
-StubRequest = Struct.new(:method, :path, :query, :body) do
+StubRequest = Struct.new(:method, :path, :param, :result) do
   BASE_URL = 'https://atcoder.jp/'
 
-  def initialize(method, path, query = nil, body = '')
-    super(method, path, query, body)
+  def initialize(method, path, result: nil, **param)
+    super(method, path, param, result)
   end
 
-  def mock_path(pat)
+  def mock_path(result)
+    pat = result || self.result
     ret = path
     ret += "_#{pat}" if pat && !pat.empty?
     ret += '_done' if method == :post
     ret
   end
 
-  def mock(pat)
-    file = File.expand_path("../mocks/#{mock_path(pat)}.html", __dir__)
+  def mock(result)
+    file = File.expand_path("../mocks/#{mock_path(result)}.html", __dir__)
     File.read(file, encoding: Encoding::UTF_8)
   end
 
@@ -25,14 +26,24 @@ StubRequest = Struct.new(:method, :path, :query, :body) do
     ret
   end
 
-  def register(pat = '')
+  def query
+    return nil unless method == :get && param
+
+    param.map { |k, v| "#{k}=#{v}" }.join('&')
+  end
+
+  def body
+    method == :post ? param : nil
+  end
+
+  def register(result = nil)
     WebMock
       .stub_request(method, url)
-      .with(body: body)
+      .with(body: body || '')
       .to_return(
         status: 200,
         headers: { content_type: 'text/html' },
-        body: mock(pat)
+        body: mock(result)
       )
   end
 end
@@ -40,7 +51,7 @@ end
 REQS = [
   StubRequest.new(:get, 'login'),
   StubRequest.new(
-    :post, 'login', nil,
+    :post, 'login',
     username: 'foo',
     password: 'bar',
     csrf_token: '2yXslAOpndNWTpYmjqZ7C+JAT3pWB4zz90FYWkwcs7I='
@@ -50,7 +61,7 @@ REQS = [
   StubRequest.new(:get, 'contests/practice/tasks/practice_2'),
   StubRequest.new(:get, 'contests/practice/submit'),
   StubRequest.new(
-    :post, 'contests/practice/submit', nil,
+    :post, 'contests/practice/submit',
     'data.TaskScreenName': 'practice_1',
     'data.LanguageId': '3024',
     csrf_token: 'ZD8/jxTUFqgfOUYq0Y+/m7AygPqElU6UEV7nvp1mgEg=',
@@ -65,7 +76,7 @@ REQS = [
   ),
   StubRequest.new(:get, 'contests/practice/custom_test'),
   StubRequest.new(
-    :post, 'contests/practice/custom_test/submit/json', nil,
+    :post, 'contests/practice/custom_test/submit/json',
     'data.LanguageId': '3023',
     csrf_token: 'ZD8/jxTUFqgfOUYq0Y+/m7AygPqElU6UEV7nvp1mgEg=',
     sourceCode: (
@@ -89,7 +100,7 @@ REQS = [
       DATA
   ),
   StubRequest.new(
-    :post, 'contests/practice/custom_test/submit/json', nil,
+    :post, 'contests/practice/custom_test/submit/json',
     'data.LanguageId': '3023',
     csrf_token: 'ZD8/jxTUFqgfOUYq0Y+/m7AygPqElU6UEV7nvp1mgEg=',
     sourceCode: (
@@ -113,7 +124,7 @@ REQS = [
       DATA
   ),
   StubRequest.new(
-    :post, 'contests/practice/custom_test/submit/json', nil,
+    :post, 'contests/practice/custom_test/submit/json',
     'data.LanguageId': '3023',
     csrf_token: 'ZD8/jxTUFqgfOUYq0Y+/m7AygPqElU6UEV7nvp1mgEg=',
     sourceCode: (
@@ -136,6 +147,31 @@ REQS = [
         test
       DATA
   ),
+  StubRequest.new(
+    :post, 'contests/practice/custom_test/submit/json',
+    result: 'ERROR',
+    'data.LanguageId': '0000',
+    csrf_token: 'ZD8/jxTUFqgfOUYq0Y+/m7AygPqElU6UEV7nvp1mgEg=',
+    sourceCode: (
+      <<~SRC
+        # -*- coding: utf-8 -*-
+        # 整数の入力
+        a = int(input())
+        # スペース区切りの整数の入力
+        b, c = map(int, input().split())
+        # 文字列の入力
+        s = input()
+        # 出力
+        print("{} {}".format(a+b+c, s))
+      SRC
+    ),
+    input:
+      <<~DATA
+        1
+        2 3
+        test
+      DATA
+  ),
   StubRequest.new(:get, 'contests/arc001/tasks'),
   StubRequest.new(:get, 'contests/arc001/tasks/arc001_1'),
   StubRequest.new(:get, 'contests/arc001/tasks/arc001_2'),
@@ -146,11 +182,13 @@ REQS = [
 ].freeze
 
 TEST_RESULT_REQ = StubRequest.new(
-  :get, 'contests/practice/custom_test/json', 'reload=true'
+  :get, 'contests/practice/custom_test/json',
+  reload: 'true'
 )
 
 shared_context :atcoder_stub do
   let(:test_result) { 'OK' }
+
   before :each do
     REQS.each(&:register)
     TEST_RESULT_REQ.register(test_result)
