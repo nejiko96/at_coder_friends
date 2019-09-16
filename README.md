@@ -44,6 +44,8 @@ user: <user>
 password: <password>
 ```
 
+See [CONFIGURATION.md](docs/CONFIGURATION.md) for details.
+
 ## Usage
 
 ### Setup
@@ -92,7 +94,7 @@ at_coder_friends submit    /path/to/contest/source_file
 ### Notes
 
 - Compilation is not supported.
-- Source generator and test runner supports only ruby and C++.
+- Source generator supports only ruby and C++.
 
 ## For Sublime Text user
 
