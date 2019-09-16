@@ -8,8 +8,8 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.6.0)
-      public_suffix (>= 2.0.2, < 4.0)
+    addressable (2.7.0)
+      public_suffix (>= 2.0.2, < 5.0)
     connection_pool (2.2.2)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
@@ -17,7 +17,7 @@ GEM
     docile (1.3.1)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
-    hashdiff (0.3.8)
+    hashdiff (1.0.0)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
     json (2.1.0)
@@ -44,7 +44,7 @@ GEM
     nokogiri (1.10.4-x64-mingw32)
       mini_portile2 (~> 2.4.0)
     ntlm-http (0.1.1)
-    public_suffix (3.0.3)
+    public_suffix (4.0.1)
     rake (12.3.3)
     rspec (3.8.0)
       rspec-core (~> 3.8.0)
@@ -59,7 +59,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.8.0)
     rspec-support (3.8.0)
-    safe_yaml (1.0.4)
+    safe_yaml (1.0.5)
     simplecov (0.16.1)
       docile (~> 1.1)
       json (>= 1.8, < 3)
@@ -68,10 +68,10 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.6)
-    webmock (3.5.1)
+    webmock (3.7.3)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
-      hashdiff
+      hashdiff (>= 0.4.0, < 2.0.0)
     webrobots (0.1.2)
 
 PLATFORMS
