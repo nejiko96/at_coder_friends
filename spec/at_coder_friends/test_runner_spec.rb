@@ -13,17 +13,25 @@ RSpec.describe AtCoderFriends::TestRunner do
   describe '#test_cmd' do
     subject { runner.test_cmd }
 
-    context 'for .java' do
-      let(:prog) { 'A.java' }
-      it 'returns command' do
-        expect(subject).to eq("java -cp \"#{contest_root}\" Main")
-      end
-    end
+    context 'for .c' do
+      let(:prog) { 'A.c' }
 
-    context 'for .rb' do
-      let(:prog) { 'A.rb' }
-      it 'returns command' do
-        expect(subject).to eq("ruby \"#{contest_root}/A.rb\"")
+      context 'on Windows' do
+        before do
+          allow(runner).to receive(:which_os) { :windows }
+        end
+        it 'returns command' do
+          expect(subject).to eq("\"#{contest_root}/A.exe\"")
+        end
+      end
+
+      context 'on Mac' do
+        before do
+          allow(runner).to receive(:which_os) { :macosx }
+        end
+        it 'returns command' do
+          expect(subject).to eq("\"#{contest_root}/A\"")
+        end
       end
     end
 
@@ -70,6 +78,20 @@ RSpec.describe AtCoderFriends::TestRunner do
         it 'returns command' do
           expect(subject).to eq("\"#{contest_root}/A\"")
         end
+      end
+    end
+
+    context 'for .java' do
+      let(:prog) { 'A.java' }
+      it 'returns command' do
+        expect(subject).to eq("java -cp \"#{contest_root}\" Main")
+      end
+    end
+
+    context 'for .rb' do
+      let(:prog) { 'A.rb' }
+      it 'returns command' do
+        expect(subject).to eq("ruby \"#{contest_root}/A.rb\"")
       end
     end
 
@@ -192,6 +214,7 @@ RSpec.describe AtCoderFriends::TestRunner do
       context 'when the result is WA' do
         let(:prog) { 'A_WA.py' }
         let(:test_result) { 'WA' }
+
         it 'shows result' do
           expect { subject }.to output(
             <<~OUTPUT
@@ -216,6 +239,7 @@ RSpec.describe AtCoderFriends::TestRunner do
       context 'when the result is RE' do
         let(:prog) { 'A_RE.py' }
         let(:test_result) { 'RE' }
+
         it 'shows result' do
           expect { subject }.to output(
             <<~OUTPUT

@@ -3,6 +3,7 @@
 RSpec.describe AtCoderFriends::ConfigLoader do
   include FileHelper
   include_context :atcoder_env
+  include_context :atcoder_stub
 
   subject(:loader) { described_class }
 
@@ -30,8 +31,19 @@ RSpec.describe AtCoderFriends::ConfigLoader do
       let(:target_dir) { 'otherdir' }
 
       it 'loads config from default.xml' do
-        expect(subject['user']).to be_empty
-        expect(subject['password']).to be_empty
+        expect(subject['user']).to be nil
+        expect(subject['password']).to be nil
+        expect(subject['ext_settings']['rb']).not_to be nil
+      end
+
+      it 'maps each extension to proper language' do
+        agent = AtCoderFriends::ScrapingAgent.new('practice', subject)
+        lst = agent.lang_list
+        subject['ext_settings'].each do |ext, conf|
+          lang_name = lst.find { |opt| opt[:v] == conf['submit_lang'] }[:t]
+          puts "#{ext} -> #{lang_name}"
+        end
+        # puts lst.map { |opt| "|#{opt[:v]}|#{opt[:t]}|" }.join("\n")
       end
     end
 
@@ -44,18 +56,18 @@ RSpec.describe AtCoderFriends::ConfigLoader do
           <<~TEXT
             ext_settings:
               'cs':
-                test_cmd: null
-              'xxx':
+                test_cmd: ~
+              'zzz':
                 submit_lang: '9999'
           TEXT
         )
       end
 
       it 'merges user setting and default' do
-        expect(subject['ext_settings']['rb']).not_to eq nil
-        expect(subject['ext_settings']['cs']['submit_lang']).not_to eq nil
-        expect(subject['ext_settings']['cs']['test_cmd']).to eq nil
-        expect(subject['ext_settings']['xxx']).not_to eq nil
+        expect(subject['ext_settings']['rb']).not_to be nil
+        expect(subject['ext_settings']['cs']['submit_lang']).not_to be nil
+        expect(subject['ext_settings']['cs']['test_cmd']).to be nil
+        expect(subject['ext_settings']['zzz']).not_to be nil
       end
     end
   end

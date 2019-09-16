@@ -1,6 +1,21 @@
-user: ''
-password: ''
+user: ~
+password: ~
 ext_settings:
+  'awk':
+    submit_lang: '3506' # Awk (mawk)
+  'bf':
+    submit_lang: '3507' # Brainfuck
+  'c':
+    submit_lang: '3002' # C (GCC)
+    test_cmd:
+      default: '"{dir}/{base}"'
+      windows: '"{dir}/{base}.exe"'
+  'cbl':
+    submit_lang: '3526' # COBOL - Free
+  'clj':
+    submit_lang: '3007' # Clojure
+  'cr':
+    submit_lang: '3511' # Crystal
   'cs':
     submit_lang: '3006' # C# (Mono)
     test_cmd:
@@ -11,16 +26,63 @@ ext_settings:
     test_cmd:
       default: '"{dir}/{base}"'
       windows: '"{dir}/{base}.exe"'
+  'd':
+    submit_lang: '3009' # D (DMD64)
+  'f90':
+    submit_lang: '3012' # Fortran (gfortran)
+  'fs':
+    submit_lang: '3512' # F# (Mono)
+  'go':
+    submit_lang: '3013' # Go
+  'hs':
+    submit_lang: '3014' # Haskell (GHC)
   'java':
     submit_lang: '3016' # Java8 (OpenJDK)
     test_cmd:
       default: 'java -cp "{dir}" Main'
+  'jl':
+    submit_lang: '3518' # Julia
+  'js':
+    submit_lang: '3017' # JavaScript (node.js)
+  'kt':
+    submit_lang: '3523' # Kotlin
+  'lisp':
+    submit_lang: '3008' # Common Lisp
+  'lua':
+    submit_lang: '3515' # LuaJIT
+  'm':
+    submit_lang: '3519' # Octave
+  'ml':
+    submit_lang: '3018' # OCaml
+  'nim':
+    submit_lang: '3520' # Nim
+  'pas':
+    submit_lang: '3019' # Pascal (FPC)
+  'php':
+    submit_lang: '3524' # PHP7
+  'pl':
+    submit_lang: '3020' # Perl
+  'py':
+    submit_lang: '3023' # Python3
   'rb':
     submit_lang: '3024' # Ruby
     test_cmd:
       default: 'ruby "{dir}/{base}.rb"'
-  'js':
-    submit_lang: '3017' # JavaScript (node.js)
-  'py':
-    submit_lang: '3023' # Python3
-
+  'rs':
+    submit_lang: '3504' # Rust
+  'scala':
+    submit_lang: '3025' # Scala
+  'scm':
+    submit_lang: '3026' # Scheme (Gauche)
+  'sed':
+    submit_lang: '3505' # Sed (GNU sed)
+  'sh':
+    submit_lang: '3001' # Bash (GNU bash)
+  'swift':
+    submit_lang: '3503' # Swift
+  'ts':
+    submit_lang: '3521' # TypeScript
+  'txt':
+    submit_lang: '3027' # Text (cat)
+  'vb':
+    submit_lang: '3028' # Visual Basic (Mono)
