@@ -80,7 +80,7 @@ PLATFORMS
 
 DEPENDENCIES
   at_coder_friends!
-  bundler (~> 1.16)
+  bundler (~> 2.0)
   rake (~> 12.3)
   rspec (~> 3.0)
   simplecov (~> 0.10)
