@@ -2,15 +2,23 @@
 
 ## Configuration file
 
+You can specify AtCoderFriends settings  
+in the configuration file ```.at_coder_friends.yml```.  
+Place it in your working directory (or higher).
+
 AtCoderFriends の動作に関する設定は  
-設定ファイル 「.at_coder_friends.yml」 に記述します。  
+設定ファイル ```.at_coder_friends.yml``` に記述します。  
 このファイルは作業ディレクトリ（またはその上位ディレクトリ）に配置します。
 
 ## Default settings
 
-デフォルトは以下のような設定になっています。  
-「.at_coder_friends.yml」が見つかると、その内容がデフォルト設定にマージされるので、  
-新しい設定項目の追加や、既存の設定項目の上書きが可能です。  
+The default settings are as follows.  
+If you add new settings or change existing settings in ```.at_coder_friends.yml```,  
+Its contents are merged with the default settings.
+
+デフォルトの設定は以下のようになっています。  
+```.at_coder_friends.yml```で新しい設定項目の追加や、既存の設定項目の変更をすると、  
+その内容がデフォルト設定にマージされます。
 
 ```YAML
 user: ~
@@ -106,34 +114,45 @@ ext_settings:
 ## Configuration options
 
 - user  
-  AtCoderのログインユーザーID
+  AtCoder username  
+  AtCoderのユーザ名
 
 - password  
-  AtCoderのログインパスワード
+  AtCoder password  
+  AtCoderのパスワード
 
 - ext_settings  
+  Extension specific settings  
   拡張子ごとの設定
 
   - _'ext'_  
+    Target extension name  
     対象となる拡張子
 
     - submit_lang  
+      Language ID of submission language  
       提出言語の言語ID
 
     - test_cmd  
+      Execution command for test  
+      If not set, the test will run using AtCoder "Custom Test" page.  
       テストで使用する実行コマンドの設定  
-      未設定の場合はAtCoderの「コードテスト」ページでテストをします
+      未設定の場合、テストはAtCoderの「コードテスト」ページを使用して行われます
 
       - default  
+        Default execution command  
         デフォルトの実行コマンド
 
       - wndows  
+        Execution command for Windows(optional)  
         Windows専用実行コマンド(あれば設定)
 
       - macosx  
+        Execution command for MacOS(optional)  
         MacOS専用実行コマンド(あれば設定)
 
       - linux  
+        Execution command for Linux(optional)  
         Linux専用実行コマンド(あれば設定)
 
 ### Language ID list (2019/09/16)
@@ -197,19 +216,24 @@ ext_settings:
 |3525|COBOL - Fixed (OpenCOBOL 1.1.0)|
 |3526|COBOL - Free (OpenCOBOL 1.1.0)|
 
-### Variables available in test_cmd
+### Variables in test_cmd string
 
-test_cmd の文字列中の以下のパターンは、  
-テスト対象のソースファイルの情報に置換された後、実行されます。
+The following variables in test_cmd string  
+is substituted with the path information of the target file  
+during execution.
 
-|パターン|設定値|
+test_cmd 文字列中の以下の変数には、  
+実行時に対象ファイルのパス情報が展開されます。
+
+| Variable | Descripton |
 |---|---|
-|{dir}|ソースファイルの置かれているディレクトリ|
-|{base}|ソースファイルの拡張子を除いたファイル名|
+|{dir}|the directory name of the file<br>ファイルの置かれているディレクトリ名|
+|{base}|the file name excluding the extension<br>拡張子を除いたファイル名|
 
 ## Examples of overwriting settings
 
-- .pyをローカル環境のPythonでテスト
+- Test .py with local Python  
+  .pyをローカル環境のPythonでテスト
   ```YAML
   ext_settings:
     'py':
@@ -217,21 +241,24 @@ test_cmd の文字列中の以下のパターンは、
         default: 'python "{dir}/{base}.py"'
   ```
 
-- .rb を「コードテスト」ページでテスト
+- Test .rb with "Custom Test" page  
+  .rb を「コードテスト」ページでテスト
   ```YAML
   ext_settings:
     'rb':
       test_cmd: ~
   ```
 
-- .pl6(Perl6)の設定を追加
+- Add .pl6(Perl6) settings  
+  .pl6(Perl6)の設定を追加
   ```YAML
   ext_settings:
     'pl6':
       submit_lang: '3522' # Perl6
   ```
 
-- .cxxの提出言語をC++14(Clang)に変更
+- Change submission language of .cxx to C++14(Clang)  
+  .cxxの提出言語をC++14(Clang)に変更
   ```YAML
   ext_settings:
     'cxx':
