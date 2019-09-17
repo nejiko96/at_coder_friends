@@ -107,41 +107,64 @@ It is convenient to use AtCoderFriends from Sublime Text plugin.
 - Run **Configure Tasks** from the global Terminal menu.
 - Select the **Create tasks.json file from template** entry.
 - Select **Others** from the list.
-- Add following tasks to ```tasks.json```.
+- Add following settings to ```tasks.json```.
 
 ```JSON
 {
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "af test-one",
+      "label": "AtCoderFriends:New Contest",
+      "type": "shell",
+      "command": "at_coder_friends",
+      "args": [
+        "setup",
+        "${input:contestName}"
+      ],
+      "problemMatcher": [],
+      "group": "none"
+    },
+    {
+      "label": "AtCoderFriends:Test One",
       "type": "shell",
       "command": "at_coder_friends",
       "args": [
         "test-one",
         "${file}"
       ],
-      "group": "none",
+      "problemMatcher": [],
+      "group": "none"
     },
     {
-      "label": "af test-all",
+      "label": "AtCoderFriends:Test All",
       "type": "shell",
       "command": "at_coder_friends",
       "args": [
         "test-all",
         "${file}"
       ],
+      "problemMatcher": [],
       "group": "none"
     },
     {
-      "label": "af submit",
+      "label": "AtCoderFriends:Submit",
       "type": "shell",
       "command": "at_coder_friends",
       "args": [
         "submit",
         "${file}"
       ],
+      "problemMatcher": [],
       "group": "none",
+    },
+    ...
+  ],
+  "inputs": [
+    {
+      "id": "contestName",
+      "type": "promptString",
+      "default": "",
+      "description": "Contest Name"
     }
   ]
 }
