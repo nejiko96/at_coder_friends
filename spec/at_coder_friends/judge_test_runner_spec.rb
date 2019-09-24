@@ -3,11 +3,10 @@
 RSpec.describe AtCoderFriends::JudgeTestRunner do
   include_context :atcoder_env
 
-  subject(:runner) do
-    described_class.new(File.join(contest_root, prog), config)
-  end
+  subject(:runner) { described_class.new(ctx) }
+  let(:ctx) { AtCoderFriends::Context.new({}, path) }
+  let(:path) { File.join(contest_root, prog) }
   let(:prog) { 'A.rb' }
-  let(:config) { AtCoderFriends::ConfigLoader.load_config(contest_root) }
 
   describe '#judge' do
     subject { runner.judge(id) }

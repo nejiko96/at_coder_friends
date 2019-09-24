@@ -305,7 +305,7 @@ RSpec.describe AtCoderFriends::CLI do
 
       let(:vf_path) { File.join(tmp_dir, 'A.rb.verified') }
 
-      before { AtCoderFriends::Verifier.new(path).verify }
+      before { AtCoderFriends::Context.new({}, path).verifier.verify }
 
       it 'posts the source' do
         expect { subject }.to \

@@ -7,10 +7,15 @@ module AtCoderFriends
   class TestRunner
     include PathUtil
 
-    def initialize(path, config)
-      @contest = contest_name(path)
-      @path, @dir, @prg, @base, @ext, @q = split_prg_path(path)
-      @config = config
+    attr_reader :ctx
+
+    def initialize(ctx)
+      @ctx = ctx
+      @path, @dir, @prg, @base, @ext, @q = split_prg_path(ctx.path)
+    end
+
+    def config
+      ctx.config
     end
 
     # rubocop:disable Metrics/MethodLength
@@ -53,8 +58,7 @@ module AtCoderFriends
     end
 
     def remote_test(infile, outfile)
-      agent = ScrapingAgent.new(@contest, @config)
-      res = agent.code_test(@path, infile)
+      res = ctx.scraping_agent.code_test(infile)
       unless res && res['Result']
         File.write(outfile, 'Remote test failed.')
         return false
@@ -72,7 +76,7 @@ module AtCoderFriends
 
     def test_cmd
       @test_cmd ||= begin
-        cmds = @config.dig('ext_settings', @ext, 'test_cmd')
+        cmds = config.dig('ext_settings', @ext, 'test_cmd')
         cmd = cmds && (cmds[which_os.to_s] || cmds['default'])
         return nil unless cmd
 

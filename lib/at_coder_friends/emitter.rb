@@ -8,9 +8,9 @@ module AtCoderFriends
   class Emitter
     include PathUtil
 
-    def initialize(dir)
-      @src_dir = dir
-      @smp_dir = smp_dir(dir)
+    def initialize(ctx)
+      @src_dir = ctx.path
+      @smp_dir = smp_dir(@src_dir)
     end
 
     def emit(pbm)

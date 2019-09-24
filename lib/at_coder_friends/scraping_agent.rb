@@ -16,14 +16,21 @@ module AtCoderFriends
     BASE_URL = 'https://atcoder.jp/'
     XPATH_SECTION = '//h3[.="%<title>s"]/following-sibling::section'
 
-    attr_reader :contest, :config, :agent
+    attr_reader :ctx, :agent
 
-    def initialize(contest, config)
-      @contest = contest
-      @config = config
+    def initialize(ctx)
+      @ctx = ctx
       @agent = Mechanize.new
       @agent.pre_connect_hooks << proc { sleep 0.1 }
       # @agent.log = Logger.new(STDERR)
+    end
+
+    def contest
+      @contest ||= contest_name(ctx.path)
+    end
+
+    def config
+      ctx.config
     end
 
     def common_url(path)
@@ -51,7 +58,7 @@ module AtCoderFriends
     end
 
     def fetch_all
-      puts "***** fetch_all #{@contest} *****"
+      puts "***** fetch_all #{contest} *****"
       login
       fetch_assignments.map do |q, url|
         pbm = fetch_problem(q, url)
@@ -60,16 +67,16 @@ module AtCoderFriends
       end
     end
 
-    def submit(path)
-      path, _dir, prg, _base, ext, q = split_prg_path(path)
+    def submit
+      path, _dir, prg, _base, ext, q = split_prg_path(ctx.path)
       puts "***** submit #{prg} *****"
       src = File.read(path, encoding: Encoding::UTF_8)
       login
       post_src(q, ext, src)
     end
 
-    def code_test(path, infile)
-      path, _dir, _prg, _base, ext, _q = split_prg_path(path)
+    def code_test(infile)
+      path, _dir, _prg, _base, ext, _q = split_prg_path(ctx.path)
       src = File.read(path, encoding: Encoding::UTF_8)
       data = File.read(infile)
       login
@@ -77,13 +84,14 @@ module AtCoderFriends
     end
 
     def login
-      return unless config['user'] && !config['user'].empty?
-      return unless config['password'] && !config['password'].empty?
+      user = config['user'].to_s
+      password = config['password'].to_s
+      return if user.empty? || password.empty?
 
       page = agent.get(common_url('login'))
       form = page.forms[1]
-      form.field_with(name: 'username').value = config['user']
-      form.field_with(name: 'password').value = config['password']
+      form.field_with(name: 'username').value = user
+      form.field_with(name: 'password').value = password
       form.submit
     end
 

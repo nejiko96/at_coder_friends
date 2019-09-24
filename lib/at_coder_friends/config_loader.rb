@@ -7,12 +7,12 @@ module AtCoderFriends
   # loads configuration file from the specified directory.
   class ConfigLoader
     DOTFILE = '.at_coder_friends.yml'
-    ACF_HOME = File.realpath(File.join(File.dirname(__FILE__), '..', '..'))
+    ACF_HOME = File.realpath(File.join(__dir__, '..', '..'))
     DEFAULT_FILE = File.join(ACF_HOME, 'config', 'default.yml')
 
     class << self
-      def load_config(target_dir)
-        path = config_file_for(target_dir)
+      def load_config(ctx)
+        path = config_file_for(ctx.path)
         config = load_yaml(path)
         return config if path == DEFAULT_FILE
 
@@ -43,7 +43,7 @@ module AtCoderFriends
       end
 
       def merge(base_hash, derived_hash)
-        res = base_hash.merge(derived_hash) do |_, base_val, derived_val|
+        res = base_hash.merge(derived_hash || {}) do |_, base_val, derived_val|
           if base_val.is_a?(Hash) && derived_val.is_a?(Hash)
             merge(base_val, derived_val)
           else
