@@ -5,8 +5,8 @@ module AtCoderFriends
   class SampleTestRunner < TestRunner
     include PathUtil
 
-    def initialize(path, config)
-      super(path, config)
+    def initialize(ctx)
+      super(ctx)
       @smp_dir = smp_dir(@dir)
     end
 

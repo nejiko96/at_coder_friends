@@ -5,8 +5,6 @@ require 'optparse'
 module AtCoderFriends
   # command line interface
   class CLI
-    include PathUtil
-
     EXITING_OPTIONS = %i[version].freeze
     OPTION_BANNER =
       <<~TEXT
@@ -21,12 +19,13 @@ module AtCoderFriends
     STATUS_SUCCESS  = 0
     STATUS_ERROR    = 1
 
+    attr_reader :ctx
+
     def run(args = ARGV)
       parse_options!(args)
       handle_exiting_option
       raise ParamError, 'command or path is not specified.' if args.size < 2
 
-      @config = ConfigLoader.load_config(args[1])
       exec_command(*args)
       STATUS_SUCCESS
     rescue AtCoderFriends::ParamError => e
@@ -46,6 +45,9 @@ module AtCoderFriends
         opts.on('-v', '--version', 'Display version.') do
           @options[:version] = true
         end
+        opts.on('-d', '--debug', 'Display debug info.') do
+          @options[:debug] = true
+        end
       end
       @usage = op.to_s
       @options = {}
@@ -61,73 +63,71 @@ module AtCoderFriends
       exit STATUS_SUCCESS
     end
 
-    def exec_command(command, path, id = nil)
+    def exec_command(command, path, *args)
+      @ctx = Context.new(@options, path)
       case command
       when 'setup'
-        setup(path)
+        setup
       when 'test-one'
-        test_one(path, id)
+        test_one(*args)
       when 'test-all'
-        test_all(path)
+        test_all
       when 'submit'
-        submit(path)
+        submit
       when 'judge-one'
-        judge_one(path, id)
+        judge_one(*args)
       when 'judge-all'
-        judge_all(path)
+        judge_all
       when 'open-contest'
-        open_contest(path)
+        open_contest
       else
         raise ParamError, "unknown command: #{command}"
       end
     end
 
-    def setup(path)
+    def setup
+      path = ctx.path
       raise AppError, "#{path} is not empty." \
         if Dir.exist?(path) && !Dir["#{path}/*"].empty?
 
-      agent = ScrapingAgent.new(contest_name(path), @config)
       parser = FormatParser.new
       rb_gen = RubyGenerator.new
       cxx_gen = CxxGenerator.new
-      emitter = Emitter.new(path)
-      agent.fetch_all do |pbm|
+      ctx.scraping_agent.fetch_all do |pbm|
         parser.process(pbm)
         rb_gen.process(pbm)
         cxx_gen.process(pbm)
-        emitter.emit(pbm)
+        ctx.emitter.emit(pbm)
       end
     end
 
-    def test_one(path, id)
-      id ||= 1
-      SampleTestRunner.new(path, @config).test_one(id)
+    def test_one(id = 1)
+      ctx.sample_test_runner.test_one(id)
     end
 
-    def test_all(path)
-      SampleTestRunner.new(path, @config).test_all
-      Verifier.new(path).verify
+    def test_all
+      ctx.sample_test_runner.test_all
+      ctx.verifier.verify
     end
 
-    def submit(path)
-      vf = Verifier.new(path)
+    def submit
+      vf = ctx.verifier
       raise AppError, "#{vf.file} has not been tested." unless vf.verified?
 
-      ScrapingAgent.new(contest_name(path), @config).submit(path)
+      ctx.scraping_agent.submit
       vf.unverify
     end
 
-    def judge_one(path, id)
-      id ||= ''
-      JudgeTestRunner.new(path, @config).judge_one(id)
+    def judge_one(id = '')
+      ctx.judge_test_runner.judge_one(id)
     end
 
-    def judge_all(path)
-      JudgeTestRunner.new(path, @config).judge_all
+    def judge_all
+      ctx.judge_test_runner.judge_all
     end
 
-    def open_contest(path)
-      ScrapingAgent.new(contest_name(path), @config).open_contest
+    def open_contest
+      ctx.scraping_agent.open_contest
     end
   end
 end

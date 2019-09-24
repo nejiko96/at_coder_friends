@@ -3,12 +3,12 @@
 RSpec.describe AtCoderFriends::ConfigLoader do
   include FileHelper
   include_context :atcoder_env
-  include_context :atcoder_stub
 
   subject(:loader) { described_class }
 
   describe '#load_config' do
-    subject { loader.load_config(target_dir) }
+    subject { loader.load_config(ctx) }
+    let(:ctx) { AtCoderFriends::Context.new({}, target_dir) }
 
     context 'when the file exists in target directory' do
       let(:target_dir) { project_root }
@@ -35,10 +35,14 @@ RSpec.describe AtCoderFriends::ConfigLoader do
         expect(subject['password']).to be nil
         expect(subject['ext_settings']['rb']).not_to be nil
       end
+    end
+
+    context 'default config' do
+      include_context :atcoder_stub
+      let(:target_dir) { contest_root }
 
       it 'maps each extension to proper language' do
-        agent = AtCoderFriends::ScrapingAgent.new('practice', subject)
-        lst = agent.lang_list
+        lst = ctx.scraping_agent.lang_list
         subject['ext_settings'].each do |ext, conf|
           lang_name = lst.find { |opt| opt[:v] == conf['submit_lang'] }[:t]
           puts "#{ext} -> #{lang_name}"

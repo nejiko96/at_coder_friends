@@ -9,13 +9,11 @@ module AtCoderFriends
     CASES_DIR = 'cases'
 
     def contest_name(path)
-      path = File.expand_path(path)
       dir = File.file?(path) ? File.dirname(path) : path
       File.basename(dir).delete('#').downcase
     end
 
     def split_prg_path(path)
-      path = File.expand_path(path)
       dir, prg = File.split(path)
       base, ext = prg.split('.')
       q = base.split('_')[0]

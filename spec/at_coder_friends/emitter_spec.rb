@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe AtCoderFriends::Emitter do
-  subject(:emitter) { described_class.new(dir) }
+  subject(:emitter) { described_class.new(ctx) }
+  let(:ctx) { AtCoderFriends::Context.new({}, dir) }
   let(:pbm) do
     AtCoderFriends::Problem.new('A') do |pbm|
       pbm.add_smp('1', :in, 'content of A_001.in')

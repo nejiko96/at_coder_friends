@@ -4,12 +4,12 @@ RSpec.describe AtCoderFriends::ScrapingAgent do
   include_context :atcoder_env
   include_context :atcoder_stub
 
-  subject(:agent) { described_class.new(contest, config) }
-  let(:contest) { 'practice' }
-  let(:config) { AtCoderFriends::ConfigLoader.load_config(contest_root) }
+  subject(:agent) { described_class.new(ctx) }
+  let(:ctx) { AtCoderFriends::Context.new({}, path) }
 
   describe '#fetch_all' do
     subject { agent.fetch_all }
+    let(:path) { File.join(project_root, contest) }
 
     # TODO: yield test
     context 'from ARC#001' do
@@ -54,18 +54,19 @@ RSpec.describe AtCoderFriends::ScrapingAgent do
 
     context 'from tdpc' do
       let(:contest) { 'tdpc' }
-      let(:config) do
-        AtCoderFriends::ConfigLoader
-          .load_config(contest_root)
-          .merge(
-            'constraints_pat' => '^Constraints$',
-            'input_fmt_pat' => '^Input Format$',
-            'input_smp_pat' => '^Sample Input\s*(?<no>[\d０-９]+)$',
-            'output_smp_pat' => '^Sample Output\s*(?<no>[\d０-９]+)$'
-          )
-      end
 
       it 'handles irregular titles' do
+        allow(ctx).to receive(:config) do
+          AtCoderFriends::ConfigLoader
+            .load_config(ctx)
+            .merge(
+              'constraints_pat' => '^Constraints$',
+              'input_fmt_pat' => '^Input Format$',
+              'input_smp_pat' => '^Sample Input\s*(?<no>[\d０-９]+)$',
+              'output_smp_pat' => '^Sample Output\s*(?<no>[\d０-９]+)$'
+            )
+        end
+
         expect { subject }.to output(
           <<~TEXT
             ***** fetch_all tdpc *****
@@ -84,7 +85,8 @@ RSpec.describe AtCoderFriends::ScrapingAgent do
   end
 
   describe '#submit' do
-    subject { agent.submit(File.join(contest_root, prg)) }
+    subject { agent.submit }
+    let(:path) { File.join(contest_root, prg) }
 
     context 'with no errors' do
       let(:prg) { 'A.rb' }
@@ -117,8 +119,9 @@ RSpec.describe AtCoderFriends::ScrapingAgent do
   end
 
   describe '#code_test' do
-    let(:config) { AtCoderFriends::ConfigLoader.load_config(contest_root) }
-    subject { agent.code_test(File.join(contest_root, prg), infile) }
+    subject { agent.code_test(infile) }
+    let(:path) { File.join(contest_root, prg) }
+
     let(:prg) { 'A.py' }
     let(:infile) { File.join(smp_dir, 'A_001.in') }
     let(:expfile) { File.join(smp_dir, 'A_001.exp') }
@@ -131,19 +134,19 @@ RSpec.describe AtCoderFriends::ScrapingAgent do
     end
 
     context 'when server error occured' do
-      let(:config) do
-        AtCoderFriends::ConfigLoader
-          .load_config(contest_root)
-          .merge(
-            'ext_settings' => {
-              'py' => {
-                'submit_lang' => '0000'
-              }
-            }
-          )
-      end
-
       it 'shows error' do
+        allow(ctx).to receive(:config) do
+          AtCoderFriends::ConfigLoader
+            .load_config(ctx)
+            .merge(
+              'ext_settings' => {
+                'py' => {
+                  'submit_lang' => '0000'
+                }
+              }
+            )
+        end
+
         expect { subject }.to raise_error(
           AtCoderFriends::AppError, "Internal Error\n"
         )
@@ -153,6 +156,7 @@ RSpec.describe AtCoderFriends::ScrapingAgent do
 
   describe '#lang_id' do
     subject { agent.lang_id(ext) }
+    let(:path) { File.join(contest_root, 'A.rb') }
 
     context 'when submit_lang is spscified' do
       let(:ext) { 'rb' }

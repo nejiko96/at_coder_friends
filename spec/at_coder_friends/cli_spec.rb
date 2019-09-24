@@ -18,6 +18,7 @@ RSpec.describe AtCoderFriends::CLI do
       at_coder_friends open-contest path/contest/src   # open contest page
     Options:
         -v, --version                    Display version.
+        -d, --debug                      Display debug info.
   TEXT
 
   subject { cli.run(args) }
@@ -305,7 +306,7 @@ RSpec.describe AtCoderFriends::CLI do
 
       let(:vf_path) { File.join(tmp_dir, 'A.rb.verified') }
 
-      before { AtCoderFriends::Verifier.new(path).verify }
+      before { AtCoderFriends::Context.new({}, path).verifier.verify }
 
       it 'posts the source' do
         expect { subject }.to \

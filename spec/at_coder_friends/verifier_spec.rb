@@ -5,7 +5,8 @@ RSpec.describe AtCoderFriends::Verifier do
 
   include_context :atcoder_env
 
-  subject(:verifier) { described_class.new(target_path) }
+  subject(:verifier) { described_class.new(ctx) }
+  let(:ctx) { AtCoderFriends::Context.new({}, target_path) }
   let(:target_path) { File.join(contest_root, target_file) }
   let(:result_path) { File.join(contest_root, result_file) }
   let(:target_file) { 'A.rb' }

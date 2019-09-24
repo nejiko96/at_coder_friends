@@ -2,13 +2,11 @@
 
 RSpec.describe AtCoderFriends::TestRunner do
   include_context :atcoder_env
-  include_context :atcoder_stub
 
-  subject(:runner) do
-    described_class.new(File.join(contest_root, prog), config)
-  end
+  subject(:runner) { described_class.new(ctx) }
+  let(:ctx) { AtCoderFriends::Context.new({}, path) }
+  let(:path) { File.join(contest_root, prog) }
   let(:prog) { 'A.rb' }
-  let(:config) { AtCoderFriends::ConfigLoader.load_config(contest_root) }
 
   describe '#test_cmd' do
     subject { runner.test_cmd }
@@ -187,6 +185,8 @@ RSpec.describe AtCoderFriends::TestRunner do
     end
 
     context 'extension without test_cmd setting' do
+      include_context :atcoder_stub
+
       context 'when the result is OK' do
         let(:prog) { 'A.py' }
 
