@@ -18,6 +18,7 @@ RSpec.describe AtCoderFriends::CLI do
       at_coder_friends open-contest path/contest/src   # open contest page
     Options:
         -v, --version                    Display version.
+        -d, --debug                      Display debug info.
   TEXT
 
   subject { cli.run(args) }

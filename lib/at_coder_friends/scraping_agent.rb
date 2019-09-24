@@ -22,7 +22,7 @@ module AtCoderFriends
       @ctx = ctx
       @agent = Mechanize.new
       @agent.pre_connect_hooks << proc { sleep 0.1 }
-      # @agent.log = Logger.new(STDERR)
+      @agent.log = Logger.new(STDERR) if ctx.options[:debug]
     end
 
     def contest

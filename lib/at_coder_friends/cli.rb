@@ -45,6 +45,9 @@ module AtCoderFriends
         opts.on('-v', '--version', 'Display version.') do
           @options[:version] = true
         end
+        opts.on('-d', '--debug', 'Display debug info.') do
+          @options[:debug] = true
+        end
       end
       @usage = op.to_s
       @options = {}
