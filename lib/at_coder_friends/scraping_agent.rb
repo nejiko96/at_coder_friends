@@ -37,7 +37,7 @@ module AtCoderFriends
       File.join(BASE_URL, path)
     end
 
-    def contest_url(path)
+    def contest_url(path = '')
       File.join(BASE_URL, 'contests', contest, path)
     end
 
@@ -216,7 +216,7 @@ module AtCoderFriends
     end
 
     def open_contest
-      Launchy.open(contest_url(''))
+      Launchy.open(contest_url)
     end
   end
 end
