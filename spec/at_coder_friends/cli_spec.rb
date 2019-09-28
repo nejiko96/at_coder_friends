@@ -101,6 +101,7 @@ RSpec.describe AtCoderFriends::CLI do
     context 'with no errors' do
       include_context :uses_temp_dir
       include_context :atcoder_stub
+      include_context :evacuate_session
 
       let(:path) { File.join(temp_dir, 'practice') }
       before :each do
@@ -303,6 +304,7 @@ RSpec.describe AtCoderFriends::CLI do
 
     context 'when there is no error' do
       include_context :atcoder_stub
+      include_context :evacuate_session
 
       let(:vf_path) { File.join(tmp_dir, 'A.rb.verified') }
 

@@ -35,17 +35,6 @@ Or install it yourself as:
 
     $ gem install at_coder_friends
 
-## Configuration
-
-Create ```.at_coder_friends.yml``` and place it in the working directory (or parent of working directory).
-
-```yaml
-user: <user>
-password: <password>
-```
-
-See [CONFIGURATION.md](docs/CONFIGURATION.md) for details.
-
 ## Usage
 
 ### Setup
@@ -91,7 +80,11 @@ at_coder_friends submit    /path/to/contest/source_file
 - Suffixes (start with underscore) may be added to the file name (e.g. ```A_v2.rb```),
   so that you can try multiple codes for one problem.
 
-### Notes
+## Configuration
+
+See [CONFIGURATION.md](docs/CONFIGURATION.md) for details.
+
+## Notes
 
 - Compilation is not supported.
 - Source generator supports only ruby and C++.

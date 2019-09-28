@@ -1,28 +1,39 @@
 # frozen_string_literal: true
 
 require 'uri'
+require 'cgi'
+require 'json'
 require 'mechanize'
 require 'logger'
 require 'English'
-require 'launchy'
-require 'json'
+require 'io/console'
 
 module AtCoderFriends
   # scrapes AtCoder contest site and
   # - fetches problems
   # - submits sources
+  # - runs tests on custom_test page
   class ScrapingAgent
     include PathUtil
-    BASE_URL = 'https://atcoder.jp/'
+    BASE_URL      = 'https://atcoder.jp/'
     XPATH_SECTION = '//h3[.="%<title>s"]/following-sibling::section'
+    SESSION_STORE =
+      File.join(Dir.home, '.at_coder_friends', '%<user>s_session.yml')
 
     attr_reader :ctx, :agent
 
     def initialize(ctx)
       @ctx = ctx
       @agent = Mechanize.new
-      @agent.pre_connect_hooks << proc { sleep 0.1 }
-      @agent.log = Logger.new(STDERR) if ctx.options[:debug]
+      agent.pre_connect_hooks << proc { sleep 0.1 }
+      agent.log = Logger.new(STDERR) if ctx.options[:debug]
+      agent.cookie_jar.load(session_store) if File.exist?(session_store)
+    end
+
+    def save_session
+      dir = File.dirname(session_store)
+      Dir.mkdir(dir) unless Dir.exist?(dir)
+      agent.cookie_jar.save_as(session_store)
     end
 
     def contest
@@ -39,6 +50,10 @@ module AtCoderFriends
 
     def contest_url(path = '')
       File.join(BASE_URL, 'contests', contest, path)
+    end
+
+    def session_store
+      @session_store ||= format(SESSION_STORE, user: config['user'])
     end
 
     def constraints_pat
@@ -59,7 +74,6 @@ module AtCoderFriends
 
     def fetch_all
       puts "***** fetch_all #{contest} *****"
-      login
       fetch_assignments.map do |q, url|
         pbm = fetch_problem(q, url)
         yield pbm if block_given?
@@ -71,7 +85,6 @@ module AtCoderFriends
       path, _dir, prg, _base, ext, q = split_prg_path(ctx.path)
       puts "***** submit #{prg} *****"
       src = File.read(path, encoding: Encoding::UTF_8)
-      login
       post_src(q, ext, src)
     end
 
@@ -79,26 +92,49 @@ module AtCoderFriends
       path, _dir, _prg, _base, ext, _q = split_prg_path(ctx.path)
       src = File.read(path, encoding: Encoding::UTF_8)
       data = File.read(infile)
-      login
       code_test_loop(ext, src, data)
     end
 
-    def login
-      user = config['user'].to_s
-      password = config['password'].to_s
-      return if user.empty? || password.empty?
+    def fetch_with_auth(url)
+      begin
+        page = agent.get(url)
+      rescue Mechanize::ResponseCodeError => e
+        raise e unless e.response_code == '404'
 
-      page = agent.get(common_url('login'))
-      form = page.forms[1]
-      form.field_with(name: 'username').value = user
-      form.field_with(name: 'password').value = password
-      form.submit
+        page = agent.get(common_url('login') + '?continue=' + CGI.escape(url))
+      end
+
+      if page.uri.path == '/login'
+        user, pass = read_auth
+        form = page.forms[1]
+        form.field_with(name: 'username').value = user
+        form.field_with(name: 'password').value = pass
+        page = form.submit
+      end
+
+      page.uri.path == '/login' && (raise AppError, 'Authentication failed.')
+      page
+    end
+
+    def read_auth
+      user = config['user'].to_s
+      if user.empty?
+        print('Enter username:')
+        user = STDIN.gets.chomp
+      end
+      pass = config['password'].to_s
+      if pass.empty?
+        print("Enter password for #{user}:")
+        pass = STDIN.noecho(&:gets).chomp
+        puts
+      end
+      [user, pass]
     end
 
     def fetch_assignments
       url = contest_url('tasks')
       puts "fetch list from #{url} ..."
-      page = agent.get(url)
+      page = fetch_with_auth(url)
       page
         .search('//table[1]//td[1]//a')
         .each_with_object({}) do |a, h|
@@ -108,7 +144,7 @@ module AtCoderFriends
 
     def fetch_problem(q, url)
       puts "fetch problem from #{url} ..."
-      page = agent.get(url)
+      page = fetch_with_auth(url)
       Problem.new(q) do |pbm|
         pbm.html = page.body
         if contest == 'arc001'
@@ -145,7 +181,7 @@ module AtCoderFriends
     end
 
     def post_src(q, ext, src)
-      page = agent.get(contest_url('submit'))
+      page = fetch_with_auth(contest_url('submit'))
       form = page.forms[1]
       form.field_with(name: 'data.TaskScreenName') do |sel|
         option = sel.options.find { |op| op.text.start_with?(q) }
@@ -157,7 +193,7 @@ module AtCoderFriends
     end
 
     def code_test_loop(ext, src, data)
-      page = agent.get(contest_url('custom_test'))
+      page = fetch_with_auth(contest_url('custom_test'))
       script = page.search('script').text
       csrf_token = script.scan(/var csrfToken = "(.*)"/)[0][0]
       payload = {
@@ -186,7 +222,7 @@ module AtCoderFriends
 
     def lang_list
       @lang_list ||= begin
-        page = agent.get(contest_url('custom_test'))
+        page = fetch_with_auth(contest_url('custom_test'))
         form = page.forms[1]
         sel = form.field_with(name: 'data.LanguageId')
         sel && sel
@@ -213,10 +249,6 @@ module AtCoderFriends
         MSG
         raise AppError, msg
       )
-    end
-
-    def open_contest
-      Launchy.open(contest_url)
     end
   end
 end

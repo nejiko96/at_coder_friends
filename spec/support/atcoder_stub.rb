@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require 'cgi'
+require 'securerandom'
+
 StubRequest = Struct.new(:method, :path, :param, :result) do
   BASE_URL = 'https://atcoder.jp/'
 
@@ -7,54 +10,102 @@ StubRequest = Struct.new(:method, :path, :param, :result) do
     super(method, path, param, result)
   end
 
-  def mock_path(result)
-    pat = result || self.result
-    ret = path
-    ret += "_#{pat}" if pat && !pat.empty?
-    ret += '_done' if method == :post
-    ret
-  end
-
-  def mock(result)
-    file = File.expand_path("../mocks/#{mock_path(result)}.html", __dir__)
-    File.read(file, encoding: Encoding::UTF_8)
-  end
-
   def url
     ret = File.join(BASE_URL, path)
     ret += "?#{query}" if query
+    ret = Regexp.new(Regexp.escape(ret).gsub('@', '.*')) if ret.include?('@')
     ret
   end
 
   def query
-    return nil unless method == :get && param
+    return nil unless method == :get && param && !param.empty?
 
     param.map { |k, v| "#{k}=#{v}" }.join('&')
   end
 
   def body
-    method == :post ? param : nil
+    method == :post ? param : ''
   end
 
   def register(result = nil)
-    WebMock
-      .stub_request(method, url)
-      .with(body: body || '')
-      .to_return(
-        status: 200,
-        headers: { content_type: 'text/html' },
-        body: mock(result)
-      )
+    sr = WebMock.stub_request(method, url)
+    sr = sr.with(body: body) if method == :post
+    if path.start_with?('login')
+      if method == :get
+        # always show login form
+        sr.to_return requested_page(result)
+      elsif param && param[:username] == 'foo' && param[:password] == 'bar'
+        # authentication success => redirect to requested page
+        sr.to_return do |request|
+          redirect_to(request.uri.query_values['continue'])
+            .tap do |h|
+              h[:headers][:set_cookie] = 'SessionKey=4b12f708b5a219ec; Path=/;'
+            end
+        end
+      else
+        # authentication fail => show login form again
+        sr.to_return { |request| redirect_to(request.uri) }
+      end
+    else
+      sr.to_return do |request|
+        if request.headers['Cookie']&.include?('SessionKey=4b12f708b5a219ec')
+          # valid session => show requested page
+          requested_page(result)
+        elsif request.uri.path.start_with?('/contests/practice/tasks')
+          # invalid session or require entry => return 404
+          { status: 404 }
+        else
+          # invalid session => show login form
+          redirect_to('/login?continue=' + CGI.escape(request.uri.to_s))
+        end
+      end
+    end
+  end
+
+  def redirect_to(location)
+    {
+      status: 302,
+      headers: { location: location }
+    }
+  end
+
+  def requested_page(result)
+    {
+      status: 200,
+      headers: { content_type: content_type },
+      body: File.new(mock(result))
+    }
+  end
+
+  def content_type
+    path.end_with?('/json') ? 'application/json' : 'text/html'
+  end
+
+  def mock(result)
+    pat = result || self.result
+    mock_path = path
+    mock_path += "_#{pat}" if pat && !pat.empty?
+    mock_path += '_done' if method == :post
+    File.expand_path("../mocks/#{mock_path}.html", __dir__)
   end
 end
 
 REQS = [
-  StubRequest.new(:get, 'login'),
   StubRequest.new(
-    :post, 'login',
+    :get, 'login',
+    continue: '@'
+  ),
+  StubRequest.new(
+    :post, 'login?continue=@',
     username: 'foo',
     password: 'bar',
-    csrf_token: '2yXslAOpndNWTpYmjqZ7C+JAT3pWB4zz90FYWkwcs7I='
+    csrf_token: 'ZD8/jxTUFqgfOUYq0Y+/m7AygPqElU6UEV7nvp1mgEg='
+  ),
+  StubRequest.new(
+    :post, 'login?continue=@',
+    username: 'hoge',
+    password: 'piyo',
+    csrf_token: 'ZD8/jxTUFqgfOUYq0Y+/m7AygPqElU6UEV7nvp1mgEg='
   ),
   StubRequest.new(:get, 'contests/practice/tasks'),
   StubRequest.new(:get, 'contests/practice/tasks/practice_1'),
