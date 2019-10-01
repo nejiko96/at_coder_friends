@@ -84,6 +84,7 @@ RSpec.describe AtCoderFriends::CLI do
         before(:each) do
           File.delete(sess_file) if File.exist?(sess_file)
           create_file(sess_file, SESSION_CONTENT)
+          sleep 0.1
         end
 
         it 'loads session per user' do
@@ -152,6 +153,7 @@ RSpec.describe AtCoderFriends::CLI do
         before(:each) do
           File.delete(sess_file) if File.exist?(sess_file)
           create_file(sess_file, SESSION_CONTENT)
+          sleep 0.1
         end
 
         it 'loads global session' do
