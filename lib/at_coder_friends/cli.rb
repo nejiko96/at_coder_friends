@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
 require 'optparse'
+require 'launchy'
 
 module AtCoderFriends
   # command line interface
   class CLI
     EXITING_OPTIONS = %i[version].freeze
-    OPTION_BANNER =
+    OPTION_BANNER   =
       <<~TEXT
         Usage:
           at_coder_friends setup        path/contest       # setup contest folder
@@ -83,6 +84,7 @@ module AtCoderFriends
       else
         raise ParamError, "unknown command: #{command}"
       end
+      ctx.post_process
     end
 
     def setup
@@ -127,7 +129,7 @@ module AtCoderFriends
     end
 
     def open_contest
-      ctx.scraping_agent.open_contest
+      Launchy.open(ctx.scraping_agent.contest_url)
     end
   end
 end

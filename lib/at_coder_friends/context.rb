@@ -37,5 +37,9 @@ module AtCoderFriends
     def emitter
       @emitter ||= Emitter.new(self)
     end
+
+    def post_process
+      @scraping_agent&.save_session
+    end
   end
 end

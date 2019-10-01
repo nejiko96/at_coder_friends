@@ -115,11 +115,15 @@ ext_settings:
 
 - user  
   AtCoder username  
-  AtCoderのユーザ名
+  If omitted, you are prompted to enter it on the first run.  
+  AtCoderのユーザ名  
+  省略した場合、初回の実行時に入力を求められます
 
 - password  
   AtCoder password  
-  AtCoderのパスワード
+  If omitted, you are prompted to enter it on the first run.  
+  AtCoderのパスワード  
+  省略した場合、初回の実行時に入力を求められます
 
 - ext_settings  
   Extension specific settings  

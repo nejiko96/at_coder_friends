@@ -7,7 +7,12 @@
 /spec/reports/
 /tmp/
 /vendor/
-/.at_coder_friends.yml
 
 # rspec failure tracking
 .rspec_status
+
+# at_coder_friends
+.at_coder_friends.yml
+
+# rvm
+.ruby-version
