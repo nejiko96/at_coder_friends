@@ -122,6 +122,7 @@ RSpec.describe AtCoderFriends::CLI do
             <<~OUTPUT
               ***** fetch_all practice *****
               fetch list from https://atcoder.jp/contests/practice/tasks ...
+              Logged in as foo (Contestant)
               fetch problem from /contests/practice/tasks/practice_1 ...
               A_001.in
               A_001.exp
@@ -311,8 +312,12 @@ RSpec.describe AtCoderFriends::CLI do
       before { AtCoderFriends::Context.new({}, path).verifier.verify }
 
       it 'posts the source' do
-        expect { subject }.to \
-          output("***** submit A.rb *****\n").to_stdout
+        expect { subject }.to output(
+          <<~OUTPUT
+            ***** submit A.rb *****
+            Logged in as foo (Contestant)
+          OUTPUT
+        ).to_stdout
       end
 
       it 'mark the source as unverified' do
