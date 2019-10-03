@@ -17,6 +17,7 @@ module AtCoderFriends
     include PathUtil
     BASE_URL      = 'https://atcoder.jp/'
     XPATH_SECTION = '//h3[.="%<title>s"]/following-sibling::section'
+    XPATH_USERNAME = '//*[@id="navbar-collapse"]/ul[2]/li[2]/a'
     SESSION_STORE =
       File.join(Dir.home, '.at_coder_friends', '%<user>s_session.yml')
 
@@ -72,29 +73,6 @@ module AtCoderFriends
       config['output_smp_pat'] || '^出力例\s*(?<no>[\d０-９]+)$'
     end
 
-    def fetch_all
-      puts "***** fetch_all #{contest} *****"
-      fetch_assignments.map do |q, url|
-        pbm = fetch_problem(q, url)
-        yield pbm if block_given?
-        pbm
-      end
-    end
-
-    def submit
-      path, _dir, prg, _base, ext, q = split_prg_path(ctx.path)
-      puts "***** submit #{prg} *****"
-      src = File.read(path, encoding: Encoding::UTF_8)
-      post_src(q, ext, src)
-    end
-
-    def code_test(infile)
-      path, _dir, _prg, _base, ext, _q = split_prg_path(ctx.path)
-      src = File.read(path, encoding: Encoding::UTF_8)
-      data = File.read(infile)
-      code_test_loop(ext, src, data)
-    end
-
     def fetch_with_auth(url)
       begin
         page = agent.get(url)
@@ -113,6 +91,7 @@ module AtCoderFriends
       end
 
       page.uri.path == '/login' && (raise AppError, 'Authentication failed.')
+      show_username(page)
       page
     end
 
@@ -129,6 +108,24 @@ module AtCoderFriends
         puts
       end
       [user, pass]
+    end
+
+    def show_username(page)
+      username_old = @username
+      link = page.search(XPATH_USERNAME)[0]
+      @username = (link && link[:href] == '#' ? link.text.strip : '-')
+      return if @username == username_old || @username == '-'
+
+      puts "Logged in as #{@username}"
+    end
+
+    def fetch_all
+      puts "***** fetch_all #{contest} *****"
+      fetch_assignments.map do |q, url|
+        pbm = fetch_problem(q, url)
+        yield pbm if block_given?
+        pbm
+      end
     end
 
     def fetch_assignments
@@ -180,7 +177,11 @@ module AtCoderFriends
       end
     end
 
-    def post_src(q, ext, src)
+    def submit
+      path, _dir, prg, _base, ext, q = split_prg_path(ctx.path)
+      puts "***** submit #{prg} *****"
+      src = File.read(path, encoding: Encoding::UTF_8)
+
       page = fetch_with_auth(contest_url('submit'))
       form = page.forms[1]
       form.field_with(name: 'data.TaskScreenName') do |sel|
@@ -192,18 +193,22 @@ module AtCoderFriends
       form.submit
     end
 
-    def code_test_loop(ext, src, data)
+    def code_test(infile)
+      path, _dir, _prg, _base, ext, _q = split_prg_path(ctx.path)
+      src = File.read(path, encoding: Encoding::UTF_8)
+      data = File.read(infile)
+
       page = fetch_with_auth(contest_url('custom_test'))
       script = page.search('script').text
       csrf_token = script.scan(/var csrfToken = "(.*)"/)[0][0]
-      payload = {
+
+      page = agent.post(
+        contest_url('custom_test/submit/json'),
         'data.LanguageId' => lang_id(ext),
         'sourceCode' => src,
         'input' => data,
         'csrf_token' => csrf_token
-      }
-
-      page = agent.post(contest_url('custom_test/submit/json'), payload)
+      )
       msg = page.body
       raise AppError, msg unless msg.empty?
 

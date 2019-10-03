@@ -194,6 +194,7 @@ RSpec.describe AtCoderFriends::TestRunner do
           expect { subject }.to output(
             <<~OUTPUT
               ==== A_001 (remote) ====
+              Logged in as foo (Contestant)
               Exit code: 0
               Time: 17ms
               Memory: 5536KB
@@ -219,6 +220,7 @@ RSpec.describe AtCoderFriends::TestRunner do
           expect { subject }.to output(
             <<~OUTPUT
               ==== A_001 (remote) ====
+              Logged in as foo (Contestant)
               Exit code: 0
               Time: 17ms
               Memory: 5536KB
@@ -244,6 +246,7 @@ RSpec.describe AtCoderFriends::TestRunner do
           expect { subject }.to output(
             <<~OUTPUT
               ==== A_001 (remote) ====
+              Logged in as foo (Contestant)
               Exit code: 256
               Time: 17ms
               Memory: 5524KB
