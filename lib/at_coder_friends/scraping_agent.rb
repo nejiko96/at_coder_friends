@@ -78,6 +78,7 @@ module AtCoderFriends
         page = agent.get(url)
       rescue Mechanize::ResponseCodeError => e
         raise e unless e.response_code == '404'
+        raise e if username_link(e.page)
 
         page = agent.get(common_url('login') + '?continue=' + CGI.escape(url))
       end
@@ -112,11 +113,16 @@ module AtCoderFriends
 
     def show_username(page)
       username_old = @username
-      link = page.search(XPATH_USERNAME)[0]
-      @username = (link && link[:href] == '#' ? link.text.strip : '-')
+      link = username_link(page)
+      @username = (link ? link.text.strip : '-')
       return if @username == username_old || @username == '-'
 
       puts "Logged in as #{@username}"
+    end
+
+    def username_link(page)
+      link = page.search(XPATH_USERNAME)[0]
+      link && link[:href] == '#' && link
     end
 
     def fetch_all
