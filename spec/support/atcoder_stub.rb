@@ -53,7 +53,7 @@ StubRequest = Struct.new(:method, :path, :param, :result) do
           requested_page(result)
         elsif request.uri.path.start_with?('/contests/practice/tasks')
           # invalid session or require entry => return 404
-          { status: 404 }
+          not_found
         else
           # invalid session => show login form
           redirect_to('/login?continue=' + CGI.escape(request.uri.to_s))
@@ -73,7 +73,15 @@ StubRequest = Struct.new(:method, :path, :param, :result) do
     {
       status: 200,
       headers: { content_type: content_type },
-      body: File.new(mock(result))
+      body: mock(result)
+    }
+  end
+
+  def not_found
+    {
+      status: 404,
+      headers: { content_type: 'text/html' },
+      body: mock_page('404')
     }
   end
 
@@ -86,7 +94,11 @@ StubRequest = Struct.new(:method, :path, :param, :result) do
     mock_path = path
     mock_path += "_#{pat}" if pat && !pat.empty?
     mock_path += '_done' if method == :post
-    File.expand_path("../mocks/#{mock_path}.html", __dir__)
+    mock_page(mock_path)
+  end
+
+  def mock_page(path)
+    File.new(File.expand_path("../mocks/#{path}.html", __dir__))
   end
 end
 
