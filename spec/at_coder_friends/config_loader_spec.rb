@@ -74,5 +74,17 @@ RSpec.describe AtCoderFriends::ConfigLoader do
         expect(subject['ext_settings']['zzz']).not_to be nil
       end
     end
+
+    context 'when user setting is empty' do
+      include_context :uses_temp_dir
+      let(:target_dir) { temp_dir }
+      before :each do
+        create_file(File.join(temp_dir, '.at_coder_friends.yml'), '')
+      end
+
+      it 'does not raise error' do
+        expect { subject }.not_to raise_error
+      end
+    end
   end
 end
