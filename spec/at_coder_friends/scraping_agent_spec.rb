@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe AtCoderFriends::ScrapingAgent do
+RSpec.describe AtCoderFriends::Scraping::Agent do
   include_context :atcoder_env
   include_context :atcoder_stub
 

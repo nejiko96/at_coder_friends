@@ -19,7 +19,7 @@ module AtCoderFriends
     end
 
     def scraping_agent
-      @scraping_agent ||= ScrapingAgent.new(self)
+      @scraping_agent ||= Scraping::Agent.new(self)
     end
 
     def sample_test_runner
