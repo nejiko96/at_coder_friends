@@ -43,7 +43,7 @@ module AtCoderFriends
       end
 
       def merge(base_hash, derived_hash)
-        res = base_hash.merge(derived_hash || {}) do |_, base_val, derived_val|
+        res = base_hash.merge(derived_hash) do |_, base_val, derived_val|
           if base_val.is_a?(Hash) && derived_val.is_a?(Hash)
             merge(base_val, derived_val)
           else
@@ -55,7 +55,7 @@ module AtCoderFriends
 
       def load_yaml(path)
         yaml = IO.read(path, encoding: Encoding::UTF_8)
-        YAML.safe_load(yaml, [], [], false, path)
+        YAML.safe_load(yaml, [], [], false, path) || {}
       rescue Errno::ENOENT
         raise ConfigNotFoundError,
               "Configuration file not found: #{path}"
