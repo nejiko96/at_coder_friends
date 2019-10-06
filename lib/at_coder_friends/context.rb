@@ -23,11 +23,11 @@ module AtCoderFriends
     end
 
     def sample_test_runner
-      @sample_test_runner ||= SampleTestRunner.new(self)
+      @sample_test_runner ||= TestRunner::Sample.new(self)
     end
 
     def judge_test_runner
-      @judge_test_runner ||= JudgeTestRunner.new(self)
+      @judge_test_runner ||= TestRunner::Judge.new(self)
     end
 
     def verifier

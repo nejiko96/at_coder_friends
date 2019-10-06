@@ -35,9 +35,5 @@ module AtCoderFriends
       File.write(src_path, src.txt)
       puts src_file
     end
-
-    def makedirs_unless(dir)
-      FileUtils.makedirs(dir) unless Dir.exist?(dir)
-    end
   end
 end

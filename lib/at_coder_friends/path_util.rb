@@ -7,6 +7,7 @@ module AtCoderFriends
 
     SMP_DIR = 'data'
     CASES_DIR = 'cases'
+    TMP_DIR = '.tmp'
 
     def contest_name(path)
       dir = File.file?(path) ? File.dirname(path) : path
@@ -26,6 +27,15 @@ module AtCoderFriends
 
     def cases_dir(dir)
       File.join(dir, CASES_DIR)
+    end
+
+    def tmp_dir(path)
+      dir = File.file?(path) ? File.dirname(path) : path
+      File.join(dir, '.tmp')
+    end
+
+    def makedirs_unless(dir)
+      FileUtils.makedirs(dir) unless Dir.exist?(dir)
     end
   end
 end
