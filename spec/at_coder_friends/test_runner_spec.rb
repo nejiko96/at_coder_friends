@@ -127,7 +127,7 @@ RSpec.describe AtCoderFriends::TestRunner do
         it 'shows result' do
           expect { subject }.to output(
             <<~OUTPUT
-              ==== A_001 (local) ====
+              ==== A_001 ====
               -- input --
               1
               2 3
@@ -148,7 +148,7 @@ RSpec.describe AtCoderFriends::TestRunner do
         it 'shows result' do
           expect { subject }.to output(
             <<~OUTPUT
-              ==== A_001 (local) ====
+              ==== A_001 ====
               -- input --
               1
               2 3
@@ -169,7 +169,7 @@ RSpec.describe AtCoderFriends::TestRunner do
         it 'shows result' do
           expect { subject }.to output(
             <<~OUTPUT
-              ==== A_001 (local) ====
+              ==== A_001 ====
               -- input --
               1
               2 3
@@ -193,7 +193,7 @@ RSpec.describe AtCoderFriends::TestRunner do
         it 'shows result' do
           expect { subject }.to output(
             <<~OUTPUT
-              ==== A_001 (remote) ====
+              ==== A_001 ====
               Logged in as foo (Contestant)
               Exit code: 0
               Time: 17ms
@@ -219,7 +219,7 @@ RSpec.describe AtCoderFriends::TestRunner do
         it 'shows result' do
           expect { subject }.to output(
             <<~OUTPUT
-              ==== A_001 (remote) ====
+              ==== A_001 ====
               Logged in as foo (Contestant)
               Exit code: 0
               Time: 17ms
@@ -245,7 +245,7 @@ RSpec.describe AtCoderFriends::TestRunner do
         it 'shows result' do
           expect { subject }.to output(
             <<~OUTPUT
-              ==== A_001 (remote) ====
+              ==== A_001 ====
               Logged in as foo (Contestant)
               Exit code: 256
               Time: 17ms

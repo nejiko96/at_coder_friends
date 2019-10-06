@@ -28,7 +28,7 @@ RSpec.describe AtCoderFriends::JudgeTestRunner do
       it 'shows result' do
         expect { subject }.to output(
           <<~OUTPUT
-            ==== 00_sample_1 (local) ====
+            ==== 00_sample_1 ====
             -- input --
             1
             2 3
@@ -47,54 +47,125 @@ RSpec.describe AtCoderFriends::JudgeTestRunner do
   describe '#judge_one' do
     subject { runner.judge_one('00_sample_1') }
 
-    it 'shows result' do
-      expect { subject }.to output(
-        <<~OUTPUT
-          ***** judge_one A.rb *****
-          ==== 00_sample_1 (local) ====
-          -- input --
-          1
-          2 3
-          test
-          -- expected --
-          6 test
-          -- result --
-          6 test
-          << OK >>
-        OUTPUT
-      ).to_stdout
+    context 'when test location is local' do
+      it 'shows result' do
+        expect { subject }.to output(
+          <<~OUTPUT
+            ***** judge_one A.rb (local) *****
+            ==== 00_sample_1 ====
+            -- input --
+            1
+            2 3
+            test
+            -- expected --
+            6 test
+            -- result --
+            6 test
+            << OK >>
+          OUTPUT
+        ).to_stdout
+      end
+    end
+
+    context 'when test location is remote' do
+      include_context :atcoder_stub
+      let(:prog) { 'A.py' }
+
+      it 'shows result' do
+        expect { subject }.to output(
+          <<~OUTPUT
+            ***** judge_one A.py (remote) *****
+            ==== 00_sample_1 ====
+            Logged in as foo (Contestant)
+            Exit code: 0
+            Time: 17ms
+            Memory: 5536KB
+            -- input --
+            1
+            2 3
+            test
+            -- expected --
+            6 test
+            -- result --
+            6 test
+            << OK >>
+          OUTPUT
+        ).to_stdout
+      end
     end
   end
 
   describe '#judge_all' do
     subject { runner.judge_all }
 
-    it 'shows result' do
-      expect { subject }.to output(
-        <<~OUTPUT
-          ***** judge_all A.rb *****
-          ==== 00_sample_1 (local) ====
-          -- input --
-          1
-          2 3
-          test
-          -- expected --
-          6 test
-          -- result --
-          6 test
-          << OK >>
-          ==== 00_sample_2 (local) ====
-          -- input --
-          72
-          128 256
-          myonmyon
-          -- expected --
-          456 myonmyon
-          -- result --
-          456 myonmyon
-          << OK >>
-        OUTPUT
-      ).to_stdout
+    context 'when test location is local' do
+      it 'shows result' do
+        expect { subject }.to output(
+          <<~OUTPUT
+            ***** judge_all A.rb (local) *****
+            ==== 00_sample_1 ====
+            -- input --
+            1
+            2 3
+            test
+            -- expected --
+            6 test
+            -- result --
+            6 test
+            << OK >>
+            ==== 00_sample_2 ====
+            -- input --
+            72
+            128 256
+            myonmyon
+            -- expected --
+            456 myonmyon
+            -- result --
+            456 myonmyon
+            << OK >>
+          OUTPUT
+        ).to_stdout
+      end
+    end
+
+    context 'when test location is remote' do
+      include_context :atcoder_stub
+      let(:prog) { 'A.py' }
+
+      it 'shows result' do
+        expect { subject }.to output(
+          <<~OUTPUT
+            ***** judge_all A.py (remote) *****
+            ==== 00_sample_1 ====
+            Logged in as foo (Contestant)
+            Exit code: 0
+            Time: 17ms
+            Memory: 5536KB
+            -- input --
+            1
+            2 3
+            test
+            -- expected --
+            6 test
+            -- result --
+            6 test
+            << OK >>
+            ==== 00_sample_2 ====
+            Exit code: 0
+            Time: 17ms
+            Memory: 5536KB
+            -- input --
+            72
+            128 256
+            myonmyon
+            -- expected --
+            456 myonmyon
+            -- result --
+            6 test
+            !!!!! WA !!!!!
+          OUTPUT
+        ).to_stdout
+      end
     end
   end
 end

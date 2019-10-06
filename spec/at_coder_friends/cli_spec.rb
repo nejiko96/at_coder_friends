@@ -164,8 +164,8 @@ RSpec.describe AtCoderFriends::CLI do
       it 'runs 1st test case' do
         expect { subject }.to output(
           <<~OUTPUT
-            ***** test_one A.rb *****
-            ==== A_001 (local) ====
+            ***** test_one A.rb (local) *****
+            ==== A_001 ====
             -- input --
             1
             2 3
@@ -187,8 +187,8 @@ RSpec.describe AtCoderFriends::CLI do
       it 'runs specified test case' do
         expect { subject }.to output(
           <<~OUTPUT
-            ***** test_one A.rb *****
-            ==== A_002 (local) ====
+            ***** test_one A.rb (local) *****
+            ==== A_002 ====
             -- input --
             72
             128 256
@@ -210,8 +210,8 @@ RSpec.describe AtCoderFriends::CLI do
     it 'runs all test cases' do
       expect { subject }.to output(
         <<~OUTPUT
-          ***** test_all A.rb *****
-          ==== A_001 (local) ====
+          ***** test_all A.rb (local) *****
+          ==== A_001 ====
           -- input --
           1
           2 3
@@ -221,7 +221,7 @@ RSpec.describe AtCoderFriends::CLI do
           -- result --
           6 test
           << OK >>
-          ==== A_002 (local) ====
+          ==== A_002 ====
           -- input --
           72
           128 256
@@ -244,8 +244,8 @@ RSpec.describe AtCoderFriends::CLI do
     it 'runs specified test case' do
       expect { subject }.to output(
         <<~OUTPUT
-          ***** judge_one A.rb *****
-          ==== 00_sample_1 (local) ====
+          ***** judge_one A.rb (local) *****
+          ==== 00_sample_1 ====
           -- input --
           1
           2 3
@@ -266,8 +266,8 @@ RSpec.describe AtCoderFriends::CLI do
     it 'runs all test cases' do
       expect { subject }.to output(
         <<~OUTPUT
-          ***** judge_all A.rb *****
-          ==== 00_sample_1 (local) ====
+          ***** judge_all A.rb (local) *****
+          ==== 00_sample_1 ====
           -- input --
           1
           2 3
@@ -277,7 +277,7 @@ RSpec.describe AtCoderFriends::CLI do
           -- result --
           6 test
           << OK >>
-          ==== 00_sample_2 (local) ====
+          ==== 00_sample_2 ====
           -- input --
           72
           128 256
