@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe AtCoderFriends::SampleTestRunner do
+RSpec.describe AtCoderFriends::TestRunner::Sample do
   include_context :atcoder_env
 
   subject(:runner) { described_class.new(ctx) }

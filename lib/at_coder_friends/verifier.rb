@@ -5,19 +5,21 @@ require 'fileutils'
 module AtCoderFriends
   # marks and checks if the source has been verified.
   class Verifier
+    include PathUtil
+
     attr_reader :path, :file, :vdir, :vpath
 
     def initialize(ctx)
       @path = ctx.path
       @file = File.basename(path)
-      @vdir = File.join(File.dirname(path), '.tmp')
+      @vdir = tmp_dir(path)
       @vpath = File.join(vdir, "#{file}.verified")
     end
 
     def verify
       return unless File.exist?(path)
 
-      FileUtils.makedirs(vdir) unless Dir.exist?(vdir)
+      makedirs_unless(vdir)
       FileUtils.touch(vpath)
     end
 
