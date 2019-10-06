@@ -12,7 +12,7 @@ module AtCoderFriends
     end
 
     def judge_all
-      puts "***** judge_all #{@prg} *****"
+      puts "***** judge_all #{@prg} (#{test_loc}) *****"
       Dir["#{@cases_dir}/#{@q}/in/*.txt"].sort.each do |infile|
         id = File.basename(infile, '.txt')
         judge(id)
@@ -20,7 +20,7 @@ module AtCoderFriends
     end
 
     def judge_one(id)
-      puts "***** judge_one #{@prg} *****"
+      puts "***** judge_one #{@prg} (#{test_loc}) *****"
       judge(id)
     end
 

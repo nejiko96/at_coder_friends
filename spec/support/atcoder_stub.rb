@@ -145,13 +145,9 @@ REQS = [
     sourceCode: (
       <<~SRC
         # -*- coding: utf-8 -*-
-        # 整数の入力
         a = int(input())
-        # スペース区切りの整数の入力
         b, c = map(int, input().split())
-        # 文字列の入力
         s = input()
-        # 出力
         print("{} {}".format(a+b+c, s))
       SRC
     ),
@@ -169,13 +165,9 @@ REQS = [
     sourceCode: (
       <<~SRC
         # -*- coding: utf-8 -*-
-        # 整数の入力
         a = int(input())
-        # スペース区切りの整数の入力
         b, c = map(int, input().split())
-        # 文字列の入力
         s = input()
-        # 出力
         print(ans)
       SRC
     ),
@@ -193,13 +185,9 @@ REQS = [
     sourceCode: (
       <<~SRC
         # -*- coding: utf-8 -*-
-        # 整数の入力
         a = int(input())
-        # スペース区切りの整数の入力
         b, c = map(int, input().split())
-        # 文字列の入力
         s = input()
-        # 出力
         print("{}_{}".format(a+b+c, s))
       SRC
     ),
@@ -218,13 +206,9 @@ REQS = [
     sourceCode: (
       <<~SRC
         # -*- coding: utf-8 -*-
-        # 整数の入力
         a = int(input())
-        # スペース区切りの整数の入力
         b, c = map(int, input().split())
-        # 文字列の入力
         s = input()
-        # 出力
         print("{} {}".format(a+b+c, s))
       SRC
     ),
@@ -233,6 +217,26 @@ REQS = [
         1
         2 3
         test
+      DATA
+  ),
+  StubRequest.new(
+    :post, 'contests/practice/custom_test/submit/json',
+    'data.LanguageId': '3023',
+    csrf_token: 'ZD8/jxTUFqgfOUYq0Y+/m7AygPqElU6UEV7nvp1mgEg=',
+    sourceCode: (
+      <<~SRC
+        # -*- coding: utf-8 -*-
+        a = int(input())
+        b, c = map(int, input().split())
+        s = input()
+        print("{} {}".format(a+b+c, s))
+      SRC
+    ),
+    input:
+      <<~DATA
+        72
+        128 256
+        myonmyon
       DATA
   ),
   StubRequest.new(:get, 'contests/arc001/tasks'),

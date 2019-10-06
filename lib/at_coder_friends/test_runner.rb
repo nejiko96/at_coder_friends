@@ -18,11 +18,19 @@ module AtCoderFriends
       ctx.config
     end
 
+    def test_loc
+      test_cmd ? 'local' : 'remote'
+    end
+
+    def test_mtd
+      test_cmd ? :local_test : :remote_test
+    end
+
     # rubocop:disable Metrics/MethodLength
     def run_test(id, infile, outfile, expfile)
       return false unless File.exist?(infile) && File.exist?(expfile)
 
-      puts "==== #{id} (#{test_loc}) ===="
+      puts "==== #{id} ===="
 
       success = send(test_mtd, infile, outfile)
       input, result, expected =
@@ -44,14 +52,6 @@ module AtCoderFriends
       true
     end
     # rubocop:enable Metrics/MethodLength
-
-    def test_loc
-      test_cmd ? 'local' : 'remote'
-    end
-
-    def test_mtd
-      test_cmd ? :local_test : :remote_test
-    end
 
     def local_test(infile, outfile)
       system("#{test_cmd} < #{infile} > #{outfile}")

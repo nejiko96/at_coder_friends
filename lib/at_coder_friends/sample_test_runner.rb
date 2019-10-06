@@ -11,14 +11,14 @@ module AtCoderFriends
     end
 
     def test_all
-      puts "***** test_all #{@prg} *****"
+      puts "***** test_all #{@prg} (#{test_loc}) *****"
       1.upto(999) do |i|
         break unless test(i)
       end
     end
 
     def test_one(n)
-      puts "***** test_one #{@prg} *****"
+      puts "***** test_one #{@prg} (#{test_loc}) *****"
       test(n)
     end
 
