@@ -9,11 +9,11 @@ module AtCoderFriends
     class Base
       include PathUtil
 
-      attr_reader :ctx, :dir, :prg, :base, :ext, :q
+      attr_reader :ctx, :path, :dir, :prg, :base, :ext, :q
 
       def initialize(ctx)
         @ctx = ctx
-        _path, @dir, @prg, @base, @ext, @q = split_prg_path(ctx.path)
+        @path, @dir, @prg, @base, @ext, @q = split_prg_path(ctx.path)
       end
 
       def config
@@ -77,18 +77,28 @@ module AtCoderFriends
       end
 
       def show_result(is_success, input, result, expected)
-        puts '-- input --'
-        print input
-        puts '-- expected --'
-        print expected
-        puts '-- result --'
-        print result
+        print detail_str(input, result, expected)
+        puts result_str(is_success, result, expected)
+      end
+
+      def detail_str(input, result, expected)
+        ret = ''
+        ret += "-- input --\n"
+        ret += input
+        ret += "-- expected --\n"
+        ret += expected
+        ret += "-- result --\n"
+        ret += result
+        ret
+      end
+
+      def result_str(is_success, result, expected)
         if !is_success
-          puts '!!!!! RE !!!!!'
+          '!!!!! RE !!!!!'
         elsif result != expected
-          puts '!!!!! WA !!!!!'
+          '!!!!! WA !!!!!'
         else
-          puts '<< OK >>'
+          '<< OK >>'
         end
       end
 
