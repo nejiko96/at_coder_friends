@@ -268,24 +268,8 @@ RSpec.describe AtCoderFriends::CLI do
         <<~OUTPUT
           ***** judge_all A.rb (local) *****
           ==== 00_sample_1 ====
-          -- input --
-          1
-          2 3
-          test
-          -- expected --
-          6 test
-          -- result --
-          6 test
           << OK >>
           ==== 00_sample_2 ====
-          -- input --
-          72
-          128 256
-          myonmyon
-          -- expected --
-          456 myonmyon
-          -- result --
-          456 myonmyon
           << OK >>
         OUTPUT
       ).to_stdout

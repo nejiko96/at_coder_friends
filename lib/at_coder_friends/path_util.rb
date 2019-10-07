@@ -30,7 +30,7 @@ module AtCoderFriends
     end
 
     def tmp_dir(path)
-      dir = File.file?(path) ? File.dirname(path) : path
+      dir = File.dirname(path)
       File.join(dir, '.tmp')
     end
 

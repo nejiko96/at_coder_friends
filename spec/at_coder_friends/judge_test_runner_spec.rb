@@ -104,24 +104,8 @@ RSpec.describe AtCoderFriends::TestRunner::Judge do
           <<~OUTPUT
             ***** judge_all A.rb (local) *****
             ==== 00_sample_1 ====
-            -- input --
-            1
-            2 3
-            test
-            -- expected --
-            6 test
-            -- result --
-            6 test
             << OK >>
             ==== 00_sample_2 ====
-            -- input --
-            72
-            128 256
-            myonmyon
-            -- expected --
-            456 myonmyon
-            -- result --
-            456 myonmyon
             << OK >>
           OUTPUT
         ).to_stdout
@@ -141,27 +125,11 @@ RSpec.describe AtCoderFriends::TestRunner::Judge do
             Exit code: 0
             Time: 17ms
             Memory: 5536KB
-            -- input --
-            1
-            2 3
-            test
-            -- expected --
-            6 test
-            -- result --
-            6 test
             << OK >>
             ==== 00_sample_2 ====
             Exit code: 0
             Time: 17ms
             Memory: 5536KB
-            -- input --
-            72
-            128 256
-            myonmyon
-            -- expected --
-            456 myonmyon
-            -- result --
-            6 test
             !!!!! WA !!!!!
           OUTPUT
         ).to_stdout
