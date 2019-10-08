@@ -3,6 +3,7 @@ inherit_from: .rubocop_todo.yml
 AllCops:
   Exclude:
     - 'spec/fixtures/**/*'
+    - 'regression/**/*'
   TargetRubyVersion: 2.3
 
 Lint/AmbiguousBlockAssociation:
