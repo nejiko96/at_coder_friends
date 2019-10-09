@@ -57,17 +57,6 @@ RSpec.describe AtCoderFriends::Scraping::Agent do
       let(:contest) { 'tdpc' }
 
       it 'handles irregular titles' do
-        allow(ctx).to receive(:config) do
-          AtCoderFriends::ConfigLoader
-            .load_config(ctx)
-            .merge(
-              'constraints_pat' => '^Constraints$',
-              'input_fmt_pat' => '^Input Format$',
-              'input_smp_pat' => '^Sample Input\s*(?<no>[\d０-９]+)$',
-              'output_smp_pat' => '^Sample Output\s*(?<no>[\d０-９]+)$'
-            )
-        end
-
         expect { subject }.to output(
           <<~TEXT
             ***** fetch_all tdpc *****

@@ -139,7 +139,7 @@ module AtCoderFriends
     def match_smp!(inpdefs, smp)
       lines = smp.split("\n")
       inpdefs.each_with_index do |inpdef, i|
-        break if i > lines.size
+        break if i >= lines.size
         next if inpdef.item != :number
 
         inpdef.item = :string if lines[i].split[0] =~ /[^\-0-9]/
