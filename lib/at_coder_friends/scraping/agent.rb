@@ -8,11 +8,11 @@ module AtCoderFriends
     # common functions for scraping
     class Agent
       include AtCoderFriends::PathUtil
-      include AtCoderFriends::Scraping::Session
-      include AtCoderFriends::Scraping::Authentication
-      include AtCoderFriends::Scraping::Tasks
-      include AtCoderFriends::Scraping::CustomTest
-      include AtCoderFriends::Scraping::Submission
+      include Session
+      include Authentication
+      include Tasks
+      include CustomTest
+      include Submission
 
       BASE_URL = 'https://atcoder.jp/'
 

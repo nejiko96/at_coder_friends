@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
-require 'at_coder_friends'
 require 'net/http'
 require 'uri'
 require 'json'
+require 'mechanize'
+require 'at_coder_friends'
 
 module AtCoderFriends
   # tasks for regression test
@@ -43,12 +44,39 @@ module AtCoderFriends
       emit_dir = EMIT_DIR + Time.now.strftime('_%Y%m%d%H%m')
       rmdir_force(emit_dir)
 
-      pbm_list do |contest, q, pbm_path|
+      pbm_list do |contest, q, url|
         ctx = context(emit_dir, contest)
-        pbm = ctx.scraping_agent.fetch_problem(q, 'file://' + pbm_path)
+        pbm = ctx.scraping_agent.fetch_problem(q, url)
         pipeline(ctx, pbm)
       end
       system("diff -r #{EMIT_ORG_DIR} #{emit_dir}")
+    end
+
+    def section_list
+      agent = Mechanize.new
+      list = []
+      pbm_list do |contest, q, url|
+        page = agent.get(url)
+        list += page.search('h3').map do |h3|
+          {
+            contest: contest,
+            q: q,
+            text: normalize(h3.content)
+          }
+        end
+      end
+      list
+        .group_by { |sec| sec[:text] }
+        .sort_by { |_, vs| vs.size }
+        .reverse
+        .each { |k, vs| puts "#{k}(#{vs.size})" }
+    end
+
+    def normalize(s)
+      s
+        .tr('　０-９Ａ-Ｚａ-ｚ', ' 0-9A-Za-z')
+        .gsub(/[^一-龠_ぁ-ん_ァ-ヶーa-zA-Z0-9 ]/, '')
+        .strip
     end
 
     def contest_id_list
@@ -65,7 +93,8 @@ module AtCoderFriends
       Dir.glob(PAGES_DIR + '/**/*.html').each do |pbm_path|
         contest = File.basename(File.dirname(pbm_path))
         q = File.basename(pbm_path, '.html')
-        yield contest, q, pbm_path
+        url = "file://#{pbm_path}"
+        yield contest, q, url
       end
     end
 
@@ -104,5 +133,10 @@ namespace :regression do
   desc 'run regression check'
   task :check do
     AtCoderFriends::Regression.check
+  end
+
+  desc 'generate section list'
+  task :section_list do
+    AtCoderFriends::Regression.section_list
   end
 end

@@ -6,23 +6,29 @@ module AtCoderFriends
   module Scraping
     # fetch problems from tasks page
     module Tasks
-      XPATH_SECTION = '//h3[.="%<title>s"]/following-sibling::section'
-
-      def constraints_pat
-        config['constraints_pat'] || '^制約$'
-      end
-
-      def input_fmt_pat
-        config['input_fmt_pat'] || '^入出?力$'
-      end
-
-      def input_smp_pat
-        config['input_smp_pat'] || '^入力例\s*(?<no>[\d０-９]+)$'
-      end
-
-      def output_smp_pat
-        config['output_smp_pat'] || '^出力例\s*(?<no>[\d０-９]+)$'
-      end
+      ARC001_SECTION_XPATH = '//h3[.="%<title>s"]/following-sibling::section'
+      TITLE_PATTERNS = [
+        {
+          re: '^(制約|Constraints)$',
+          key: 'constraints'
+        },
+        {
+          re: '^(入出?力|Inputs?\s*((,|and)?\s*Outputs?)?\s*(Format)?)$',
+          key: 'input format'
+        },
+        {
+          re: '^(入力例|Sample\s*Input|Input\s*Example)\s*(?<no>\d+)?$',
+          key: 'sample input %<no>s'
+        },
+        {
+          re: '^(出力例|Sample\s*Output|Output\s*Example)\s*(?<no>\d+)?$',
+          key: 'sample output %<no>s'
+        },
+        {
+          re: '^(Output\s*for\s*(the)\s*Sample\s*Input)\s*(?<no>\d+)?$',
+          key: 'sample output %<no>s'
+        }
+      ].freeze
 
       def fetch_all
         puts "***** fetch_all #{contest} *****"
@@ -49,45 +55,77 @@ module AtCoderFriends
         page = fetch_with_auth(url)
         Problem.new(q) do |pbm|
           pbm.html = page.body
-          if contest == 'arc001'
-            init_pbm_arc001(pbm, page)
-          else
-            init_pbm(pbm, page)
+          @matched_section = {}
+          list_section(page)
+            .map { |h3, section| conv_section(h3, section) }
+            .each { |args| match_section(pbm, *args) }
+        end
+      end
+
+      def list_section(page)
+        if contest == 'arc001'
+          list_section_arc001(page)
+        else
+          list_section_other(page)
+        end
+      end
+
+      def list_section_arc001(page)
+        page
+          .search('//h3').map do |h3|
+            query = format(ARC001_SECTION_XPATH, title: h3.content)
+            section = page.search(query)[0]
+            next unless section
+
+            [h3, section]
           end
-        end
+          .compact
       end
 
-      def init_pbm(pbm, page)
-        page.search('//*[./h3]').each do |section|
+      def list_section_other(page)
+        page.search('//*[./h3]').map do |section|
           h3 = section.search('h3')[0]
-          parse_section(pbm, h3, section)
+          [h3, section]
         end
       end
 
-      def init_pbm_arc001(pbm, page)
-        page.search('//h3').each do |h3|
-          query = format(XPATH_SECTION, title: h3.content)
-          sections = page.search(query)
-          sections[0] && parse_section(pbm, h3, sections[0])
-        end
-      end
-
-      def parse_section(pbm, h3, section)
-        title = h3.content.strip
-        title.delete!("\u008f\u0090") # agc002
+      def conv_section(h3, section)
+        title = normalize(h3.content)
         text = section.content
         code = section.search('pre')[0]&.content || ''
-        case title
-        when /#{constraints_pat}/
+        code = code.lstrip.gsub("\r\n", "\n")
+        [title, text, code]
+      end
+
+      def match_section(pbm, title, text, code)
+        pat = TITLE_PATTERNS.find { |h| title =~ /#{h[:re]}/i }
+        return unless pat
+
+        m = title.match(/#{pat[:re]}/i)
+        no = m.names.include?('no') ? m['no'] : '1'
+        key = format(pat[:key], no: no)
+        return if @matched_section[key]
+
+        case key
+        when 'constraints'
           pbm.desc += text
-        when /#{input_fmt_pat}/
+        when 'input format'
           pbm.desc += text
           pbm.fmt = code
-        when /#{input_smp_pat}/
-          pbm.add_smp($LAST_MATCH_INFO[:no], :in, code)
-        when /#{output_smp_pat}/
-          pbm.add_smp($LAST_MATCH_INFO[:no], :exp, code)
+        when /^sample input \d+$/
+          pbm.add_smp(no, :in, code)
+        when /^sample output \d+$/
+          pbm.add_smp(no, :exp, code)
         end
+
+        @matched_section[key] = true
+      end
+
+      def normalize(s)
+        s
+          .tr('　０-９Ａ-Ｚａ-ｚ', ' 0-9A-Za-z')
+          .gsub(/[^一-龠_ぁ-ん_ァ-ヶーa-zA-Z0-9 ]/, '')
+          .strip
       end
     end
   end
