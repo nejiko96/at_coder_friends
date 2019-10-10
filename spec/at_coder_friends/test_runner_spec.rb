@@ -136,7 +136,7 @@ RSpec.describe AtCoderFriends::TestRunner::Base do
               6 test
               -- result --
               6 test
-              << OK >>
+              \e[0;32;49m<< OK >>\e[0m
             OUTPUT
           ).to_stdout
         end
@@ -157,7 +157,7 @@ RSpec.describe AtCoderFriends::TestRunner::Base do
               6 test
               -- result --
               6_test
-              !!!!! WA !!!!!
+              \e[0;31;49m!!!!! WA !!!!!\e[0m
             OUTPUT
           ).to_stdout
         end
@@ -177,7 +177,7 @@ RSpec.describe AtCoderFriends::TestRunner::Base do
               -- expected --
               6 test
               -- result --
-              !!!!! RE !!!!!
+              \e[0;31;49m!!!!! RE !!!!!\e[0m
             OUTPUT
           ).to_stdout
         end
@@ -206,7 +206,7 @@ RSpec.describe AtCoderFriends::TestRunner::Base do
               6 test
               -- result --
               6 test
-              << OK >>
+              \e[0;32;49m<< OK >>\e[0m
             OUTPUT
           ).to_stdout
         end
@@ -232,7 +232,7 @@ RSpec.describe AtCoderFriends::TestRunner::Base do
               6 test
               -- result --
               6_test
-              !!!!! WA !!!!!
+              \e[0;31;49m!!!!! WA !!!!!\e[0m
             OUTPUT
           ).to_stdout
         end
@@ -261,7 +261,7 @@ RSpec.describe AtCoderFriends::TestRunner::Base do
                 File "./Main.py", line 9, in <module>
                   print(ans)
               NameError: name 'ans' is not defined
-              !!!!! RE !!!!!
+              \e[0;31;49m!!!!! RE !!!!!\e[0m
             OUTPUT
           ).to_stdout
         end

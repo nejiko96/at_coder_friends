@@ -38,7 +38,7 @@ RSpec.describe AtCoderFriends::TestRunner::Sample do
             6 test
             -- result --
             6 test
-            << OK >>
+            \e[0;32;49m<< OK >>\e[0m
           OUTPUT
         ).to_stdout
       end
@@ -62,7 +62,7 @@ RSpec.describe AtCoderFriends::TestRunner::Sample do
             6 test
             -- result --
             6 test
-            << OK >>
+            \e[0;32;49m<< OK >>\e[0m
           OUTPUT
         ).to_stdout
       end
@@ -89,7 +89,7 @@ RSpec.describe AtCoderFriends::TestRunner::Sample do
             6 test
             -- result --
             6 test
-            << OK >>
+            \e[0;32;49m<< OK >>\e[0m
           OUTPUT
         ).to_stdout
       end
@@ -113,7 +113,7 @@ RSpec.describe AtCoderFriends::TestRunner::Sample do
             6 test
             -- result --
             6 test
-            << OK >>
+            \e[0;32;49m<< OK >>\e[0m
             ==== A_002 ====
             -- input --
             72
@@ -123,7 +123,7 @@ RSpec.describe AtCoderFriends::TestRunner::Sample do
             456 myonmyon
             -- result --
             456 myonmyon
-            << OK >>
+            \e[0;32;49m<< OK >>\e[0m
           OUTPUT
         ).to_stdout
       end
@@ -150,7 +150,7 @@ RSpec.describe AtCoderFriends::TestRunner::Sample do
             6 test
             -- result --
             6 test
-            << OK >>
+            \e[0;32;49m<< OK >>\e[0m
             ==== A_002 ====
             Exit code: 0
             Time: 17ms
@@ -163,7 +163,7 @@ RSpec.describe AtCoderFriends::TestRunner::Sample do
             456 myonmyon
             -- result --
             6 test
-            !!!!! WA !!!!!
+            \e[0;31;49m!!!!! WA !!!!!\e[0m
           OUTPUT
         ).to_stdout
       end

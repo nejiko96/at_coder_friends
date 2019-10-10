@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fileutils'
+require 'colorize'
 require 'rbconfig'
 
 module AtCoderFriends
@@ -94,11 +94,11 @@ module AtCoderFriends
 
       def result_str(is_success, result, expected)
         if !is_success
-          '!!!!! RE !!!!!'
+          '!!!!! RE !!!!!'.red
         elsif result != expected
-          '!!!!! WA !!!!!'
+          '!!!!! WA !!!!!'.red
         else
-          '<< OK >>'
+          '<< OK >>'.green
         end
       end
 
