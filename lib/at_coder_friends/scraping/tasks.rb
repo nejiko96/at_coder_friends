@@ -6,27 +6,42 @@ module AtCoderFriends
   module Scraping
     # fetch problems from tasks page
     module Tasks
-      ARC001_SECTION_XPATH = '//h3[.="%<title>s"]/following-sibling::section'
-      TITLE_PATTERNS = [
+      SECTION_TYPES = [
         {
-          re: '^(制約|Constraints)$',
-          key: 'constraints'
+          key: 'constraints',
+          patterns: [
+            '^制約$',
+            '^Constraints$'
+          ]
         },
         {
-          re: '^(入出?力|Inputs?\s*((,|and)?\s*Outputs?)?\s*(Format)?)$',
-          key: 'input format'
+          key: 'input format',
+          patterns: [
+            '^入出?力(形式)?$',
+            '^Inputs?\s*(,|and)?\s*(Outputs?)?\s*(Format)?$'
+          ]
         },
         {
-          re: '^(入力例|Sample\s*Input|Input\s*Example)\s*(?<no>\d+)?$',
-          key: 'sample input %<no>s'
+          key: 'sample input %<no>s',
+          patterns: [
+            '^入力例\s*(?<no>\d+)?$',
+            '^入力\s*(?<no>\d+)$',
+            '^Sample\s*Input\s*(?<no>\d+)?$',
+            '^Input\s*Example\s*(?<no>\d+)?$',
+            '^Input\s*(?<no>\d+)$'
+          ]
         },
         {
-          re: '^(出力例|Sample\s*Output|Output\s*Example)\s*(?<no>\d+)?$',
-          key: 'sample output %<no>s'
-        },
-        {
-          re: '^(Output\s*for\s*(the)\s*Sample\s*Input)\s*(?<no>\d+)?$',
-          key: 'sample output %<no>s'
+          key: 'sample output %<no>s',
+          patterns: [
+            '^出力例\s*(?<no>\d+)?$',
+            '^出力\s*(?<no>\d+)$',
+            '^入力例\s*(?<no>\d+)?\s*に対する出力例$',
+            '^Sample\s*Output\s*(?<no>\d+)?$',
+            '^Output\s*Example\s*(?<no>\d+)?$',
+            '^Output\s*(?<no>\d+)$',
+            '^Output\s*for\s*(the)?\s*Sample\s*Input\s*(?<no>\d+)?$'
+          ]
         }
       ].freeze
 
@@ -53,72 +68,69 @@ module AtCoderFriends
       def fetch_problem(q, url)
         puts "fetch problem from #{url} ..."
         page = fetch_with_auth(url)
-        Problem.new(q) do |pbm|
-          pbm.html = page.body
-          @matched_section = {}
-          list_section(page)
-            .map { |h3, section| conv_section(h3, section) }
-            .each { |args| match_section(pbm, *args) }
-        end
+        Problem.new(q) { |pbm| setup_problem(pbm, page) }
       end
 
-      def list_section(page)
-        if contest == 'arc001'
-          list_section_arc001(page)
-        else
-          list_section_other(page)
-        end
+      def setup_problem(pbm, page)
+        pbm.html = page.body
+        sections = collect_sections(page)
+        set_sections(pbm, sections)
       end
 
-      def list_section_arc001(page)
-        page
-          .search('//h3').map do |h3|
-            query = format(ARC001_SECTION_XPATH, title: h3.content)
-            section = page.search(query)[0]
-            next unless section
+      def collect_sections(page)
+        sections = {}
+        %w[h2 h3].each do |tag|
+          page
+            .search(tag)
+            .each do |h|
+              key = find_key(h)
+              key && sections[key] ||= parse_section(h)
+            end
+        end
+        sections
+      end
 
-            [h3, section]
+      def find_key(h)
+        title = normalize(h.content)
+        SECTION_TYPES.each do |grp|
+          grp[:patterns].each do |pat|
+            m = title.match(/#{pat}/i)
+            next unless m
+
+            no = m.names.include?('no') && m['no'] ? m['no'] : '1'
+            return format(grp[:key], no: no)
           end
-          .compact
-      end
-
-      def list_section_other(page)
-        page.search('//*[./h3]').map do |section|
-          h3 = section.search('h3')[0]
-          [h3, section]
         end
+        nil
       end
 
-      def conv_section(h3, section)
-        title = normalize(h3.content)
-        text = section.content
-        code = section.search('pre')[0]&.content || ''
-        code = code.lstrip.gsub("\r\n", "\n")
-        [title, text, code]
-      end
-
-      def match_section(pbm, title, text, code)
-        pat = TITLE_PATTERNS.find { |h| title =~ /#{h[:re]}/i }
-        return unless pat
-
-        m = title.match(/#{pat[:re]}/i)
-        no = m.names.include?('no') ? m['no'] : '1'
-        key = format(pat[:key], no: no)
-        return if @matched_section[key]
-
-        case key
-        when 'constraints'
-          pbm.desc += text
-        when 'input format'
-          pbm.desc += text
-          pbm.fmt = code
-        when /^sample input \d+$/
-          pbm.add_smp(no, :in, code)
-        when /^sample output \d+$/
-          pbm.add_smp(no, :exp, code)
+      def parse_section(h)
+        text = ''
+        pre = nil
+        nx = h.next
+        while nx && nx.name != h.name
+          text += nx.content
+          pre ||= (nx.name == 'pre' ? nx : nx.search('pre')[0])
+          nx = nx.next
         end
+        code = (pre&.text || '').lstrip.gsub("\r\n", "\n")
+        [text, code]
+      end
 
-        @matched_section[key] = true
+      def set_sections(pbm, sections)
+        sections.each do |key, (text, code)|
+          case key
+          when 'constraints'
+            pbm.desc += text
+          when 'input format'
+            pbm.desc += text
+            pbm.fmt = code
+          when /^sample input (?<no>\d+)$/
+            pbm.add_smp($LAST_MATCH_INFO[:no], :in, code)
+          when /^sample output (?<no>\d+)$/
+            pbm.add_smp($LAST_MATCH_INFO[:no], :exp, code)
+          end
+        end
       end
 
       def normalize(s)

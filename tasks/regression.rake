@@ -27,7 +27,7 @@ module AtCoderFriends
           ctx.scraping_agent.fetch_all do |pbm|
             begin
               html_path = File.join(PAGES_DIR, contest, "#{pbm.q}.html")
-              create_file(html_path, pbm.html)
+              save_file(html_path, pbm.html)
               pipeline(ctx, pbm)
             rescue StandardError => e
               p e
@@ -72,11 +72,11 @@ module AtCoderFriends
         expfile = File.join(EMIT_ORG_DIR, contest, 'data', "#{q}_001.exp")
         File.exist?(infile) && File.exist?(expfile)
       end
-      ng_list.each { |contest, q, _| puts [contest, q].join("\t") }
+      ng_list.sort.each { |contest, q, _| puts [contest, q].join("\t") }
     end
 
     def contest_id_list
-      @contest_list = begin
+      @contest_id_list ||= begin
         uri = URI.parse(CONTEST_LIST_URL)
         json = Net::HTTP.get(uri)
         contests = JSON.parse(json)
@@ -102,10 +102,10 @@ module AtCoderFriends
       FileUtils.rm_r(dir) if Dir.exist?(dir)
     end
 
-    def create_file(path, content)
+    def save_file(path, content)
       dir = File.dirname(path)
       FileUtils.makedirs(dir) unless Dir.exist?(dir)
-      File.write(path, content)
+      File.binwrite(path, content)
     end
 
     def pipeline(ctx, pbm)
