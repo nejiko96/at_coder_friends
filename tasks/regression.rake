@@ -16,7 +16,7 @@ module AtCoderFriends
     REGRESSION_HOME = File.join(ACF_HOME, 'regression')
     PAGES_DIR = File.join(REGRESSION_HOME, 'pages')
     EMIT_ORG_DIR = File.join(REGRESSION_HOME, 'emit_org')
-    EMIT_DIR = File.join(REGRESSION_HOME, 'emit')
+    EMIT_DIR_FMT = File.join(REGRESSION_HOME, 'emit_%<now>s')
 
     def setup
       rmdir_force(PAGES_DIR)
@@ -40,43 +40,39 @@ module AtCoderFriends
       end
     end
 
-    def check
-      emit_dir = EMIT_DIR + Time.now.strftime('_%Y%m%d%H%m')
+    def check_diff
+      emit_dir = format(EMIT_DIR_FMT, now: Time.now.strftime('%Y%m%d%H%M%S'))
       rmdir_force(emit_dir)
 
-      pbm_list do |contest, q, url|
+      pbm_list.each do |contest, q, url|
         ctx = context(emit_dir, contest)
         pbm = ctx.scraping_agent.fetch_problem(q, url)
         pipeline(ctx, pbm)
       end
+
       system("diff -r #{EMIT_ORG_DIR} #{emit_dir}")
     end
 
     def section_list
       agent = Mechanize.new
-      list = []
-      pbm_list do |contest, q, url|
+      list = pbm_list.flat_map do |contest, q, url|
         page = agent.get(url)
-        list += page.search('h3').map do |h3|
-          {
-            contest: contest,
-            q: q,
-            text: normalize(h3.content)
-          }
+        page.search('h3').map do |h3|
+          { contest: contest, q: q, text: normalize(h3.content) }
         end
       end
-      list
-        .group_by { |sec| sec[:text] }
-        .sort_by { |_, vs| vs.size }
-        .reverse
-        .each { |k, vs| puts "#{k}(#{vs.size})" }
+      list.group_by { |sec| sec[:text] }.each do |k, vs|
+        puts [k, vs.size, vs[0][:contest], vs[0][:q]].join("\t")
+      end
     end
 
-    def normalize(s)
-      s
-        .tr('　０-９Ａ-Ｚａ-ｚ', ' 0-9A-Za-z')
-        .gsub(/[^一-龠_ぁ-ん_ァ-ヶーa-zA-Z0-9 ]/, '')
-        .strip
+    def check_smp
+      ng_list = pbm_list.reject do |contest, q, _|
+        infile = File.join(EMIT_ORG_DIR, contest, 'data', "#{q}_001.in")
+        expfile = File.join(EMIT_ORG_DIR, contest, 'data', "#{q}_001.exp")
+        File.exist?(infile) && File.exist?(expfile)
+      end
+      ng_list.each { |contest, q, _| puts [contest, q].join("\t") }
     end
 
     def contest_id_list
@@ -84,17 +80,17 @@ module AtCoderFriends
         uri = URI.parse(CONTEST_LIST_URL)
         json = Net::HTTP.get(uri)
         contests = JSON.parse(json)
-        puts "contests count: #{contests.size}"
+        puts "Total #{contests.size} contests"
         contests.map { |h| h['id'] }
       end
     end
 
     def pbm_list
-      Dir.glob(PAGES_DIR + '/**/*.html').each do |pbm_path|
+      Dir.glob(PAGES_DIR + '/**/*.html').map do |pbm_path|
         contest = File.basename(File.dirname(pbm_path))
         q = File.basename(pbm_path, '.html')
         url = "file://#{pbm_path}"
-        yield contest, q, url
+        [contest, q, url]
       end
     end
 
@@ -121,6 +117,13 @@ module AtCoderFriends
       @cxx_gen.process(pbm)
       ctx.emitter.emit(pbm)
     end
+
+    def normalize(s)
+      s
+        .tr('　０-９Ａ-Ｚａ-ｚ', ' 0-9A-Za-z')
+        .gsub(/[^一-龠_ぁ-ん_ァ-ヶーa-zA-Z0-9 ]/, '')
+        .strip
+    end
   end
 end
 
@@ -131,12 +134,17 @@ namespace :regression do
   end
 
   desc 'run regression check'
-  task :check do
-    AtCoderFriends::Regression.check
+  task :check_diff do
+    AtCoderFriends::Regression.check_diff
   end
 
   desc 'generate section list'
   task :section_list do
     AtCoderFriends::Regression.section_list
+  end
+
+  desc 'checks sample data generation'
+  task :check_smp do
+    AtCoderFriends::Regression.check_smp
   end
 end
