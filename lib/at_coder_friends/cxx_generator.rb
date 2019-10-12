@@ -78,7 +78,7 @@ module AtCoderFriends
     def gen_consts(desc)
       desc
         .gsub(/[,\\\(\)\{\}\|]/, '')
-        .gsub(/(≤|leq)/i, '≦')
+        .gsub(/(≤|leq?)/i, '≦')
         .scan(/([\da-z_]+)\s*≦\s*(\d+)(?:\^(\d+))?/i)
         .map do |v, sz, k|
           sz = sz.to_i
