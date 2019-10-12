@@ -27,7 +27,7 @@ module AtCoderFriends
           ctx.scraping_agent.fetch_all do |pbm|
             begin
               html_path = File.join(PAGES_DIR, contest, "#{pbm.q}.html")
-              save_file(html_path, pbm.html)
+              save_file(html_path, pbm.page.body)
               pipeline(ctx, pbm)
             rescue StandardError => e
               p e
@@ -44,7 +44,7 @@ module AtCoderFriends
       emit_dir = format(EMIT_DIR_FMT, now: Time.now.strftime('%Y%m%d%H%M%S'))
       rmdir_force(emit_dir)
 
-      pbm_list.each do |contest, q, url|
+      local_pbm_list.each do |contest, q, url|
         ctx = context(emit_dir, contest)
         pbm = ctx.scraping_agent.fetch_problem(q, url)
         pipeline(ctx, pbm)
@@ -55,10 +55,12 @@ module AtCoderFriends
 
     def section_list
       agent = Mechanize.new
-      list = pbm_list.flat_map do |contest, q, url|
+      list = local_pbm_list.flat_map do |contest, q, url|
         page = agent.get(url)
-        page.search('h3').map do |h3|
-          { contest: contest, q: q, text: normalize(h3.content) }
+        %w[h2 h3].flat_map do
+          page.search('h3').map do |h3|
+            { contest: contest, q: q, text: normalize(h3.content) }
+          end
         end
       end
       list.group_by { |sec| sec[:text] }.each do |k, vs|
@@ -66,26 +68,38 @@ module AtCoderFriends
       end
     end
 
-    def check_smp
-      ng_list = pbm_list.reject do |contest, q, _|
-        infile = File.join(EMIT_ORG_DIR, contest, 'data', "#{q}_001.in")
-        expfile = File.join(EMIT_ORG_DIR, contest, 'data', "#{q}_001.exp")
-        File.exist?(infile) && File.exist?(expfile)
+    def check_parse
+      parse_list
+        .select { |_, _, no_fmt, no_smp| no_fmt || no_smp }
+        .map { |c, q, no_fmt, no_smp| [c, q, f_to_s(no_fmt), f_to_s(no_smp)] }
+        .sort
+        .each { |args| puts args.join("\t") }
+    end
+
+    def parse_list
+      local_pbm_list.map do |contest, q, url|
+        ctx = context('', contest)
+        pbm = ctx.scraping_agent.fetch_problem(q, url)
+        Parser::Main.process(pbm)
+        no_fmt = pbm.fmt.empty?
+        no_smp = pbm.smps.all? { |smp| smp.txt.empty? }
+        [contest, q, no_fmt, no_smp]
       end
-      ng_list.sort.each { |contest, q, _| puts [contest, q].join("\t") }
+    end
+
+    def f_to_s(f)
+      f ? '◯' : '-'
     end
 
     def contest_id_list
-      @contest_id_list ||= begin
-        uri = URI.parse(CONTEST_LIST_URL)
-        json = Net::HTTP.get(uri)
-        contests = JSON.parse(json)
-        puts "Total #{contests.size} contests"
-        contests.map { |h| h['id'] }
-      end
+      uri = URI.parse(CONTEST_LIST_URL)
+      json = Net::HTTP.get(uri)
+      contests = JSON.parse(json)
+      puts "Total #{contests.size} contests"
+      contests.map { |h| h['id'] }
     end
 
-    def pbm_list
+    def local_pbm_list
       Dir.glob(PAGES_DIR + '/**/*.html').map do |pbm_path|
         contest = File.basename(File.dirname(pbm_path))
         q = File.basename(pbm_path, '.html')
@@ -109,10 +123,9 @@ module AtCoderFriends
     end
 
     def pipeline(ctx, pbm)
-      @parser ||= FormatParser.new
       @rb_gen ||= RubyGenerator.new
       @cxx_gen ||= CxxGenerator.new
-      @parser.process(pbm)
+      Parser::Main.process(pbm)
       @rb_gen.process(pbm)
       @cxx_gen.process(pbm)
       ctx.emitter.emit(pbm)
@@ -138,13 +151,13 @@ namespace :regression do
     AtCoderFriends::Regression.check_diff
   end
 
-  desc 'generate section list'
+  desc 'list all section titles'
   task :section_list do
     AtCoderFriends::Regression.section_list
   end
 
-  desc 'checks sample data generation'
-  task :check_smp do
-    AtCoderFriends::Regression.check_smp
+  desc 'checks page parse result'
+  task :check_parse do
+    AtCoderFriends::Regression.check_parse
   end
 end

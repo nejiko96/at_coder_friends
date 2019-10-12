@@ -1,16 +1,16 @@
 # frozen_string_literal: true
 
-RSpec.describe AtCoderFriends::FormatParser do
+RSpec.describe AtCoderFriends::Parser::FormatParser do
   subject(:parser) do
-    described_class.new
+    described_class
   end
 
   let(:smps) do
     [
-      AtCoderFriends::DataSample.new('1', :in, '0'),
-      AtCoderFriends::DataSample.new('1', :exp, 'YES'),
-      AtCoderFriends::DataSample.new('2', :in, '#'),
-      AtCoderFriends::DataSample.new('3', :in, smp)
+      AtCoderFriends::SampleData.new('1', :in, '0'),
+      AtCoderFriends::SampleData.new('1', :exp, 'YES'),
+      AtCoderFriends::SampleData.new('2', :in, '#'),
+      AtCoderFriends::SampleData.new('3', :in, smp)
     ]
   end
   let(:fmt) { '' }

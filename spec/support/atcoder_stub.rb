@@ -54,6 +54,9 @@ StubRequest = Struct.new(:method, :path, :param, :result) do
         elsif request.uri.path.start_with?('/contests/practice/tasks')
           # invalid session or require entry => return 404
           not_found
+        elsif request.uri.path.include?('/tasks')
+          # authentication not required
+          requested_page(result)
         else
           # invalid session => show login form
           redirect_to('/login?continue=' + CGI.escape(request.uri.to_s))
