@@ -52,26 +52,6 @@ RSpec.describe AtCoderFriends::Scraping::Agent do
         expect(subject[1]).to have_attributes(q: 'B')
       end
     end
-
-    context 'from tdpc' do
-      let(:contest) { 'tdpc' }
-
-      it 'handles irregular titles' do
-        expect { subject }.to output(
-          <<~TEXT
-            ***** fetch_all tdpc *****
-            fetch list from https://atcoder.jp/contests/tdpc/tasks ...
-            fetch problem from /contests/tdpc/tasks/tdpc_contest ...
-          TEXT
-        ).to_stdout
-        expect(subject.size).to eq(1)
-        expect(subject[0]).to have_attributes(q: 'A')
-        expect(subject[0].desc).not_to eq('')
-        expect(subject[0].fmt).not_to eq('')
-        expect(subject[0].smps.any? { |smp| smp.ext == :in }).to be true
-        expect(subject[0].smps.any? { |smp| smp.ext == :exp }).to be true
-      end
-    end
   end
 
   describe '#submit' do

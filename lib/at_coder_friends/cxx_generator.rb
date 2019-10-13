@@ -61,12 +61,12 @@ module AtCoderFriends
     }.freeze
 
     def process(pbm)
-      src = generate(pbm.defs, pbm.desc)
+      src = generate(pbm.defs, pbm.constraints)
       pbm.add_src(:cxx, src)
     end
 
-    def generate(defs, desc)
-      consts = gen_consts(desc)
+    def generate(defs, constraints)
+      consts = gen_consts(constraints)
       dcls = gen_decls(defs)
       reads = gen_reads(defs)
       TEMPLATE
@@ -75,16 +75,10 @@ module AtCoderFriends
         .sub('/*** READS ***/', reads.map { |s| '  ' + s }.join("\n"))
     end
 
-    def gen_consts(desc)
-      desc
-        .gsub(/[,\\\(\)\{\}\|]/, '')
-        .gsub(/(≤|leq?)/i, '≦')
-        .scan(/([\da-z_]+)\s*≦\s*(\d+)(?:\^(\d+))?/i)
-        .map do |v, sz, k|
-          sz = sz.to_i
-          sz **= k.to_i if k
-          "const int #{v.upcase}_MAX = #{sz};"
-        end
+    def gen_consts(constraints)
+      constraints
+        .select { |c| c.type == :max }
+        .map { |c| "const int #{c.name.upcase}_MAX = #{c.value};" }
     end
 
     def gen_decls(defs)

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module AtCoderFriends
-  DataSample = Struct.new(:no, :ext, :txt) do
+  SampleData = Struct.new(:no, :ext, :txt) do
     def initialize(no, ext, txt)
       super(no.to_i, ext, txt)
     end
@@ -13,34 +13,33 @@ module AtCoderFriends
     end
   end
 
-  SourceSample = Struct.new(:ext, :txt)
+  Constraint = Struct.new(:name, :type, :value)
+
+  SourceCode = Struct.new(:ext, :txt)
 
   # holds problem information
   class Problem
-    attr_reader :q, :fmt, :smps, :srcs
-    attr_accessor :html, :desc, :defs
+    attr_reader :q, :smps, :srcs
+    attr_accessor :page, :desc, :fmt, :defs, :constraints
 
     def initialize(q)
       @q = q
-      @html = ''
+      @page = nil
       @desc = ''
       @fmt = ''
       @smps = []
       @defs = []
+      @constraints = []
       @srcs = []
       yield self if block_given?
     end
 
-    def fmt=(f)
-      @fmt = f.lstrip.gsub("\r\n", "\n")
-    end
-
     def add_smp(no, ext, txt)
-      @smps << DataSample.new(no, ext, txt)
+      @smps << SampleData.new(no, ext, txt)
     end
 
     def add_src(ext, txt)
-      @srcs << SourceSample.new(ext, txt)
+      @srcs << SourceCode.new(ext, txt)
     end
   end
 end
