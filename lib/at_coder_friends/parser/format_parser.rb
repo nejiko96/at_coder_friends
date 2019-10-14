@@ -99,7 +99,7 @@ module AtCoderFriends
           .gsub(/[_,'\\(){}|$]/, '')
           .gsub(/[・:：…‥]+/, '..')
           .gsub(/[clv]?dots/, '..')
-          .gsub(/^[.\s]+$/, '..')
+          .gsub(/^\s*\.[.\s]*$/, '..')
           .split("\n")
           .map(&:strip)
       end
