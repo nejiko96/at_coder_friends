@@ -34,6 +34,10 @@ module AtCoderFriends
       yield self if block_given?
     end
 
+    def url
+      page.uri.to_s
+    end
+
     def add_smp(no, ext, txt)
       @smps << SampleData.new(no, ext, txt)
     end

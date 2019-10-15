@@ -150,7 +150,8 @@ RSpec.describe AtCoderFriends::RubyGenerator do
   end
 
   describe '#generate' do
-    subject { generator.generate(defs) }
+    subject { generator.generate(url, defs) }
+    let(:url) { 'https://atcoder.jp/contests/practice/tasks/practice_1' }
     let(:defs) do
       [
         AtCoderFriends::InputDef.new(:single, :number, %w[N]),
@@ -163,6 +164,8 @@ RSpec.describe AtCoderFriends::RubyGenerator do
     it 'generates ruby source' do
       expect(subject).to eq(
         <<~SRC
+          # https://atcoder.jp/contests/practice/tasks/practice_1
+
           N = gets.to_i
           xs = Array.new(N)
           ys = Array.new(N)
