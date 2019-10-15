@@ -9,8 +9,8 @@ RSpec.describe AtCoderFriends::TestRunner::Sample do
   let(:prog) { 'A.rb' }
 
   describe '#test' do
-    subject { runner.test(no) }
-    let(:no) { 1 }
+    subject { runner.test(id) }
+    let(:id) { '001' }
 
     context 'when the test case exists' do
       it 'returns true' do
@@ -19,7 +19,7 @@ RSpec.describe AtCoderFriends::TestRunner::Sample do
     end
 
     context 'when the test case does not exist' do
-      let(:no) { 3 }
+      let(:id) { '999' }
       it 'returns false' do
         expect(subject).to be false
       end
@@ -46,7 +46,7 @@ RSpec.describe AtCoderFriends::TestRunner::Sample do
   end
 
   describe '#test_one' do
-    subject { runner.test_one(1) }
+    subject { runner.test_one('001') }
 
     context 'when test location is local' do
       it 'shows result' do
@@ -124,6 +124,16 @@ RSpec.describe AtCoderFriends::TestRunner::Sample do
             -- result --
             456 myonmyon
             \e[0;32;49m<< OK >>\e[0m
+            ==== A_add_1 ====
+            -- input --
+            1
+            2 3
+            test
+            -- expected --
+            6 test
+            -- result --
+            6 test
+            \e[0;32;49m<< OK >>\e[0m
           OUTPUT
         ).to_stdout
       end
@@ -164,6 +174,19 @@ RSpec.describe AtCoderFriends::TestRunner::Sample do
             -- result --
             6 test
             \e[0;31;49m!!!!! WA !!!!!\e[0m
+            ==== A_add_1 ====
+            Exit code: 0
+            Time: 17ms
+            Memory: 5536KB
+            -- input --
+            1
+            2 3
+            test
+            -- expected --
+            6 test
+            -- result --
+            6 test
+            \e[0;32;49m<< OK >>\e[0m
           OUTPUT
         ).to_stdout
       end

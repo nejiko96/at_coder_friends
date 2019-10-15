@@ -24,9 +24,7 @@ module AtCoderFriends
         @test_cmd ||= begin
           cmds = config.dig('ext_settings', ext, 'test_cmd')
           cmd = cmds && (cmds[which_os.to_s] || cmds['default'])
-          return nil unless cmd
-
-          cmd.gsub('{dir}', dir).gsub('{base}', base)
+          cmd && cmd.gsub('{dir}', dir).gsub('{base}', base)
         end
       end
 
