@@ -8,45 +8,23 @@ RSpec.describe AtCoderFriends::TestRunner::Sample do
   let(:path) { File.join(contest_root, prog) }
   let(:prog) { 'A.rb' }
 
-  describe '#test' do
-    subject { runner.test(id) }
+  describe '#test_one' do
+    subject { runner.test_one(id) }
     let(:id) { '001' }
-
-    context 'when the test case exists' do
-      it 'returns true' do
-        expect(subject).to be true
-      end
-    end
 
     context 'when the test case does not exist' do
       let(:id) { '999' }
-      it 'returns false' do
+      it 'shows error' do
+        expect { subject }.to output(
+          <<~OUTPUT
+            ***** test_one A.rb (local) *****
+            ==== A_999 ====
+            A_999.in not found.
+          OUTPUT
+        ).to_stdout
         expect(subject).to be false
       end
     end
-
-    context 'when the result is OK' do
-      it 'shows result' do
-        expect { subject }.to output(
-          <<~OUTPUT
-            ==== A_001 ====
-            -- input --
-            1
-            2 3
-            test
-            -- expected --
-            6 test
-            -- result --
-            6 test
-            \e[0;32;49m<< OK >>\e[0m
-          OUTPUT
-        ).to_stdout
-      end
-    end
-  end
-
-  describe '#test_one' do
-    subject { runner.test_one('001') }
 
     context 'when test location is local' do
       it 'shows result' do
@@ -65,6 +43,7 @@ RSpec.describe AtCoderFriends::TestRunner::Sample do
             \e[0;32;49m<< OK >>\e[0m
           OUTPUT
         ).to_stdout
+        expect(subject).to be true
       end
     end
 
@@ -92,6 +71,7 @@ RSpec.describe AtCoderFriends::TestRunner::Sample do
             \e[0;32;49m<< OK >>\e[0m
           OUTPUT
         ).to_stdout
+        expect(subject).to be true
       end
     end
   end
@@ -99,7 +79,21 @@ RSpec.describe AtCoderFriends::TestRunner::Sample do
   describe '#test_all' do
     subject { runner.test_all }
 
-    context 'when test location is local' do
+    context 'when test location is local and all tests are successful' do
+      before(:all) do
+        File.rename(
+          File.join(smp_dir, 'A_add_2.exp'),
+          File.join(smp_dir, 'A_add_1.exp')
+        )
+      end
+
+      after(:all) do
+        File.rename(
+          File.join(smp_dir, 'A_add_1.exp'),
+          File.join(smp_dir, 'A_add_2.exp')
+        )
+      end
+
       it 'shows result' do
         expect { subject }.to output(
           <<~OUTPUT
@@ -136,10 +130,11 @@ RSpec.describe AtCoderFriends::TestRunner::Sample do
             \e[0;32;49m<< OK >>\e[0m
           OUTPUT
         ).to_stdout
+        expect(subject).to be true
       end
     end
 
-    context 'when test location is remote' do
+    context 'when test location is remote and some tests fails' do
       include_context :atcoder_stub
       let(:prog) { 'A.py' }
 
@@ -175,20 +170,10 @@ RSpec.describe AtCoderFriends::TestRunner::Sample do
             6 test
             \e[0;31;49m!!!!! WA !!!!!\e[0m
             ==== A_add_1 ====
-            Exit code: 0
-            Time: 17ms
-            Memory: 5536KB
-            -- input --
-            1
-            2 3
-            test
-            -- expected --
-            6 test
-            -- result --
-            6 test
-            \e[0;32;49m<< OK >>\e[0m
+            A_add_1.exp not found.
           OUTPUT
         ).to_stdout
+        expect(subject).to be false
       end
     end
   end

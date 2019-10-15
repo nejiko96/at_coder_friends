@@ -15,10 +15,11 @@ module AtCoderFriends
 
       def test_all
         puts "***** test_all #{prg} (#{test_loc}) *****"
-        Dir["#{data_dir}/#{q}_*.in"].sort.each do |infile|
+        results = Dir["#{data_dir}/#{q}_*.in"].sort.map do |infile|
           id = File.basename(infile, '.in').sub(/[^_]+_/, '')
           test(id)
         end
+        results.all?
       end
 
       def test_one(id)

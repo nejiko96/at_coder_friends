@@ -8,23 +8,25 @@ module AtCoderFriends
     # run tests for the specified program.
     class Base
       include PathUtil
+      STATUS_STR = {
+        OK: '<< OK >>'.green,
+        WA: '!!!!! WA !!!!!'.red,
+        RE: '!!!!! RE !!!!!'.red
+      }
 
       attr_reader :ctx, :path, :dir, :prg, :base, :ext, :q
 
       def initialize(ctx)
         @ctx = ctx
         @path, @dir, @prg, @base, @ext, @q = split_prg_path(ctx.path)
-      end
-
-      def config
-        ctx.config
+        @detail = true
       end
 
       def test_cmd
         @test_cmd ||= begin
-          cmds = config.dig('ext_settings', ext, 'test_cmd')
+          cmds = ctx.config.dig('ext_settings', ext, 'test_cmd')
           cmd = cmds && (cmds[which_os.to_s] || cmds['default'])
-          cmd && cmd.gsub('{dir}', dir).gsub('{base}', base)
+          cmd&.gsub('{dir}', dir)&.gsub('{base}', base)
         end
       end
 
@@ -37,18 +39,29 @@ module AtCoderFriends
       end
 
       def run_test(id, infile, outfile, expfile)
-        return false unless File.exist?(infile) && File.exist?(expfile)
-
         puts "==== #{id} ===="
+        return false unless check_file(infile, outfile, expfile)
 
-        makedirs_unless(File.dirname(outfile))
         is_success = send(test_mtd, infile, outfile)
-        show_result(
-          is_success,
-          File.read(infile),
-          File.read(outfile),
-          File.read(expfile)
-        )
+        input = File.read(infile)
+        result = File.read(outfile)
+        expected = File.read(expfile)
+        status = check_status(is_success, result, expected)
+        print detail_str(input, result, expected) if @detail
+        puts STATUS_STR[status]
+        status == :OK
+      end
+
+      def check_file(infile, outfile, expfile)
+        unless File.exist?(infile)
+          puts "#{File.basename(infile)} not found."
+          return false
+        end
+        unless File.exist?(expfile)
+          puts "#{File.basename(expfile)} not found."
+          return false
+        end
+        makedirs_unless(File.dirname(outfile))
         true
       end
 
@@ -74,9 +87,14 @@ module AtCoderFriends
         [true, res['Stdout']]
       end
 
-      def show_result(is_success, input, result, expected)
-        print detail_str(input, result, expected)
-        puts result_str(is_success, result, expected)
+      def check_status(is_success, result, expected)
+        if !is_success
+          :RE
+        elsif result != expected
+          :WA
+        else
+          :OK
+        end
       end
 
       def detail_str(input, result, expected)
@@ -88,16 +106,6 @@ module AtCoderFriends
         ret += "-- result --\n"
         ret += result
         ret
-      end
-
-      def result_str(is_success, result, expected)
-        if !is_success
-          '!!!!! RE !!!!!'.red
-        elsif result != expected
-          '!!!!! WA !!!!!'.red
-        else
-          '<< OK >>'.green
-        end
       end
 
       def which_os
