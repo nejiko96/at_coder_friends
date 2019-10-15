@@ -57,8 +57,8 @@ module AtCoderFriends
       agent = Mechanize.new
       list = local_pbm_list.flat_map do |contest, q, url|
         page = agent.get(url)
-        %w[h2 h3].flat_map do
-          page.search('h3').map do |h3|
+        %w[h2 h3].flat_map do |tag|
+          page.search(tag).map do |h3|
             { contest: contest, q: q, text: normalize(h3.content) }
           end
         end
@@ -135,6 +135,9 @@ module AtCoderFriends
       s
         .tr('　０-９Ａ-Ｚａ-ｚ', ' 0-9A-Za-z')
         .gsub(/[^一-龠_ぁ-ん_ァ-ヶーa-zA-Z0-9 ]/, '')
+        .gsub(/\d+/, '{N}')
+        .gsub(' ', '')
+        .downcase
         .strip
     end
   end
