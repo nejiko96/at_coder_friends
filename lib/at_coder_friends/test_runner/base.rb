@@ -12,7 +12,7 @@ module AtCoderFriends
         OK: '<< OK >>'.green,
         WA: '!!!!! WA !!!!!'.red,
         RE: '!!!!! RE !!!!!'.red
-      }
+      }.freeze
 
       attr_reader :ctx, :path, :dir, :prg, :base, :ext, :q
 

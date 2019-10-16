@@ -38,13 +38,13 @@ module AtCoderFriends
       end
 
       def read_auth
-        user = config['user'].to_s
+        user = ctx.config['user'].to_s
         if user.empty?
           print('Enter username:')
           user = STDIN.gets.chomp
         end
 
-        pass = config['password'].to_s
+        pass = ctx.config['password'].to_s
         if pass.empty?
           print("Enter password for #{user}:")
           pass = STDIN.noecho(&:gets).chomp

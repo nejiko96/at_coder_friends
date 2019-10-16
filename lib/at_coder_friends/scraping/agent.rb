@@ -30,10 +30,6 @@ module AtCoderFriends
         @contest ||= contest_name(ctx.path)
       end
 
-      def config
-        ctx.config
-      end
-
       def common_url(path)
         File.join(BASE_URL, path)
       end
@@ -43,7 +39,7 @@ module AtCoderFriends
       end
 
       def lang_id(ext)
-        config.dig('ext_settings', ext, 'submit_lang') || (
+        ctx.config.dig('ext_settings', ext, 'submit_lang') || (
           msg = <<~MSG
             submit_lang for .#{ext} is not specified.
             Available languages:
