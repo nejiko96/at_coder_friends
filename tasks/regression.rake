@@ -69,6 +69,20 @@ module AtCoderFriends
       end
     end
 
+    def check_parse
+      agent = Mechanize.new
+      list = local_pbm_list.map do |contest, q, url|
+        page = agent.get(url)
+        page.search('br').each { |br| br.replace("\n") }
+        pbm = Problem.new(q) { |o| o.page = page }
+        Parser::Main.process(pbm)
+        no_fmt = pbm.fmt.empty?
+        no_smp = pbm.smps.all? { |smp| smp.txt.empty? }
+        [contest, q, [no_fmt, no_smp]]
+      end
+      report(list)
+    end
+
     INOUT_TITLES = %w[入出力 入出力形式 inputoutput inputandoutput].freeze
 
     SAMPLE_TITLES = %w[
@@ -108,34 +122,46 @@ module AtCoderFriends
       report(list)
     end
 
-    def check_parse
+    OUTPUT_TITLES = %w[
+      出力 出力形式
+      output outputs outputformat
+    ].freeze
+
+    def check_2value
       agent = Mechanize.new
-      list = local_pbm_list.map do |contest, q, url|
+      local_pbm_list.map do |contest, q, url|
         page = agent.get(url)
         page.search('br').each { |br| br.replace("\n") }
+        output = ''
+        %w[h2 h3].each do |tag|
+          page.search(tag).each do |h|
+            text = normalize(h.content)
+            if OUTPUT_TITLES.include?(text)
+              nx = h.next
+              while nx && nx.name != h.name
+                output += nx.content.gsub("\r\n", "\n")
+                nx = nx.next
+              end
+            end
+          end
+        end
         pbm = Problem.new(q) { |o| o.page = page }
         Parser::Main.process(pbm)
-        no_fmt = pbm.fmt.empty?
-        no_smp = pbm.smps.all? { |smp| smp.txt.empty? }
-        [contest, q, [no_fmt, no_smp]]
+        vs = pbm.smps.select { |smp| smp.ext == :exp }.map(&:txt)
+        us = vs.uniq.map(&:chomp)
+        xs = us.map { |u| Regexp.escape(u) }
+        [contest, q, us, xs, output]
       end
-      report(list)
-    end
-
-    def report(list)
-      list
-        .select { |_, _, flags| flags.any? }
-        .map { |c, q, flags| [c, q, flags.map { |f| f ? '◯' : '-' }] }
-        .sort
-        .each { |args| puts args.flatten.join("\t") }
-    end
-
-    def interactive_list
-      dat = File.join(REGRESSION_HOME, 'interactive.dat')
-      CSV.read(dat, col_sep: "\t", headers: false).map do |contest, q|
-        pbm_path = File.join(PAGES_DIR, contest, "#{q}.html")
-        url = "file://#{pbm_path}"
-        [contest, q, url]
+      .select do |_, _, us, xs, output|
+        next false unless us.size == 2
+        next false unless us.all? { |u| u.count("\n").zero? }
+        next false if us.any? { |u| u.match(/^[0-9\s]*$/) }
+        next false unless output.match(/(#{xs[0]}.+#{xs[1]}|#{xs[1]}.+#{xs[0]})/)
+        true
+      end
+      .each do |contest, q, us, xs, output|
+        us.reverse! if output.match(/#{xs[1]}.+#{xs[0]}/)
+        puts [contest, q, *us].join("\t")
       end
     end
 
@@ -151,6 +177,15 @@ module AtCoderFriends
       Dir.glob(PAGES_DIR + '/**/*.html').map do |pbm_path|
         contest = File.basename(File.dirname(pbm_path))
         q = File.basename(pbm_path, '.html')
+        url = "file://#{pbm_path}"
+        [contest, q, url]
+      end
+    end
+
+    def pbm_list_from_file(file)
+      dat = File.join(REGRESSION_HOME, file)
+      CSV.read(dat, col_sep: "\t", headers: false).map do |contest, q|
+        pbm_path = File.join(PAGES_DIR, contest, "#{q}.html")
         url = "file://#{pbm_path}"
         [contest, q, url]
       end
@@ -188,6 +223,14 @@ module AtCoderFriends
         .downcase
         .strip
     end
+
+    def report(list)
+      list
+        .select { |_, _, flags| flags.any? }
+        .map { |c, q, flags| [c, q, flags.map { |f| f ? '◯' : '-' }] }
+        .sort
+        .each { |args| puts args.flatten.join("\t") }
+    end
   end
 end
 
@@ -215,5 +258,10 @@ namespace :regression do
   desc 'checks interactive flags'
   task :check_interactive do
     AtCoderFriends::Regression.check_interactive
+  end
+
+  desc 'checks 2-value problems'
+  task :check_2value do
+    AtCoderFriends::Regression.check_2value
   end
 end
