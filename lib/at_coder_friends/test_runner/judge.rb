@@ -20,7 +20,7 @@ module AtCoderFriends
           id = File.basename(infile, '.txt')
           judge(id, false)
         end
-        results.all?
+        !results.empty? && results.all?
       end
 
       def judge_one(id)

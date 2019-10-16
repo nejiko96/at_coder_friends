@@ -19,7 +19,7 @@ module AtCoderFriends
           id = File.basename(infile, '.in').sub(/[^_]+_/, '')
           test(id)
         end
-        results.all?
+        !results.empty? && results.all?
       end
 
       def test_one(id)

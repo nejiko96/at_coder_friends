@@ -176,5 +176,13 @@ RSpec.describe AtCoderFriends::TestRunner::Sample do
         expect(subject).to be false
       end
     end
+
+    context 'when there is no test cases' do
+      let(:prog) { 'B.rb' }
+
+      it 'returns false' do
+        expect(subject).to be false
+      end
+    end
   end
 end

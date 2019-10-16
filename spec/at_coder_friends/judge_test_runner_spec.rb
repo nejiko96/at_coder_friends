@@ -79,7 +79,7 @@ RSpec.describe AtCoderFriends::TestRunner::Judge do
   describe '#judge_all' do
     subject { runner.judge_all }
 
-    context 'when test location is local' do
+    context 'when test location is local and all tests are successful' do
       it 'shows result' do
         expect { subject }.to output(
           <<~OUTPUT
@@ -94,7 +94,7 @@ RSpec.describe AtCoderFriends::TestRunner::Judge do
       end
     end
 
-    context 'when test location is remote' do
+    context 'when test location is remote and some tests fails' do
       include_context :atcoder_stub
       let(:prog) { 'A.py' }
 
@@ -115,6 +115,14 @@ RSpec.describe AtCoderFriends::TestRunner::Judge do
             \e[0;31;49m!!!!! WA !!!!!\e[0m
           OUTPUT
         ).to_stdout
+        expect(subject).to be false
+      end
+    end
+
+    context 'when there is no test cases' do
+      let(:prog) { 'B.rb' }
+
+      it 'returns false' do
         expect(subject).to be false
       end
     end
