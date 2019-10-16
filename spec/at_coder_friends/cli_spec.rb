@@ -182,7 +182,7 @@ RSpec.describe AtCoderFriends::CLI do
 
     context 'if the test no. is specified' do
       let(:args) { [command, path, id] }
-      let(:id) { '2' }
+      let(:id) { '002' }
 
       it 'runs specified test case' do
         expect { subject }.to output(
@@ -231,6 +231,8 @@ RSpec.describe AtCoderFriends::CLI do
           -- result --
           456 myonmyon
           \e[0;32;49m<< OK >>\e[0m
+          ==== A_add_1 ====
+          A_add_1.exp not found.
         OUTPUT
       ).to_stdout
     end

@@ -4,19 +4,23 @@ module AtCoderFriends
   # generates C++ source code from definition
   class RubyGenerator
     TEMPLATE = <<~TEXT
+      # ### URL ###
+
       ### DCLS ###
 
       puts ans
     TEXT
 
     def process(pbm)
-      src = generate(pbm.defs)
+      src = generate(pbm.url, pbm.defs)
       pbm.add_src(:rb, src)
     end
 
-    def generate(defs)
+    def generate(url, defs)
       dcls = gen_decls(defs).join("\n")
-      TEMPLATE.sub('### DCLS ###', dcls)
+      TEMPLATE
+        .sub('### URL ###', url)
+        .sub('### DCLS ###', dcls)
     end
 
     def gen_decls(defs)

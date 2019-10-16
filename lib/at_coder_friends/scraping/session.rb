@@ -19,7 +19,7 @@ module AtCoderFriends
       end
 
       def session_store
-        @session_store ||= format(SESSION_STORE_FMT, user: config['user'])
+        @session_store ||= format(SESSION_STORE_FMT, user: ctx.config['user'])
       end
     end
   end

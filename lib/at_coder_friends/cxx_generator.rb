@@ -4,6 +4,8 @@ module AtCoderFriends
   # generates C++ source code from definition
   class CxxGenerator
     TEMPLATE = <<~TEXT
+      // /*** URL ***/
+
       #include <cstdio>
 
       using namespace std;
@@ -61,15 +63,16 @@ module AtCoderFriends
     }.freeze
 
     def process(pbm)
-      src = generate(pbm.defs, pbm.constraints)
+      src = generate(pbm.url, pbm.defs, pbm.constraints)
       pbm.add_src(:cxx, src)
     end
 
-    def generate(defs, constraints)
+    def generate(url, defs, constraints)
       consts = gen_consts(constraints)
       dcls = gen_decls(defs)
       reads = gen_reads(defs)
       TEMPLATE
+        .sub('/*** URL ***/', url)
         .sub('/*** CONSTS ***/', consts.join("\n"))
         .sub('/*** DCLS ***/', dcls.join("\n"))
         .sub('/*** READS ***/', reads.map { |s| '  ' + s }.join("\n"))

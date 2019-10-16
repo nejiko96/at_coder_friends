@@ -305,14 +305,14 @@ RSpec.describe AtCoderFriends::CxxGenerator do
   end
 
   describe '#generate' do
-    subject { generator.generate(defs, constraints) }
+    subject { generator.generate(url, defs, constraints) }
+    let(:url) { 'https://atcoder.jp/contests/practice/tasks/practice_1' }
     let(:defs) do
       [
         AtCoderFriends::InputDef.new(:single, :number, %w[N M]),
         AtCoderFriends::InputDef.new(:varray, :number, %w[A B C T], %w[M])
       ]
     end
-
     let(:constraints) do
       [
         AtCoderFriends::Constraint.new('N', :max, 10_000),
@@ -325,6 +325,8 @@ RSpec.describe AtCoderFriends::CxxGenerator do
     it 'generates c++ source' do
       expect(subject).to eq(
         <<~SRC
+          // https://atcoder.jp/contests/practice/tasks/practice_1
+
           #include <cstdio>
 
           using namespace std;

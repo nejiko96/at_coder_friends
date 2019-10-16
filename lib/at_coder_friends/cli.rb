@@ -102,7 +102,7 @@ module AtCoderFriends
       end
     end
 
-    def test_one(id = 1)
+    def test_one(id = '001')
       ctx.sample_test_runner.test_one(id)
     end
 

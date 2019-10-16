@@ -109,15 +109,28 @@ RSpec.describe AtCoderFriends::TestRunner::Base do
     let(:expfile) { "#{smp_dir}/#{id}.exp" }
     let(:id) { 'A_001' }
 
-    context 'when the test case exists' do
-      it 'returns true' do
-        expect(subject).to be true
+    context 'when the input file does not exist' do
+      let(:id) { 'A_add_2' }
+      it 'shows error' do
+        expect { subject }.to output(
+          <<~OUTPUT
+            ==== A_add_2 ====
+            A_add_2.in not found.
+          OUTPUT
+        ).to_stdout
+        expect(subject).to be false
       end
     end
 
-    context 'when the test case does not exist' do
-      let(:id) { 'A_003' }
-      it 'returns false' do
+    context 'when the expected value file does not exist' do
+      let(:id) { 'A_add_1' }
+      it 'shows error' do
+        expect { subject }.to output(
+          <<~OUTPUT
+            ==== A_add_1 ====
+            A_add_1.exp not found.
+          OUTPUT
+        ).to_stdout
         expect(subject).to be false
       end
     end
@@ -139,6 +152,7 @@ RSpec.describe AtCoderFriends::TestRunner::Base do
               \e[0;32;49m<< OK >>\e[0m
             OUTPUT
           ).to_stdout
+          expect(subject).to be true
         end
       end
 
@@ -160,6 +174,7 @@ RSpec.describe AtCoderFriends::TestRunner::Base do
               \e[0;31;49m!!!!! WA !!!!!\e[0m
             OUTPUT
           ).to_stdout
+          expect(subject).to be false
         end
       end
 
@@ -180,6 +195,7 @@ RSpec.describe AtCoderFriends::TestRunner::Base do
               \e[0;31;49m!!!!! RE !!!!!\e[0m
             OUTPUT
           ).to_stdout
+          expect(subject).to be false
         end
       end
     end
@@ -209,6 +225,7 @@ RSpec.describe AtCoderFriends::TestRunner::Base do
               \e[0;32;49m<< OK >>\e[0m
             OUTPUT
           ).to_stdout
+          expect(subject).to be true
         end
       end
 
@@ -235,6 +252,7 @@ RSpec.describe AtCoderFriends::TestRunner::Base do
               \e[0;31;49m!!!!! WA !!!!!\e[0m
             OUTPUT
           ).to_stdout
+          expect(subject).to be false
         end
       end
 
@@ -264,6 +282,7 @@ RSpec.describe AtCoderFriends::TestRunner::Base do
               \e[0;31;49m!!!!! RE !!!!!\e[0m
             OUTPUT
           ).to_stdout
+          expect(subject).to be false
         end
       end
     end
