@@ -5,7 +5,9 @@ RSpec.describe AtCoderFriends::RubyGenerator do
 
   describe '#gen_decl' do
     subject { generator.gen_decl(inpdef) }
-    let(:inpdef) { AtCoderFriends::InputDef.new(container, item, names, size) }
+    let(:inpdef) do
+      AtCoderFriends::Problem::InputFormat.new(container, item, names, size)
+    end
     let(:names) { %w[A] }
     let(:size) { [] }
 
@@ -154,10 +156,12 @@ RSpec.describe AtCoderFriends::RubyGenerator do
     let(:url) { 'https://atcoder.jp/contests/practice/tasks/practice_1' }
     let(:defs) do
       [
-        AtCoderFriends::InputDef.new(:single, :number, %w[N]),
-        AtCoderFriends::InputDef.new(:varray, :number, %w[x y], %w[N]),
-        AtCoderFriends::InputDef.new(:single, :string, %w[Q]),
-        AtCoderFriends::InputDef.new(:harray, :string, %w[a], %w[Q])
+        AtCoderFriends::Problem::InputFormat.new(:single, :number, %w[N]),
+        AtCoderFriends::Problem::InputFormat.new(
+          :varray, :number, %w[x y], %w[N]
+        ),
+        AtCoderFriends::Problem::InputFormat.new(:single, :string, %w[Q]),
+        AtCoderFriends::Problem::InputFormat.new(:harray, :string, %w[a], %w[Q])
       ]
     end
 

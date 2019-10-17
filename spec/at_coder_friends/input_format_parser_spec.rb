@@ -1,23 +1,82 @@
 # frozen_string_literal: true
 
-RSpec.describe AtCoderFriends::Parser::FormatParser do
-  subject(:parser) do
-    described_class
-  end
+RSpec.describe AtCoderFriends::Parser::InputFormat do
+  subject(:parser) { described_class }
 
-  let(:smps) do
-    [
-      AtCoderFriends::SampleData.new('1', :in, '0'),
-      AtCoderFriends::SampleData.new('1', :exp, 'YES'),
-      AtCoderFriends::SampleData.new('2', :in, '#'),
-      AtCoderFriends::SampleData.new('3', :in, smp)
-    ]
+  describe '#process' do
+    include_context :atcoder_env
+    include_context :atcoder_stub
+
+    subject { parser.process(pbm) }
+
+    let(:pbm) do
+      agent
+        .fetch_problem('A', File.join('https://atcoder.jp/', url))
+        .tap do |pbm|
+          AtCoderFriends::Parser::Sections.process(pbm)
+          AtCoderFriends::Parser::SampleData.process(pbm)
+        end
+    end
+    let(:agent) { AtCoderFriends::Scraping::Agent.new(ctx) }
+    let(:ctx) { AtCoderFriends::Context.new({}, contest_root) }
+
+    context 'for arc001_1' do
+      let(:url) { '/contests/arc001/tasks/arc001_1' }
+
+      it 'parses input format' do
+        subject
+        expect(pbm.formats.size).to eq(2)
+        expect(pbm.formats[0]).to have_attributes(
+          container: :single, item: :number, names: %w[N], size: []
+        )
+        expect(pbm.formats[1]).to have_attributes(
+          container: :harray, item: :char, names: %w[c], size: %w[N]
+        )
+      end
+    end
+
+    context 'for tdpc_contest' do
+      let(:url) { '/contests/tdpc/tasks/tdpc_contest' }
+
+      it 'parses input format' do
+        subject
+        expect(pbm.formats.size).to eq(2)
+        expect(pbm.formats[0]).to have_attributes(
+          container: :single, item: :number, names: %w[N], size: []
+        )
+        expect(pbm.formats[1]).to have_attributes(
+          container: :harray, item: :number, names: %w[p], size: %w[N]
+        )
+      end
+    end
+
+    context 'for practice_2' do
+      let(:url) { '/contests/practice/tasks/practice_2' }
+
+      it 'parses input format' do
+        subject
+        expect(pbm.formats.size).to eq(1)
+        expect(pbm.formats[0]).to have_attributes(
+          container: :single, item: :number, names: %w[N Q], size: []
+        )
+      end
+    end
   end
-  let(:fmt) { '' }
-  let(:smp) { '' }
 
   describe '#parse' do
     subject { parser.parse(fmt, smps) }
+
+    let(:smps) do
+      [
+        AtCoderFriends::Problem::SampleData.new('1', :in, '0'),
+        AtCoderFriends::Problem::SampleData.new('1', :exp, 'YES'),
+        AtCoderFriends::Problem::SampleData.new('2', :in, '#'),
+        AtCoderFriends::Problem::SampleData.new('3', :in, smp)
+      ]
+    end
+    let(:fmt) { '' }
+    let(:smp) { '' }
+
     context 'for case #1' do
       let(:fmt) do
         <<~FMT

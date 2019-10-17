@@ -1,8 +1,59 @@
 # frozen_string_literal: true
 
-RSpec.describe AtCoderFriends::Parser::ConstraintsParser do
+RSpec.describe AtCoderFriends::Parser::Constraints do
   subject(:parser) do
     described_class
+  end
+
+  describe '#process' do
+    include_context :atcoder_env
+    include_context :atcoder_stub
+
+    subject { parser.process(pbm) }
+
+    let(:pbm) do
+      agent
+        .fetch_problem('A', File.join('https://atcoder.jp/', url))
+        .tap { |pbm| AtCoderFriends::Parser::Sections.process(pbm) }
+    end
+    let(:agent) { AtCoderFriends::Scraping::Agent.new(ctx) }
+    let(:ctx) { AtCoderFriends::Context.new({}, contest_root) }
+
+    context 'for arc001_1' do
+      let(:url) { '/contests/arc001/tasks/arc001_1' }
+
+      it 'parses constraints' do
+        subject
+        expect(pbm.constraints.size).to eq(1)
+        expect(pbm.constraints[0]).to have_attributes(
+          name: 'N', type: :max, value: 100
+        )
+      end
+    end
+
+    context 'for tdpc_contest' do
+      let(:url) { '/contests/tdpc/tasks/tdpc_contest' }
+
+      it 'parses constraints' do
+        subject
+        expect(pbm.constraints.size).to eq(2)
+        expect(pbm.constraints[0]).to have_attributes(
+          name: 'N', type: :max, value: 100
+        )
+        expect(pbm.constraints[1]).to have_attributes(
+          name: 'p_i', type: :max, value: 100
+        )
+      end
+    end
+
+    context 'for practice_2' do
+      let(:url) { '/contests/practice/tasks/practice_2' }
+
+      it 'parses constraints' do
+        subject
+        expect(pbm.constraints.size).to eq(0)
+      end
+    end
   end
 
   describe '#parse' do
@@ -24,14 +75,18 @@ RSpec.describe AtCoderFriends::Parser::ConstraintsParser do
 
       it 'parses constraints' do
         expect(subject.size).to eq(4)
-        expect(subject[0].name).to eq('N')
-        expect(subject[0].value).to eq(10_000)
-        expect(subject[1].name).to eq('M')
-        expect(subject[1].value).to eq(10_000)
-        expect(subject[2].name).to eq('C_i')
-        expect(subject[2].value).to eq(1_000_000)
-        expect(subject[3].name).to eq('T_i')
-        expect(subject[3].value).to eq(1_000_000)
+        expect(subject[0]).to have_attributes(
+          name: 'N', type: :max, value: 10_000
+        )
+        expect(subject[1]).to have_attributes(
+          name: 'M', type: :max, value: 10_000
+        )
+        expect(subject[2]).to have_attributes(
+          name: 'C_i', type: :max, value: 1_000_000
+        )
+        expect(subject[3]).to have_attributes(
+          name: 'T_i', type: :max, value: 1_000_000
+        )
       end
     end
   end

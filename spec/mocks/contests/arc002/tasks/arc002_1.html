@@ -1,0 +1,431 @@
+
+
+
+
+
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+	<title>A - うるう年</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta http-equiv="Content-Language" content='ja'>
+	<meta name="viewport" content="width=device-width,initial-scale=1.0">
+	<meta name="format-detection" content="telephone=no">
+	<meta name="google-site-verification" content="nXGC_JxO0yoP1qBzMnYD_xgufO6leSLw1kyNo2HZltM" />
+
+
+	<meta name="description" content="プログラミング初級者から上級者まで楽しめる、競技プログラミングコンテストサイト「AtCoder」。オンラインで毎週開催プログラミングコンテストを開催しています。競技プログラミングを用いて、客観的に自分のスキルを計ることのできるサービスです。">
+	<meta name="author" content="AtCoder Inc.">
+	<link rel="canonical" href="https://atcoder.jp/">
+
+	<meta property="og:site_name" content="AtCoder">
+
+	<meta property="og:title" content="A - うるう年" />
+	<meta property="og:description" content="プログラミング初級者から上級者まで楽しめる、競技プログラミングコンテストサイト「AtCoder」。オンラインで毎週開催プログラミングコンテストを開催しています。競技プログラミングを用いて、客観的に自分のスキルを計ることのできるサービスです。" />
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="https://atcoder.jp/contests/arc002/tasks/arc002_1" />
+	<meta property="og:image" content="https://img.atcoder.jp/assets/atcoder.png" />
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:site" content="@atcoder" />
+
+	<meta property="twitter:title" content="A - うるう年" />
+
+	<link href="//fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" type="text/css" href="/public/css/bootstrap.min.css?v=201910091808">
+	<link rel="stylesheet" type="text/css" href="/public/css/base.css?v=201910091808">
+	<link rel="shortcut icon" type="image/png" href="//img.atcoder.jp/assets/favicon.png">
+	<link rel="apple-touch-icon" href="//img.atcoder.jp/assets/atcoder.png">
+	<script src="/public/js/lib/jquery-1.9.1.min.js?v=201910091808"></script>
+	<script src="/public/js/lib/bootstrap.min.js?v=201910091808"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/js-cookie/2.1.4/js.cookie.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/locale/ja.js"></script>
+	<script>
+		var LANG = "ja";
+		var userScreenName = "";
+		var csrfToken = "r/EFNMCHf7pmRXGksEm02KJalvGFqW11ZOHrHctM1yY="
+	</script>
+	<script src="/public/js/utils.js?v=201910091808"></script>
+
+
+		<script src="/public/js/contest.js?v=201910091808"></script>
+		<link href="/public/css/contest.css?v=201910091808" rel="stylesheet" />
+		<script>
+			var contestScreenName = "arc002";
+			var remainingText = "残り時間";
+			var countDownText = "開始まであと";
+			var startTime = moment("2012-05-02T21:00:00+09:00");
+			var endTime = moment("2012-05-02T22:30:00+09:00");
+		</script>
+		<style></style>
+
+
+		<script type="text/x-mathjax-config">MathJax.Hub.Config({messageStyle:"none",tex2jax:{skipTags:["script","noscript","style","textarea","code"],inlineMath:[['\\(','\\)']]}});</script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+		<script src="/public/js/task.js?v=201910091808"></script>
+
+
+
+		<link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+		<link href="//cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css" rel="stylesheet" />
+		<script src="/public/js/lib/select2.min.js?v=201910091808"></script>
+
+
+		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.38.0/codemirror.min.css">
+		<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.38.0/codemirror.min.js"></script>
+		<script src="/public/js/codeMirror/merged.js?v=201910091808"></script>
+
+
+		<script src="//cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+
+
+
+
+
+
+
+
+
+
+	<script src="/public/js/base.js?v=201910091808"></script>
+	<script src="/public/js/ga.js?v=201910091808"></script>
+</head>
+
+<body>
+<div id="modal-contest-start" class="modal fade" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">コンテスト開始</h4>
+			</div>
+			<div class="modal-body">
+				<p>AtCoder Regular Contest 002が開始されました。</p>
+			</div>
+			<div class="modal-footer">
+
+					<button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+
+			</div>
+		</div>
+	</div>
+</div>
+<div id="modal-contest-end" class="modal fade" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">コンテスト終了</h4>
+			</div>
+			<div class="modal-body">
+				<p>AtCoder Regular Contest 002は終了しました。</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="main-div" class="float-container">
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false">
+					<span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="/"></a>
+			</div>
+			<div class="collapse navbar-collapse" id="navbar-collapse">
+				<ul class="nav navbar-nav">
+
+					<li><a class="contest-title" href="/contests/arc002">AtCoder Regular Contest 002</a></li>
+
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+
+					<li class="dropdown">
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+							<img src='//img.atcoder.jp/assets/flag-lang/ja.png'> 日本語 <span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu">
+							<li><a href="/contests/arc002/tasks/arc002_1?lang=ja"><img src='//img.atcoder.jp/assets/flag-lang/ja.png'> 日本語</a></li>
+							<li><a href="/contests/arc002/tasks/arc002_1?lang=en"><img src='//img.atcoder.jp/assets/flag-lang/en.png'> English</a></li>
+						</ul>
+					</li>
+
+
+						<li><a href="/register?continue=https%3A%2F%2Fatcoder.jp%2Fcontests%2Farc002%2Ftasks%2Farc002_1">新規登録</a></li>
+						<li><a href="/login?continue=https%3A%2F%2Fatcoder.jp%2Fcontests%2Farc002%2Ftasks%2Farc002_1">ログイン</a></li>
+
+				</ul>
+			</div>
+		</div>
+	</nav>
+	<form method="POST" name="form_logout" action="/logout?continue=https%3A%2F%2Fatcoder.jp%2Fcontests%2Farc002%2Ftasks%2Farc002_1">
+		<input type="hidden" name="csrf_token" value="r/EFNMCHf7pmRXGksEm02KJalvGFqW11ZOHrHctM1yY=" />
+	</form>
+	<div id="main-container" class="container" style="padding-top:50px;">
+
+
+<div class="row">
+	<div id="contest-nav-tabs" class="col-sm-12 mb-2 cnvtb-fixed">
+	<div>
+		<small class="contest-duration">コンテスト時間: <a href='http://www.timeanddate.com/worldclock/fixedtime.html?iso=20120502T2100&p1=248' target='blank'><time class='fixtime fixtime-full'>2012-05-02 21:00:00+0900</time></a> ~ <a href='http://www.timeanddate.com/worldclock/fixedtime.html?iso=20120502T2230&p1=248' target='blank'><time class='fixtime fixtime-full'>2012-05-02 22:30:00+0900</time></a> </small>
+		<small class="back-to-home pull-right"><a href="/">AtCoderホームへ戻る</a></small>
+	</div>
+	<ul class="nav nav-tabs">
+		<li><a href="/contests/arc002"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> トップ</a></li>
+
+			<li class="active"><a href="/contests/arc002/tasks"><span class="glyphicon glyphicon-tasks" aria-hidden="true"></span> 問題</a></li>
+
+
+
+			<li><a href="/contests/arc002/clarifications"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> 質問 <span id="clar-badge" class="badge"></span></a></li>
+
+
+
+
+
+			<li>
+				<a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-list" aria-hidden="true"></span> 提出結果<span class="caret"></span></a>
+				<ul class="dropdown-menu">
+					<li><a href="/contests/arc002/submissions"><span class="glyphicon glyphicon-globe" aria-hidden="true"></span> すべての提出</a></li>
+
+				</ul>
+			</li>
+
+
+
+
+
+					<li><a href="/contests/arc002/standings"><span class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span> 順位表</a></li>
+
+
+
+
+
+
+
+
+
+					<li><a href="http://www.slideshare.net/chokudai/arc002" target="_blank"><span class="glyphicon glyphicon-book" aria-hidden="true"></span> 解説</a></li>
+
+
+
+
+
+		<li class="pull-right"><a id="fix-cnvtb" href="javascript:void(0)"><span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span></a></li>
+	</ul>
+</div>
+	<div class="col-sm-12">
+		<span class="h2">A - うるう年</span>
+		<hr/>
+		<p>実行時間制限: 2 sec / メモリ制限: 64 MB</p>
+
+		<div id="task-statement">
+			<div class="part">
+<h3>問題文</h3>
+<section>
+高橋君は忘れっぽい性格なので、うるう年は <var>2</var> 月 <var>29</var> 日の存在を毎回忘れてしまいます。<br />
+そこで、自動でうるう年かどうかをコンピュータに教えてもらえるようにしたいと思います。<br />
+入力として与えられた年がうるう年かそうでないかを判断しなさい。<br /><br />
+ただし、うるう年は以下の規則で決定します。
+<ul>
+	<li>規則 <var>1</var>：<var>4</var> で割り切れる年はうるう年である。</li>
+	<li>規則 <var>2</var>：<var>100</var> で割り切れる年をうるう年ではない。</li>
+	<li>規則 <var>3</var>：<var>400</var> で割り切れる年はうるう年である。</li>
+	<li>規則 <var>4</var>：規則 <var>1</var>〜<var>3</var> のいずれも満たさない場合は，うるう年ではありません。
+</ul>
+ただし、規則 <var>1</var> 〜 <var>3</var> の内に複数満たすものがあれば後の規則（数字の大きな規則）が優先されます。
+例えば、<var>2000</var> 年は規則 <var>3</var> を満たすのでうるう年です。<br />
+<var>2100</var> 年は規則 <var>2</var> を満たしますが、規則 <var>3</var> を満たさないのでうるう年ではありません。<br />
+</section>
+</div>
+
+<hr />
+
+<div class="io-style">
+<div class="part">
+<h3>入力</h3>
+<section>
+入力は以下の形式で標準入力から与えられる。
+<pre>
+<var>Y</var>
+</pre>
+<ul>
+	<li>年を表す整数 <var>Y</var>(<var>1000 ≦ Y ≦ 2999</var>) が <var>1</var> 行で与えられる。</li>
+</ul>
+</section>
+</div>
+
+<div class="part">
+<h3>出力</h3>
+<section>
+与えられた年がうるう年ならば <code>YES</code>、そうでなければ <code>NO</code> を標準出力に <var>1</var> 行で出力せよ。<br />
+なお、最後には改行を出力せよ。
+</section>
+</div>
+</div>
+
+<hr />
+
+<div class="part">
+<h3>入力例 1</h3>
+<section>
+<pre class="prettyprint linenums">
+1001
+</pre>
+</section>
+</div>
+
+<div class="part">
+<h3>出力例 1</h3>
+<section>
+<pre class="prettyprint linenums">
+NO
+</pre>
+</section>
+<ul>
+	<li><var>1001</var> を <var>4</var> で割ると <var>250</var> あまり <var>1</var> になり、規則 <var>1</var> を満たさないので、うるう年ではありません。</li>
+</ul>
+</div>
+
+<hr />
+
+<div class="part">
+<h3>入力例 2</h3>
+<section>
+<pre class="prettyprint linenums">
+2012
+</pre>
+</section>
+</div>
+
+<div class="part">
+<h3>出力例 2</h3>
+<section>
+<pre class="prettyprint linenums">
+YES
+</pre>
+<ul>
+	<li><var>2012</var> を <var>4</var> で割ると <var>503</var> になり割り切れるので規則 <var>1</var> を満たします。</li>
+	<li>しかし、<var>100</var>では割り切れないので規則 <var>2</var> は満たさず、うるう年になります（うるう年ではありません、は間違いですので訂正させて頂きました）。</li>
+</ul>
+</section>
+</div>
+
+<hr />
+
+<div class="part">
+<h3>入力例 3</h3>
+<section>
+<pre class="prettyprint linenums">
+2100
+</pre>
+</section>
+</div>
+
+<div class="part">
+<h3>出力例 3</h3>
+<section>
+<pre class="prettyprint linenums">
+NO
+</pre>
+<ul>
+	<li><var>2100</var> は <var>4</var> で割り切れるので、規則 <var>1</var> を満たします。
+	<li>また、<var>100</var> で割ると <var>21</var>になり割り切れるので、規則 <var>2</var> を満たします。
+	<li>しかし、<var>400</var> では割り切れず規則 <var>3</var> を満たさないので、うるう年ではありません。</li>
+</ul>
+</section>
+</div>
+
+<hr />
+
+<div class="part">
+<h3>入力例 4</h3>
+<section>
+<pre class="prettyprint linenums">
+2000
+</pre>
+</section>
+</div>
+
+<div class="part">
+<h3>出力例 4</h3>
+<section>
+<pre class="prettyprint linenums">
+YES
+</pre>
+<ul>
+	<li><var>2000</var> は <var>4</var> で割り切れるので、規則 <var>1</var> を満たします。</li>
+	<li>また、<var>100</var> でも <var>400</var> でも割り切れるので規則 <var>2</var> も <var>3</var> も満たします。</li>
+	<li>よって、<var>2000</var> 年はうるう年になります。</li>
+</ul>
+</section>
+</div>
+		</div>
+
+
+			<hr/>
+			<h3>出典</h3>
+			<a href='' target="blank">ARC 002</a>
+
+
+
+	</div>
+</div>
+
+
+
+			<hr>
+
+
+
+<div class="a2a_kit a2a_kit_size_20 a2a_default_style pull-right" data-a2a-url="https://atcoder.jp/contests/arc002/tasks/arc002_1?lang=ja" data-a2a-title="A - うるう年">
+	<a class="a2a_button_facebook"></a>
+	<a class="a2a_button_twitter"></a>
+
+		<a class="a2a_button_hatena"></a>
+
+	<a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+</div>
+
+
+		<script async src="//static.addtoany.com/menu/page.js"></script>
+
+	</div>
+	<hr>
+</div>
+<div class="container" style="margin-bottom: 80px;">
+    <footer class="footer">
+
+			<ul>
+				<li><a href='/contests/arc002/rules'>ルール</a></li>
+				<li><a href='/contests/arc002/glossary'>用語集</a></li>
+
+			</ul>
+
+		<ul>
+			<li><a href='/tos'>利用規約</a></li>
+			<li><a href='/privacy'>プライバシーポリシー</a></li>
+			<li><a href='/personal'>個人情報保護方針</a></li>
+			<li><a href='/company'>企業情報</a></li>
+			<li><a href='/faq'>よくある質問</a></li>
+			<li><a href='/contact'>お問い合わせ</a></li>
+			<li><a href='/documents/request'>資料請求</a></li>
+		</ul>
+    <div class="text-center">
+        <small id="copyright">Copyright Since 2012 &copy;<a href="http://atcoder.co.jp">AtCoder Inc.</a> All rights reserved.</small>
+    </div>
+    </footer>
+</div>
+<p id="fixed-server-timer" class='contest-timer'></p>
+
+	<div id="scroll-page-top" style="display:none;"><span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span> ページトップ</div>
+
+</body>
+</html>
+

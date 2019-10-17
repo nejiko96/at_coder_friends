@@ -12,7 +12,7 @@ module AtCoderFriends
     TEXT
 
     def process(pbm)
-      src = generate(pbm.url, pbm.defs)
+      src = generate(pbm.url, pbm.formats)
       pbm.add_src(:rb, src)
     end
 
