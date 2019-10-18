@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 module AtCoderFriends
-  # generates C++ source code from definition
-  class CxxGenerator
+  module CxxGeneratorConstants
     TEMPLATE = <<~TEXT
       // /*** URL ***/
 
@@ -61,9 +60,14 @@ module AtCoderFriends
         char: '%<v>s[i]'
       }
     }.freeze
+  end
+
+  # generates C++ source code from definition
+  class CxxGenerator
+    include CxxGeneratorConstants
 
     def process(pbm)
-      src = generate(pbm.url, pbm.defs, pbm.constraints)
+      src = generate(pbm.url, pbm.formats, pbm.constraints)
       pbm.add_src(:cxx, src)
     end
 

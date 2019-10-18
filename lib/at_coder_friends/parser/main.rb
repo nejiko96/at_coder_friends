@@ -7,9 +7,12 @@ module AtCoderFriends
       module_function
 
       def process(pbm)
-        PageParser.process(pbm)
-        FormatParser.process(pbm)
-        ConstraintsParser.process(pbm)
+        Sections.process(pbm)
+        SampleData.process(pbm)
+        InputFormat.process(pbm)
+        Constraints.process(pbm)
+        Interactive.process(pbm)
+        Binary.process(pbm)
       end
     end
   end

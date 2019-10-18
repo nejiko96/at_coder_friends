@@ -7,10 +7,10 @@ RSpec.describe AtCoderFriends::CxxGenerator do
     subject { generator.gen_consts(constraints) }
     let(:constraints) do
       [
-        AtCoderFriends::Constraint.new('N', :max, 10_000),
-        AtCoderFriends::Constraint.new('M', :max, 10_000),
-        AtCoderFriends::Constraint.new('C_i', :max, 1_000_000),
-        AtCoderFriends::Constraint.new('T_i', :max, 1_000_000)
+        AtCoderFriends::Problem::Constraint.new('N', :max, 10_000),
+        AtCoderFriends::Problem::Constraint.new('M', :max, 10_000),
+        AtCoderFriends::Problem::Constraint.new('C_i', :max, 1_000_000),
+        AtCoderFriends::Problem::Constraint.new('T_i', :max, 1_000_000)
       ]
     end
 
@@ -28,7 +28,9 @@ RSpec.describe AtCoderFriends::CxxGenerator do
 
   describe '#gen_decl' do
     subject { generator.gen_decl(inpdef) }
-    let(:inpdef) { AtCoderFriends::InputDef.new(container, item, names, size) }
+    let(:inpdef) do
+      AtCoderFriends::Problem::InputFormat.new(container, item, names, size)
+    end
     let(:size) { [] }
     let(:names) { %w[A] }
 
@@ -191,7 +193,9 @@ RSpec.describe AtCoderFriends::CxxGenerator do
 
   describe '#gen_read' do
     subject { generator.gen_read(inpdef) }
-    let(:inpdef) { AtCoderFriends::InputDef.new(container, item, names, size) }
+    let(:inpdef) do
+      AtCoderFriends::Problem::InputFormat.new(container, item, names, size)
+    end
     let(:size) { [] }
     let(:names) { %w[A] }
 
@@ -309,16 +313,18 @@ RSpec.describe AtCoderFriends::CxxGenerator do
     let(:url) { 'https://atcoder.jp/contests/practice/tasks/practice_1' }
     let(:defs) do
       [
-        AtCoderFriends::InputDef.new(:single, :number, %w[N M]),
-        AtCoderFriends::InputDef.new(:varray, :number, %w[A B C T], %w[M])
+        AtCoderFriends::Problem::InputFormat.new(:single, :number, %w[N M]),
+        AtCoderFriends::Problem::InputFormat.new(
+          :varray, :number, %w[A B C T], %w[M]
+        )
       ]
     end
     let(:constraints) do
       [
-        AtCoderFriends::Constraint.new('N', :max, 10_000),
-        AtCoderFriends::Constraint.new('M', :max, 10_000),
-        AtCoderFriends::Constraint.new('C_i', :max, 1_000_000),
-        AtCoderFriends::Constraint.new('T_i', :max, 1_000_000)
+        AtCoderFriends::Problem::Constraint.new('N', :max, 10_000),
+        AtCoderFriends::Problem::Constraint.new('M', :max, 10_000),
+        AtCoderFriends::Problem::Constraint.new('C_i', :max, 1_000_000),
+        AtCoderFriends::Problem::Constraint.new('T_i', :max, 1_000_000)
       ]
     end
 

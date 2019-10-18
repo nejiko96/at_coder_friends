@@ -2,27 +2,39 @@
 
 module AtCoderFriends
   module Parser
-    # parses problem page and collect problem information
-    module PageParser
-      module_function
-
-      SECTION_TYPES = [
+    module SectionsConstants
+      SECTION_DEFS = [
         {
-          key: 'constraints',
+          key: Problem::SECTION_CONSTRAINTS,
           patterns: [
             '^制約$',
+            '^入力制限$',
             '^Constraints$'
           ]
         },
         {
-          key: 'input format',
+          key: Problem::SECTION_IN_FMT,
           patterns: [
-            '^入出?力(形式)?$',
-            '^Inputs?\s*(,|and)?\s*(Outputs?)?\s*(Format)?$'
+            '^入力(形式)?$',
+            '^Inputs?\s*(Format)?$'
           ]
         },
         {
-          key: 'sample input %<no>s',
+          key: Problem::SECTION_OUT_FMT,
+          patterns: [
+            '^出力(形式)?$',
+            '^Outputs?\s*(Format)?$'
+          ]
+        },
+        {
+          key: Problem::SECTION_IO_FMT,
+          patterns: [
+            '^入出力(形式)?$',
+            '^Input\s*(and)?\s*Output\s*(Format)?$'
+          ]
+        },
+        {
+          key: Problem::SECTION_IN_SMP,
           patterns: [
             '^入力例\s*(?<no>\d+)?$',
             '^入力\s*(?<no>\d+)$',
@@ -32,7 +44,7 @@ module AtCoderFriends
           ]
         },
         {
-          key: 'sample output %<no>s',
+          key: Problem::SECTION_OUT_SMP,
           patterns: [
             '^出力例\s*(?<no>\d+)?$',
             '^出力\s*(?<no>\d+)$',
@@ -42,70 +54,52 @@ module AtCoderFriends
             '^Output\s*(?<no>\d+)$',
             '^Output\s*for\s*(the)?\s*Sample\s*Input\s*(?<no>\d+)?$'
           ]
+        },
+        {
+          key: Problem::SECTION_IO_SMP,
+          patterns: [
+            '^入出力の?例\s*(\d+)?$',
+            '^サンプル\s*(\d+)?$',
+            '^Sample\s*Input\s*(and)?\s*Output\s*(\d+)?$',
+            '^Samples?\s*(\d+)?$'
+          ]
         }
       ].freeze
+    end
+
+    # parses problem page and builds section table
+    module Sections
+      include SectionsConstants
+
+      module_function
 
       def process(pbm)
         sections = collect_sections(pbm.page)
-        apply_sections(pbm, sections)
+        pbm.sections = sections
       end
 
       def collect_sections(page)
-        sections = {}
-        %w[h2 h3].each do |tag|
+        %w[h2 h3].each_with_object({}) do |tag, sections|
           page
             .search(tag)
             .each do |h|
               key = find_key(h)
-              key && sections[key] ||= parse_section(h)
+              key && sections[key] ||= SectionWrapper.new(h)
             end
         end
-        sections
       end
 
       def find_key(h)
         title = normalize(h.content)
-        SECTION_TYPES.each do |grp|
+        SECTION_DEFS.each do |grp|
           grp[:patterns].each do |pat|
-            m = title.match(/#{pat}/i)
-            next unless m
+            next unless (m = title.match(/#{pat}/i))
 
             no = m.names.include?('no') && m['no'] || '1'
             return format(grp[:key], no: no)
           end
         end
         nil
-      end
-
-      def parse_section(h)
-        text = ''
-        pre = nil
-        nx = h.next
-        while nx && nx.name != h.name
-          text += nx.content.gsub("\r\n", "\n")
-          %w[pre blockquote].each do |tag|
-            pre ||= (nx.name == tag ? nx : nx.search(tag)[0])
-          end
-          nx = nx.next
-        end
-        code = (pre&.text || '').lstrip.gsub("\r\n", "\n")
-        [text, code]
-      end
-
-      def apply_sections(pbm, sections)
-        sections.each do |key, (text, code)|
-          case key
-          when 'constraints'
-            pbm.desc += text
-          when 'input format'
-            pbm.desc += text
-            pbm.fmt = code
-          when /^sample input (?<no>\d+)$/
-            pbm.add_smp($LAST_MATCH_INFO[:no], :in, code)
-          when /^sample output (?<no>\d+)$/
-            pbm.add_smp($LAST_MATCH_INFO[:no], :exp, code)
-          end
-        end
       end
 
       def normalize(s)

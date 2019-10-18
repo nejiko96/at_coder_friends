@@ -2,28 +2,11 @@
 
 module AtCoderFriends
   module Parser
-    # parses input data format and generates input definitons
-    module FormatParser
-      module_function
-
-      # Iterates through elements of an array
-      class Iterator
-        def initialize(array)
-          @array = array
-          @i = 0
-        end
-
-        def next?
-          @i < @array.size
-        end
-
-        def next
-          ret = @array[@i]
-          @i += 1
-          ret
-        end
-      end
-
+    module InputFormatConstants
+      SECTIONS = [
+        Problem::SECTION_IN_FMT,
+        Problem::SECTION_IO_FMT
+      ].freeze
       PARSERS = [
         {
           container: :harray,
@@ -77,14 +60,43 @@ module AtCoderFriends
           size: ->(_) { [] }
         }
       ].freeze
+    end
 
-      def process(pbm)
-        defs = parse(pbm.fmt, pbm.smps)
-        pbm.defs = defs
+    # parses input data format and generates input definitons
+    module InputFormat
+      include InputFormatConstants
+
+      module_function
+
+      # Iterates through elements of an array
+      class Iterator
+        def initialize(array)
+          @array = array
+          @i = 0
+        end
+
+        def next?
+          @i < @array.size
+        end
+
+        def next
+          ret = @array[@i]
+          @i += 1
+          ret
+        end
       end
 
-      def parse(fmt, smps)
-        lines = normalize(fmt)
+      def process(pbm)
+        str =
+          SECTIONS
+          .map { |key| pbm.sections[key]&.code_block }
+          .find(&:itself) || ''
+        defs = parse(str, pbm.samples)
+        pbm.formats = defs
+      end
+
+      def parse(str, smps)
+        lines = normalize(str)
         defs = parse_fmt(lines)
         smpx = max_smp(smps)
         smpx && match_smp!(defs, smpx)
@@ -125,7 +137,7 @@ module AtCoderFriends
               break unless pat2 && pat2 =~ cur
             end
             size = parser[:size].call(prv)
-            y << InputDef.new(container, item, names, size)
+            y << Problem::InputFormat.new(container, item, names, size)
           end
         end.to_a
       end

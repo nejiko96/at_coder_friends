@@ -247,6 +247,7 @@ REQS = [
   StubRequest.new(:get, 'contests/arc001/tasks/arc001_2'),
   StubRequest.new(:get, 'contests/arc001/tasks/arc001_3'),
   StubRequest.new(:get, 'contests/arc001/tasks/arc001_4'),
+  StubRequest.new(:get, 'contests/arc002/tasks/arc002_1'),
   StubRequest.new(:get, 'contests/tdpc/tasks'),
   StubRequest.new(:get, 'contests/tdpc/tasks/tdpc_contest')
 ].freeze

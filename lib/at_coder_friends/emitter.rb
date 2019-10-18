@@ -14,8 +14,8 @@ module AtCoderFriends
     end
 
     def emit(pbm)
-      pbm.smps.each { |smp| emit_sample(pbm, smp) }
-      pbm.srcs.each { |src| emit_source(pbm, src) }
+      pbm.samples.each { |smp| emit_sample(pbm, smp) }
+      pbm.sources.each { |src| emit_source(pbm, src) }
     end
 
     def emit_sample(pbm, smp)

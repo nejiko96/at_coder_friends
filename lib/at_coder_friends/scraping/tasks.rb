@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'English'
-
 module AtCoderFriends
   module Scraping
     # fetch problems from tasks page
@@ -29,8 +27,8 @@ module AtCoderFriends
       def fetch_problem(q, url)
         puts "fetch problem from #{url} ..."
         page = fetch_with_auth(url)
+        page.search('br').each { |br| br.replace("\n") }
         Problem.new(q) do |pbm|
-          page.search('br').each { |br| br.replace("\n") }
           pbm.page = page
         end
       end
