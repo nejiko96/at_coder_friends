@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe AtCoderFriends::CxxGenerator do
+RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
   subject(:generator) { described_class.new }
 
   describe '#gen_consts' do

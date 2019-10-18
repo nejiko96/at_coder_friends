@@ -92,8 +92,8 @@ module AtCoderFriends
       raise AppError, "#{path} is not empty." \
         if Dir.exist?(path) && !Dir["#{path}/*"].empty?
 
-      rb_gen = RubyGenerator.new
-      cxx_gen = CxxGenerator.new
+      rb_gen = Generator::RubyBuiltin.new
+      cxx_gen = Generator::CxxBuiltin.new
       ctx.scraping_agent.fetch_all do |pbm|
         Parser::Main.process(pbm)
         rb_gen.process(pbm)
