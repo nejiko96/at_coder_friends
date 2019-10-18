@@ -130,11 +130,8 @@ module AtCoderFriends
     end
 
     def pipeline(ctx, pbm)
-      @rb_gen ||= Generator::RubyBuiltin.new
-      @cxx_gen ||= Generator::CxxBuiltin.new
       Parser::Main.process(pbm)
-      @rb_gen.process(pbm)
-      @cxx_gen.process(pbm)
+      ctx.generator.process(pbm)
       ctx.emitter.emit(pbm)
     end
 
