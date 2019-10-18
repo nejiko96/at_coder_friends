@@ -11,8 +11,12 @@ module AtCoderFriends
       end
 
       def process(pbm)
-        RubyBuiltin.new.process(pbm)
-        CxxBuiltin.new.process(pbm)
+        generators = ctx.config.dig('generators') || []
+        generators.each do |gen_name|
+          gen_class = AtCoderFriends::Generator.const_get(gen_name)
+          gen_obj = gen_class.new
+          gen_obj.process(pbm)
+        end
       end
     end
   end

@@ -123,8 +123,7 @@ module AtCoderFriends
     def parsed_pbm(q, url)
       page = agent.get(url)
       page.search('br').each { |br| br.replace("\n") }
-      Problem.new(q) do |pbm|
-        pbm.page = page
+      Problem.new(q, page) do |pbm|
         Parser::Main.process(pbm)
       end
     end
