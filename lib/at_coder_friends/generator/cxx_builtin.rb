@@ -67,6 +67,10 @@ module AtCoderFriends
     class CxxBuiltin
       include CxxBuiltinConstants
 
+      def initialize(cfg = {})
+        @cfg = cfg
+      end
+
       def process(pbm)
         src = generate(pbm.url, pbm.formats, pbm.constraints)
         pbm.add_src(:cxx, src)

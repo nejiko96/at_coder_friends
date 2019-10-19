@@ -12,6 +12,10 @@ module AtCoderFriends
         puts ans
       TEXT
 
+      def initialize(cfg = {})
+        @cfg = cfg
+      end
+
       def process(pbm)
         src = generate(pbm.url, pbm.formats)
         pbm.add_src(:rb, src)
