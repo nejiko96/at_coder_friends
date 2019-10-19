@@ -10,11 +10,13 @@ module AtCoderFriends
 
       def process(pbm)
         pbm.sections.each do |key, section|
-          if key =~ Problem::SECTION_IN_SMP_PAT
-            pbm.add_smp($LAST_MATCH_INFO[:no], :in, section.code_block)
-          elsif key =~ Problem::SECTION_OUT_SMP_PAT
-            pbm.add_smp($LAST_MATCH_INFO[:no], :exp, section.code_block)
-          end
+          ext =
+            if key =~ Problem::SECTION_IN_SMP_PAT
+              :in
+            elsif key =~ Problem::SECTION_OUT_SMP_PAT
+              :exp
+            end
+          ext && pbm.add_smp($LAST_MATCH_INFO[:no], ext, section.code_block)
         end
       end
     end

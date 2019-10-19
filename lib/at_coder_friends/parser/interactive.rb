@@ -13,8 +13,8 @@ module AtCoderFriends
         pbm.options.interactive = false
 
         body = pbm.page_body
-        f_int = body.match(/#{INTERACTIVE_PAT}/i)
-        f_flush = body.match(/#{FLUSH_PAT}/i)
+        f_int = body =~ /#{INTERACTIVE_PAT}/i
+        f_flush = body =~ /#{FLUSH_PAT}/i
         f_io = pbm.sections[Problem::SECTION_IO_FMT]
         f_tbl =
           pbm
