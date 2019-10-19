@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'cgi'
-require 'securerandom'
 
 StubRequest = Struct.new(:method, :path, :param, :result) do
   BASE_URL = 'https://atcoder.jp/'
@@ -30,37 +29,49 @@ StubRequest = Struct.new(:method, :path, :param, :result) do
   def register(result = nil)
     sr = WebMock.stub_request(method, url)
     sr = sr.with(body: body) if method == :post
+    sr.to_return stub_response(result)
+  end
+
+  def stub_response(result)
     if path.start_with?('login')
-      if method == :get
-        # always show login form
-        sr.to_return requested_page(result)
-      elsif param && param[:username] == 'foo' && param[:password] == 'bar'
-        # authentication success => redirect to requested page
-        sr.to_return do |request|
-          redirect_to(request.uri.query_values['continue'])
-            .tap do |h|
-              h[:headers][:set_cookie] = 'SessionKey=4b12f708b5a219ec; Path=/;'
-            end
-        end
-      else
-        # authentication fail => show login form again
-        sr.to_return { |request| redirect_to(request.uri) }
+      login_response
+    else
+      other_response(result)
+    end
+  end
+
+  def login_response
+    if method == :get
+      # always show login form
+      requested_page(result)
+    elsif param && param[:username] == 'foo' && param[:password] == 'bar'
+      # authentication success => redirect to requested page
+      proc do |request|
+        redirect_to(request.uri.query_values['continue'])
+          .tap do |h|
+            h[:headers][:set_cookie] = 'SessionKey=4b12f708b5a219ec; Path=/;'
+          end
       end
     else
-      sr.to_return do |request|
-        if request.headers['Cookie']&.include?('SessionKey=4b12f708b5a219ec')
-          # valid session => show requested page
-          requested_page(result)
-        elsif request.uri.path.start_with?('/contests/practice/tasks')
-          # invalid session or require entry => return 404
-          not_found
-        elsif request.uri.path.include?('/tasks')
-          # authentication not required
-          requested_page(result)
-        else
-          # invalid session => show login form
-          redirect_to('/login?continue=' + CGI.escape(request.uri.to_s))
-        end
+      # authentication fail => show login form again
+      proc { |request| redirect_to(request.uri) }
+    end
+  end
+
+  def other_response(result)
+    proc do |request|
+      if request.headers['Cookie']&.include?('SessionKey=4b12f708b5a219ec')
+        # valid session => show requested page
+        requested_page(result)
+      elsif request.uri.path.start_with?('/contests/practice/tasks')
+        # invalid session and require entry => return 404
+        not_found
+      elsif request.uri.path.include?('/tasks')
+        # authentication not required
+        requested_page(result)
+      else
+        # invalid session => show login form
+        redirect_to('/login?continue=' + CGI.escape(request.uri.to_s))
       end
     end
   end
