@@ -4,32 +4,45 @@ module AtCoderFriends
   module Generator
     # generates C++ source code from definition
     class RubyBuiltin
-      TEMPLATE = <<~TEXT
-        # ### URL ###
+      ACF_HOME = File.realpath(File.join(__dir__, '..', '..', '..'))
+      TMPL_DIR = File.join(ACF_HOME, 'templates')
+      DEFAULT_TMPL = File.join(TMPL_DIR, 'ruby_builtin_default.rb')
+      INTERACTIVE_TMPL = File.join(TMPL_DIR, 'ruby_builtin_interactive.rb')
 
-        ### DCLS ###
-
-        puts ans
-      TEXT
+      attr_reader :cfg, :pbm
 
       def initialize(cfg = {})
         @cfg = cfg
       end
 
       def process(pbm)
-        src = generate(pbm.url, pbm.formats)
+        src = generate(pbm)
         pbm.add_src(:rb, src)
       end
 
-      def generate(url, defs)
-        dcls = gen_decls(defs).join("\n")
-        TEMPLATE
-          .sub('### URL ###', url)
-          .sub('### DCLS ###', dcls)
+      def generate(pbm)
+        @pbm = pbm
+        load_template
+          .gsub('### URL ###', pbm.url)
+          .gsub('### DCLS ###', gen_decls.join("\n"))
+          .gsub('### OUTPUT ###', gen_output)
       end
 
-      def gen_decls(defs)
-        defs.map { |inpdef| gen_decl(inpdef) }.flatten
+      def load_template(interactive = pbm.options.interactive)
+        file = interactive ? interactive_template : default_template
+        File.read(file)
+      end
+
+      def default_template
+        cfg['default_template'] || DEFAULT_TMPL
+      end
+
+      def interactive_template
+        cfg['interactive_template'] || INTERACTIVE_TMPL
+      end
+
+      def gen_decls(inpdefs = pbm.formats)
+        inpdefs.map { |inpdef| gen_decl(inpdef) }.flatten
       end
 
       def gen_decl(inpdef)
@@ -100,6 +113,14 @@ module AtCoderFriends
           split ? 'gets.chomp.split' : 'gets.chomp'
         when :char
           'gets.chomp'
+        end
+      end
+
+      def gen_output(vs = pbm.options.binary_values)
+        if vs
+          "puts cond ? '#{vs[0]}' : '#{vs[1]}'"
+        else
+          'puts ans'
         end
       end
     end

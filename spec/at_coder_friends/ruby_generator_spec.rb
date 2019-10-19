@@ -152,9 +152,18 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
   end
 
   describe '#generate' do
-    subject { generator.generate(url, defs) }
-    let(:url) { 'https://atcoder.jp/contests/practice/tasks/practice_1' }
-    let(:defs) do
+    subject { generator.generate(pbm) }
+    let(:pbm) do
+      AtCoderFriends::Problem.new('A') do |pbm|
+        pbm.formats = formats
+      end
+    end
+    before do
+      allow(pbm).to receive(:url) do
+        'https://atcoder.jp/contests/practice/tasks/practice_1'
+      end
+    end
+    let(:formats) do
       [
         AtCoderFriends::Problem::InputFormat.new(:single, :number, %w[N]),
         AtCoderFriends::Problem::InputFormat.new(

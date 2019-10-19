@@ -91,16 +91,16 @@ module AtCoderFriends
           SECTIONS
           .map { |key| pbm.sections[key]&.code_block }
           .find(&:itself) || ''
-        defs = parse(str, pbm.samples)
-        pbm.formats = defs
+        inpdefs = parse(str, pbm.samples)
+        pbm.formats = inpdefs
       end
 
       def parse(str, smps)
         lines = normalize(str)
-        defs = parse_fmt(lines)
+        inpdefs = parse_fmt(lines)
         smpx = max_smp(smps)
-        smpx && match_smp!(defs, smpx)
-        defs
+        smpx && match_smp!(inpdefs, smpx)
+        inpdefs
       end
 
       def normalize(fmt)

@@ -191,8 +191,8 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
     end
   end
 
-  describe '#gen_read' do
-    subject { generator.gen_read(inpdef) }
+  describe '#gen_input' do
+    subject { generator.gen_input(inpdef) }
     let(:inpdef) do
       AtCoderFriends::Problem::InputFormat.new(container, item, names, size)
     end
@@ -309,9 +309,19 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
   end
 
   describe '#generate' do
-    subject { generator.generate(url, defs, constraints) }
-    let(:url) { 'https://atcoder.jp/contests/practice/tasks/practice_1' }
-    let(:defs) do
+    subject { generator.generate(pbm) }
+    let(:pbm) do
+      AtCoderFriends::Problem.new('A') do |pbm|
+        pbm.formats = formats
+        pbm.constraints = constraints
+      end
+    end
+    before do
+      allow(pbm).to receive(:url) do
+        'https://atcoder.jp/contests/practice/tasks/practice_1'
+      end
+    end
+    let(:formats) do
       [
         AtCoderFriends::Problem::InputFormat.new(:single, :number, %w[N M]),
         AtCoderFriends::Problem::InputFormat.new(

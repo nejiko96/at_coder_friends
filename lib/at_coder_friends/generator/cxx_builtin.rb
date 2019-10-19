@@ -3,44 +3,16 @@
 module AtCoderFriends
   module Generator
     module CxxBuiltinConstants
-      TEMPLATE = <<~TEXT
-        // /*** URL ***/
-
-        #include <cstdio>
-
-        using namespace std;
-
-        #define REP(i,n)   for(int i=0; i<(int)(n); i++)
-        #define FOR(i,b,e) for(int i=(b); i<=(int)(e); i++)
-
-        /*** CONSTS ***/
-
-        /*** DCLS ***/
-
-        void solve() {
-          int ans = 0;
-          printf("%d\\n", ans);
-        }
-
-        void input() {
-        /*** READS ***/
-        }
-
-        int main() {
-          input();
-          solve();
-          return 0;
-        }
-      TEXT
-
+      ACF_HOME = File.realpath(File.join(__dir__, '..', '..', '..'))
+      TMPL_DIR = File.join(ACF_HOME, 'templates')
+      DEFAULT_TMPL = File.join(TMPL_DIR, 'cxx_builtin_default.cxx')
+      INTERACTIVE_TMPL = File.join(TMPL_DIR, 'cxx_builtin_interactive.cxx')
       SCANF_FMTS = [
         'scanf("%<fmt>s", %<addr>s);',
         'REP(i, %<sz1>s) scanf("%<fmt>s", %<addr>s);',
         'REP(i, %<sz1>s) REP(j, %<sz2>s) scanf("%<fmt>s", %<addr>s);'
       ].freeze
-
       FMT_FMTS = { number: '%d', string: '%s', char: '%s' }.freeze
-
       ADDR_FMTS = {
         single: {
           number: '&%<v>s',
@@ -61,40 +33,70 @@ module AtCoderFriends
           char: '%<v>s[i]'
         }
       }.freeze
+      DEFAULT_OUTPUT = <<~TEXT
+        int ans = 0;
+        printf("%d\\n", ans);
+      TEXT
+      BINARY_OUTPUT_FMT = <<~TEXT
+        bool cond = false;
+        puts(cond ? "%s" : "%s");
+      TEXT
     end
 
     # generates C++ source code from definition
     class CxxBuiltin
       include CxxBuiltinConstants
 
+      attr_reader :cfg, :pbm
+
       def initialize(cfg = {})
         @cfg = cfg
       end
 
       def process(pbm)
-        src = generate(pbm.url, pbm.formats, pbm.constraints)
+        src = generate(pbm)
         pbm.add_src(:cxx, src)
       end
 
-      def generate(url, defs, constraints)
-        consts = gen_consts(constraints)
-        dcls = gen_decls(defs)
-        reads = gen_reads(defs)
-        TEMPLATE
-          .sub('/*** URL ***/', url)
-          .sub('/*** CONSTS ***/', consts.join("\n"))
-          .sub('/*** DCLS ***/', dcls.join("\n"))
-          .sub('/*** READS ***/', reads.map { |s| '  ' + s }.join("\n"))
+      def generate(pbm)
+        @pbm = pbm
+        src = load_template
+        src = embed_lines(src, '/*** URL ***/', [pbm.url])
+        src = embed_lines(src, '/*** CONSTS ***/', gen_consts)
+        src = embed_lines(src, '/*** DCLS ***/', gen_decls)
+        src = embed_lines(src, '/*** INPUTS ***/', gen_inputs)
+        embed_lines(src, '/*** OUTPUT ***/', gen_output.split("\n"))
       end
 
-      def gen_consts(constraints)
+      def embed_lines(src, pat, lines)
+        re = Regexp.escape(pat)
+        src.gsub(
+          /^(.*)#{re}(.*)$/,
+          lines.map { |s| '\1' + s + '\2' }.join("\n")
+        )
+      end
+
+      def load_template(interactive = pbm.options.interactive)
+        file = interactive ? interactive_template : default_template
+        File.read(file)
+      end
+
+      def default_template
+        cfg['default_template'] || DEFAULT_TMPL
+      end
+
+      def interactive_template
+        cfg['interactive_template'] || INTERACTIVE_TMPL
+      end
+
+      def gen_consts(constraints = pbm.constraints)
         constraints
           .select { |c| c.type == :max }
           .map { |c| "const int #{c.name.upcase}_MAX = #{c.value};" }
       end
 
-      def gen_decls(defs)
-        defs.map { |inpdef| gen_decl(inpdef) }.flatten
+      def gen_decls(inpdefs = pbm.formats)
+        inpdefs.map { |inpdef| gen_decl(inpdef) }.flatten
       end
 
       def gen_decl(inpdef)
@@ -162,12 +164,12 @@ module AtCoderFriends
         szs.map { |sz| sz =~ /\D/ ? "#{sz.upcase}_MAX" : sz }
       end
 
-      def gen_reads(defs)
-        defs.map { |inpdef| gen_read(inpdef) }.flatten
+      def gen_inputs(inpdefs = pbm.formats)
+        inpdefs.map { |inpdef| gen_input(inpdef) }.flatten
       end
 
       # rubocop:disable Metrics/AbcSize
-      def gen_read(inpdef)
+      def gen_input(inpdef)
         dim = inpdef.size.size - (inpdef.item == :char ? 1 : 0)
         scanf = SCANF_FMTS[dim]
         sz1, sz2 = inpdef.size
@@ -177,6 +179,14 @@ module AtCoderFriends
         format(scanf, sz1: sz1, sz2: sz2, fmt: fmt, addr: addr)
       end
       # rubocop:enable Metrics/AbcSize
+
+      def gen_output(vs = pbm.options.binary_values)
+        if vs
+          format(BINARY_OUTPUT_FMT, *vs)
+        else
+          DEFAULT_OUTPUT
+        end
+      end
     end
   end
 end

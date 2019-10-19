@@ -8,15 +8,22 @@ module AtCoderFriends
 
       def initialize(ctx)
         @ctx = ctx
+        @cache = {}
       end
 
       def process(pbm)
         generators = ctx.config.dig('generators') || []
         generators.each do |gen_name|
+          gen_obj = load_obj(gen_name)
+          gen_obj.process(pbm)
+        end
+      end
+
+      def load_obj(gen_name)
+        @cache[gen_name] ||= begin
           gen_class = load_class(gen_name)
           gen_cnf = config_for(gen_name)
-          gen_obj = gen_class.new(gen_cnf)
-          gen_obj.process(pbm)
+          gen_class.new(gen_cnf)
         end
       end
 
