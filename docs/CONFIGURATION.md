@@ -140,6 +140,7 @@ ext_settings:
 
   For example, if ```RubyAlt``` is specified as generator name,  
   it is available if the following plugin is installed:
+  
     |                 |                                                   |
     |-----------------|---------------------------------------------------|
     |Gem Name         |```at_coder_friends-generator-ruby_alt```          |
