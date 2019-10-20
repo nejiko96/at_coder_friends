@@ -20,9 +20,14 @@ Its contents are merged with the default settings.
 ```.at_coder_friends.yml```で新しい設定項目の追加や、既存の設定項目の変更をすると、  
 その内容がデフォルト設定にマージされます。
 
+[/config/default.yml](/config/default.yml)
+
 ```YAML
 user: ~
 password: ~
+generators:
+  - RubyBuiltin
+  - CxxBuiltin
 ext_settings:
   'awk':
     submit_lang: '3506' # Awk (mawk)
@@ -115,15 +120,41 @@ ext_settings:
 
 - user  
   AtCoder username  
-  If omitted, you are prompted to enter it on the first run.  
+  If omitted, you are prompted to enter it on the first login.  
   AtCoderのユーザ名  
-  省略した場合、初回の実行時に入力を求められます
+  省略した場合、初回のログイン時に入力を求められます
 
 - password  
   AtCoder password  
-  If omitted, you are prompted to enter it on the first run.  
+  If omitted, you are prompted to enter it on the first login.  
   AtCoderのパスワード  
-  省略した場合、初回の実行時に入力を求められます
+  省略した場合、初回のログイン時に入力を求められます
+
+- generators  
+  List of source generator class names  
+  In default, ```RubyBuiltin``` and ```CxxBuiltin``` are available.  
+  For those other than above, it is available if the corresponding plugin is installed(?).  
+  ソーススケルトンを生成するジェネレータのクラス名（リスト形式）  
+  既定の状態では「RubyBuiltin」と「CxxBuiltin」が利用でき、  
+  上記以外については、対応するプラグインがインストールされていれば利用できます（？）  
+
+  For example, if ```RubyAlt``` is specified as generator name,  
+  it is available if the following plugin is installed:
+  
+    |                 |                                                   |
+    |-----------------|---------------------------------------------------|
+    |Gem Name         |```at_coder_friends-generator-ruby_alt```          |
+    |Require Statement|```require 'at_coder_friends/generator/ruby_alt'```|
+    |Main Class Name  |```AtCoderFriends::Generator::RubyAlt```           |
+
+- generator_settings
+  - _(generator name)_  
+    Settings for each generator  
+    For details, see the manual of each generator.  
+    [Settings for built-in generators](#builtin-generator-settings)  
+    ジェネレータ毎の設定  
+    詳細は各ジェネレータのマニュアルを参照してください  
+    [組込ジェネレータの設定](#builtin-generator-settings)
 
 - ext_settings  
   Extension specific settings  
@@ -159,10 +190,23 @@ ext_settings:
         Execution command for Linux(optional)  
         Linux専用実行コマンド(あれば設定)
 
+<a id="builtin-generator-settings"></a>
+### Settings for RubyBuiltin generator
+| Setting | Description | Default |
+|---------|-------------|---------|
+|default_template|Source template file path|[/templates/ruby_builtin_default.rb](/templates/ruby_builtin_default.rb)|
+|interactive_template|Source template file path for interactive problems|[/templates/ruby_builtin_interactive.rb](/templates/ruby_builtin_interactive.rb)|
+
+### Settings for CxxBuiltin generator
+| Setting | Description | Default |
+|---------|-------------|---------|
+|default_template|Source template file path|[/templates/cxx_builtin_default.cxx](/templates/cxx_builtin_default.cxx)|
+|interactive_template|Source template file path for interactive problems|[/templates/cxx_builtin_interactive.cxx](/templates/cxx_builtin_interactive.cxx)|
+
 ### Language ID list (2019/09/16)
 
 | Language ID | Description |
-|---|---|
+|-------------|-------------|
 |3003|C++14 (GCC 5.4.1)|
 |3001|Bash (GNU bash v4.3.11)|
 |3002|C (GCC 5.4.1)|
@@ -229,12 +273,24 @@ during execution.
 test_cmd 文字列中の以下の変数には、  
 実行時に対象ファイルのパス情報が展開されます。
 
-| Variable | Descripton |
-|---|---|
-|{dir}|the directory name of the file<br>ファイルの置かれているディレクトリ名|
-|{base}|the file name excluding the extension<br>拡張子を除いたファイル名|
+| Variable | Descripton                                                     |
+|----------|----------------------------------------------------------------|
+|{dir}     |the directory name of the file<br>ファイルの置かれているディレクトリ名|
+|{base}    |the file name excluding the extension<br>拡張子を除いたファイル名   |
 
 ## Examples of overwriting settings
+
+- Use only Ruby source generator  
+  Rubyのソースジェネレータのみ使用
+  ```YAML
+  generators:
+    - RubyBuiltin
+  ```
+- Do not use source generator  
+  ソースジェネレータを使用しない
+  ```YAML
+  generators: ~
+  ```
 
 - Test .py with local Python  
   .pyをローカル環境のPythonでテスト

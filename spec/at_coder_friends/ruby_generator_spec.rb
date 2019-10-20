@@ -1,7 +1,61 @@
 # frozen_string_literal: true
 
-RSpec.describe AtCoderFriends::RubyGenerator do
-  subject(:generator) { described_class.new }
+RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
+  TMPL_DIR = File.realpath(File.join(__dir__, '..', '..', 'templates'))
+
+  subject(:generator) { described_class.new(cfg) }
+  let(:cfg) { nil }
+
+  describe '#select_template' do
+    subject { generator.select_template(interactive) }
+
+    context 'with default configuration' do
+      context 'for interactive problems' do
+        let(:interactive) { true }
+
+        it 'returns template file name' do
+          expect(subject).to eq(
+            File.join(TMPL_DIR, 'ruby_builtin_interactive.rb')
+          )
+        end
+      end
+
+      context 'for other problems' do
+        let(:interactive) { false }
+
+        it 'returns template file name' do
+          expect(subject).to eq(
+            File.join(TMPL_DIR, 'ruby_builtin_default.rb')
+          )
+        end
+      end
+    end
+
+    context 'with custom configuration' do
+      let(:cfg) do
+        {
+          'default_template' => 'customized_default.rb',
+          'interactive_template' => 'customized_interactive.rb'
+        }
+      end
+
+      context 'for interactive problems' do
+        let(:interactive) { true }
+
+        it 'returns template file name' do
+          expect(subject).to eq('customized_interactive.rb')
+        end
+      end
+
+      context 'for other problems' do
+        let(:interactive) { false }
+
+        it 'returns template file name' do
+          expect(subject).to eq('customized_default.rb')
+        end
+      end
+    end
+  end
 
   describe '#gen_decl' do
     subject { generator.gen_decl(inpdef) }
@@ -151,10 +205,39 @@ RSpec.describe AtCoderFriends::RubyGenerator do
     end
   end
 
+  describe '#gen_output' do
+    subject { generator.gen_output(vs) }
+
+    context 'for normal problem' do
+      let(:vs) { nil }
+
+      it 'generates output script' do
+        expect(subject).to eq('puts ans')
+      end
+    end
+
+    context 'for binary problem' do
+      let(:vs) { %w[Yes No] }
+
+      it 'generates output script' do
+        expect(subject).to eq("puts cond ? 'Yes' : 'No'")
+      end
+    end
+  end
+
   describe '#generate' do
-    subject { generator.generate(url, defs) }
-    let(:url) { 'https://atcoder.jp/contests/practice/tasks/practice_1' }
-    let(:defs) do
+    subject { generator.generate(pbm) }
+    let(:pbm) do
+      AtCoderFriends::Problem.new('A') do |pbm|
+        pbm.formats = formats
+      end
+    end
+    before do
+      allow(pbm).to receive(:url) do
+        'https://atcoder.jp/contests/practice/tasks/practice_1'
+      end
+    end
+    let(:formats) do
       [
         AtCoderFriends::Problem::InputFormat.new(:single, :number, %w[N]),
         AtCoderFriends::Problem::InputFormat.new(

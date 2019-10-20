@@ -22,6 +22,10 @@ module AtCoderFriends
       @scraping_agent ||= Scraping::Agent.new(self)
     end
 
+    def generator
+      @generator ||= Generator::Main.new(self)
+    end
+
     def sample_test_runner
       @sample_test_runner ||= TestRunner::Sample.new(self)
     end

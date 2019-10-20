@@ -28,9 +28,7 @@ module AtCoderFriends
         puts "fetch problem from #{url} ..."
         page = fetch_with_auth(url)
         page.search('br').each { |br| br.replace("\n") }
-        Problem.new(q) do |pbm|
-          pbm.page = page
-        end
+        Problem.new(q, page)
       end
     end
   end

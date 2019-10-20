@@ -10,14 +10,17 @@ module AtCoderFriends
         vs = exp_values(pbm)
         return unless vs.size == 2
         return if vs.any? { |v| v.include?("\n") }
-        return if vs.any? { |v| v.match(/^[0-9\s]*$/) }
+        return if vs.any? { |v| v =~ /^[0-9\s]*$/ }
 
         out_fmt = ouput_format(pbm)
         re1, re2 = vs.map { |v| Regexp.escape(v) }
-        return unless out_fmt.match(/(#{re1}.+#{re2}|#{re2}.+#{re1})/m)
 
-        vs.reverse! unless out_fmt.match(/#{re1}.+#{re2}/m)
-        pbm.options.binary_values = vs
+        pbm.options.binary_values =
+          if out_fmt =~ /#{re1}.+#{re2}/m
+            vs
+          elsif out_fmt =~ /#{re2}.+#{re1}/m
+            vs.reverse
+          end
       end
 
       def exp_values(pbm)

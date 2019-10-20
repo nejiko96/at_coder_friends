@@ -30,9 +30,9 @@ module AtCoderFriends
     attr_reader :q, :samples, :sources, :options
     attr_accessor :page, :sections, :formats, :constraints
 
-    def initialize(q)
+    def initialize(q, page = Mechanize::Page.new)
       @q = q
-      @page = nil
+      @page = page
       @sections = {}
       @samples = []
       @formats = []
