@@ -3,25 +3,25 @@
 RSpec.describe AtCoderFriends::Generator::Main do
   include FileHelper
 
+  include_context :uses_temp_dir
+
   subject(:generator) { described_class.new(ctx) }
   let(:ctx) { AtCoderFriends::Context.new({}, target_dir) }
+  let(:target_dir) { temp_dir }
+
+  def create_config(config)
+    create_file(
+      File.join(temp_dir, '.at_coder_friends.yml'),
+      config
+    )
+  end
 
   describe '#process' do
-    include_context :uses_temp_dir
-
     subject { generator.process(pbm) }
     let(:pbm) { AtCoderFriends::Problem.new('A') }
-    let(:target_dir) { temp_dir }
 
     def ext_list
       pbm.sources.map(&:ext)
-    end
-
-    def create_config(config)
-      create_file(
-        File.join(temp_dir, '.at_coder_friends.yml'),
-        config
-      )
     end
 
     context 'with default configuration' do
@@ -92,6 +92,36 @@ RSpec.describe AtCoderFriends::Generator::Main do
         expect { subject }.to raise_error(
           AtCoderFriends::AppError,
           'plugin load error : generator RubyAlternative not found.'
+        )
+      end
+    end
+  end
+
+  describe '#load_obj' do
+    subject { generator.load_obj('RubyBuiltin') }
+
+    context 'with default configuration' do
+      it 'initializes generator by empty setting' do
+        expect(subject.cfg).to match({})
+      end
+    end
+
+    context 'with generator configuration specified' do
+      before :each do
+        create_config(
+          <<~TEXT
+            generator_settings:
+              RubyBuiltin:
+                default_template: customized_default.rb
+                interactive_template: customized_interactive.rb
+          TEXT
+        )
+      end
+
+      it 'initializes generator by specified setting' do
+        expect(subject.cfg).to match(
+          'default_template' => 'customized_default.rb',
+          'interactive_template' => 'customized_interactive.rb'
         )
       end
     end

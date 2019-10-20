@@ -43,14 +43,14 @@ module AtCoderFriends
       TEXT
     end
 
-    # generates C++ source code from definition
+    # generates C++ source code from problem description
     class CxxBuiltin
       include CxxBuiltinConstants
 
       attr_reader :cfg, :pbm
 
-      def initialize(cfg = {})
-        @cfg = cfg
+      def initialize(cfg = nil)
+        @cfg = cfg || {}
       end
 
       def process(pbm)
@@ -60,7 +60,7 @@ module AtCoderFriends
 
       def generate(pbm)
         @pbm = pbm
-        src = load_template
+        src = File.read(select_template)
         src = embed_lines(src, '/*** URL ***/', [pbm.url])
         src = embed_lines(src, '/*** CONSTS ***/', gen_consts)
         src = embed_lines(src, '/*** DCLS ***/', gen_decls)
@@ -76,9 +76,8 @@ module AtCoderFriends
         )
       end
 
-      def load_template(interactive = pbm.options.interactive)
-        file = interactive ? interactive_template : default_template
-        File.read(file)
+      def select_template(interactive = pbm.options.interactive)
+        interactive ? interactive_template : default_template
       end
 
       def default_template

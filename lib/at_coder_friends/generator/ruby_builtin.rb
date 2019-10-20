@@ -2,7 +2,7 @@
 
 module AtCoderFriends
   module Generator
-    # generates C++ source code from definition
+    # generates C++ source code from problem description
     class RubyBuiltin
       ACF_HOME = File.realpath(File.join(__dir__, '..', '..', '..'))
       TMPL_DIR = File.join(ACF_HOME, 'templates')
@@ -11,8 +11,8 @@ module AtCoderFriends
 
       attr_reader :cfg, :pbm
 
-      def initialize(cfg = {})
-        @cfg = cfg
+      def initialize(cfg = nil)
+        @cfg = cfg || {}
       end
 
       def process(pbm)
@@ -22,15 +22,15 @@ module AtCoderFriends
 
       def generate(pbm)
         @pbm = pbm
-        load_template
+        File
+          .read(select_template)
           .gsub('### URL ###', pbm.url)
           .gsub('### DCLS ###', gen_decls.join("\n"))
           .gsub('### OUTPUT ###', gen_output)
       end
 
-      def load_template(interactive = pbm.options.interactive)
-        file = interactive ? interactive_template : default_template
-        File.read(file)
+      def select_template(interactive = pbm.options.interactive)
+        interactive ? interactive_template : default_template
       end
 
       def default_template

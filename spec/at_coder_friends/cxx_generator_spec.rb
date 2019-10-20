@@ -1,7 +1,61 @@
 # frozen_string_literal: true
 
 RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
-  subject(:generator) { described_class.new }
+  TMPL_DIR = File.realpath(File.join(__dir__, '..', '..', 'templates'))
+
+  subject(:generator) { described_class.new(cfg) }
+  let(:cfg) { nil }
+
+  describe '#select_template' do
+    subject { generator.select_template(interactive) }
+
+    context 'with default configuration' do
+      context 'for interactive problems' do
+        let(:interactive) { true }
+
+        it 'returns template file name' do
+          expect(subject).to eq(
+            File.join(TMPL_DIR, 'cxx_builtin_interactive.cxx')
+          )
+        end
+      end
+
+      context 'for other problems' do
+        let(:interactive) { false }
+
+        it 'returns template file name' do
+          expect(subject).to eq(
+            File.join(TMPL_DIR, 'cxx_builtin_default.cxx')
+          )
+        end
+      end
+    end
+
+    context 'with custom configuration' do
+      let(:cfg) do
+        {
+          'default_template' => 'customized_default.cxx',
+          'interactive_template' => 'customized_interactive.cxx'
+        }
+      end
+
+      context 'for interactive problems' do
+        let(:interactive) { true }
+
+        it 'returns template file name' do
+          expect(subject).to eq('customized_interactive.cxx')
+        end
+      end
+
+      context 'for other problems' do
+        let(:interactive) { false }
+
+        it 'returns template file name' do
+          expect(subject).to eq('customized_default.cxx')
+        end
+      end
+    end
+  end
 
   describe '#gen_consts' do
     subject { generator.gen_consts(constraints) }
@@ -202,7 +256,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
     context 'for a plain number' do
       let(:container) { :single }
       let(:item) { :number }
-      it 'generates read script' do
+      it 'generates input script' do
         expect(subject).to eq('scanf("%d", &A);')
       end
     end
@@ -211,7 +265,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       let(:container) { :single }
       let(:item) { :number }
       let(:names) { %w[A B] }
-      it 'generates read script' do
+      it 'generates input script' do
         expect(subject).to eq('scanf("%d%d", &A, &B);')
       end
     end
@@ -219,7 +273,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
     context 'for a plain string' do
       let(:container) { :single }
       let(:item) { :string }
-      it 'generates read script' do
+      it 'generates input script' do
         expect(subject).to eq('scanf("%s", A);')
       end
     end
@@ -237,7 +291,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       let(:container) { :harray }
       let(:item) { :number }
       let(:size) { %w[N] }
-      it 'generates read script' do
+      it 'generates input script' do
         expect(subject).to eq('REP(i, N) scanf("%d", A + i);')
       end
     end
@@ -265,7 +319,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       let(:item) { :number }
       let(:names) { %w[A B] }
       let(:size) { %w[N] }
-      it 'generates read script' do
+      it 'generates input script' do
         expect(subject).to eq('REP(i, N) scanf("%d%d", A + i, B + i);')
       end
     end
@@ -284,7 +338,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       let(:container) { :matrix }
       let(:item) { :number }
       let(:size) { %w[R C] }
-      it 'generates read script' do
+      it 'generates input script' do
         expect(subject).to eq('REP(i, R) REP(j, C) scanf("%d", &A[i][j]);')
       end
     end
@@ -293,7 +347,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       let(:container) { :matrix }
       let(:item) { :string }
       let(:size) { %w[R C] }
-      it 'generates read script' do
+      it 'generates input script' do
         expect(subject).to eq('REP(i, R) REP(j, C) scanf("%s", A[i][j]);')
       end
     end
@@ -302,8 +356,38 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       let(:container) { :matrix }
       let(:item) { :char }
       let(:size) { %w[R C] }
-      it 'generates read script' do
+      it 'generates input script' do
         expect(subject).to eq('REP(i, R) scanf("%s", A[i]);')
+      end
+    end
+  end
+
+  describe 'gen_output' do
+    subject { generator.gen_output(vs) }
+
+    context 'for normal problem' do
+      let(:vs) { nil }
+
+      it 'generates output script' do
+        expect(subject).to eq(
+          <<~TEXT
+            int ans = 0;
+            printf("%d\\n", ans);
+          TEXT
+        )
+      end
+    end
+
+    context 'for binary problem' do
+      let(:vs) { %w[Yes No] }
+
+      it 'generates output script' do
+        expect(subject).to eq(
+          <<~TEXT
+            bool cond = false;
+            puts(cond ? "Yes" : "No");
+          TEXT
+        )
       end
     end
   end
