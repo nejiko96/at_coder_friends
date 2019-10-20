@@ -87,7 +87,7 @@ See [CONFIGURATION.md](docs/CONFIGURATION.md) for details.
 ## Notes
 
 - Compilation is not supported.
-- Source generator supports only ruby and C++.
+- Source generator supports only Ruby and C++ in default.
 
 ## For Sublime Text user
 
