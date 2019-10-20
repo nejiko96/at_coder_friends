@@ -14,7 +14,7 @@ module AtCoderFriends
 
     CONTEST_LIST_URL = 'https://kenkoooo.com/atcoder/resources/contests.json'
     REGRESSION_HOME =
-      File.realpath(File.join(__dir__, '..', '..', 'regression'))
+      File.expand_path(File.join(__dir__, '..', '..', 'regression'))
     PAGES_DIR = File.join(REGRESSION_HOME, 'pages')
     EMIT_ORG_DIR = File.join(REGRESSION_HOME, 'emit_org')
     EMIT_DIR_FMT = File.join(REGRESSION_HOME, 'emit_%<now>s')
