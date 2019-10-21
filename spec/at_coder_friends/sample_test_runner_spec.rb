@@ -170,7 +170,18 @@ RSpec.describe AtCoderFriends::TestRunner::Sample do
             6 test
             \e[0;31;49m!!!!! WA !!!!!\e[0m
             ==== A_add_1 ====
-            A_add_1.exp not found.
+            Exit code: 0
+            Time: 17ms
+            Memory: 5536KB
+            -- input --
+            1
+            2 3
+            test
+            -- expected --
+            (no expected value)
+            -- result --
+            6 test
+
           OUTPUT
         ).to_stdout
         expect(subject).to be false

@@ -232,7 +232,15 @@ RSpec.describe AtCoderFriends::CLI do
           456 myonmyon
           \e[0;32;49m<< OK >>\e[0m
           ==== A_add_1 ====
-          A_add_1.exp not found.
+          -- input --
+          1
+          2 3
+          test
+          -- expected --
+          (no expected value)
+          -- result --
+          6 test
+
         OUTPUT
       ).to_stdout
     end

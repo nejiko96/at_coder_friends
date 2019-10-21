@@ -11,7 +11,8 @@ module AtCoderFriends
       STATUS_STR = {
         OK: '<< OK >>'.green,
         WA: '!!!!! WA !!!!!'.red,
-        RE: '!!!!! RE !!!!!'.red
+        RE: '!!!!! RE !!!!!'.red,
+        NO_EXP: ''
       }.freeze
 
       attr_reader :ctx, :path, :dir, :prg, :base, :ext, :q
@@ -40,25 +41,21 @@ module AtCoderFriends
 
       def run_test(id, infile, outfile, expfile)
         puts "==== #{id} ===="
-        return false unless check_file(infile, outfile, expfile)
+        return false unless check_file(infile, outfile)
 
         is_success = send(test_mtd, infile, outfile)
         input = File.read(infile)
         result = File.read(outfile)
-        expected = File.read(expfile)
+        expected = File.exist?(expfile) && File.read(expfile)
         status = check_status(is_success, result, expected)
         print detail_str(input, result, expected) if @detail
         puts STATUS_STR[status]
         status == :OK
       end
 
-      def check_file(infile, outfile, expfile)
+      def check_file(infile, outfile)
         unless File.exist?(infile)
           puts "#{File.basename(infile)} not found."
-          return false
-        end
-        unless File.exist?(expfile)
-          puts "#{File.basename(expfile)} not found."
           return false
         end
         makedirs_unless(File.dirname(outfile))
@@ -90,6 +87,8 @@ module AtCoderFriends
       def check_status(is_success, result, expected)
         if !is_success
           :RE
+        elsif !expected
+          :NO_EXP
         elsif result != expected
           :WA
         else
@@ -102,7 +101,7 @@ module AtCoderFriends
         ret += "-- input --\n"
         ret += input
         ret += "-- expected --\n"
-        ret += expected
+        ret += expected || "(no expected value)\n"
         ret += "-- result --\n"
         ret += result
         ret
