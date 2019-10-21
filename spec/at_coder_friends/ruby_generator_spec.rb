@@ -208,7 +208,7 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
   describe '#gen_output' do
     subject { generator.gen_output(vs) }
 
-    context 'for normal problem' do
+    context 'for a general problem' do
       let(:vs) { nil }
 
       it 'generates output script' do
@@ -216,7 +216,7 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       end
     end
 
-    context 'for binary problem' do
+    context 'for a binary problem' do
       let(:vs) { %w[Yes No] }
 
       it 'generates output script' do
@@ -230,41 +230,101 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
     let(:pbm) do
       AtCoderFriends::Problem.new('A') do |pbm|
         pbm.formats = formats
+        pbm.options.interactive = interactive
       end
     end
-    before do
-      allow(pbm).to receive(:url) do
-        'https://atcoder.jp/contests/practice/tasks/practice_1'
+
+    context 'for a general problem' do
+      before do
+        allow(pbm).to receive(:url) do
+          'https://atcoder.jp/contests/practice/tasks/practice_1'
+        end
+      end
+      let(:formats) do
+        [
+          AtCoderFriends::Problem::InputFormat.new(:single, :number, %w[N]),
+          AtCoderFriends::Problem::InputFormat.new(
+            :varray, :number, %w[x y], %w[N]
+          ),
+          AtCoderFriends::Problem::InputFormat.new(:single, :string, %w[Q]),
+          AtCoderFriends::Problem::InputFormat.new(
+            :harray, :string, %w[a], %w[Q]
+          )
+        ]
+      end
+      let(:interactive) { false }
+
+      it 'generates ruby source' do
+        expect(subject).to eq(
+          <<~SRC
+            # https://atcoder.jp/contests/practice/tasks/practice_1
+
+            N = gets.to_i
+            xs = Array.new(N)
+            ys = Array.new(N)
+            N.times do |i|
+              xs[i], ys[i] = gets.split.map(&:to_i)
+            end
+            Q = gets.chomp
+            as = gets.chomp.split
+
+            puts ans
+          SRC
+        )
       end
     end
-    let(:formats) do
-      [
-        AtCoderFriends::Problem::InputFormat.new(:single, :number, %w[N]),
-        AtCoderFriends::Problem::InputFormat.new(
-          :varray, :number, %w[x y], %w[N]
-        ),
-        AtCoderFriends::Problem::InputFormat.new(:single, :string, %w[Q]),
-        AtCoderFriends::Problem::InputFormat.new(:harray, :string, %w[a], %w[Q])
-      ]
-    end
 
-    it 'generates ruby source' do
-      expect(subject).to eq(
-        <<~SRC
-          # https://atcoder.jp/contests/practice/tasks/practice_1
+    context 'for an interactive problem' do
+      before do
+        allow(pbm).to receive(:url) do
+          'https://atcoder.jp/contests/practice/tasks/practice_2'
+        end
+      end
+      let(:formats) do
+        [
+          AtCoderFriends::Problem::InputFormat.new(:single, :number, %w[N Q])
+        ]
+      end
+      let(:interactive) { true }
 
-          N = gets.to_i
-          xs = Array.new(N)
-          ys = Array.new(N)
-          N.times do |i|
-            xs[i], ys[i] = gets.split.map(&:to_i)
-          end
-          Q = gets.chomp
-          as = gets.chomp.split
+      it 'generates ruby source' do
+        expect(subject).to eq(
+          <<~'SRC'
+            # https://atcoder.jp/contests/practice/tasks/practice_2
 
-          puts ans
-        SRC
-      )
+            def query(*args)
+              puts "? #{args.join(' ')}"
+              STDOUT.flush
+              if $DEBUG
+                res = 'generate response from @source'
+                res.tap { |res| @responses << res }
+              else
+                gets.chomp
+              end
+            end
+
+            $DEBUG = true
+
+            N, Q = gets.split.map(&:to_i)
+
+            if $DEBUG
+              @responses = []
+              @source = gets.chomp
+            end
+
+            puts "! #{ans}"
+            STDOUT.flush
+
+            if $DEBUG
+              puts "----------------------------------------"
+              puts "query count: #{@responses.size}"
+              puts "query results:"
+              @responses.each { |res| puts res }
+              puts "----------------------------------------"
+            end
+          SRC
+        )
+      end
     end
   end
 end
