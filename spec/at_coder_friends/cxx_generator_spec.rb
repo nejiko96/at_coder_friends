@@ -365,7 +365,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
   describe 'gen_output' do
     subject { generator.gen_output(vs) }
 
-    context 'for normal problem' do
+    context 'for a general problem' do
       let(:vs) { nil }
 
       it 'generates output script' do
@@ -378,7 +378,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       end
     end
 
-    context 'for binary problem' do
+    context 'for a binary problem' do
       let(:vs) { %w[Yes No] }
 
       it 'generates output script' do
@@ -398,70 +398,162 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       AtCoderFriends::Problem.new('A') do |pbm|
         pbm.formats = formats
         pbm.constraints = constraints
+        pbm.options.interactive = interactive
       end
     end
-    before do
-      allow(pbm).to receive(:url) do
-        'https://atcoder.jp/contests/practice/tasks/practice_1'
+
+    context 'for a general problem' do
+      before do
+        allow(pbm).to receive(:url) do
+          'https://atcoder.jp/contests/practice/tasks/practice_1'
+        end
       end
-    end
-    let(:formats) do
-      [
-        AtCoderFriends::Problem::InputFormat.new(:single, :number, %w[N M]),
-        AtCoderFriends::Problem::InputFormat.new(
-          :varray, :number, %w[A B C T], %w[M]
+      let(:formats) do
+        [
+          AtCoderFriends::Problem::InputFormat.new(:single, :number, %w[N M]),
+          AtCoderFriends::Problem::InputFormat.new(
+            :varray, :number, %w[A B C T], %w[M]
+          )
+        ]
+      end
+      let(:constraints) do
+        [
+          AtCoderFriends::Problem::Constraint.new('N', :max, 10_000),
+          AtCoderFriends::Problem::Constraint.new('M', :max, 10_000),
+          AtCoderFriends::Problem::Constraint.new('C_i', :max, 1_000_000),
+          AtCoderFriends::Problem::Constraint.new('T_i', :max, 1_000_000)
+        ]
+      end
+      let(:interactive) { false }
+
+      it 'generates c++ source' do
+        expect(subject).to eq(
+          <<~SRC
+            // https://atcoder.jp/contests/practice/tasks/practice_1
+
+            #include <cstdio>
+
+            using namespace std;
+
+            #define REP(i,n)   for(int i=0; i<(int)(n); i++)
+            #define FOR(i,b,e) for(int i=(b); i<=(int)(e); i++)
+
+            const int N_MAX = 10000;
+            const int M_MAX = 10000;
+            const int C_I_MAX = 1000000;
+            const int T_I_MAX = 1000000;
+
+            int N, M;
+            int A[M_MAX];
+            int B[M_MAX];
+            int C[M_MAX];
+            int T[M_MAX];
+
+            void solve() {
+              int ans = 0;
+              printf("%d\\n", ans);
+            }
+
+            void input() {
+              scanf("%d%d", &N, &M);
+              REP(i, M) scanf("%d%d%d%d", A + i, B + i, C + i, T + i);
+            }
+
+            int main() {
+              input();
+              solve();
+              return 0;
+            }
+          SRC
         )
-      ]
-    end
-    let(:constraints) do
-      [
-        AtCoderFriends::Problem::Constraint.new('N', :max, 10_000),
-        AtCoderFriends::Problem::Constraint.new('M', :max, 10_000),
-        AtCoderFriends::Problem::Constraint.new('C_i', :max, 1_000_000),
-        AtCoderFriends::Problem::Constraint.new('T_i', :max, 1_000_000)
-      ]
+      end
     end
 
-    it 'generates c++ source' do
-      expect(subject).to eq(
-        <<~SRC
-          // https://atcoder.jp/contests/practice/tasks/practice_1
+    context 'for an interactive problem' do
+      before do
+        allow(pbm).to receive(:url) do
+          'https://atcoder.jp/contests/practice/tasks/practice_2'
+        end
+      end
+      let(:formats) do
+        [
+          AtCoderFriends::Problem::InputFormat.new(:single, :number, %w[N Q])
+        ]
+      end
+      let(:constraints) do
+        [
+          AtCoderFriends::Problem::Constraint.new('N', :max, 26)
+        ]
+      end
+      let(:interactive) { true }
 
-          #include <cstdio>
+      it 'generates c++ source' do
+        expect(subject).to eq(
+          <<~SRC
+            // https://atcoder.jp/contests/practice/tasks/practice_2
 
-          using namespace std;
+            #include <cstdio>
+            #include <vector>
+            #include <string>
 
-          #define REP(i,n)   for(int i=0; i<(int)(n); i++)
-          #define FOR(i,b,e) for(int i=(b); i<=(int)(e); i++)
+            using namespace std;
 
-          const int N_MAX = 10000;
-          const int M_MAX = 10000;
-          const int C_I_MAX = 1000000;
-          const int T_I_MAX = 1000000;
+            #define DEBUG
+            #define REP(i,n)   for(int i=0; i<(int)(n); i++)
+            #define FOR(i,b,e) for(int i=(b); i<=(int)(e); i++)
 
-          int N, M;
-          int A[M_MAX];
-          int B[M_MAX];
-          int C[M_MAX];
-          int T[M_MAX];
+            //------------------------------------------------------------------------------
+            const int BUFSIZE = 1024;
+            char req[BUFSIZE];
+            char res[BUFSIZE];
+            #ifdef DEBUG
+            char source[BUFSIZE];
+            vector<string> responses;
+            #endif
 
-          void solve() {
-            int ans = 0;
-            printf("%d\\n", ans);
-          }
+            void query() {
+              printf("? %s\\n", req);
+              fflush(stdout);
+            #ifdef DEBUG
+              sprintf(res, "generate response from source");
+              responses.push_back(res);
+            #else
+              scanf("%s", res);
+            #endif
+            }
 
-          void input() {
-            scanf("%d%d", &N, &M);
-            REP(i, M) scanf("%d%d%d%d", A + i, B + i, C + i, T + i);
-          }
+            //------------------------------------------------------------------------------
+            const int N_MAX = 26;
 
-          int main() {
-            input();
-            solve();
-            return 0;
-          }
-        SRC
-      )
+            int N, Q;
+
+            void solve() {
+              printf("! %s\\n", ans);
+              fflush(stdout);
+            #ifdef DEBUG
+              printf("query count: %d\\n", responses.size());
+              puts("query results:");
+              REP(i, responses.size()) {
+                puts(responses[i].c_str());
+              }
+            #endif
+            }
+
+            void input() {
+              scanf("%d%d", &N, &Q);
+            #ifdef DEBUG
+              scanf("%s", source);
+            #endif
+            }
+
+            int main() {
+              input();
+              solve();
+              return 0;
+            }
+          SRC
+        )
+      end
     end
   end
 end

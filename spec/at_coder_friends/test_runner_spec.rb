@@ -128,7 +128,15 @@ RSpec.describe AtCoderFriends::TestRunner::Base do
         expect { subject }.to output(
           <<~OUTPUT
             ==== A_add_1 ====
-            A_add_1.exp not found.
+            -- input --
+            1
+            2 3
+            test
+            -- expected --
+            (no expected value)
+            -- result --
+            6 test
+
           OUTPUT
         ).to_stdout
         expect(subject).to be false
