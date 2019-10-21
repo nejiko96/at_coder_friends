@@ -293,6 +293,13 @@ test_cmd 文字列中の以下の変数には、
   ```YAML
   generators: ~
   ```
+- change C++ source template  
+  C++のソース雛型を変更
+  ```YAML
+  generator_settings:
+    CxxBuiltin:
+      default_template: /path/to/template
+  ```
 
 - Test .py with local Python  
   .pyをローカル環境のPythonでテスト
