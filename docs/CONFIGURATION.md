@@ -133,13 +133,15 @@ ext_settings:
 - generators  
   List of source generator class names  
   In default, ```RubyBuiltin``` and ```CxxBuiltin``` are available.  
-  For those other than above, it is available if the corresponding plugin is installed(?).  
+  For those other than above, corresponding plugin will be used  
+  if it has been installed (?).  
   ソーススケルトンを生成するジェネレータのクラス名（リスト形式）  
   既定の状態では「RubyBuiltin」と「CxxBuiltin」が利用でき、  
-  上記以外については、対応するプラグインがインストールされていれば利用できます（？）  
+  上記以外については、対応するプラグインがインストールされていれば  
+  それが使われます（？）  
 
   For example, if ```RubyAlt``` is specified as generator name,  
-  it is available if the following plugin is installed:
+  following plugin will be used:
   
     |                 |                                                   |
     |-----------------|---------------------------------------------------|
