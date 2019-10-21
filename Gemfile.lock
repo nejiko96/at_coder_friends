@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    at_coder_friends (0.5.2)
+    at_coder_friends (0.6.0)
       colorize (~> 0.8.1)
       launchy (~> 2.4.3)
       mechanize (~> 2.0)
