@@ -17,7 +17,7 @@ module AtCoderFriends
           m + (pbm.sections[key]&.content || '')
         end
         constraints = parse(str)
-        pbm.constraints = constraints
+        pbm.constants += constraints
       end
 
       def parse(str)
@@ -28,7 +28,7 @@ module AtCoderFriends
           .map do |v, sz, k|
             sz = sz.to_i
             sz **= k.to_i if k
-            Problem::Constraint.new(v, :max, sz)
+            Problem::Constant.new(v, :max, sz)
           end
       end
     end

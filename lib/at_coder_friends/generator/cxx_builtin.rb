@@ -88,10 +88,21 @@ module AtCoderFriends
         cfg['interactive_template'] || INTERACTIVE_TMPL
       end
 
-      def gen_consts(constraints = pbm.constraints)
-        constraints
-          .select { |c| c.type == :max }
-          .map { |c| "const int #{c.name.upcase}_MAX = #{c.value};" }
+      def gen_consts(constants = pbm.constants)
+        constants.map { |c| gen_const(c) }
+      end
+
+      def gen_const(c)
+        if c.type == :max
+          "const int #{c.name.upcase}_MAX = #{c.value};"
+        else
+          v = cnv_value(c.value)
+          "const int MOD = #{v};"
+        end
+      end
+
+      def cnv_value(v)
+        v.sub('10^', '1e')
       end
 
       def gen_decls(inpdefs = pbm.formats)

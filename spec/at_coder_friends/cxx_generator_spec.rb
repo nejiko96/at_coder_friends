@@ -61,10 +61,10 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
     subject { generator.gen_consts(constraints) }
     let(:constraints) do
       [
-        AtCoderFriends::Problem::Constraint.new('N', :max, 10_000),
-        AtCoderFriends::Problem::Constraint.new('M', :max, 10_000),
-        AtCoderFriends::Problem::Constraint.new('C_i', :max, 1_000_000),
-        AtCoderFriends::Problem::Constraint.new('T_i', :max, 1_000_000)
+        AtCoderFriends::Problem::Constant.new('N', :max, 10_000),
+        AtCoderFriends::Problem::Constant.new('M', :max, 10_000),
+        AtCoderFriends::Problem::Constant.new('C_i', :max, 1_000_000),
+        AtCoderFriends::Problem::Constant.new('T_i', :max, 1_000_000)
       ]
     end
 
@@ -397,7 +397,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
     let(:pbm) do
       AtCoderFriends::Problem.new('A') do |pbm|
         pbm.formats = formats
-        pbm.constraints = constraints
+        pbm.constants = constants
         pbm.options.interactive = interactive
       end
     end
@@ -416,12 +416,12 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
           )
         ]
       end
-      let(:constraints) do
+      let(:constants) do
         [
-          AtCoderFriends::Problem::Constraint.new('N', :max, 10_000),
-          AtCoderFriends::Problem::Constraint.new('M', :max, 10_000),
-          AtCoderFriends::Problem::Constraint.new('C_i', :max, 1_000_000),
-          AtCoderFriends::Problem::Constraint.new('T_i', :max, 1_000_000)
+          AtCoderFriends::Problem::Constant.new('N', :max, 10_000),
+          AtCoderFriends::Problem::Constant.new('M', :max, 10_000),
+          AtCoderFriends::Problem::Constant.new('C_i', :max, 1_000_000),
+          AtCoderFriends::Problem::Constant.new('T_i', :max, 1_000_000)
         ]
       end
       let(:interactive) { false }
@@ -480,9 +480,9 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
           AtCoderFriends::Problem::InputFormat.new(:single, :number, %w[N Q])
         ]
       end
-      let(:constraints) do
+      let(:constants) do
         [
-          AtCoderFriends::Problem::Constraint.new('N', :max, 26)
+          AtCoderFriends::Problem::Constant.new('N', :max, 26)
         ]
       end
       let(:interactive) { true }

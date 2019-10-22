@@ -12,7 +12,7 @@ module AtCoderFriends
       def process(pbm)
         pbm.options.interactive = false
 
-        body = pbm.page_body
+        body = pbm.body_content
         f_int = body =~ /#{INTERACTIVE_PAT}/i
         f_flush = body =~ /#{FLUSH_PAT}/i
         f_io = pbm.sections[Problem::SECTION_IO_FMT]
