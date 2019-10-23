@@ -28,14 +28,20 @@ module AtCoderFriends
         end
       end
 
+      def html
+        @html ||= begin
+          siblings.reduce('') { |m, node| m + node.to_s.gsub("\r\n", "\n") }
+        end
+      end
+
       def find_element(tags)
-        siblings.each do |node|
-          tags.each do |tag|
+        elem = nil
+        siblings.any? do |node|
+          tags.any? do |tag|
             elem = node.name == tag ? node : node.search(tag)[0]
-            return elem if elem
           end
         end
-        nil
+        elem
       end
 
       def code_block

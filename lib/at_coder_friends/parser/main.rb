@@ -11,6 +11,7 @@ module AtCoderFriends
         SampleData.process(pbm)
         InputFormat.process(pbm)
         Constraints.process(pbm)
+        Modulo.process(pbm)
         Interactive.process(pbm)
         Binary.process(pbm)
       end

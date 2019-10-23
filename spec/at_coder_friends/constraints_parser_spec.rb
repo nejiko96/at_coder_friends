@@ -24,8 +24,8 @@ RSpec.describe AtCoderFriends::Parser::Constraints do
 
       it 'parses constraints' do
         subject
-        expect(pbm.constraints.size).to eq(1)
-        expect(pbm.constraints[0]).to have_attributes(
+        expect(pbm.constants.size).to eq(1)
+        expect(pbm.constants[0]).to have_attributes(
           name: 'N', type: :max, value: 100
         )
       end
@@ -36,11 +36,11 @@ RSpec.describe AtCoderFriends::Parser::Constraints do
 
       it 'parses constraints' do
         subject
-        expect(pbm.constraints.size).to eq(2)
-        expect(pbm.constraints[0]).to have_attributes(
+        expect(pbm.constants.size).to eq(2)
+        expect(pbm.constants[0]).to have_attributes(
           name: 'N', type: :max, value: 100
         )
-        expect(pbm.constraints[1]).to have_attributes(
+        expect(pbm.constants[1]).to have_attributes(
           name: 'p_i', type: :max, value: 100
         )
       end
@@ -51,7 +51,7 @@ RSpec.describe AtCoderFriends::Parser::Constraints do
 
       it 'parses constraints' do
         subject
-        expect(pbm.constraints.size).to eq(0)
+        expect(pbm.constants.size).to eq(0)
       end
     end
   end

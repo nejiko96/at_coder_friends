@@ -3,6 +3,8 @@
 module AtCoderFriends
   # holds problem information
   class Problem
+    SECTION_STATEMENT = 'STATEMENT'
+    SECTION_TASK = 'TASK'
     SECTION_IN_FMT = 'INPUT_FORMAT'
     SECTION_OUT_FMT = 'OUTPUT_FORMAT'
     SECTION_IO_FMT = 'INOUT_FORMAT'
@@ -21,14 +23,14 @@ module AtCoderFriends
       end
     end
 
-    Constraint = Struct.new(:name, :type, :value)
+    Constant = Struct.new(:name, :type, :value)
 
     Options = Struct.new(:interactive, :binary_values)
 
     SourceCode = Struct.new(:ext, :txt)
 
     attr_reader :q, :samples, :sources, :options
-    attr_accessor :page, :sections, :formats, :constraints
+    attr_accessor :page, :sections, :formats, :constants
 
     def initialize(q, page = Mechanize::Page.new)
       @q = q
@@ -36,7 +38,7 @@ module AtCoderFriends
       @sections = {}
       @samples = []
       @formats = []
-      @constraints = []
+      @constants = []
       @options = Options.new
       @sources = []
       yield self if block_given?
@@ -46,8 +48,8 @@ module AtCoderFriends
       @url ||= page.uri.to_s
     end
 
-    def page_body
-      @page_body ||= page.body.force_encoding('utf-8')
+    def body_content
+      @body_content ||= page.search('body')[0]&.content
     end
 
     def add_smp(no, ext, txt)

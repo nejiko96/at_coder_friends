@@ -5,6 +5,22 @@ module AtCoderFriends
     module SectionsConstants
       SECTION_DEFS = [
         {
+          key: Problem::SECTION_STATEMENT,
+          patterns: [
+            '^問題文?$',
+            '^Problem\s*(Statement|Setting)?$',
+            '^Statement$',
+            '^Description$'
+          ]
+        },
+        {
+          key: Problem::SECTION_TASK,
+          patterns: [
+            '^課題$',
+            '^Task$'
+          ]
+        },
+        {
           key: Problem::SECTION_CONSTRAINTS,
           patterns: [
             '^制約$',
@@ -91,15 +107,16 @@ module AtCoderFriends
 
       def find_key(h)
         title = normalize(h.content)
-        SECTION_DEFS.each do |grp|
-          grp[:patterns].each do |pat|
-            next unless (m = title.match(/#{pat}/i))
-
-            no = m.names.include?('no') && m['no'] || '1'
-            return format(grp[:key], no: no)
+        key = nil
+        SECTION_DEFS.any? do |grp|
+          grp[:patterns].any? do |pat|
+            if (m = title.match(/#{pat}/i))
+              no = m.names.include?('no') && m['no'] || '1'
+              key = format(grp[:key], no: no)
+            end
           end
         end
-        nil
+        key
       end
 
       def normalize(s)

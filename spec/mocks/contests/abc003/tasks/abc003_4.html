@@ -1,0 +1,442 @@
+
+
+
+
+
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+	<title>D - AtCoder社の冬</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta http-equiv="Content-Language" content='en'>
+	<meta name="viewport" content="width=device-width,initial-scale=1.0">
+	<meta name="format-detection" content="telephone=no">
+	<meta name="google-site-verification" content="nXGC_JxO0yoP1qBzMnYD_xgufO6leSLw1kyNo2HZltM" />
+
+
+	<meta name="description" content="AtCoder is a programming contest site for anyone from beginners to experts. We hold weekly programming contests online.">
+	<meta name="author" content="AtCoder Inc.">
+	<link rel="canonical" href="https://atcoder.jp/">
+
+	<meta property="og:site_name" content="AtCoder">
+
+	<meta property="og:title" content="D - AtCoder社の冬" />
+	<meta property="og:description" content="AtCoder is a programming contest site for anyone from beginners to experts. We hold weekly programming contests online." />
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="https://atcoder.jp/contests/abc003/tasks/abc003_4" />
+	<meta property="og:image" content="https://img.atcoder.jp/assets/atcoder.png" />
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:site" content="@atcoder" />
+
+	<meta property="twitter:title" content="D - AtCoder社の冬" />
+
+	<link href="//fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" type="text/css" href="/public/css/bootstrap.min.css?v=201910091808">
+	<link rel="stylesheet" type="text/css" href="/public/css/base.css?v=201910091808">
+	<link rel="shortcut icon" type="image/png" href="//img.atcoder.jp/assets/favicon.png">
+	<link rel="apple-touch-icon" href="//img.atcoder.jp/assets/atcoder.png">
+	<script src="/public/js/lib/jquery-1.9.1.min.js?v=201910091808"></script>
+	<script src="/public/js/lib/bootstrap.min.js?v=201910091808"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/js-cookie/2.1.4/js.cookie.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/locale/ja.js"></script>
+	<script>
+		var LANG = "en";
+		var userScreenName = "";
+		var csrfToken = "r/EFNMCHf7pmRXGksEm02KJalvGFqW11ZOHrHctM1yY="
+	</script>
+	<script src="/public/js/utils.js?v=201910091808"></script>
+
+
+		<script src="/public/js/contest.js?v=201910091808"></script>
+		<link href="/public/css/contest.css?v=201910091808" rel="stylesheet" />
+		<script>
+			var contestScreenName = "abc003";
+			var remainingText = "Remaining Time";
+			var countDownText = "Contest begins in";
+			var startTime = moment("2013-12-12T21:00:00+09:00");
+			var endTime = moment("2013-12-12T23:00:00+09:00");
+		</script>
+		<style></style>
+
+
+		<script type="text/x-mathjax-config">MathJax.Hub.Config({messageStyle:"none",tex2jax:{skipTags:["script","noscript","style","textarea","code"],inlineMath:[['\\(','\\)']]}});</script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+		<script src="/public/js/task.js?v=201910091808"></script>
+
+
+
+		<link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+		<link href="//cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css" rel="stylesheet" />
+		<script src="/public/js/lib/select2.min.js?v=201910091808"></script>
+
+
+		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.38.0/codemirror.min.css">
+		<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.38.0/codemirror.min.js"></script>
+		<script src="/public/js/codeMirror/merged.js?v=201910091808"></script>
+
+
+		<script src="//cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+
+
+
+
+
+
+
+
+
+
+	<script src="/public/js/base.js?v=201910091808"></script>
+	<script src="/public/js/ga.js?v=201910091808"></script>
+</head>
+
+<body>
+<div id="modal-contest-start" class="modal fade" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">Contest started</h4>
+			</div>
+			<div class="modal-body">
+				<p>AtCoder Beginner Contest 003 has begun.</p>
+			</div>
+			<div class="modal-footer">
+
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+
+			</div>
+		</div>
+	</div>
+</div>
+<div id="modal-contest-end" class="modal fade" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">Contest is over</h4>
+			</div>
+			<div class="modal-body">
+				<p>AtCoder Beginner Contest 003 has ended.</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="main-div" class="float-container">
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false">
+					<span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="/"></a>
+			</div>
+			<div class="collapse navbar-collapse" id="navbar-collapse">
+				<ul class="nav navbar-nav">
+
+					<li><a class="contest-title" href="/contests/abc003">AtCoder Beginner Contest 003</a></li>
+
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+
+					<li class="dropdown">
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+							<img src='//img.atcoder.jp/assets/flag-lang/en.png'> English <span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu">
+							<li><a href="/contests/abc003/tasks/abc003_4?lang=ja"><img src='//img.atcoder.jp/assets/flag-lang/ja.png'> 日本語</a></li>
+							<li><a href="/contests/abc003/tasks/abc003_4?lang=en"><img src='//img.atcoder.jp/assets/flag-lang/en.png'> English</a></li>
+						</ul>
+					</li>
+
+
+						<li><a href="/register?continue=https%3A%2F%2Fatcoder.jp%2Fcontests%2Fabc003%2Ftasks%2Fabc003_4">Sign Up</a></li>
+						<li><a href="/login?continue=https%3A%2F%2Fatcoder.jp%2Fcontests%2Fabc003%2Ftasks%2Fabc003_4">Sign In</a></li>
+
+				</ul>
+			</div>
+		</div>
+	</nav>
+	<form method="POST" name="form_logout" action="/logout?continue=https%3A%2F%2Fatcoder.jp%2Fcontests%2Fabc003%2Ftasks%2Fabc003_4">
+		<input type="hidden" name="csrf_token" value="r/EFNMCHf7pmRXGksEm02KJalvGFqW11ZOHrHctM1yY=" />
+	</form>
+	<div id="main-container" class="container" style="padding-top:50px;">
+
+
+<div class="row">
+	<div id="contest-nav-tabs" class="col-sm-12 mb-2 cnvtb-fixed">
+	<div>
+		<small class="contest-duration">Contest Duration: <a href='http://www.timeanddate.com/worldclock/fixedtime.html?iso=20131212T2100&p1=248' target='blank'><time class='fixtime fixtime-full'>2013-12-12 21:00:00+0900</time></a> ~ <a href='http://www.timeanddate.com/worldclock/fixedtime.html?iso=20131212T2300&p1=248' target='blank'><time class='fixtime fixtime-full'>2013-12-12 23:00:00+0900</time></a> (local time)</small>
+		<small class="back-to-home pull-right"><a href="/">Back to Home</a></small>
+	</div>
+	<ul class="nav nav-tabs">
+		<li><a href="/contests/abc003"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Top</a></li>
+
+			<li class="active"><a href="/contests/abc003/tasks"><span class="glyphicon glyphicon-tasks" aria-hidden="true"></span> Tasks</a></li>
+
+
+
+			<li><a href="/contests/abc003/clarifications"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> Clarifications <span id="clar-badge" class="badge"></span></a></li>
+
+
+
+
+
+			<li>
+				<a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-list" aria-hidden="true"></span> Results<span class="caret"></span></a>
+				<ul class="dropdown-menu">
+					<li><a href="/contests/abc003/submissions"><span class="glyphicon glyphicon-globe" aria-hidden="true"></span> All Submissions</a></li>
+
+				</ul>
+			</li>
+
+
+
+
+
+					<li><a href="/contests/abc003/standings"><span class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span> Standings</a></li>
+
+
+
+
+
+
+
+
+
+		<li class="pull-right"><a id="fix-cnvtb" href="javascript:void(0)"><span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span></a></li>
+	</ul>
+</div>
+	<div class="col-sm-12">
+		<span class="h2">D - AtCoder社の冬</span>
+		<hr/>
+		<p>Time Limit: 2 sec / Memory Limit: 64 MB</p>
+
+		<div id="task-statement">
+			<div class="part">
+<h3>問題文</h3>
+	<section>
+		AtCoder社の社員室は <var>R \times C</var>（<var>R</var> 行 <var>C</var> 列）の区画に区切られており、各区画には、社員のデスク、サーバーラックのどちらかがあるか、何もない空きスペースのどれかです。<br />
+		AtCoder社のある地域の冬は寒く、暖房代をできるだけ節約するため、社員室の必要なスペースのみを区切って使用することに決めました。<br />
+		しかし、資材の問題で、区画に平行な長方形の領域で区切らなければいけません。<br />
+		そこで、<br>
+		<ul>
+			<li>デスク、または、サーバーラックのある最も上の行のすぐ上、</li>
+			<li>デスク、または、サーバーラックのある最も下の行のすぐ下、</li>
+			<li>デスク、または、サーバーラックのある最も左の列のすぐ左、</li>
+			<li>デスク、または、サーバーラックのある最も右の列のすぐ右</li>
+		</ul>
+		の <var>4</var> 辺で囲まれた区画を壁で囲みました。<br />
+		すると壁で囲まれた領域は <var>X \times Y</var>（<var>X</var> 行 <var>Y</var> 列）の区画になりました。<br />
+		また、AtCoder社の社員室には、<var>D</var> 個のデスクと、<var>L</var> 個のサーバーラックがあります。<br />
+		もともと、社員室に、どのようにデスクとサーバーラックの配置されていたのか、考えうるパターン数を <var>1000000007 = 10^9+7</var> で割った余りを求めるプログラムを書いてください。<br />
+	</section>
+</div>
+
+<hr />
+
+<div class="io-style part">
+<h3>入力</h3>
+<section>
+入力は以下の形式で標準入力から与えられる。
+<pre>
+<var>R</var> <var>C</var>
+<var>X</var> <var>Y</var>
+<var>D</var> <var>L</var>
+</pre>
+<ol>
+  <li><var>1</var> 行目には、AtCoder社の社員室の区画の行数、列数を表す整数 <var>R,\ C\ (1 ≦ R, C ≦ 30)</var> がスペース区切りで与えられる。</li>
+  <li><var>2</var> 行目には、社員室の壁に囲まれた部分の区画の行数、列数を表す整数 <var>X,\ Y\ (1 ≦ X ≦ R,\ 1 ≦ Y ≦ C)</var> がスペース区切りで与えられる。</li>
+  <li><var>3</var> 行目には、社員室にある社員のデスクの数、サーバーラックの数を表す整数 <var>D,\ L\ (D, L ≧ 0,\ 1 ≦ D+L ≦ X \times Y)</var> がスペース区切りで与えられる。</li>
+</ol>
+</section>
+</div>
+
+<div class="part">
+<h3>出力</h3>
+	<section>
+		社員室にどのようにデスクとサーバーラックの配置されていたのか、考えうるパターン数を <var>1000000007 = 10^9+7</var> で割った余りを <var>1</var> 行で出力せよ。<br />
+		また、出力の末尾には改行を入れること。
+	</section>
+</div>
+
+<div class="part">
+<h3>部分点</h3>
+	<section>
+		<var>D+L = X \times Y</var> の場合のテストケースに全て正解した場合、<var>101</var> 点満点中の <var>100</var> 点が与えられる。<br />
+		満点解法は非常に難しいので、部分点を確実に取ることから考えましょう。
+	</section>
+</div>
+
+<hr />
+
+<div class="part">
+<h3>入力例 1</h3>
+<section>
+<pre class="prettyprint linenums">
+3 2
+2 2
+2 2
+</pre>
+</section>
+
+</div>
+
+<div class="part">
+<h3>出力例 1</h3>
+<section>
+<pre class="prettyprint linenums">
+12
+</pre>
+<ul>
+  <li>このケースは <var>D+L=X \times Y</var> を満たすため、部分点のテストケースに含まれる可能性があります。</li>
+  <li>以下の <var>12</var> 通りの配置が考えられます。ここで<code>D</code>はデスク、<code>L</code>はサーバーラック、<code>.</code>は何もないことを表します。</li>
+</ul>
+<pre>
+DD  DL  DL  LD  LD  LL  ..  ..  ..  ..  ..  ..
+LL  DL  LD  DL  LD  DD  DD  DL  DL  LD  LD  LL
+..  ..  ..  ..  ..  ..  LL  DL  LD  DL  LD  DD
+</pre>
+</section>
+</div>
+
+<hr />
+
+<div class="part">
+<h3>入力例 2</h3>
+<section>
+<pre class="prettyprint linenums">
+4 5
+3 1
+3 0
+</pre>
+</section>
+</div>
+
+<div class="part">
+<h3>出力例 2</h3>
+<section>
+<pre class="prettyprint linenums">
+10
+</pre>
+<ul>
+  <li>このケースは <var>D+L=X \times Y</var> を満たすため、部分点のテストケースに含まれる可能性があります。</li>
+</ul>
+</section>
+</div>
+
+<hr />
+
+<div class="part">
+<h3>入力例 3</h3>
+<section>
+<pre class="prettyprint linenums">
+23 18
+15 13
+100 95
+</pre>
+</section>
+</div>
+
+<div class="part">
+<h3>出力例 3</h3>
+<section>
+<pre class="prettyprint linenums">
+364527243
+</pre>
+<ul>
+  <li>このケースは <var>D+L=X \times Y</var> を満たすため、部分点のテストケースに含まれる可能性があります。</li>
+  <li>社員室の配置パターンは <var>145180660592914517790287604376765671109248284280228061640640</var> 通りで、これを <var>10^9+7</var> で割った余りである <var>364527243</var> を出力してください。</li>
+</ul>
+</section>
+</div>
+
+<div class="part">
+<h3>入力例 4</h3>
+<section>
+<pre class="prettyprint linenums">
+30 30
+24 22
+145 132
+</pre>
+</section>
+</div>
+
+<div class="part">
+<h3>出力例 4</h3>
+<section>
+<pre class="prettyprint linenums">
+976668549
+</pre>
+<ul>
+  <li>このケースは <var>D+L=X \times Y</var> を満たさないため、部分点のテストケースに含まれることはありません。</li>
+  <li>無理に正解しようとせず、余裕のある人だけ挑戦してみてください。</li>
+</ul>
+</section>
+</div>
+		</div>
+
+
+
+
+	</div>
+</div>
+
+
+
+			<hr>
+
+
+
+<div class="a2a_kit a2a_kit_size_20 a2a_default_style pull-right" data-a2a-url="https://atcoder.jp/contests/abc003/tasks/abc003_4?lang=en" data-a2a-title="D - AtCoder社の冬">
+	<a class="a2a_button_facebook"></a>
+	<a class="a2a_button_twitter"></a>
+
+		<a class="a2a_button_telegram"></a>
+
+	<a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+</div>
+
+
+		<script async src="//static.addtoany.com/menu/page.js"></script>
+
+	</div>
+	<hr>
+</div>
+<div class="container" style="margin-bottom: 80px;">
+    <footer class="footer">
+
+			<ul>
+				<li><a href='/contests/abc003/rules'>Rule</a></li>
+				<li><a href='/contests/abc003/glossary'>Glossary</a></li>
+
+			</ul>
+
+		<ul>
+			<li><a href='/tos'>Terms of service</a></li>
+			<li><a href='/privacy'>Privacy Policy</a></li>
+			<li><a href='/personal'>Information Protection Policy</a></li>
+			<li><a href='/company'>Company</a></li>
+			<li><a href='/faq'>FAQ</a></li>
+			<li><a href='/contact'>Contact</a></li>
+
+		</ul>
+    <div class="text-center">
+        <small id="copyright">Copyright Since 2012 &copy;<a href="http://atcoder.co.jp">AtCoder Inc.</a> All rights reserved.</small>
+    </div>
+    </footer>
+</div>
+<p id="fixed-server-timer" class='contest-timer'></p>
+
+	<div id="scroll-page-top" style="display:none;"><span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span> Page Top</div>
+
+</body>
+</html>
+

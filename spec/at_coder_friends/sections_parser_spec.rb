@@ -26,6 +26,7 @@ RSpec.describe AtCoderFriends::Parser::Sections do
         subject
         expect(pbm.sections.keys).to match_array(
           %w[
+            STATEMENT
             INPUT_FORMAT OUTPUT_FORMAT
             INPUT_SAMPLE_1 INPUT_SAMPLE_2 INPUT_SAMPLE_3
             OUTPUT_SAMPLE_1 OUTPUT_SAMPLE_2 OUTPUT_SAMPLE_3
@@ -41,6 +42,7 @@ RSpec.describe AtCoderFriends::Parser::Sections do
         subject
         expect(pbm.sections.keys).to match_array(
           %w[
+            STATEMENT
             INPUT_FORMAT OUTPUT_FORMAT CONSTRAINTS
             INPUT_SAMPLE_1 INPUT_SAMPLE_2
             OUTPUT_SAMPLE_1 OUTPUT_SAMPLE_2
@@ -55,7 +57,7 @@ RSpec.describe AtCoderFriends::Parser::Sections do
       it 'collect sections from page' do
         subject
         expect(pbm.sections.keys).to match_array(
-          %w[CONSTRAINTS INOUT_FORMAT INOUT_SAMPLE]
+          %w[STATEMENT CONSTRAINTS INOUT_FORMAT INOUT_SAMPLE]
         )
       end
     end
