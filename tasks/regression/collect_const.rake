@@ -12,7 +12,7 @@ module AtCoderFriends
         page = agent.get(url)
         body = page.body.force_encoding('utf-8')
         ms = body.scan(
-          /(.{,30}(?:で割った|modulo|\bmod\b|divided by|dividing by).{,30})/mi
+          /(.{,30}(?:で割った|modulo|mod\b|divided by|dividing by).{,30})/mi
         )
         next if ms.empty?
 
@@ -23,7 +23,6 @@ module AtCoderFriends
 
     def check_mod
       list = local_pbm_list.flat_map do |contest, q, url|
-      # list = local_pbm_list.take(20).flat_map do |contest, q, url|
         pbm = scraping_agent(REGRESSION_HOME, contest).fetch_problem(q, url)
         Parser::Sections.process(pbm)
         Parser::Modulo.process(pbm)
@@ -52,7 +51,8 @@ module AtCoderFriends
     end
 
     def list_from_file(file)
-      dat = File.join(REGRESSION_HOME, '..', file)
+      Encoding.default_external = 'utf-8'
+      dat = File.join(ACF_HOME, file)
       CSV.read(dat, col_sep: "\t", headers: false)
     end
   end

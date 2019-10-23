@@ -9,7 +9,15 @@ module AtCoderFriends
           patterns: [
             '^問題文?$',
             '^Problem\s*(Statement|Setting)?$',
-            '^Statement$'
+            '^Statement$',
+            '^Description$'
+          ]
+        },
+        {
+          key: Problem::SECTION_TASK,
+          patterns: [
+            '^課題$',
+            '^Task$'
           ]
         },
         {

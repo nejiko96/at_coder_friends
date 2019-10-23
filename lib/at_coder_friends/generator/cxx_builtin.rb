@@ -102,7 +102,7 @@ module AtCoderFriends
       end
 
       def cnv_value(v)
-        v.sub('10^', '1e')
+        v.sub(/^10\^/, '1e').sub(/^2\^/, '1<<')
       end
 
       def gen_decls(inpdefs = pbm.formats)

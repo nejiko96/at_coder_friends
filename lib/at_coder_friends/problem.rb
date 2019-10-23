@@ -4,6 +4,7 @@ module AtCoderFriends
   # holds problem information
   class Problem
     SECTION_STATEMENT = 'STATEMENT'
+    SECTION_TASK = 'TASK'
     SECTION_IN_FMT = 'INPUT_FORMAT'
     SECTION_OUT_FMT = 'OUTPUT_FORMAT'
     SECTION_IO_FMT = 'INOUT_FORMAT'

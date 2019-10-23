@@ -64,7 +64,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
         AtCoderFriends::Problem::Constant.new('N', :max, 10_000),
         AtCoderFriends::Problem::Constant.new('M', :max, 10_000),
         AtCoderFriends::Problem::Constant.new('C_i', :max, 1_000_000),
-        AtCoderFriends::Problem::Constant.new('T_i', :max, 1_000_000)
+        AtCoderFriends::Problem::Constant.new(nil, :mod, '998244353')
       ]
     end
 
@@ -74,7 +74,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
           'const int N_MAX = 10000;',
           'const int M_MAX = 10000;',
           'const int C_I_MAX = 1000000;',
-          'const int T_I_MAX = 1000000;'
+          'const int MOD = 998244353;'
         ]
       )
     end
@@ -421,7 +421,8 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
           AtCoderFriends::Problem::Constant.new('N', :max, 10_000),
           AtCoderFriends::Problem::Constant.new('M', :max, 10_000),
           AtCoderFriends::Problem::Constant.new('C_i', :max, 1_000_000),
-          AtCoderFriends::Problem::Constant.new('T_i', :max, 1_000_000)
+          AtCoderFriends::Problem::Constant.new('T_i', :max, 1_000_000),
+          AtCoderFriends::Problem::Constant.new(nil, :mod, '10^9+7')
         ]
       end
       let(:interactive) { false }
@@ -442,6 +443,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
             const int M_MAX = 10000;
             const int C_I_MAX = 1000000;
             const int T_I_MAX = 1000000;
+            const int MOD = 1e9+7;
 
             int N, M;
             int A[M_MAX];
@@ -482,7 +484,8 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       end
       let(:constants) do
         [
-          AtCoderFriends::Problem::Constant.new('N', :max, 26)
+          AtCoderFriends::Problem::Constant.new('N', :max, 26),
+          AtCoderFriends::Problem::Constant.new(nil, :mod, '2^32')
         ]
       end
       let(:interactive) { true }
@@ -524,6 +527,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
 
             //------------------------------------------------------------------------------
             const int N_MAX = 26;
+            const int MOD = 1<<32;
 
             int N, Q;
 
