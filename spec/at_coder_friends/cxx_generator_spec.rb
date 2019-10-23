@@ -58,23 +58,23 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
   end
 
   describe '#gen_consts' do
-    subject { generator.gen_consts(constraints) }
-    let(:constraints) do
+    subject { generator.gen_consts(constants) }
+    let(:constants) do
       [
-        AtCoderFriends::Problem::Constant.new('N', :max, 10_000),
-        AtCoderFriends::Problem::Constant.new('M', :max, 10_000),
-        AtCoderFriends::Problem::Constant.new('C_i', :max, 1_000_000),
-        AtCoderFriends::Problem::Constant.new(nil, :mod, '998244353')
+        AtCoderFriends::Problem::Constant.new('N', :max, '10,000'),
+        AtCoderFriends::Problem::Constant.new('M', :max, '10^9'),
+        AtCoderFriends::Problem::Constant.new('C_i', :max, '2*10^5'),
+        AtCoderFriends::Problem::Constant.new(nil, :mod, '998,244,353')
       ]
     end
 
     it 'generates constant decls' do
       expect(subject).to match(
         [
-          'const int N_MAX = 10000;',
-          'const int M_MAX = 10000;',
-          'const int C_I_MAX = 1000000;',
-          'const int MOD = 998244353;'
+          "const int N_MAX = 10'000;",
+          'const int M_MAX = 1e9;',
+          'const int C_I_MAX = 2*1e5;',
+          "const int MOD = 998'244'353;"
         ]
       )
     end
@@ -418,10 +418,10 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       end
       let(:constants) do
         [
-          AtCoderFriends::Problem::Constant.new('N', :max, 10_000),
-          AtCoderFriends::Problem::Constant.new('M', :max, 10_000),
-          AtCoderFriends::Problem::Constant.new('C_i', :max, 1_000_000),
-          AtCoderFriends::Problem::Constant.new('T_i', :max, 1_000_000),
+          AtCoderFriends::Problem::Constant.new('N', :max, '100000'),
+          AtCoderFriends::Problem::Constant.new('M', :max, '10^9'),
+          AtCoderFriends::Problem::Constant.new('C_i', :max, '2*10^5'),
+          AtCoderFriends::Problem::Constant.new('T_i', :max, '1,000,000'),
           AtCoderFriends::Problem::Constant.new(nil, :mod, '10^9+7')
         ]
       end
@@ -439,10 +439,10 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
             #define REP(i,n)   for(int i=0; i<(int)(n); i++)
             #define FOR(i,b,e) for(int i=(b); i<=(int)(e); i++)
 
-            const int N_MAX = 10000;
-            const int M_MAX = 10000;
-            const int C_I_MAX = 1000000;
-            const int T_I_MAX = 1000000;
+            const int N_MAX = 100000;
+            const int M_MAX = 1e9;
+            const int C_I_MAX = 2*1e5;
+            const int T_I_MAX = 1'000'000;
             const int MOD = 1e9+7;
 
             int N, M;
@@ -484,7 +484,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       end
       let(:constants) do
         [
-          AtCoderFriends::Problem::Constant.new('N', :max, 26),
+          AtCoderFriends::Problem::Constant.new('N', :max, '26'),
           AtCoderFriends::Problem::Constant.new(nil, :mod, '2^32')
         ]
       end

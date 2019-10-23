@@ -93,16 +93,19 @@ module AtCoderFriends
       end
 
       def gen_const(c)
+        v = cnv_const_value(c.value)
         if c.type == :max
-          "const int #{c.name.upcase}_MAX = #{c.value};"
+          "const int #{c.name.upcase}_MAX = #{v};"
         else
-          v = cnv_value(c.value)
           "const int MOD = #{v};"
         end
       end
 
-      def cnv_value(v)
-        v.sub(/^10\^/, '1e').sub(/^2\^/, '1<<')
+      def cnv_const_value(v)
+        v
+          .sub(/\b10\^/, '1e')
+          .sub(/\b2\^/, '1<<')
+          .gsub(',', "'")
       end
 
       def gen_decls(inpdefs = pbm.formats)

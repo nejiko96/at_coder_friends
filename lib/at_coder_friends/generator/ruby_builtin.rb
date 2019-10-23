@@ -25,6 +25,7 @@ module AtCoderFriends
         File
           .read(select_template)
           .gsub('### URL ###', pbm.url)
+          .gsub('### CONSTS ###', gen_consts.join("\n"))
           .gsub('### DCLS ###', gen_decls.join("\n"))
           .gsub('### OUTPUT ###', gen_output)
       end
@@ -39,6 +40,17 @@ module AtCoderFriends
 
       def interactive_template
         cfg['interactive_template'] || INTERACTIVE_TMPL
+      end
+
+      def gen_consts(constants = pbm.constants)
+        constants
+          .select { |c| c.type == :mod }
+          .map { |c| gen_mod(c) }
+      end
+
+      def gen_mod(c)
+        v = c.value.gsub('^', '**').gsub(',', '_')
+        "MOD = #{v}"
       end
 
       def gen_decls(inpdefs = pbm.formats)

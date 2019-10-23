@@ -13,6 +13,8 @@ end
 
 $DEBUG = true
 
+### CONSTS ###
+
 ### DCLS ###
 
 if $DEBUG

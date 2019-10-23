@@ -30,7 +30,7 @@ module AtCoderFriends
 
       def html
         @html ||= begin
-          siblings.reduce('') { |m, node| m + node.to_s.gsub("\r\n", "\n") }
+          siblings.reduce('') { |m, node| m + node.to_html.gsub("\r\n", "\n") }
         end
       end
 

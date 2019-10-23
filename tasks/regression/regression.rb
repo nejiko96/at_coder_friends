@@ -46,6 +46,7 @@ module AtCoderFriends
     end
 
     def scraping_agent(root, contest)
+      root ||= REGRESSION_HOME
       @ctx = Context.new({}, File.join(root, contest))
       @ctx.scraping_agent
     end
@@ -62,6 +63,10 @@ module AtCoderFriends
 
     def rmdir_force(dir)
       FileUtils.rm_r(dir) if Dir.exist?(dir)
+    end
+
+    def log_path(file)
+      File.join(REGRESSION_HOME, file)
     end
   end
 end
