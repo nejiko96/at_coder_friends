@@ -12,14 +12,13 @@ module AtCoderFriends
         Problem::SECTION_IO_FMT,
         Problem::SECTION_STATEMENT
       ].freeze
-      NAME_PAT = /[0-9a-z_{}, ]+/i.freeze
-      NUM1_PAT = /[+*^0-9{},]+/.freeze
-      NUM2_PAT = /[-+*^0-9{}, ]+/.freeze
-      NUM3_PAT = /[+*^0-9{}, ]+/.freeze
+      NAME_PAT = /[0-9a-z_{},]+/i.freeze
+      NAMES_PAT = /#{NAME_PAT}(?:\s*,\s*#{NAME_PAT})*/.freeze
+      NUM_PAT = /[-+*^0-9{}, ]+/.freeze
       MAX_PATTERN = /
         (?:
-          (#{NAME_PAT})\s*<\s*(#{NUM1_PAT})
-          |(#{NAME_PAT})\s*は\s*#{NUM2_PAT}\s*以上\s*(#{NUM3_PAT})\s*以下の整数
+          (#{NAMES_PAT})\s*<\s*(#{NUM_PAT})
+          |(#{NAMES_PAT})\s*は\s*#{NUM_PAT}\s*以上\s*(#{NUM_PAT})\s*以下の整数
         )
       /xmi.freeze
 
@@ -39,21 +38,23 @@ module AtCoderFriends
           .scan(MAX_PATTERN)
           .map(&:compact)
           .map { |k, v| [normalize_names(k), normalize_value(v)] }
-          .reject { |_, v| v.empty? }
+          .select { |_, v| v && !v.empty? }
           .flat_map { |ks, v| ks.map { |k| [k, v] } }
           .uniq
           .map { |k, v| Problem::Constant.new(k, :max, v) }
       end
 
       def normalize_content(s)
+        # 1) &npsp; , fill-width space -> half width space
+        # 2) {i, j}->{i,j} {N-1}->{N} shortest match
         s
           .tr('０-９Ａ-Ｚａ-ｚ', '0-9A-Za-z')
-          .gsub(/[[:space:]]/, ' ') # &npsp; fill-width space
+          .gsub(/[[:space:]]/) { |c| c.gsub(/[^\t\r\n]/, ' ') } # 1)
           .gsub(%r{</?var>}i, "\t")
           .gsub(%r{<sup>([^<>]+)</sup>}i, '^\1')
           .gsub(%r{<sub>([^<>]+)</sub>}i, '_{\1}')
           .gsub('&amp;', '&')
-          .gsub(/<("[^"]*"|'[^']*'|[^'"<>])*>/, ' ')
+          .gsub(/<("[^"]*"|'[^']*'|[^'"<>])*>/, '')
           .gsub(/(＜|≦|≤|&lt;|&leq?;|\\lt|\\leq?q?)(\{\})?/i, '<')
           .gsub('\\ ', ' ')
           .gsub('\\,', ',')
@@ -65,23 +66,30 @@ module AtCoderFriends
           .gsub('\\mathit', '')
           .gsub('\\times', '*')
           .gsub('|', '')
-          .gsub(/\s*([+*^]+)\s*/, '\1')
-          .gsub(/\{.*?\}/) { |w| w.delete(' ()') } # {i, j}->{i,j} shortest
+          .gsub(/\{.*?\}/) { |w| w.delete(' ()').gsub(/{(.+)-1}\z/, '\1') } # 2)
       end
 
       def normalize_names(s)
+        # 1) {i,j}->{ij} shortest match
         s
-          .gsub(/\{.*?\}/) { |w| w.delete(',') } # {i,j}->{ij} shortest match
-          .delete(' {}')
+          .gsub(/\{.*?\}/) { |w| w.delete(',') } # 1)
+          .delete('{}')
+          .gsub(/\s+/, '')
           .split(',')
           .reject(&:empty?)
       end
 
       def normalize_value(s)
         s
-          .delete(' {}')
-          .gsub(/\A[+*^,]+/, '') # remove preceding symbols
-          .gsub(/[+*^,]+\z/, '') # remove trailing symbols
+          .split(', ')
+          &.map do |v|
+            v
+              .delete(' {}')
+              .gsub(/\A[+*^,]+/, '') # remove preceding symbols
+              .gsub(/[+*^,]+\z/, '') # remove trailing symbols
+          end
+          &.reject(&:empty?)
+          &.first
       end
     end
   end
