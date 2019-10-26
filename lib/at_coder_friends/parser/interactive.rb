@@ -6,15 +6,20 @@ module AtCoderFriends
     module Interactive
       module_function
 
-      INTERACTIVE_PAT = '(インタラクティブ|interactive|リアクティブ|reactive)'
-      FLUSH_PAT = 'flush'
+      INTERACTIVE_PAT = /
+        インタラクティブ
+        |interactive
+        |リアクティブ
+        |reactive
+      /xi.freeze
+      FLUSH_PAT = /flush/i.freeze
 
       def process(pbm)
         pbm.options.interactive = false
 
         body = pbm.body_content
-        f_int = body =~ /#{INTERACTIVE_PAT}/i
-        f_flush = body =~ /#{FLUSH_PAT}/i
+        f_int = body =~ INTERACTIVE_PAT
+        f_flush = body =~ FLUSH_PAT
         f_io = pbm.sections[Problem::SECTION_IO_FMT]
         f_tbl =
           pbm

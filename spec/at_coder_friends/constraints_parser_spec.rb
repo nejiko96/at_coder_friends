@@ -26,7 +26,7 @@ RSpec.describe AtCoderFriends::Parser::Constraints do
         subject
         expect(pbm.constants.size).to eq(1)
         expect(pbm.constants[0]).to have_attributes(
-          name: 'N', type: :max, value: 100
+          name: 'N', type: :max, value: '100'
         )
       end
     end
@@ -38,10 +38,10 @@ RSpec.describe AtCoderFriends::Parser::Constraints do
         subject
         expect(pbm.constants.size).to eq(2)
         expect(pbm.constants[0]).to have_attributes(
-          name: 'N', type: :max, value: 100
+          name: 'N', type: :max, value: '100'
         )
         expect(pbm.constants[1]).to have_attributes(
-          name: 'p_i', type: :max, value: 100
+          name: 'p_i', type: :max, value: '100'
         )
       end
     end
@@ -67,7 +67,7 @@ RSpec.describe AtCoderFriends::Parser::Constraints do
           続く M 行には、道の情報が与えられる。
           このうちの i 行目には 4 つの整数
           A_i (0 ≦ A_i ≦ N-1), B_i (0 ≦ B_i ≤ N-1),
-          C_i (1 ≤ C_i leq 10^6), T_i (1 leq T_i le 10^6)
+          C_i (1 ≤ C_i \\leq 10^6), T_i (1 \\leq T_i \\le 10^6)
           が空白区切りで書かれており、これは 村 A_i と村 B_i を繋ぐ道があり、
           この道を修理するために費用が C_i、時間が T_i かかることを表している。
         DESC
@@ -76,16 +76,16 @@ RSpec.describe AtCoderFriends::Parser::Constraints do
       it 'parses constraints' do
         expect(subject.size).to eq(4)
         expect(subject[0]).to have_attributes(
-          name: 'N', type: :max, value: 10_000
+          name: 'N', type: :max, value: '10^4'
         )
         expect(subject[1]).to have_attributes(
-          name: 'M', type: :max, value: 10_000
+          name: 'M', type: :max, value: '10^4'
         )
         expect(subject[2]).to have_attributes(
-          name: 'C_i', type: :max, value: 1_000_000
+          name: 'C_i', type: :max, value: '10^6'
         )
         expect(subject[3]).to have_attributes(
-          name: 'T_i', type: :max, value: 1_000_000
+          name: 'T_i', type: :max, value: '10^6'
         )
       end
     end

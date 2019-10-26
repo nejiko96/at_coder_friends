@@ -26,7 +26,7 @@ RSpec.describe AtCoderFriends::Parser::Modulo do
         subject
         expect(pbm.constants.size).to eq(1)
         expect(pbm.constants[0]).to have_attributes(
-          name: nil, type: :mod, value: '1000000007'
+          name: 'mod', type: :mod, value: '1000000007'
         )
       end
     end

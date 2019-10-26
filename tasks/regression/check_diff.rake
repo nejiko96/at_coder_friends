@@ -16,7 +16,8 @@ module AtCoderFriends
         pipeline(pbm)
       end
 
-      system("diff -r #{EMIT_ORG_DIR} #{emit_dir}")
+      diff_log = log_path('check_diff.txt')
+      system("diff -r --exclude=.git #{EMIT_ORG_DIR} #{emit_dir} > #{diff_log}")
     end
   end
 end

@@ -11,7 +11,7 @@ module AtCoderFriends
     def check_parse(arg)
       arg ||= 'fmt,smp,int'
       list = local_pbm_list.map do |contest, q, url|
-        pbm = scraping_agent(REGRESSION_HOME, contest).fetch_problem(q, url)
+        pbm = scraping_agent(nil, contest).fetch_problem(q, url)
         Parser::Main.process(pbm)
         tbl = {
           'fmt' => !fmt?(pbm),

@@ -57,6 +57,24 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
     end
   end
 
+  describe '#gen_consts' do
+    subject { generator.gen_consts(constants) }
+    let(:constants) do
+      [
+        AtCoderFriends::Problem::Constant.new('N', :max, '10,000'),
+        AtCoderFriends::Problem::Constant.new(nil, :mod, '998,244,353')
+      ]
+    end
+
+    it 'generates constant decls' do
+      expect(subject).to match(
+        [
+          'MOD = 998_244_353'
+        ]
+      )
+    end
+  end
+
   describe '#gen_decl' do
     subject { generator.gen_decl(inpdef) }
     let(:inpdef) do
@@ -230,6 +248,7 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
     let(:pbm) do
       AtCoderFriends::Problem.new('A') do |pbm|
         pbm.formats = formats
+        pbm.constants = constants
         pbm.options.interactive = interactive
       end
     end
@@ -252,12 +271,20 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
           )
         ]
       end
+      let(:constants) do
+        [
+          AtCoderFriends::Problem::Constant.new('N', :max, '100000'),
+          AtCoderFriends::Problem::Constant.new(nil, :mod, '10^9+7')
+        ]
+      end
       let(:interactive) { false }
 
       it 'generates ruby source' do
         expect(subject).to eq(
           <<~SRC
             # https://atcoder.jp/contests/practice/tasks/practice_1
+
+            MOD = 10**9+7
 
             N = gets.to_i
             xs = Array.new(N)
@@ -285,6 +312,12 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
           AtCoderFriends::Problem::InputFormat.new(:single, :number, %w[N Q])
         ]
       end
+      let(:constants) do
+        [
+          AtCoderFriends::Problem::Constant.new('N', :max, '26'),
+          AtCoderFriends::Problem::Constant.new(nil, :mod, '2^32')
+        ]
+      end
       let(:interactive) { true }
 
       it 'generates ruby source' do
@@ -304,6 +337,8 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
             end
 
             $DEBUG = true
+
+            MOD = 2**32
 
             N, Q = gets.split.map(&:to_i)
 
