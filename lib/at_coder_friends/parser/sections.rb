@@ -108,6 +108,8 @@ module AtCoderFriends
 
       def process(pbm)
         sections = collect_sections(pbm.page)
+        div = pbm.page.search('div#task-statement')[0]
+        div && sections[Problem::SECTION_INTRO] = IntroductionWrapper.new(div)
         pbm.sections = sections
       end
 

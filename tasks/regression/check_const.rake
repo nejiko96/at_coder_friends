@@ -10,7 +10,7 @@ module AtCoderFriends
     CONST_PAT = {
       mod: /
         (.{,30}(?:
-          で割った|modulo|mod\b|divided by|dividing by
+          で割った|modulo|mod\b|divided\s+by|dividing\s+by
         ).{,30})
       /xmi,
       max: /
