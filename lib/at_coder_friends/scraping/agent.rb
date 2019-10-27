@@ -15,12 +15,14 @@ module AtCoderFriends
       include Submission
 
       BASE_URL = 'https://atcoder.jp/'
+      CONTACT = 'https://github.com/nejiko96/at_coder_friends'
 
       attr_reader :ctx, :agent
 
       def initialize(ctx)
         @ctx = ctx
         @agent = Mechanize.new
+        agent.user_agent = "AtCoderFriends/#{VERSION} (#{CONTACT})"
         agent.pre_connect_hooks << proc { sleep 0.1 }
         agent.log = Logger.new(STDERR) if ctx.options[:debug]
         load_session
