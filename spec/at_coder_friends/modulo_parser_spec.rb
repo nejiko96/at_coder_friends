@@ -31,6 +31,18 @@ RSpec.describe AtCoderFriends::Parser::Modulo do
       end
     end
 
+    context 'for kupc2014_l' do
+      let(:url) { '/contests/kupc2014/tasks/kupc2014_l' }
+
+      it 'parses modulo values' do
+        subject
+        expect(pbm.constants.size).to eq(1)
+        expect(pbm.constants[0]).to have_attributes(
+          name: 'mod', type: :mod, value: '10^9+7'
+        )
+      end
+    end
+
     context 'for practice_2' do
       let(:url) { '/contests/practice/tasks/practice_2' }
 

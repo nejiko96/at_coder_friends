@@ -2,7 +2,7 @@
 
 module AtCoderFriends
   module Parser
-    # holds section in problrem page
+    # holds a section of problrem page
     class SectionWrapper
       attr_reader :h
 

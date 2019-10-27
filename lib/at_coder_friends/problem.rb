@@ -3,6 +3,7 @@
 module AtCoderFriends
   # holds problem information
   class Problem
+    SECTION_INTRO = 'INTRODUCTION'
     SECTION_STATEMENT = 'STATEMENT'
     SECTION_TASK = 'TASK'
     SECTION_IN_FMT = 'INPUT_FORMAT'

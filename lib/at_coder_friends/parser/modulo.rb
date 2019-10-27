@@ -10,7 +10,8 @@ module AtCoderFriends
       SECTIONS = [
         Problem::SECTION_OUT_FMT,
         Problem::SECTION_STATEMENT,
-        Problem::SECTION_TASK
+        Problem::SECTION_TASK,
+        Problem::SECTION_INTRO
       ].freeze
       # \(998244353\)
       # 十億九
