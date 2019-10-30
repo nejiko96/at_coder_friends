@@ -56,7 +56,7 @@ RSpec.describe AtCoderFriends::TestRunner::Sample do
           <<~OUTPUT
             ***** test_one A.py (remote) *****
             ==== A_001 ====
-            Logged in as foo (Contestant)
+            logged in as foo (Contestant)
             Exit code: 0
             Time: 17ms
             Memory: 5536KB
@@ -143,7 +143,7 @@ RSpec.describe AtCoderFriends::TestRunner::Sample do
           <<~OUTPUT
             ***** test_all A.py (remote) *****
             ==== A_001 ====
-            Logged in as foo (Contestant)
+            logged in as foo (Contestant)
             Exit code: 0
             Time: 17ms
             Memory: 5536KB

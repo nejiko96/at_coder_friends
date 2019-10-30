@@ -8,6 +8,7 @@ RSpec.describe AtCoderFriends::CLI do
   let(:args) { [command, path] }
   let(:path) { File.join(contest_root, src) }
   let(:src) { 'A.rb' }
+  let(:ctx) { AtCoderFriends::Context.new({}, path) }
 
   USAGE = <<~TEXT
     Usage:
@@ -15,6 +16,7 @@ RSpec.describe AtCoderFriends::CLI do
       at_coder_friends test-one     path/contest/src   # run 1st test case
       at_coder_friends test-all     path/contest/src   # run all test cases
       at_coder_friends submit       path/contest/src   # submit source code
+      at_coder_friends check-and-go path/contest/src   # submit source if all tests passed
       at_coder_friends open-contest path/contest/src   # open contest page
     Options:
         -v, --version                    Display version.
@@ -122,7 +124,7 @@ RSpec.describe AtCoderFriends::CLI do
             <<~OUTPUT
               ***** fetch_all practice *****
               fetch list from https://atcoder.jp/contests/practice/tasks ...
-              Logged in as foo (Contestant)
+              logged in as foo (Contestant)
               fetch problem from /contests/practice/tasks/practice_1 ...
               A_001.in
               A_001.exp
@@ -206,6 +208,8 @@ RSpec.describe AtCoderFriends::CLI do
 
   describe 'test-all' do
     let(:command) { 'test-all' }
+    let(:vf_path) { File.join(tmp_dir, 'A.rb.verified') }
+    before { ctx.verifier.unverify }
 
     it 'runs all test cases' do
       expect { subject }.to output(
@@ -243,6 +247,11 @@ RSpec.describe AtCoderFriends::CLI do
 
         OUTPUT
       ).to_stdout
+    end
+
+    it 'mark the source as verified' do
+      expect { subject }.to \
+        change { File.exist?(vf_path) }.from(false).to(true)
     end
   end
 
@@ -302,14 +311,13 @@ RSpec.describe AtCoderFriends::CLI do
       include_context :evacuate_session
 
       let(:vf_path) { File.join(tmp_dir, 'A.rb.verified') }
-
-      before { AtCoderFriends::Context.new({}, path).verifier.verify }
+      before { ctx.verifier.verify }
 
       it 'posts the source' do
         expect { subject }.to output(
           <<~OUTPUT
             ***** submit A.rb *****
-            Logged in as foo (Contestant)
+            logged in as foo (Contestant)
           OUTPUT
         ).to_stdout
       end
@@ -317,6 +325,125 @@ RSpec.describe AtCoderFriends::CLI do
       it 'mark the source as unverified' do
         expect { subject }.to \
           change { File.exist?(vf_path) }.from(true).to(false)
+      end
+    end
+  end
+
+  describe 'check-and-go' do
+    let(:command) { 'check-and-go' }
+
+    context 'when all tests passed' do
+      include_context :atcoder_stub
+      include_context :evacuate_session
+
+      let(:vf_path) { File.join(tmp_dir, 'A.rb.verified') }
+      before { ctx.verifier.verify }
+
+      before(:all) do
+        File.rename(
+          File.join(smp_dir, 'A_add_2.exp'),
+          File.join(smp_dir, 'A_add_1.exp')
+        )
+      end
+
+      after(:all) do
+        File.rename(
+          File.join(smp_dir, 'A_add_1.exp'),
+          File.join(smp_dir, 'A_add_2.exp')
+        )
+      end
+
+      it 'runs all tests and posts the source' do
+        expect { subject }.to output(
+          <<~OUTPUT
+            ***** test_all A.rb (local) *****
+            ==== A_001 ====
+            -- input --
+            1
+            2 3
+            test
+            -- expected --
+            6 test
+            -- result --
+            6 test
+            \e[0;32;49m<< OK >>\e[0m
+            ==== A_002 ====
+            -- input --
+            72
+            128 256
+            myonmyon
+            -- expected --
+            456 myonmyon
+            -- result --
+            456 myonmyon
+            \e[0;32;49m<< OK >>\e[0m
+            ==== A_add_1 ====
+            -- input --
+            1
+            2 3
+            test
+            -- expected --
+            6 test
+            -- result --
+            6 test
+            \e[0;32;49m<< OK >>\e[0m
+            ***** submit A.rb *****
+            logged in as foo (Contestant)
+          OUTPUT
+        ).to_stdout
+      end
+
+      it 'mark the source as unverified' do
+        expect { subject }.to \
+          change { File.exist?(vf_path) }.from(true).to(false)
+      end
+    end
+
+    context 'when some test fails' do
+      let(:vf_path) { File.join(tmp_dir, 'A.rb.verified') }
+      before { ctx.verifier.unverify }
+
+      it 'runs all tests and does not post the source' do
+        expect { subject }.to output(
+          <<~OUTPUT
+            ***** test_all A.rb (local) *****
+            ==== A_001 ====
+            -- input --
+            1
+            2 3
+            test
+            -- expected --
+            6 test
+            -- result --
+            6 test
+            \e[0;32;49m<< OK >>\e[0m
+            ==== A_002 ====
+            -- input --
+            72
+            128 256
+            myonmyon
+            -- expected --
+            456 myonmyon
+            -- result --
+            456 myonmyon
+            \e[0;32;49m<< OK >>\e[0m
+            ==== A_add_1 ====
+            -- input --
+            1
+            2 3
+            test
+            -- expected --
+            (no expected value)
+            -- result --
+            6 test
+
+          OUTPUT
+        ).to_stdout
+      end
+
+      it 'mark the source as verified' do
+        expect { subject }.to \
+          change { File.exist?(vf_path) }.from(false).to(true)
       end
     end
   end

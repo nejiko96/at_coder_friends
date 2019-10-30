@@ -40,7 +40,7 @@ Or install it yourself as:
 ### Setup
 
 ```
-at_coder_friends setup     /path/to/contest
+at_coder_friends setup         /path/to/contest
 ```
 
 Creates contest folder, and generates example data and source skeletons into the folder.
@@ -56,19 +56,25 @@ Opens the contet page which the contest folder linked to.
 ### Run first test case
 
 ```
-at_coder_friends test-one  /path/to/contest/source_file
+at_coder_friends test-one      /path/to/contest/source_file
 ```
 
 ### Run all test cases
 
 ```
-at_coder_friends test-all  /path/to/contest/source_file
+at_coder_friends test-all      /path/to/contest/source_file
 ```
 
 ### Submit code
 
 ```
-at_coder_friends submit    /path/to/contest/source_file
+at_coder_friends submit        /path/to/contest/source_file
+```
+
+### Submit code automatically if all tests pasesed
+
+```
+at_coder_friends check-and-go  /path/to/contest/source_file
 ```
 
 ### Naming convention
