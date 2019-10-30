@@ -71,7 +71,7 @@ at_coder_friends test-all      /path/to/contest/source_file
 at_coder_friends submit        /path/to/contest/source_file
 ```
 
-### Submit code automatically if all tests pasesed
+### Submit code automatically if all tests passed
 
 ```
 at_coder_friends check-and-go  /path/to/contest/source_file
