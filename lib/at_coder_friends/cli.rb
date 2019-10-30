@@ -14,6 +14,7 @@ module AtCoderFriends
           at_coder_friends test-one     path/contest/src   # run 1st test case
           at_coder_friends test-all     path/contest/src   # run all test cases
           at_coder_friends submit       path/contest/src   # submit source code
+          at_coder_friends check-and-go path/contest/src   # submit source if all tests passed
           at_coder_friends open-contest path/contest/src   # open contest page
         Options:
       TEXT
@@ -75,6 +76,8 @@ module AtCoderFriends
         test_all
       when 'submit'
         submit
+      when 'check-and-go'
+        check_and_go
       when 'judge-one'
         judge_one(*args)
       when 'judge-all'
@@ -114,6 +117,18 @@ module AtCoderFriends
 
       ctx.scraping_agent.submit
       vf.unverify
+    end
+
+    def check_and_go
+      vf = ctx.verifier
+      if ctx.sample_test_runner.test_all
+        # submit automatically
+        ctx.scraping_agent.submit
+        vf.unverify
+      else
+        # enable manual submit
+        vf.verify
+      end
     end
 
     def judge_one(id = '')

@@ -42,7 +42,7 @@ RSpec.describe AtCoderFriends::Scraping::Agent do
           <<~TEXT
             ***** fetch_all practice *****
             fetch list from https://atcoder.jp/contests/practice/tasks ...
-            Logged in as foo (Contestant)
+            logged in as foo (Contestant)
             fetch problem from /contests/practice/tasks/practice_1 ...
             fetch problem from /contests/practice/tasks/practice_2 ...
           TEXT
@@ -66,7 +66,7 @@ RSpec.describe AtCoderFriends::Scraping::Agent do
           output(
             <<~OUTPUT
               ***** submit A.rb *****
-              Logged in as foo (Contestant)
+              logged in as foo (Contestant)
             OUTPUT
           ).to_stdout
         expect(subject).to be_a(Mechanize::Page)
@@ -81,7 +81,7 @@ RSpec.describe AtCoderFriends::Scraping::Agent do
           output(
             <<~OUTPUT
               ***** submit A_v2.rb *****
-              Logged in as foo (Contestant)
+              logged in as foo (Contestant)
             OUTPUT
           ).to_stdout
         expect(subject).to be_a(Mechanize::Page)

@@ -59,7 +59,7 @@ module AtCoderFriends
         @username = (link ? link.text.strip : '-')
         return if @username == username_bak || @username == '-'
 
-        puts "Logged in as #{@username}"
+        puts "logged in as #{@username}"
       end
 
       def username_link(page)
