@@ -156,6 +156,17 @@ It is convenient to use AtCoderFriends from Sublime Text plugin.
       "problemMatcher": [],
       "group": "none",
     },
+    {
+      "label": "AtCoderFriends:Check And Go",
+      "type": "shell",
+      "command": "at_coder_friends",
+      "args": [
+        "check-and-go",
+        "${file}"
+      ],
+      "problemMatcher": [],
+      "group": "none",
+    },
     ...
   ],
   "inputs": [
