@@ -2,7 +2,7 @@
 
 module AtCoderFriends
   module Generator
-    # generates C++ source code from problem description
+    # generates Ruby source from problem description
     class RubyBuiltin
       ACF_HOME = File.realpath(File.join(__dir__, '..', '..', '..'))
       TMPL_DIR = File.join(ACF_HOME, 'templates')

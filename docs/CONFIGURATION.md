@@ -133,12 +133,12 @@ ext_settings:
 - generators  
   List of source generator class names  
   In default, ```RubyBuiltin``` and ```CxxBuiltin``` are available.  
-  For those other than above, corresponding plugin will be used  
-  if it has been installed (?).  
-  ソーススケルトンを生成するジェネレータのクラス名（リスト形式）  
+  For other generators, corresponding plugin will be used  
+  if it has been installed.  
+  ソースジェネレータのクラス名（リスト形式）  
   既定の状態では「RubyBuiltin」と「CxxBuiltin」が利用でき、  
-  上記以外については、対応するプラグインがインストールされていれば  
-  それが使われます（？）  
+  その他のジェネレータは、対応するプラグインがインストールされていれば  
+  利用できます  
 
   For example, if ```RubyAlt``` is specified as generator name,  
   following plugin will be used:
@@ -148,6 +148,8 @@ ext_settings:
     |Gem Name         |```at_coder_friends-generator-ruby_alt```          |
     |Require Statement|```require 'at_coder_friends/generator/ruby_alt'```|
     |Main Class Name  |```AtCoderFriends::Generator::RubyAlt```           |
+  
+  [search generator in GitHub](https://github.com/search?q=at_coder_friends-generator)
 
 - generator_settings
   - _(generator name)_  

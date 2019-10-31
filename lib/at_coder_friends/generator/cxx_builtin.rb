@@ -43,7 +43,7 @@ module AtCoderFriends
       TEXT
     end
 
-    # generates C++ source code from problem description
+    # generates C++ source from problem description
     class CxxBuiltin
       include CxxBuiltinConstants
 
