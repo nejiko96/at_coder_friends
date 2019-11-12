@@ -174,7 +174,7 @@ module AtCoderFriends
       end
 
       def gen_arr_size(szs)
-        szs.map { |sz| sz =~ /\D/ ? "#{sz.upcase}_MAX" : sz }
+        szs.map { |sz| sz.gsub(/([a-z][a-z0-9_]*)/i, '\1_MAX').upcase }
       end
 
       def gen_inputs(inpdefs = pbm.formats)

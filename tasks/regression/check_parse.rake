@@ -33,8 +33,8 @@ module AtCoderFriends
     end
 
     def fmt?(pbm)
-      [Problem::SECTION_IN_FMT, Problem::SECTION_IO_FMT]
-        .any? { |key| pbm.sections[key]&.code_block&.size&.positive? }
+      fmt = Parser::InputFormat.find_fmt(pbm)
+      fmt && !fmt.empty?
     end
 
     def report(list, file)

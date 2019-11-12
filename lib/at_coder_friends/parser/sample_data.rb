@@ -16,7 +16,9 @@ module AtCoderFriends
             elsif key =~ Problem::SECTION_OUT_SMP_PAT
               :exp
             end
-          ext && pbm.add_smp($LAST_MATCH_INFO[:no], ext, section.code_block)
+          ext && pbm.add_smp(
+            $LAST_MATCH_INFO[:no], ext, section.code_block_content
+          )
         end
       end
     end

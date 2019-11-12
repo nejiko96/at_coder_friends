@@ -49,13 +49,13 @@ module AtCoderFriends
         # 2) {i, j}->{i,j} {N-1}->{N} shortest match
         s
           .tr('０-９Ａ-Ｚａ-ｚ', '0-9A-Za-z')
-          .gsub(/[[:space:]]/) { |c| c.gsub(/[^\t\r\n]/, ' ') } # 1)
+          .gsub(/[[:space:]]/) { |c| c.gsub(/[^\t\n]/, ' ') } # 1)
           .gsub(%r{</?var>}i, "\t")
           .gsub(%r{<sup>([^<>]+)</sup>}i, '^\1')
           .gsub(%r{<sub>([^<>]+)</sub>}i, '_{\1}')
-          .gsub('&amp;', '&')
           .gsub(/<("[^"]*"|'[^']*'|[^'"<>])*>/, '')
-          .gsub(/(＜|≦|≤|&lt;|&leq?;|\\lt|\\leq?q?)(\{\})?/i, '<')
+          .gsub('&amp;', '&')
+          .gsub(/(＜|≦|≤|&lt;|&leq?;|\\lt|\\leq?q?)/i, '<')
           .gsub('\\ ', ' ')
           .gsub('\\,', ',')
           .gsub('\\|', '|')
@@ -65,6 +65,9 @@ module AtCoderFriends
           .gsub('\\rvert', '|')
           .gsub('\\mathit', '')
           .gsub('\\times', '*')
+          .gsub(/\\begin(\{[^{}]*\})*/, '')
+          .gsub(/\\end(\{[^{}]*\})*/, '')
+          .gsub(/\{\}/, ' ')
           .gsub('|', '')
           .gsub(/\{.*?\}/) { |w| w.delete(' ()').gsub(/{(.+)-1}\z/, '\1') } # 2)
       end
