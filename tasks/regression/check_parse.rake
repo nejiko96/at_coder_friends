@@ -8,20 +8,28 @@ module AtCoderFriends
   module Regression
     module_function
 
-    def check_parse(arg)
-      arg ||= 'fmt,smp,int'
+    def check_parse
       list = local_pbm_list.map do |contest, q, url|
         pbm = scraping_agent(nil, contest).fetch_problem(q, url)
         Parser::Main.process(pbm)
-        tbl = {
-          'fmt' => !fmt?(pbm),
-          'smp' => pbm.samples.all? { |smp| smp.txt.empty? },
-          'int' => pbm.options.interactive,
-          'bin' => pbm.options.binary_values
-        }
-        [contest, q, tbl.values_at(*arg.split(','))]
+        flags = [
+          !fmt?(pbm),
+          pbm.samples.all? { |smp| smp.txt.empty? },
+          pbm.options.interactive
+        ]
+        [contest, q, flags]
       end
-      report(list)
+      report(list, 'check_parse.txt')
+    end
+
+    def check_bin
+      list = local_pbm_list.map do |contest, q, url|
+        pbm = scraping_agent(nil, contest).fetch_problem(q, url)
+        Parser::Main.process(pbm)
+        flags = [pbm.options.binary_values]
+        [contest, q, flags]
+      end
+      report(list, 'check_bin.txt')
     end
 
     def fmt?(pbm)
@@ -29,12 +37,14 @@ module AtCoderFriends
         .any? { |key| pbm.sections[key]&.code_block&.size&.positive? }
     end
 
-    def report(list)
-      list
-        .select { |_, _, flags| flags.any? }
-        .map { |c, q, flags| [c, q, flags.map { |f| f_to_s(f) }] }
-        .sort
-        .each { |args| puts args.flatten.join("\t") }
+    def report(list, file)
+      File.open(log_path(file), 'w') do |f|
+        list
+          .select { |_, _, flags| flags.any? }
+          .map { |c, q, flags| [c, q, flags.map { |flg| f_to_s(flg) }] }
+          .sort
+          .each { |args| f.puts args.flatten.join("\t") }
+      end
     end
 
     def f_to_s(f)
@@ -49,8 +59,12 @@ end
 
 namespace :regression do
   desc 'checks page parse result'
-  task :check_parse, ['flags'] do |_, args|
-    flags = args[:flags]
-    AtCoderFriends::Regression.check_parse flags
+  task :check_parse do
+    AtCoderFriends::Regression.check_parse
+  end
+
+  desc 'checks binary problem parse result'
+  task :check_bin do
+    AtCoderFriends::Regression.check_bin
   end
 end
