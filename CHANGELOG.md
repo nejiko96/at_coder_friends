@@ -1,15 +1,19 @@
 # Change log
 
 ## master (unreleased)
+
+## 0.6.2 (2019-11-18)
 ### Added
 - add ```check-and-go``` command.
 
 ### Changed
-- Input format parser refinement
+- Enhancement in input format parser.
 
 ## 0.6.1 (2019-10-28)
 ### Added
 - Extract MOD values from problem description.
+
+### Changed
 - Enhancement in MAX value parser.
 
 ## 0.6.0 (2019-10-21)
@@ -18,6 +22,8 @@
 - Interactive problem support.
 - Binary problem support.
 - Add settings about source generation.
+
+### Changed
 - Treat all ```A_*.in``` format files as sample input data
 
 ## 0.5.2 (2019-10-14)
@@ -27,6 +33,8 @@
 ## 0.5.1 (2019-10-14)
 ### Added
 - Colored test results.
+
+### Changed
 - Enhancement in sample data parser.
 - Enhancement in input format parser.
 
