@@ -115,7 +115,7 @@ RSpec.describe AtCoderFriends::CLI do
               <<~OUTPUT
                 ***** fetch_all practice *****
                 fetch list from https://atcoder.jp/contests/practice/tasks ...
-                Enter username:Enter password for foo:
+                enter username:enter password for foo:
                 logged in as foo (Contestant)
                 fetch problem from /contests/practice/tasks/practice_1 ...
                 A_001.in

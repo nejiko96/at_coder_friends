@@ -24,13 +24,13 @@ module AtCoderFriends
 
       def content
         @content ||= begin
-          siblings.reduce('') { |m, node| m + node.content.gsub("\r\n", "\n") }
+          siblings.reduce('') { |m, node| m + node.content }.gsub("\r\n", "\n")
         end
       end
 
       def html
         @html ||= begin
-          siblings.reduce('') { |m, node| m + node.to_html.gsub("\r\n", "\n") }
+          siblings.reduce('') { |m, node| m + node.to_html }.gsub("\r\n", "\n")
         end
       end
 
@@ -44,11 +44,17 @@ module AtCoderFriends
         elem
       end
 
-      def code_block
-        @code_block ||= begin
-          elem = find_element(%w[pre blockquote])
-          (elem&.content || '').lstrip.gsub("\r\n", "\n")
-        end
+      def code_block_content
+        @code_block_content ||= code_block(:content)
+      end
+
+      def code_block_html
+        @code_block_html ||= code_block(:to_html)
+      end
+
+      def code_block(mtd)
+        elem = find_element(%w[pre blockquote])
+        elem && elem.send(mtd).lstrip.gsub("\r\n", "\n") || ''
       end
     end
   end

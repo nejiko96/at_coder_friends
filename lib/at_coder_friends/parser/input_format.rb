@@ -2,63 +2,126 @@
 
 module AtCoderFriends
   module Parser
+    InputFormatMatcher = Struct.new(:container, :item, :pat, :gen_names, :gen_pat2) do
+      attr_reader :names, :size
+
+      def match(str)
+        return false unless (m1 = pat.match(str))
+
+        @names = gen_names.call(m1)
+        @pat2 = gen_pat2&.call(names)
+        @size = m1.names.include?('sz') && m1['sz'] || ''
+        true
+      end
+
+      def match2(str)
+        return false unless @pat2
+        return true if /\A\.+\z/ =~ str
+        return false unless (m2 = @pat2.match(str))
+
+        m2.names.include?('sz') && @size = m2['sz']
+        true
+      end
+    end
+
     module InputFormatConstants
       SECTIONS = [
         Problem::SECTION_IN_FMT,
         Problem::SECTION_IO_FMT
       ].freeze
-      PARSERS = [
-        {
-          container: :harray,
-          item: :number,
-          pat: /^(?<v>[a-z]+)[01](\s+\k<v>.)*(\s+\.+)?(\s+\k<v>.)+$/i,
-          names: ->(m) { [m[:v]] },
-          pat2: ->(_) { nil },
-          size: ->(f) { [f[-1]] }
-        },
-        {
-          container: :harray,
-          item: :char,
-          pat: /^(?<v>[a-z]+)[01](\k<v>.)*(\s*\.+\s*)?(\k<v>.)+$/i,
-          names: ->(m) { [m[:v]] },
-          pat2: ->(_) { nil },
-          size: ->(f) { [f[-1]] }
-        },
-        {
-          container: :matrix,
-          item: :number,
-          pat: /^(?<v>[a-z]+)[01][01](\s+\k<v>..)*(\s+\.+)?(\s+\k<v>..)+$/i,
-          names: ->(m) { [m[:v]] },
-          pat2: ->(v) { /(^#{v}..(\s+#{v}..)*(\s+\.+)?(\s+#{v}..)+|\.+)$/ },
-          size: ->(f) { f[-2..-1].chars.to_a }
-        },
-        {
-          container: :matrix,
-          item: :char,
-          pat: /^(?<v>[a-z]+)[01][01](\k<v>..)*(\s*\.+\s*)?(\k<v>..)+$/i,
-          names: ->(m) { [m[:v]] },
-          pat2: ->(v) { /(^#{v}..(#{v}..)*(\s*\.+\s*)?(#{v}..)+|\.+)$/ },
-          size: ->(f) { f[-2..-1].chars.to_a }
-        },
-        {
-          container: :varray,
-          item: :number,
-          pat: /^[a-z]+(?<i>[0-9])(\s+[a-z]+\k<i>)*$/i,
-          names: ->(m) { m[0].split.map { |w| w[0..-2] } },
-          pat2: lambda { |vs|
-            pat = vs.map { |v| v + '.+' }.join('\s+')
-            /^(#{pat}|\.+)$/
-          },
-          size: ->(f) { /(?<sz>\d+)$/ =~ f ? [sz] : [f[-1]] }
-        },
-        {
-          container: :single,
-          item: :number,
-          pat: /^[a-z]+(\s+[a-z]+)*$/i,
-          names: ->(m) { m[0].split },
-          pat2: ->(_) { nil },
-          size: ->(_) { [] }
-        }
+      ITEM_PAT = /\{*[A-Za-z]+(?:_[A-Za-z]+)*\}*/.freeze
+      SZ = '(_(?<sz>\S+)|{(?<sz>\S+)})'
+      SINGLE_PAT = /([A-Za-z{][A-Za-z_0-9{}]*)/.freeze
+      MATCHERS = [
+        InputFormatMatcher.new(
+          :matrix, :number,
+          /
+            \A
+            (?<v>#{ITEM_PAT})[_{]\{*[01][,_]?[01]\}*
+            (\s+\k<v>[_{]\S+)*
+            (\s+\.+)?
+            (\s+\k<v>#{SZ})+
+            \z
+          /x,
+          ->(m) { [m[:v]] },
+          lambda { |((v))|
+            /
+              \A
+              #{v}[_{]\S+
+              (\s+#{v}#{SZ})*
+              (\s+\.+)?
+              (\s+#{v}#{SZ})*
+              \z
+            /x
+          }
+        ),
+        InputFormatMatcher.new(
+          :matrix, :char,
+          /
+            \A
+            (?<v>#{ITEM_PAT})[_{]\{*[01][,_]?[01]\}*
+            (\k<v>[_{]\S+)*
+            (\s*\.+\s*)?
+            (\k<v>#{SZ})+
+            \z
+          /x,
+          ->(m) { [m[:v]] },
+          lambda { |((v))|
+            /
+              \A
+              (#{v}[_{]\S+)+
+              (\s*\.+\s*)?
+              (#{v}#{SZ})+
+              \z
+            /x
+          }
+        ),
+        InputFormatMatcher.new(
+          :harray, :number,
+          /
+            \A
+            (?<v>#{ITEM_PAT})[_{]\{*[0-9]\}*
+            (\s+\k<v>[_{]\S+)*
+            (\s+\.+)?
+            (\s+\k<v>#{SZ})+
+            \z
+          /x,
+          ->(m) { [m[:v]] },
+          nil
+        ),
+        InputFormatMatcher.new(
+          :harray, :char,
+          /
+            \A
+            (?<v>#{ITEM_PAT})[_{]\{*[0-9]\}*
+            (\k<v>[_{]\S+)*
+            (\s*\.+\s*)?
+            (\k<v>#{SZ})+
+            \z
+          /x,
+          ->(m) { [m[:v]] },
+          nil
+        ),
+        InputFormatMatcher.new(
+          :varray, :number,
+          /
+            \A
+            #{ITEM_PAT}[_{]\{*(?<sz>[0-9]+)\}*
+            (\s+#{ITEM_PAT}[_{]\{*\k<sz>\}*)*
+            \z
+          /x,
+          ->(m) { m[0].split.map { |w| w.scan(ITEM_PAT)[0] } },
+          lambda { |vs|
+            pat2 = vs.map { |v| v + SZ }.join('\s+')
+            /\A#{pat2}\z/
+          }
+        ),
+        InputFormatMatcher.new(
+          :single, :number,
+          /\A(.*\s)?#{SINGLE_PAT}(\s.*)?\z/,
+          ->(m) { m[0].split.select { |w| w =~ /\A#{SINGLE_PAT}\z/ } },
+          nil
+        )
       ].freeze
     end
 
@@ -68,80 +131,135 @@ module AtCoderFriends
 
       module_function
 
-      # Iterates through elements of an array
-      class Iterator
-        def initialize(array)
-          @array = array
-          @i = 0
-        end
-
-        def next?
-          @i < @array.size
-        end
-
-        def next
-          ret = @array[@i]
-          @i += 1
-          ret
-        end
-      end
-
       def process(pbm)
-        str =
-          SECTIONS
-          .map { |key| pbm.sections[key]&.code_block }
-          .find(&:itself) || ''
+        return unless (str = find_fmt(pbm))
+
         inpdefs = parse(str, pbm.samples)
         pbm.formats = inpdefs
       end
 
+      def find_fmt(pbm)
+        str = nil
+        SECTIONS.any? do |key|
+          str = pbm.sections[key]&.code_block_html
+          str && !str.empty?
+        end
+        str
+      end
+
       def parse(str, smps)
-        lines = normalize(str)
+        lines = normalize_fmt(str)
         inpdefs = parse_fmt(lines)
+        normalize_defs!(inpdefs)
         smpx = max_smp(smps)
         smpx && match_smp!(inpdefs, smpx)
         inpdefs
       end
 
-      def normalize(fmt)
+      def normalize_fmt(fmt)
+        # 1) &npsp; , fill-width space -> half width space
+        # 2) {i, j}->{i,j} for nested {}
         fmt
-          .gsub(/[+*-]\d+/, '') # N-1, N+1 -> N
-          .gsub(%r{[-/　]}, ' ') # a-b, a/b -> a b
-          .gsub(/\{.*?\}/) { |w| w.delete(' ') } # {1, 1}->{1,1} shortest match
-          .gsub(/[_,'\\(){}|$]/, '')
-          .gsub(/[・:：…‥]+/, '..')
-          .gsub(/[clv]?dots/, '..')
-          .gsub(/^\s*\.[.\s]*$/, '..')
+          .tr('０-９Ａ-Ｚａ-ｚ', '0-9A-Za-z')
+          .gsub(/[[:space:]]/) { |c| c.gsub(/[^\n]/, ' ') } # 1)
+          .gsub(%r{<var>([^<>]+)</var>}i, '\1') # <sub><var>N</var></sub>
+          .gsub(%r{<sup>([^<>]+)</sup>}i, '^\1')
+          .gsub(%r{<sub>([^<>]+)</sub>}i, '_{\1}')
+          .gsub(%r{<sub>([^<>]+)</sub>}i, '_{\1}') # for nested<sub>
+          .gsub(/<("[^"]*"|'[^']*'|[^'"<>])*>/, '')
+          .gsub('&amp;', '&')
+          .gsub('&gt;', '>')
+          .gsub('&lt;', '<')
+          .gsub('\\ ', ' ')
+          .gsub('\\(', '')
+          .gsub('\\)', '')
+          .gsub('\\lvert', '|')
+          .gsub('\\rvert', '|')
+          .gsub('\\mathit', '')
+          .gsub('\\times', '*')
+          .gsub(/\\begin(\{[^{}]*\})*/, '')
+          .gsub(/\\end(\{[^{}]*\})*/, '')
+          .gsub(/\\[cdlv]?dots/, '..')
+          .gsub(/\{\}/, ' ')
+          .gsub('−', '-') # fill width hyphen
+          .gsub(/[・：‥⋮︙…]+/, '..')
+          .gsub(/[\\$']/, '') # s' -> s
+          .gsub(/[&~|]/, ' ') # |S| -> S
+          .gsub(%r{[-/:](#{SINGLE_PAT})}, ' \1') # a-b, a/b, a:b -> a b
+          .gsub(/^\s*[.:][\s.:]*$/, '..')
+          .tr('()', '{}')
+          .gsub(/(?<bl>\{(?:[^{}]|\g<bl>)*\})/) { |w| w.delete(' ') } # 2)
           .split("\n")
           .map(&:strip)
       end
 
-      # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
       def parse_fmt(lines)
-        it = Iterator.new(lines + ['']) # sentinel
-        prv = nil
-        cur = it.next
-        Enumerator.new do |y|
-          loop do
-            unless (parser = PARSERS.find { |ps| ps[:pat] =~ cur })
-              puts "unknown format: #{cur}" unless cur.empty?
-              (cur = it.next) ? next : break
-            end
-            container, item = parser.values_at(:container, :item)
-            m = parser[:pat].match(cur)
-            names = parser[:names].call(m)
-            pat2 = parser[:pat2].call(names)
-            loop do
-              prv = cur
-              cur = it.next
-              break unless pat2 && pat2 =~ cur
-            end
-            size = parser[:size].call(prv)
-            y << Problem::InputFormat.new(container, item, names, size)
+        matcher = nil
+        (lines + ['']).each_with_object([]) do |line, ret|
+          if matcher
+            next if matcher.match2(line)
+
+            ret.last.size = matcher.size
           end
-        end.to_a
+          if (matcher = MATCHERS.find { |m| m.match(line) })
+            ret << Problem::InputFormat.new(
+              matcher.container, matcher.item, matcher.names, ''
+            )
+          elsif !line.empty?
+            puts "unknown format: #{line}"
+            # ret << Problem::InputFormat.new(:unknown, nil, line)
+          end
+        end
       end
-      # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
+
+      def normalize_defs!(inpdefs)
+        inpdefs.each do |inpdef|
+          inpdef.names = normalize_names(inpdef.names)
+          inpdef.size = normalize_size(inpdef.container, inpdef.size)
+        end
+      end
+
+      def normalize_names(names)
+        return names unless names.is_a?(Array)
+
+        names.map { |nm| nm.delete('{}').gsub(/(\A_+|_+\z)/, '') }
+      end
+
+      def normalize_size(container, size)
+        sz =
+          case container
+          when :matrix
+            matrix_size(size)
+          when :harray, :varray
+            [size]
+          else
+            []
+          end
+        sz.map do |w|
+          w
+            .delete('{},')
+            .gsub(/(\A_+|(_|-1)+\z)/, '') # extra underscores, N-1 -> N
+        end
+      end
+
+      def matrix_size(str)
+        sz = str.scan(/([^{}]+|\{[^{}]+\}})/).flatten
+        return sz if sz.size == 2
+
+        sz = str.split(',')
+        return sz if sz.size == 2
+
+        sz = str.split('_')
+        return sz if sz.size == 2
+
+        str = str.delete('{},')
+        len = str.size
+        if len.positive? && len.even?
+          return str.chars.each_slice(len / 2).map(&:join)
+        end
+
+        [str[0] || '_', str[1..-1] || '_']
+      end
 
       def max_smp(smps)
         smps

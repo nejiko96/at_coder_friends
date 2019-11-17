@@ -86,14 +86,16 @@ at_coder_friends check-and-go  /path/to/contest/source_file
 - Suffixes (start with underscore) may be added to the file name (e.g. ```A_v2.rb```),
   so that you can try multiple codes for one problem.
 
-## Configuration
-
-See [CONFIGURATION.md](docs/CONFIGURATION.md) for details.
-
 ## Notes
 
 - Compilation is not supported.
-- Source generator supports only Ruby and C++ in default.
+- Source generator supports Ruby and C++ in default, and can be added by plugin.
+- Test runner and code submission are supported in 36 languages.
+
+
+## Configuration
+
+See [CONFIGURATION.md](docs/CONFIGURATION.md) for details.
 
 ## For Sublime Text user
 

@@ -22,6 +22,10 @@ module AtCoderFriends
       def initialize(container, item, names, size = [])
         super(container, item, names, size)
       end
+
+      def to_s
+        "#{container} #{item} #{names} #{size}"
+      end
     end
 
     Constant = Struct.new(:name, :type, :value)

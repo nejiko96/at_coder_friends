@@ -22,7 +22,6 @@ module AtCoderFriends
         begin
           return agent.get(url)
         rescue Mechanize::ResponseCodeError => e
-          raise e unless e.response_code == '404'
           raise e if username_link(e.page)
         end
 
@@ -40,13 +39,13 @@ module AtCoderFriends
       def read_auth
         user = ctx.config['user'].to_s
         if user.empty?
-          print('Enter username:')
+          print('enter username:')
           user = STDIN.gets.chomp
         end
 
         pass = ctx.config['password'].to_s
         if pass.empty?
-          print("Enter password for #{user}:")
+          print("enter password for #{user}:")
           pass = STDIN.noecho(&:gets).chomp
           puts
         end
