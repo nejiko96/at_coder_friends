@@ -1,8 +1,11 @@
 # Change log
 
-## master(unreleased)
+## master (unreleased)
 ### Added
 - add ```check-and-go``` command.
+
+### Changed
+- Input format parser refinement
 
 ## 0.6.1 (2019-10-28)
 ### Added
