@@ -2,7 +2,10 @@
 
 module AtCoderFriends
   module Parser
-    InputFormatMatcher = Struct.new(:container, :item, :pat, :gen_names, :gen_pat2) do
+    InputFormatMatcher = Struct.new(
+      :container, :item,
+      :pat, :gen_names, :gen_pat2
+    ) do
       attr_reader :names, :size
 
       def match(str)
@@ -29,28 +32,32 @@ module AtCoderFriends
         Problem::SECTION_IN_FMT,
         Problem::SECTION_IO_FMT
       ].freeze
-      ITEM_PAT = /\{*[A-Za-z]+(?:_[A-Za-z]+)*\}*/.freeze
-      SZ = '(_(?<sz>\S+)|{(?<sz>\S+)})'
-      SINGLE_PAT = /([A-Za-z{][A-Za-z_0-9{}]*)/.freeze
+      RE_ITEM = /\{*[A-Za-z]+(?:_[A-Za-z]+)*\}*/.freeze
+      RE_IX_00 = /(_\{*[01][,_]?[01]\}*|\{+[01][,_]?[01]\}+)/.freeze
+      RE_IX_0 = /(_\{*[0-9]+\}*|\{+[0-9]+\}+)/.freeze
+      RE_IX = /(_\S+?|\{\S+?\})/.freeze
+      RE_SZ = /(_(?<sz>\S+?)|\{(?<sz>\S+?)\})/.freeze
+      RE_SZ_0 = /(_\{*(?<sz>[0-9]+)\}*|\{+(?<sz>[0-9]+)\}+)/.freeze
+      RE_SZ_REF = '(_\{*\k<sz>\}*|\{+\k<sz>\}+)'
+      RE_SINGLE = /[A-Za-z{][A-Za-z_0-9{}]*/.freeze
+      RE_BLOCK = /(?<bl>\{(?:[^{}]|\g<bl>)*\})/.freeze
       MATCHERS = [
         InputFormatMatcher.new(
           :matrix, :number,
           /
             \A
-            (?<v>#{ITEM_PAT})[_{]\{*[01][,_]?[01]\}*
-            (\s+\k<v>[_{]\S+)*
-            (\s+\.+)?
-            (\s+\k<v>#{SZ})+
+            (?<v>#{RE_ITEM})#{RE_IX_00}
+            (\s+(\.+|\k<v>#{RE_IX}))*
+            \s+\k<v>#{RE_SZ}
             \z
           /x,
           ->(m) { [m[:v]] },
-          lambda { |((v))|
+          lambda { |(v)|
             /
               \A
-              #{v}[_{]\S+
-              (\s+#{v}#{SZ})*
-              (\s+\.+)?
-              (\s+#{v}#{SZ})*
+              #{v}#{RE_IX}
+              (\s+(\.+|#{v}#{RE_IX}))*
+              \s+(\.+|#{v}#{RE_SZ})
               \z
             /x
           }
@@ -59,19 +66,18 @@ module AtCoderFriends
           :matrix, :char,
           /
             \A
-            (?<v>#{ITEM_PAT})[_{]\{*[01][,_]?[01]\}*
-            (\k<v>[_{]\S+)*
-            (\s*\.+\s*)?
-            (\k<v>#{SZ})+
+            (?<v>#{RE_ITEM})#{RE_IX_00}
+            (\s*\.+\s*|\k<v>#{RE_IX})*
+            \k<v>#{RE_SZ}
             \z
           /x,
           ->(m) { [m[:v]] },
-          lambda { |((v))|
+          lambda { |(v)|
             /
               \A
-              (#{v}[_{]\S+)+
-              (\s*\.+\s*)?
-              (#{v}#{SZ})+
+              (#{v}#{RE_IX})+
+              (\s*\.+\s*|#{v}#{RE_IX})*
+              (\s*\.+\s*|#{v}#{RE_SZ})
               \z
             /x
           }
@@ -80,10 +86,9 @@ module AtCoderFriends
           :harray, :number,
           /
             \A
-            (?<v>#{ITEM_PAT})[_{]\{*[0-9]\}*
-            (\s+\k<v>[_{]\S+)*
-            (\s+\.+)?
-            (\s+\k<v>#{SZ})+
+            (?<v>#{RE_ITEM})#{RE_IX_0}
+            (\s+(\.+|\k<v>#{RE_IX}))*
+            \s+\k<v>#{RE_SZ}
             \z
           /x,
           ->(m) { [m[:v]] },
@@ -93,33 +98,82 @@ module AtCoderFriends
           :harray, :char,
           /
             \A
-            (?<v>#{ITEM_PAT})[_{]\{*[0-9]\}*
-            (\k<v>[_{]\S+)*
-            (\s*\.+\s*)?
-            (\k<v>#{SZ})+
+            (?<v>#{RE_ITEM})#{RE_IX_0}
+            (\s*\.+\s*|\k<v>#{RE_IX})*
+            \k<v>#{RE_SZ}
             \z
           /x,
           ->(m) { [m[:v]] },
           nil
         ),
         InputFormatMatcher.new(
+          :vmatrix, :number,
+          /
+            \A
+            (?<vs>#{RE_ITEM}#{RE_SZ_0} (\s+#{RE_ITEM}#{RE_SZ_REF})*)
+            \s+(?<m>#{RE_ITEM})#{RE_IX_00}
+            (\s+(\.+|\k<m>#{RE_IX}))*
+            \s+\k<m>#{RE_SZ}
+            \z
+          /x,
+          ->(m) { m[:vs].split.map { |w| w.scan(RE_ITEM)[0] } + [m[:m]] },
+          lambda { |vs|
+            pat2 = vs[0..-2].map { |v| v + RE_IX.source }.join('\s+')
+            m = vs[-1]
+            /
+              \A
+              #{pat2}
+              \s+#{m}#{RE_IX}
+              (\s+(\.+|#{m}#{RE_IX}))*
+              \s+(\.+|#{m}#{RE_SZ})
+              \z
+            /x
+          }
+        ),
+        InputFormatMatcher.new(
+          :vmatrix, :char,
+          /
+            \A
+            (?<vs>#{RE_ITEM}#{RE_SZ_0} (\s+#{RE_ITEM}#{RE_SZ_REF})*)
+            \s+(?<m>#{RE_ITEM})#{RE_IX_00}
+            (\s*\.+\s*|\k<m>#{RE_IX})*
+            \k<m>#{RE_SZ}
+            \z
+          /x,
+          ->(m) { m[:vs].split.map { |w| w.scan(RE_ITEM)[0] } + [m[:m]] },
+          lambda { |vs|
+            pat2 = vs[0..-2].map { |v| v + RE_IX.source }.join('\s+')
+            m = vs[-1]
+            /
+              \A
+              #{pat2}
+              \s+#{m}#{RE_IX}
+              (\s*\.+\s*|#{m}#{RE_IX})*
+              (\s*\.+\s*|#{m}#{RE_SZ})
+              \z
+            /x
+          }
+        ),
+        InputFormatMatcher.new(
           :varray, :number,
           /
             \A
-            #{ITEM_PAT}[_{]\{*(?<sz>[0-9]+)\}*
-            (\s+#{ITEM_PAT}[_{]\{*\k<sz>\}*)*
+            #{RE_ITEM}#{RE_SZ_0} (\s+#{RE_ITEM}#{RE_SZ_REF})*
             \z
           /x,
-          ->(m) { m[0].split.map { |w| w.scan(ITEM_PAT)[0] } },
+          ->(m) { m[0].split.map { |w| w.scan(RE_ITEM)[0] } },
           lambda { |vs|
-            pat2 = vs.map { |v| v + SZ }.join('\s+')
+            pat2 = vs.map.with_index do |v, i|
+              v + (i.zero? ? RE_SZ : RE_IX).source
+            end
+            .join('\s+')
             /\A#{pat2}\z/
           }
         ),
         InputFormatMatcher.new(
           :single, :number,
-          /\A(.*\s)?#{SINGLE_PAT}(\s.*)?\z/,
-          ->(m) { m[0].split.select { |w| w =~ /\A#{SINGLE_PAT}\z/ } },
+          /\A(.*\s)?#{RE_SINGLE}(\s.*)?\z/,
+          ->(m) { m[0].split.select { |w| w =~ /\A#{RE_SINGLE}\z/ } },
           nil
         )
       ].freeze
@@ -135,7 +189,7 @@ module AtCoderFriends
         return unless (str = find_fmt(pbm))
 
         inpdefs = parse(str, pbm.samples)
-        pbm.formats = inpdefs
+        pbm.formats_raw = inpdefs
       end
 
       def find_fmt(pbm)
@@ -181,14 +235,14 @@ module AtCoderFriends
           .gsub(/\\end(\{[^{}]*\})*/, '')
           .gsub(/\\[cdlv]?dots/, '..')
           .gsub(/\{\}/, ' ')
-          .gsub('−', '-') # fill width hyphen
-          .gsub(/[・：‥⋮︙…]+/, '..')
+          .gsub('−', '-') # full width hyphen
+          .gsub(/[・．：‥⋮︙…]+/, '..')
           .gsub(/[\\$']/, '') # s' -> s
           .gsub(/[&~|]/, ' ') # |S| -> S
-          .gsub(%r{[-/:](#{SINGLE_PAT})}, ' \1') # a-b, a/b, a:b -> a b
+          .gsub(%r{[-/:](#{RE_SINGLE})}, ' \1') # a-b, a/b, a:b -> a b
           .gsub(/^\s*[.:][\s.:]*$/, '..')
           .tr('()', '{}')
-          .gsub(/(?<bl>\{(?:[^{}]|\g<bl>)*\})/) { |w| w.delete(' ') } # 2)
+          .gsub(/#{RE_BLOCK}/) { |w| w.delete(' ') } # 2)
           .split("\n")
           .map(&:strip)
       end
@@ -207,7 +261,7 @@ module AtCoderFriends
             )
           elsif !line.empty?
             puts "unknown format: #{line}"
-            # ret << Problem::InputFormat.new(:unknown, nil, line)
+            ret << Problem::InputFormat.new(:unknown, line)
           end
         end
       end
@@ -228,35 +282,36 @@ module AtCoderFriends
       def normalize_size(container, size)
         sz =
           case container
-          when :matrix
-            matrix_size(size)
+          when :matrix, :vmatrix
+            split_size(size)
           when :harray, :varray
             [size]
-          else
+          when :single
             []
           end
-        sz.map do |w|
+        sz&.map do |w|
           w
             .delete('{},')
             .gsub(/(\A_+|(_|-1)+\z)/, '') # extra underscores, N-1 -> N
         end
       end
 
-      def matrix_size(str)
-        sz = str.scan(/([^{}]+|\{[^{}]+\}})/).flatten
-        return sz if sz.size == 2
+      def split_size(str)
+        str = str.gsub(/(\A\{|\}\z)/, '') while str =~ /\A#{RE_BLOCK}\z/
 
         sz = str.split(',')
         return sz if sz.size == 2
 
-        sz = str.split('_')
+        sz = str.scan(/(?<nbl>[^{}]+)|#{RE_BLOCK}/).flatten.compact
         return sz if sz.size == 2
 
         str = str.delete('{},')
-        len = str.size
-        if len.positive? && len.even?
-          return str.chars.each_slice(len / 2).map(&:join)
-        end
+
+        sz = str.scan(/[^_](?:_[^_])?/)
+        return sz if sz.size == 2
+
+        sz = str.split('_')
+        return sz if sz.size == 2
 
         [str[0] || '_', str[1..-1] || '_']
       end
@@ -275,7 +330,7 @@ module AtCoderFriends
           next if inpdef.item != :number
 
           inpdef.item = :string if lines[i].split[0] =~ /[^\-0-9]/
-          break if %i[varray matrix].include?(inpdef.container)
+          break if %i[varray vmatrix matrix].include?(inpdef.container)
         end
         inpdefs
       end

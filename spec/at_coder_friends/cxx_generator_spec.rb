@@ -243,6 +243,36 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
         expect(subject).to eq('char A[R_MAX][C_MAX + 1];')
       end
     end
+
+    context 'for a jagged array of numbers' do
+      let(:container) { :vmatrix }
+      let(:item) { :number }
+      let(:names) { %w[K A] }
+      let(:size) { %w[N K_N] }
+      it 'generates decl' do
+        expect(subject).to match(
+          [
+            ['int K[N_MAX];'],
+            'int A[N_MAX][K_N_MAX];'
+          ]
+        )
+      end
+    end
+
+    context 'for a jagged array of characters' do
+      let(:container) { :vmatrix }
+      let(:item) { :char }
+      let(:names) { %w[K p] }
+      let(:size) { %w[Q 26] }
+      it 'generates decl' do
+        expect(subject).to match(
+          [
+            ['int K[Q_MAX];'],
+            'char p[Q_MAX][26 + 1];'
+          ]
+        )
+      end
+    end
   end
 
   describe '#gen_input' do
@@ -360,6 +390,40 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
         expect(subject).to eq('REP(i, R) scanf("%s", A[i]);')
       end
     end
+
+    context 'for a jagged array of numbers' do
+      let(:container) { :vmatrix }
+      let(:item) { :number }
+      let(:names) { %w[K A] }
+      let(:size) { %w[N K_N] }
+      it 'generates decl' do
+        expect(subject).to match(
+          [
+            'REP(i, N) {',
+            '  scanf("%d", K + i);',
+            '  REP(j, K[i]) scanf("%d", &A[i][j]);',
+            '}'
+          ]
+        )
+      end
+    end
+
+    context 'for a jagged array of characters' do
+      let(:container) { :vmatrix }
+      let(:item) { :char }
+      let(:names) { %w[K p] }
+      let(:size) { %w[Q 26] }
+      it 'generates decl' do
+        expect(subject).to match(
+          [
+            'REP(i, Q) {',
+            '  scanf("%d", K + i);',
+            '  scanf("%s", p[i]);',
+            '}'
+          ]
+        )
+      end
+    end
   end
 
   describe 'gen_output' do
@@ -396,7 +460,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
     subject { generator.generate(pbm) }
     let(:pbm) do
       AtCoderFriends::Problem.new('A') do |pbm|
-        pbm.formats = formats
+        pbm.formats_raw = formats
         pbm.constants = constants
         pbm.options.interactive = interactive
       end

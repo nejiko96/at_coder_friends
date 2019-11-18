@@ -17,7 +17,7 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
           AtCoderFriends::Parser::SampleData.process(pbm)
         end
     end
-    let(:agent) { AtCoderFriends::Scraping::Agent.new(ctx) }
+    let(:agent) { ctx.scraping_agent }
     let(:ctx) { AtCoderFriends::Context.new({}, contest_root) }
 
     context 'for arc001_1' do
@@ -77,7 +77,7 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
     let(:fmt) { '' }
     let(:smp) { '' }
 
-    context 'for case #1' do
+    context 'for single(number)-varray(number)' do
       let(:fmt) do
         <<~FMT
           <pre>
@@ -115,7 +115,7 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
       end
     end
 
-    context 'for case #2' do
+    context 'for single(number)' do
       let(:fmt) do
         <<~FMT
           <pre>
@@ -133,7 +133,7 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
       end
     end
 
-    context 'for case #3' do
+    context 'for single(number)-matrix(number)-single(number)-varray(number)' do
       let(:fmt) do
         <<~FMT
           <pre>
@@ -180,7 +180,7 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
       end
     end
 
-    context 'for case #4' do
+    context 'for single(number)' do
       let(:fmt) do
         <<~FMT
           <pre>
@@ -199,7 +199,7 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
       end
     end
 
-    context 'for case #5' do
+    context 'for single(number)-harray(number)' do
       let(:fmt) do
         <<~FMT
           <pre>
@@ -226,7 +226,7 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
       end
     end
 
-    context 'for case #6' do
+    context 'for single(number)-varray(string)' do
       let(:fmt) do
         <<~FMT
           <pre>
@@ -263,7 +263,7 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
       end
     end
 
-    context 'for case #7' do
+    context 'for single(string)' do
       let(:fmt) do
         <<~FMT
           <pre>
@@ -281,7 +281,7 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
       end
     end
 
-    context 'for case #8' do
+    context 'for varray(number)' do
       let(:fmt) do
         <<~FMT
           <pre>
@@ -307,7 +307,7 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
       end
     end
 
-    context 'for case #9' do
+    context 'for matrix(string)' do
       let(:fmt) do
         <<~FMT
           <pre>
@@ -335,7 +335,7 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
       end
     end
 
-    context 'for case #10' do
+    context 'for single(number)-varray(number)*2' do
       let(:fmt) do
         <<~FMT
           <pre>
@@ -387,7 +387,7 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
       end
     end
 
-    context 'for case #11' do
+    context 'for single(number)-matrix(char)' do
       let(:fmt) do
         <<~FMT
           <pre>
@@ -419,7 +419,7 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
       end
     end
 
-    context 'for case #12' do
+    context 'for single(number)-harray(char)' do
       let(:fmt) do
         <<~FMT
           <pre>
@@ -445,7 +445,8 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
         )
       end
     end
-    context 'for case #13' do
+
+    context 'for single(number)-matrix(char)' do
       let(:fmt) do
         <<~FMT
           <pre>
@@ -486,6 +487,181 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
         expect(defs[1]).to have_attributes(
           container: :matrix, item: :char, names: %w[x], size: %w[N 9]
         )
+      end
+    end
+
+    context 'for vmatrix(number)' do
+      let(:fmt) do
+        <<~FMT
+          <pre><var>N</var> <var>M</var>
+          <var>K_1</var> <var>A_{11}</var> <var>A_{12}</var> <var>...</var> <var>A_{1K_1}</var>
+          <var>K_2</var> <var>A_{21}</var> <var>A_{22}</var> <var>...</var> <var>A_{2K_2}</var>
+          <var>:</var>
+          <var>K_N</var> <var>A_{N1}</var> <var>A_{N2}</var> <var>...</var> <var>A_{NK_N}</var>
+          </pre>
+        FMT
+      end
+      let(:smp) do
+        <<~SMP
+          5 5
+          4 2 3 4 5
+          4 1 3 4 5
+          4 1 2 4 5
+          4 1 2 3 5
+          4 1 2 3 4
+        SMP
+      end
+      it 'can parse format' do
+        defs = subject
+        expect(defs.size).to eq(2)
+        expect(defs[0]).to have_attributes(
+          container: :single, item: :number, names: %w[N M], size: []
+        )
+        expect(defs[1]).to have_attributes(
+          container: :vmatrix, item: :number, names: %w[K A], size: %w[N K_N]
+        )
+      end
+    end
+
+    context 'for vmatrix(char)' do
+      let(:fmt) do
+        <<~FMT
+          <pre><var>N</var>
+          <var>S_1</var>
+          :
+          <var>S_N</var>
+          <var>Q</var>
+          <var>k_1</var> <var>p_{1,1}p_{1,2}...p_{1,26}</var>
+          :
+          <var>k_Q</var> <var>p_{Q,1}p_{Q,2}...p_{Q,26}</var>
+          </pre>
+        FMT
+      end
+      let(:smp) do
+        <<~SMP
+          8
+          abrakatabra
+          abadaba
+          abracadabra
+          atcoder
+          grand
+          contest
+          ababa
+          a
+          6
+          3 abcdefghijklmnopqrstuvwxyz
+          6 qwertyuiopasdfghjklzxcvbnm
+          8 poiuytrewqlkjhgfdsamnbvcxz
+          2 qazwsxedcrfvtgbyhnujmikolp
+          1 plokmijnuhbygvtfcrdxeszwaq
+          4 mnbvcxzasdfghjklpoiuytrewq
+        SMP
+      end
+      it 'can parse format' do
+        defs = subject
+        expect(defs.size).to eq(4)
+        expect(defs[0]).to have_attributes(
+          container: :single, item: :number, names: %w[N], size: []
+        )
+        expect(defs[1]).to have_attributes(
+          container: :varray, item: :string, names: %w[S], size: %w[N]
+        )
+        expect(defs[2]).to have_attributes(
+          container: :single, item: :number, names: %w[Q], size: []
+        )
+        expect(defs[3]).to have_attributes(
+          container: :vmatrix, item: :char, names: %w[k p], size: %w[Q 26]
+        )
+      end
+    end
+    context 'for unknown format' do
+      let(:fmt) do
+        <<~FMT
+          <pre>1
+          </pre>
+        FMT
+      end
+      let(:smp) do
+        <<~SMP
+          2
+          3
+          5
+        SMP
+      end
+      it 'can parse format' do
+        defs = subject
+        expect(defs.size).to eq(1)
+        expect(defs[0]).to have_attributes(
+          container: :unknown, item: '1', names: nil, size: nil
+        )
+      end
+    end
+  end
+
+  describe 'split_size' do
+    subject { parser.split_size(str) }
+
+    context 'for case #1' do
+      let(:str) { '{R,C}' }
+
+      it 'removes surrounding {}' do
+        expect(subject).to match(%w[R C])
+      end
+    end
+
+    context 'for case #2' do
+      let(:str) { 'N,N-1' }
+
+      it 'can split by comma' do
+        expect(subject).to match(%w[N N-1])
+      end
+    end
+
+    context 'for case #3' do
+      let(:str) { 'M{b_M}' }
+
+      it 'can split by block' do
+        expect(subject).to match(%w[M {b_M}])
+      end
+    end
+
+    context 'for case #4' do
+      let(:str) { 'N_TN_T' }
+
+      it 'can split into X and X_X' do
+        expect(subject).to match(%w[N_T N_T])
+      end
+    end
+
+    context 'for case #5' do
+      let(:str) { 'NK_N' }
+
+      it 'can split into X and X_X' do
+        expect(subject).to match(%w[N K_N])
+      end
+    end
+
+    context 'for case #6' do
+      let(:str) { 'H_W' }
+
+      it 'can split by underscore' do
+        expect(subject).to match(%w[H W])
+      end
+    end
+
+    context 'for case #7' do
+      let(:str) { 'ABC' }
+
+      it 'can split 1st char and rest' do
+        expect(subject).to match(%w[A BC])
+      end
+    end
+
+    context 'when no size detected' do
+      let(:str) { '' }
+
+      it 'returns underscore' do
+        expect(subject).to match(%w[_ _])
       end
     end
   end

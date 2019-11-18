@@ -12,6 +12,19 @@ module AtCoderFriends
         'REP(i, %<sz1>s) scanf("%<fmt>s", %<addr>s);',
         'REP(i, %<sz1>s) REP(j, %<sz2>s) scanf("%<fmt>s", %<addr>s);'
       ].freeze
+      SCANF_FMTS_VM0 = <<~TEXT
+        REP(i, %<sz1>s) {
+          scanf("%<va_fmt>s", %<va_addr>s);
+          scanf("%<mx_fmt>s", %<mx_addr>s);
+        }
+      TEXT
+      SCANF_FMTS_VM1 = <<~TEXT
+        REP(i, %<sz1>s) {
+          scanf("%<va_fmt>s", %<va_addr>s);
+          REP(j, %<sz2>s[i]) scanf("%<mx_fmt>s", %<mx_addr>s);
+        }
+      TEXT
+      SCANF_FMTS_VM = [SCANF_FMTS_VM0, SCANF_FMTS_VM1].freeze
       FMT_FMTS = { number: '%d', string: '%s', char: '%s' }.freeze
       ADDR_FMTS = {
         single: {
@@ -65,14 +78,15 @@ module AtCoderFriends
         src = embed_lines(src, '/*** CONSTS ***/', gen_consts)
         src = embed_lines(src, '/*** DCLS ***/', gen_decls)
         src = embed_lines(src, '/*** INPUTS ***/', gen_inputs)
-        embed_lines(src, '/*** OUTPUT ***/', gen_output.split("\n"))
+        src = embed_lines(src, '/*** OUTPUT ***/', gen_output.split("\n"))
+        src
       end
 
       def embed_lines(src, pat, lines)
         re = Regexp.escape(pat)
         src.gsub(
           /^(.*)#{re}(.*)$/,
-          lines.map { |s| '\1' + s + '\2' }.join("\n")
+          lines.compact.map { |s| '\1' + s + '\2' }.join("\n")
         )
       end
 
@@ -113,15 +127,19 @@ module AtCoderFriends
       end
 
       def gen_decl(inpdef)
-        case inpdef.container
-        when :single
-          gen_single_decl(inpdef)
-        when :harray
-          gen_harray_decl(inpdef)
-        when :varray
-          gen_varray_decl(inpdef)
-        when :matrix
-          gen_matrix_decl(inpdef)
+        if inpdef.components
+          inpdef.components.map { |cmp| gen_decl(cmp) }
+        else
+          case inpdef.container
+          when :single
+            gen_single_decl(inpdef)
+          when :harray
+            gen_harray_decl(inpdef)
+          when :varray
+            gen_varray_decl(inpdef)
+          when :matrix
+            gen_matrix_decl(inpdef)
+          end
         end
       end
 
@@ -181,17 +199,57 @@ module AtCoderFriends
         inpdefs.map { |inpdef| gen_input(inpdef) }.flatten
       end
 
-      # rubocop:disable Metrics/AbcSize
       def gen_input(inpdef)
+        if inpdef.container == :vmatrix
+          gen_vmatrix_input(inpdef)
+        else
+          gen_plain_input(inpdef)
+        end
+      end
+
+      def gen_plain_input(inpdef)
         dim = inpdef.size.size - (inpdef.item == :char ? 1 : 0)
         scanf = SCANF_FMTS[dim]
         sz1, sz2 = inpdef.size
-        fmt = FMT_FMTS[inpdef.item] * inpdef.names.size
-        addr_fmt = ADDR_FMTS[inpdef.container][inpdef.item]
-        addr = inpdef.names.map { |v| format(addr_fmt, v: v) }.join(', ')
+        fmt, addr = scanf_params(inpdef)
+        return unless fmt && addr
+
         format(scanf, sz1: sz1, sz2: sz2, fmt: fmt, addr: addr)
       end
-      # rubocop:enable Metrics/AbcSize
+
+      def gen_vmatrix_input(inpdef)
+        dim = inpdef.item == :char ? 0 : 1
+        scanf = SCANF_FMTS_VM[dim]
+        vadef, mxdef = inpdef.components
+        sz1 = vadef.size[0]
+        sz2 = mxdef.size[1][0]
+        va_fmt, va_addr = scanf_params(vadef)
+        mx_fmt, mx_addr = scanf_params(mxdef)
+        format(
+          scanf,
+          sz1: sz1, sz2: sz2,
+          va_fmt: va_fmt, va_addr: va_addr,
+          mx_fmt: mx_fmt, mx_addr: mx_addr
+        ).split("\n")
+      end
+
+      def scanf_params(inpdef)
+        [scanf_fmt(inpdef), scanf_addr(inpdef)]
+      end
+
+      def scanf_fmt(inpdef)
+        return unless FMT_FMTS[inpdef.item]
+
+        FMT_FMTS[inpdef.item] * inpdef.names.size
+      end
+
+      def scanf_addr(inpdef)
+        return unless ADDR_FMTS[inpdef.container]
+        return unless ADDR_FMTS[inpdef.container][inpdef.item]
+
+        addr_fmt = ADDR_FMTS[inpdef.container][inpdef.item]
+        inpdef.names.map { |v| format(addr_fmt, v: v) }.join(', ')
+      end
 
       def gen_output(vs = pbm.options.binary_values)
         if vs

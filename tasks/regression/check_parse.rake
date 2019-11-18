@@ -10,7 +10,7 @@ module AtCoderFriends
 
     def check_parse
       list = local_pbm_list.map do |contest, q, url|
-        pbm = scraping_agent(nil, contest).fetch_problem(q, url)
+        pbm = local_scraping_agent(nil, contest).fetch_problem(q, url)
         Parser::Main.process(pbm)
         flags = [
           !fmt?(pbm),
@@ -24,7 +24,7 @@ module AtCoderFriends
 
     def check_bin
       list = local_pbm_list.map do |contest, q, url|
-        pbm = scraping_agent(nil, contest).fetch_problem(q, url)
+        pbm = local_scraping_agent(nil, contest).fetch_problem(q, url)
         Parser::Main.process(pbm)
         flags = [pbm.options.binary_values]
         [contest, q, flags]
@@ -38,11 +38,10 @@ module AtCoderFriends
     end
 
     def report(list, file)
-      File.open(log_path(file), 'w') do |f|
+      File.open(report_path(file), 'w') do |f|
         list
           .select { |_, _, flags| flags.any? }
           .map { |c, q, flags| [c, q, flags.map { |flg| f_to_s(flg) }] }
-          .sort
           .each { |args| f.puts args.flatten.join("\t") }
       end
     end

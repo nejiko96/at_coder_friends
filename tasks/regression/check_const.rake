@@ -23,23 +23,23 @@ module AtCoderFriends
     }.freeze
 
     def collect(tgt)
-      File.open(const_log('collect', tgt), 'w') do |f|
+      File.open(const_report('collect', tgt), 'w') do |f|
         local_pbm_list.each do |contest, q, url|
           page = agent.get(url)
           body = page.body.force_encoding('utf-8')
           ms = body.scan(CONST_PAT[tgt.to_sym])
           ms.each do |m|
-            s = m[0].delete("\r\n\t\"")
-            f.puts [contest, q, s].join("\t")
+            s = m[0].delete("\r\n")
+            f.puts [contest, q, tsv_escape(s)].join("\t")
           end
         end
       end
     end
 
     def check_mod
-      File.open(const_log('check', 'mod'), 'w') do |f|
+      File.open(const_report('check', 'mod'), 'w') do |f|
         local_pbm_list.each do |contest, q, url|
-          pbm = scraping_agent(nil, contest).fetch_problem(q, url)
+          pbm = local_scraping_agent(nil, contest).fetch_problem(q, url)
           Parser::Sections.process(pbm)
           Parser::Modulo.process(pbm)
           pbm.constants.each do |cnst|
@@ -50,9 +50,9 @@ module AtCoderFriends
     end
 
     def check_max
-      File.open(const_log('check', 'max'), 'w') do |f|
+      File.open(const_report('check', 'max'), 'w') do |f|
         local_pbm_list.each do |contest, q, url|
-          pbm = scraping_agent(nil, contest).fetch_problem(q, url)
+          pbm = local_scraping_agent(nil, contest).fetch_problem(q, url)
           Parser::Sections.process(pbm)
           Parser::Constraints.process(pbm)
           pbm.constants.each do |cns|
@@ -70,7 +70,7 @@ module AtCoderFriends
     def load_merge_list(tgt)
       tbl = {}
       %w[collect check]
-        .map { |act| const_log(act, tgt) }
+        .map { |act| const_report(act, tgt) }
         .each
         .with_index(1) do |file, n|
           list_from_file(file)
@@ -85,15 +85,15 @@ module AtCoderFriends
     end
 
     def save_merge_list(tgt, tbl)
-      File.open(const_log('merge', tgt), 'w') do |f|
+      File.open(const_report('merge', tgt), 'w') do |f|
         tbl.sort.each do |k, h|
           f.puts [k, h['v1'], h['v2']].join("\t")
         end
       end
     end
 
-    def const_log(act, tgt)
-      log_path("#{act}_#{tgt}.txt")
+    def const_report(act, tgt)
+      report_path("#{act}_#{tgt}.txt")
     end
 
     def list_from_file(file)

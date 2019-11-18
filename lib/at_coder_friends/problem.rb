@@ -19,12 +19,23 @@ module AtCoderFriends
     SampleData = Struct.new(:no, :ext, :txt)
 
     InputFormat = Struct.new(:container, :item, :names, :size) do
-      def initialize(container, item, names, size = [])
+      def initialize(container, item, names = nil, size = nil)
+        size ||= [] if container == :single
         super(container, item, names, size)
       end
 
       def to_s
         "#{container} #{item} #{names} #{size}"
+      end
+
+      def components
+        @components ||=
+          if container == :vmatrix
+            [
+              InputFormat.new(:varray, :number, names[0..-2], size[0..0]),
+              InputFormat.new(:matrix, item, names[-1..-1], size)
+            ]
+          end
       end
     end
 
@@ -35,14 +46,14 @@ module AtCoderFriends
     SourceCode = Struct.new(:ext, :txt)
 
     attr_reader :q, :samples, :sources, :options
-    attr_accessor :page, :sections, :formats, :constants
+    attr_accessor :page, :sections, :formats_raw, :constants
 
     def initialize(q, page = Mechanize::Page.new)
       @q = q
       @page = page
       @sections = {}
       @samples = []
-      @formats = []
+      @formats_raw = []
       @constants = []
       @options = Options.new
       @sources = []
@@ -55,6 +66,10 @@ module AtCoderFriends
 
     def body_content
       @body_content ||= page.search('body')[0]&.content
+    end
+
+    def formats
+      @formats ||= formats_raw.reject { |f| f.container == :unknown }
     end
 
     def add_smp(no, ext, txt)
