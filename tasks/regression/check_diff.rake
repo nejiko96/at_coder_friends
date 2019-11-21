@@ -12,11 +12,11 @@ module AtCoderFriends
       rmdir_force(emit_dir)
 
       local_pbm_list.each do |contest, q, url|
-        pbm = scraping_agent(emit_dir, contest).fetch_problem(q, url)
+        pbm = local_scraping_agent(emit_dir, contest).fetch_problem(q, url)
         pipeline(pbm)
       end
 
-      diff_log = log_path('check_diff.txt')
+      diff_log = report_path('check_diff.txt')
       system("diff -r --exclude=.git #{EMIT_ORG_DIR} #{emit_dir} > #{diff_log}")
     end
   end

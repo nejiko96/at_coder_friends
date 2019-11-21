@@ -22,12 +22,20 @@ module AtCoderFriends
 
       def generate(pbm)
         @pbm = pbm
-        File
-          .read(select_template)
-          .gsub('### URL ###', pbm.url)
-          .gsub('### CONSTS ###', gen_consts.join("\n"))
-          .gsub('### DCLS ###', gen_decls.join("\n"))
-          .gsub('### OUTPUT ###', gen_output)
+        src = File.read(select_template)
+        src = embed_lines(src, '### URL ###', [pbm.url])
+        src = embed_lines(src, '### CONSTS ###', gen_consts)
+        src = embed_lines(src, '### DCLS ###', gen_decls)
+        src = embed_lines(src, '### OUTPUT ###', gen_output.split("\n"))
+        src
+      end
+
+      def embed_lines(src, pat, lines)
+        re = Regexp.escape(pat)
+        src.gsub(
+          /^(.*)#{re}(.*)$/,
+          lines.compact.map { |s| '\1' + s + '\2' }.join("\n")
+        )
       end
 
       def select_template(interactive = pbm.options.interactive)
@@ -71,6 +79,8 @@ module AtCoderFriends
           end
         when :matrix
           gen_matrix_decl(inpdef)
+        when :vmatrix
+          gen_vmatrix_decl(inpdef)
         end
       end
 
@@ -117,6 +127,22 @@ module AtCoderFriends
         "#{decl} = Array.new(#{sz}) { #{expr} }"
       end
 
+      def gen_vmatrix_decl(inpdef)
+        vs = inpdef.names.map { |v| "#{v}s" }
+        vs[-1] += 's'
+        sz = inpdef.size[0]
+        dcls = vs.map { |v| "#{v}[i]" }
+        dcls[-1] = '*' + dcls[-1] unless inpdef.item == :char
+        dcl = dcls.join(', ')
+        expr = gen_vmatrix_expr(inpdef.item)
+        ret = []
+        ret += vs.map { |v| "#{v} = Array.new(#{sz})" }
+        ret << "#{sz}.times do |i|"
+        ret << "  #{dcl} = #{expr}"
+        ret << 'end'
+        ret
+      end
+
       def gen_expr(item, split)
         case item
         when :number
@@ -125,6 +151,15 @@ module AtCoderFriends
           split ? 'gets.chomp.split' : 'gets.chomp'
         when :char
           'gets.chomp'
+        end
+      end
+
+      def gen_vmatrix_expr(item)
+        case item
+        when :number
+          'gets.split.map(&:to_i)'
+        when :string, :char
+          'gets.chomp.split'
         end
       end
 

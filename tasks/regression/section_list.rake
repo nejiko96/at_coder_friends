@@ -26,7 +26,7 @@ module AtCoderFriends
     end
 
     def save_section_list(list)
-      File.open(log_path('section_list.txt'), 'w') do |f|
+      File.open(report_path('section_list.txt'), 'w') do |f|
         list.group_by(&:title).each do |k, vs|
           f.puts [k, vs.size, vs[0].contest, vs[0].q].join("\t")
         end

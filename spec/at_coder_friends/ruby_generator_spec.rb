@@ -221,6 +221,42 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
         expect(subject).to eq('Ass = Array.new(R) { gets.chomp }')
       end
     end
+
+    context 'for a jagged array of numbers' do
+      let(:container) { :vmatrix }
+      let(:item) { :number }
+      let(:names) { %w[K A] }
+      let(:size) { %w[N K_N] }
+      it 'generates decl' do
+        expect(subject).to match(
+          [
+            'Ks = Array.new(N)',
+            'Ass = Array.new(N)',
+            'N.times do |i|',
+            '  Ks[i], *Ass[i] = gets.split.map(&:to_i)',
+            'end'
+          ]
+        )
+      end
+    end
+
+    context 'for a jagged array of characters' do
+      let(:container) { :vmatrix }
+      let(:item) { :char }
+      let(:names) { %w[K p] }
+      let(:size) { %w[Q 26] }
+      it 'generates decl' do
+        expect(subject).to match(
+          [
+            'Ks = Array.new(Q)',
+            'pss = Array.new(Q)',
+            'Q.times do |i|',
+            '  Ks[i], pss[i] = gets.chomp.split',
+            'end'
+          ]
+        )
+      end
+    end
   end
 
   describe '#gen_output' do
@@ -247,7 +283,7 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
     subject { generator.generate(pbm) }
     let(:pbm) do
       AtCoderFriends::Problem.new('A') do |pbm|
-        pbm.formats = formats
+        pbm.formats_raw = formats
         pbm.constants = constants
         pbm.options.interactive = interactive
       end

@@ -8,28 +8,27 @@ module AtCoderFriends
     module_function
 
     def check_fmt
-      File.open(log_path('check_fmt.txt'), 'w') do |f|
-        local_pbm_list.sort.each do |contest, q, url|
-          pbm = scraping_agent(nil, contest).fetch_problem(q, url)
-          Parser::Sections.process(pbm)
-          fmt = Parser::InputFormat.find_fmt(pbm)
-          next unless fmt && !fmt.empty?
+      File.open(report_path('check_fmt.txt'), 'wb') do |f|
+        local_pbm_list.each do |contest, q, url|
+          next unless (res = process_fmt(contest, q, url))
 
-          n_fmt = Parser::InputFormat.normalize_fmt(fmt).join("\n")
-          Parser::InputFormat.process(pbm)
-          res = pbm.formats.map(&:to_s).join("\n")
           f.puts [
-            contest, q,
-            tsv_escape(fmt),
-            tsv_escape(n_fmt),
-            tsv_escape(res)
+            contest, q, *res.map { |s| tsv_escape(s) }
           ].join("\t")
         end
       end
     end
 
-    def tsv_escape(str)
-      '"' + str.gsub('"', '""').gsub("\t", ' ') + '"'
+    def process_fmt(contest, q, url)
+      pbm = local_scraping_agent(nil, contest).fetch_problem(q, url)
+      Parser::Sections.process(pbm)
+      fmt = Parser::InputFormat.find_fmt(pbm)
+      return unless fmt && !fmt.empty?
+
+      n_fmt = Parser::InputFormat.normalize_fmt(fmt).join("\n")
+      Parser::InputFormat.process(pbm)
+      res = pbm.formats_raw.map(&:to_s).join("\n")
+      [fmt, n_fmt, res]
     end
   end
 end
