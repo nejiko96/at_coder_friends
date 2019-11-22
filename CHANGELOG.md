@@ -1,6 +1,12 @@
 # Change log
 
 ## master (unreleased)
+### Added
+- 'vertical array + matrix' input format support.
+
+### Changed
+- Change template file format to ERB.
+- Integration of default template and interactive template.
 
 ## 0.6.2 (2019-11-18)
 ### Added

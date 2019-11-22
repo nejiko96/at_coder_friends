@@ -14,8 +14,13 @@ module AtCoderFriends
       def process(pbm)
         generators = ctx.config.dig('generators') || []
         generators.each do |gen_name|
-          gen_obj = load_obj(gen_name)
-          gen_obj.process(pbm)
+          begin
+            gen_obj = load_obj(gen_name)
+            gen_obj.process(pbm)
+          rescue StandardError => e
+            puts "an error occurred in generator:#{gen_name}."
+            p e
+          end
         end
       end
 

@@ -8,6 +8,10 @@ module AtCoderFriends
     ) do
       attr_reader :names, :size
 
+      def initialize(container, item, pat, gen_names, gen_pat2 = nil)
+        super(container, item, pat, gen_names, gen_pat2)
+      end
+
       def match(str)
         return false unless (m1 = pat.match(str))
 
@@ -28,10 +32,7 @@ module AtCoderFriends
     end
 
     module InputFormatConstants
-      SECTIONS = [
-        Problem::SECTION_IN_FMT,
-        Problem::SECTION_IO_FMT
-      ].freeze
+      SECTIONS = [Problem::SECTION_IN_FMT, Problem::SECTION_IO_FMT].freeze
       RE_ITEM = /\{*[A-Za-z]+(?:_[A-Za-z]+)*\}*/.freeze
       RE_IX_00 = /(_\{*[01][,_]?[01]\}*|\{+[01][,_]?[01]\}+)/.freeze
       RE_IX_0 = /(_\{*[0-9]+\}*|\{+[0-9]+\}+)/.freeze
@@ -91,8 +92,7 @@ module AtCoderFriends
             \s+\k<v>#{RE_SZ}
             \z
           /x,
-          ->(m) { [m[:v]] },
-          nil
+          ->(m) { [m[:v]] }
         ),
         InputFormatMatcher.new(
           :harray, :char,
@@ -103,11 +103,10 @@ module AtCoderFriends
             \k<v>#{RE_SZ}
             \z
           /x,
-          ->(m) { [m[:v]] },
-          nil
+          ->(m) { [m[:v]] }
         ),
         InputFormatMatcher.new(
-          :vmatrix, :number,
+          :varray_matrix, :number,
           /
             \A
             (?<vs>#{RE_ITEM}#{RE_SZ_0} (\s+#{RE_ITEM}#{RE_SZ_REF})*)
@@ -131,7 +130,7 @@ module AtCoderFriends
           }
         ),
         InputFormatMatcher.new(
-          :vmatrix, :char,
+          :varray_matrix, :char,
           /
             \A
             (?<vs>#{RE_ITEM}#{RE_SZ_0} (\s+#{RE_ITEM}#{RE_SZ_REF})*)
@@ -157,24 +156,20 @@ module AtCoderFriends
         InputFormatMatcher.new(
           :varray, :number,
           /
-            \A
-            #{RE_ITEM}#{RE_SZ_0} (\s+#{RE_ITEM}#{RE_SZ_REF})*
-            \z
+            \A #{RE_ITEM}#{RE_SZ_0} (\s+#{RE_ITEM}#{RE_SZ_REF})* \z
           /x,
           ->(m) { m[0].split.map { |w| w.scan(RE_ITEM)[0] } },
           lambda { |vs|
             pat2 = vs.map.with_index do |v, i|
               v + (i.zero? ? RE_SZ : RE_IX).source
             end
-            .join('\s+')
-            /\A#{pat2}\z/
+            /\A#{pat2.join('\s+')}\z/
           }
         ),
         InputFormatMatcher.new(
           :single, :number,
           /\A(.*\s)?#{RE_SINGLE}(\s.*)?\z/,
-          ->(m) { m[0].split.select { |w| w =~ /\A#{RE_SINGLE}\z/ } },
-          nil
+          ->(m) { m[0].split.select { |w| w =~ /\A#{RE_SINGLE}\z/ } }
         )
       ].freeze
     end
@@ -189,7 +184,7 @@ module AtCoderFriends
         return unless (str = find_fmt(pbm))
 
         inpdefs = parse(str, pbm.samples)
-        pbm.formats_raw = inpdefs
+        pbm.formats_src = inpdefs
       end
 
       def find_fmt(pbm)
@@ -282,7 +277,7 @@ module AtCoderFriends
       def normalize_size(container, size)
         sz =
           case container
-          when :matrix, :vmatrix
+          when :matrix, :varray_matrix
             split_size(size)
           when :harray, :varray
             [size]
@@ -329,8 +324,8 @@ module AtCoderFriends
           break if i >= lines.size
           next if inpdef.item != :number
 
-          inpdef.item = :string if lines[i].split[0] =~ /[^\-0-9]/
-          break if %i[varray vmatrix matrix].include?(inpdef.container)
+          inpdef.item = :string if lines[i] =~ /[^\-0-9 ]/
+          break unless %i[single harray].include?(inpdef.container)
         end
         inpdefs
       end

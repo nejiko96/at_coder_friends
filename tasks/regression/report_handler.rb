@@ -5,6 +5,10 @@ module AtCoderFriends
   module Regression
     module_function
 
+    def open_report(file)
+      File.open(report_path(file), 'wb') { |f| yield f }
+    end
+
     def report_path(file)
       File.join(REGRESSION_HOME, file)
     end

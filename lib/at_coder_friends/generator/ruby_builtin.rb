@@ -3,51 +3,21 @@
 module AtCoderFriends
   module Generator
     # generates Ruby source from problem description
-    class RubyBuiltin
+    class RubyBuiltin < Base
       ACF_HOME = File.realpath(File.join(__dir__, '..', '..', '..'))
       TMPL_DIR = File.join(ACF_HOME, 'templates')
-      DEFAULT_TMPL = File.join(TMPL_DIR, 'ruby_builtin_default.rb')
-      INTERACTIVE_TMPL = File.join(TMPL_DIR, 'ruby_builtin_interactive.rb')
+      DEFAULT_TMPL = File.join(TMPL_DIR, 'ruby_builtin.rb.erb')
 
-      attr_reader :cfg, :pbm
-
-      def initialize(cfg = nil)
-        @cfg = cfg || {}
+      def attrs
+        Attributes.new(:rb, DEFAULT_TMPL)
       end
 
-      def process(pbm)
-        src = generate(pbm)
-        pbm.add_src(:rb, src)
-      end
-
-      def generate(pbm)
-        @pbm = pbm
-        src = File.read(select_template)
+      def render(src)
         src = embed_lines(src, '### URL ###', [pbm.url])
         src = embed_lines(src, '### CONSTS ###', gen_consts)
         src = embed_lines(src, '### DCLS ###', gen_decls)
         src = embed_lines(src, '### OUTPUT ###', gen_output.split("\n"))
         src
-      end
-
-      def embed_lines(src, pat, lines)
-        re = Regexp.escape(pat)
-        src.gsub(
-          /^(.*)#{re}(.*)$/,
-          lines.compact.map { |s| '\1' + s + '\2' }.join("\n")
-        )
-      end
-
-      def select_template(interactive = pbm.options.interactive)
-        interactive ? interactive_template : default_template
-      end
-
-      def default_template
-        cfg['default_template'] || DEFAULT_TMPL
-      end
-
-      def interactive_template
-        cfg['interactive_template'] || INTERACTIVE_TMPL
       end
 
       def gen_consts(constants = pbm.constants)
@@ -72,15 +42,11 @@ module AtCoderFriends
         when :harray
           gen_harray_decl(inpdef)
         when :varray
-          if inpdef.names.size == 1
-            gen_varray_1_decl(inpdef)
-          else
-            gen_varray_n_decl(inpdef)
-          end
+          gen_varray_decl(inpdef)
         when :matrix
           gen_matrix_decl(inpdef)
-        when :vmatrix
-          gen_vmatrix_decl(inpdef)
+        when :varray_matrix
+          gen_varray_matrix_decl(inpdef)
         end
       end
 
@@ -96,6 +62,14 @@ module AtCoderFriends
         dcl = "#{v}s"
         expr = gen_expr(inpdef.item, true)
         "#{dcl} = #{expr}"
+      end
+
+      def gen_varray_decl(inpdef)
+        if inpdef.names.size == 1
+          gen_varray_1_decl(inpdef)
+        else
+          gen_varray_n_decl(inpdef)
+        end
       end
 
       def gen_varray_1_decl(inpdef)
@@ -127,14 +101,14 @@ module AtCoderFriends
         "#{decl} = Array.new(#{sz}) { #{expr} }"
       end
 
-      def gen_vmatrix_decl(inpdef)
+      def gen_varray_matrix_decl(inpdef)
         vs = inpdef.names.map { |v| "#{v}s" }
         vs[-1] += 's'
         sz = inpdef.size[0]
         dcls = vs.map { |v| "#{v}[i]" }
         dcls[-1] = '*' + dcls[-1] unless inpdef.item == :char
         dcl = dcls.join(', ')
-        expr = gen_vmatrix_expr(inpdef.item)
+        expr = gen_varray_matrix_expr(inpdef.item)
         ret = []
         ret += vs.map { |v| "#{v} = Array.new(#{sz})" }
         ret << "#{sz}.times do |i|"
@@ -154,7 +128,7 @@ module AtCoderFriends
         end
       end
 
-      def gen_vmatrix_expr(item)
+      def gen_varray_matrix_expr(item)
         case item
         when :number
           'gets.split.map(&:to_i)'

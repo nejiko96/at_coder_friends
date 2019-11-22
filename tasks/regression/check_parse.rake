@@ -38,7 +38,7 @@ module AtCoderFriends
     end
 
     def report(list, file)
-      File.open(report_path(file), 'w') do |f|
+      open_report(file) do |f|
         list
           .select { |_, _, flags| flags.any? }
           .map { |c, q, flags| [c, q, flags.map { |flg| f_to_s(flg) }] }

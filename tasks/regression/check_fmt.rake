@@ -8,7 +8,7 @@ module AtCoderFriends
     module_function
 
     def check_fmt
-      File.open(report_path('check_fmt.txt'), 'wb') do |f|
+      open_report('check_fmt.txt') do |f|
         local_pbm_list.each do |contest, q, url|
           next unless (res = process_fmt(contest, q, url))
 
@@ -27,7 +27,7 @@ module AtCoderFriends
 
       n_fmt = Parser::InputFormat.normalize_fmt(fmt).join("\n")
       Parser::InputFormat.process(pbm)
-      res = pbm.formats_raw.map(&:to_s).join("\n")
+      res = pbm.formats_src.map(&:to_s).join("\n")
       [fmt, n_fmt, res]
     end
   end

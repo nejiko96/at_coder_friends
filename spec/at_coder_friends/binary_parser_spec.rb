@@ -39,5 +39,14 @@ RSpec.describe AtCoderFriends::Parser::Binary do
         expect(pbm.options.binary_values).to match %w[YES NO]
       end
     end
+
+    context 'for arc002_4' do
+      let(:url) { '/contests/arc002/tasks/arc002_4' }
+
+      it 'detects binary broblem' do
+        subject
+        expect(pbm.options.binary_values).to match %w[o x]
+      end
+    end
   end
 end

@@ -5,8 +5,7 @@ module AtCoderFriends
     module CxxBuiltinConstants
       ACF_HOME = File.realpath(File.join(__dir__, '..', '..', '..'))
       TMPL_DIR = File.join(ACF_HOME, 'templates')
-      DEFAULT_TMPL = File.join(TMPL_DIR, 'cxx_builtin_default.cxx')
-      INTERACTIVE_TMPL = File.join(TMPL_DIR, 'cxx_builtin_interactive.cxx')
+      DEFAULT_TMPL = File.join(TMPL_DIR, 'cxx_builtin.cxx.erb')
       SCANF_FMTS = [
         'scanf("%<fmt>s", %<addr>s);',
         'REP(i, %<sz1>s) scanf("%<fmt>s", %<addr>s);',
@@ -57,49 +56,20 @@ module AtCoderFriends
     end
 
     # generates C++ source from problem description
-    class CxxBuiltin
+    class CxxBuiltin < Base
       include CxxBuiltinConstants
 
-      attr_reader :cfg, :pbm
-
-      def initialize(cfg = nil)
-        @cfg = cfg || {}
+      def attrs
+        Attributes.new(:cxx, DEFAULT_TMPL)
       end
 
-      def process(pbm)
-        src = generate(pbm)
-        pbm.add_src(:cxx, src)
-      end
-
-      def generate(pbm)
-        @pbm = pbm
-        src = File.read(select_template)
+      def render(src)
         src = embed_lines(src, '/*** URL ***/', [pbm.url])
         src = embed_lines(src, '/*** CONSTS ***/', gen_consts)
         src = embed_lines(src, '/*** DCLS ***/', gen_decls)
         src = embed_lines(src, '/*** INPUTS ***/', gen_inputs)
         src = embed_lines(src, '/*** OUTPUT ***/', gen_output.split("\n"))
         src
-      end
-
-      def embed_lines(src, pat, lines)
-        re = Regexp.escape(pat)
-        src.gsub(
-          /^(.*)#{re}(.*)$/,
-          lines.compact.map { |s| '\1' + s + '\2' }.join("\n")
-        )
-      end
-
-      def select_template(interactive = pbm.options.interactive)
-        interactive ? interactive_template : default_template
-      end
-
-      def default_template
-        cfg['default_template'] || DEFAULT_TMPL
-      end
-
-      def interactive_template
-        cfg['interactive_template'] || INTERACTIVE_TMPL
       end
 
       def gen_consts(constants = pbm.constants)
@@ -200,29 +170,29 @@ module AtCoderFriends
       end
 
       def gen_input(inpdef)
-        if inpdef.container == :vmatrix
-          gen_vmatrix_input(inpdef)
+        if inpdef.container == :varray_matrix
+          gen_varray_matrix_input(inpdef)
         else
           gen_plain_input(inpdef)
         end
       end
 
       def gen_plain_input(inpdef)
+        return unless inpdef.size.is_a?(Array)
+
         dim = inpdef.size.size - (inpdef.item == :char ? 1 : 0)
         scanf = SCANF_FMTS[dim]
         sz1, sz2 = inpdef.size
         fmt, addr = scanf_params(inpdef)
-        return unless fmt && addr
-
         format(scanf, sz1: sz1, sz2: sz2, fmt: fmt, addr: addr)
       end
 
-      def gen_vmatrix_input(inpdef)
+      def gen_varray_matrix_input(inpdef)
         dim = inpdef.item == :char ? 0 : 1
         scanf = SCANF_FMTS_VM[dim]
+        sz1 = inpdef.size[0]
+        sz2 = inpdef.size[1].split('_')[0]
         vadef, mxdef = inpdef.components
-        sz1 = vadef.size[0]
-        sz2 = mxdef.size[1][0]
         va_fmt, va_addr = scanf_params(vadef)
         mx_fmt, mx_addr = scanf_params(mxdef)
         format(
