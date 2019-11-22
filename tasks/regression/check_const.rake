@@ -23,7 +23,7 @@ module AtCoderFriends
     }.freeze
 
     def collect(tgt)
-      File.open(const_report('collect', tgt), 'w') do |f|
+      open_const_report('collect', tgt) do |f|
         local_pbm_list.each do |contest, q, url|
           page = agent.get(url)
           body = page.body.force_encoding('utf-8')
@@ -37,7 +37,7 @@ module AtCoderFriends
     end
 
     def check_mod
-      File.open(const_report('check', 'mod'), 'w') do |f|
+      open_const_report('check', 'mod') do |f|
         local_pbm_list.each do |contest, q, url|
           pbm = local_scraping_agent(nil, contest).fetch_problem(q, url)
           Parser::Sections.process(pbm)
@@ -50,7 +50,7 @@ module AtCoderFriends
     end
 
     def check_max
-      File.open(const_report('check', 'max'), 'w') do |f|
+      open_const_report('check', 'max') do |f|
         local_pbm_list.each do |contest, q, url|
           pbm = local_scraping_agent(nil, contest).fetch_problem(q, url)
           Parser::Sections.process(pbm)
@@ -70,10 +70,10 @@ module AtCoderFriends
     def load_merge_list(tgt)
       tbl = {}
       %w[collect check]
-        .map { |act| const_report(act, tgt) }
+        .map { |act| load_const_report(act, tgt) }
         .each
-        .with_index(1) do |file, n|
-          list_from_file(file)
+        .with_index(1) do |data, n|
+          data
             .group_by { |contest, q, _| "#{contest}\t#{q}" }
             .map { |key, grp| [key, grp.map { |row| row[2] }.join("\n")] }
             .each do |key, txt|
@@ -85,18 +85,19 @@ module AtCoderFriends
     end
 
     def save_merge_list(tgt, tbl)
-      File.open(const_report('merge', tgt), 'w') do |f|
+      open_const_report('merge', tgt) do |f|
         tbl.sort.each do |k, h|
           f.puts [k, h['v1'], h['v2']].join("\t")
         end
       end
     end
 
-    def const_report(act, tgt)
-      report_path("#{act}_#{tgt}.txt")
+    def open_const_report(act, tgt)
+      open_report("#{act}_#{tgt}.txt") { |f| yield f }
     end
 
-    def list_from_file(file)
+    def load_const_report(act, tgt)
+      file = report_path("#{act}_#{tgt}.txt")
       Encoding.default_external = 'utf-8'
       CSV.read(file, col_sep: "\t", headers: false)
     end
