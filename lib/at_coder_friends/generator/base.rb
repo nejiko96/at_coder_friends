@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
+require 'erb'
+
 module AtCoderFriends
   module Generator
-    Attributes = Struct.new(:file_ext, :default_template, :interactive_template)
-
     # common behavior of generators
     class Base
+      Attributes = Struct.new(:file_ext, :default_template)
+
       attr_reader :cfg, :pbm
 
       def initialize(cfg = nil)
@@ -18,7 +20,9 @@ module AtCoderFriends
 
       def generate(pbm)
         @pbm = pbm
-        render(File.read(select_template))
+        src = File.read(select_template)
+        src = ERB.new(src).result(binding)
+        render(src)
       end
 
       def embed_lines(src, pat, lines)
@@ -29,16 +33,8 @@ module AtCoderFriends
         )
       end
 
-      def select_template(interactive = pbm.options.interactive)
-        interactive ? select_interactive : select_default
-      end
-
-      def select_default
+      def select_template
         cfg['default_template'] || attrs.default_template
-      end
-
-      def select_interactive
-        cfg['interactive_template'] || attrs.interactive_template
       end
     end
   end

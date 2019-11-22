@@ -1,5 +1,5 @@
 # ### URL ###
-
+<% if pbm.options.interactive %>
 def query(*args)
   puts "? #{args.join(' ')}"
   STDOUT.flush
@@ -12,12 +12,12 @@ def query(*args)
 end
 
 $DEBUG = true
-
+<% end %>
 ### CONSTS ###
 
 ### DCLS ###
 
-if $DEBUG
+<% if pbm.options.interactive %>if $DEBUG
   @responses = []
   @source = gets.chomp
 end
@@ -31,4 +31,4 @@ if $DEBUG
   puts "query results:"
   @responses.each { |res| puts res }
   puts "----------------------------------------"
-end
+end<% else %>### OUTPUT ###<% end %>

@@ -5,8 +5,7 @@ module AtCoderFriends
     module CxxBuiltinConstants
       ACF_HOME = File.realpath(File.join(__dir__, '..', '..', '..'))
       TMPL_DIR = File.join(ACF_HOME, 'templates')
-      DEFAULT_TMPL = File.join(TMPL_DIR, 'cxx_builtin_default.cxx')
-      INTERACTIVE_TMPL = File.join(TMPL_DIR, 'cxx_builtin_interactive.cxx')
+      DEFAULT_TMPL = File.join(TMPL_DIR, 'cxx_builtin.cxx.erb')
       SCANF_FMTS = [
         'scanf("%<fmt>s", %<addr>s);',
         'REP(i, %<sz1>s) scanf("%<fmt>s", %<addr>s);',
@@ -61,7 +60,7 @@ module AtCoderFriends
       include CxxBuiltinConstants
 
       def attrs
-        Attributes.new(:cxx, DEFAULT_TMPL, INTERACTIVE_TMPL)
+        Attributes.new(:cxx, DEFAULT_TMPL)
       end
 
       def render(src)

@@ -7,27 +7,13 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
   let(:cfg) { nil }
 
   describe '#select_template' do
-    subject { generator.select_template(interactive) }
+    subject { generator.select_template }
 
     context 'with default configuration' do
-      context 'for interactive problems' do
-        let(:interactive) { true }
-
-        it 'returns template file name' do
-          expect(subject).to eq(
-            File.join(TMPL_DIR, 'ruby_builtin_interactive.rb')
-          )
-        end
-      end
-
-      context 'for other problems' do
-        let(:interactive) { false }
-
-        it 'returns template file name' do
-          expect(subject).to eq(
-            File.join(TMPL_DIR, 'ruby_builtin_default.rb')
-          )
-        end
+      it 'returns template file name' do
+        expect(subject).to eq(
+          File.join(TMPL_DIR, 'ruby_builtin.rb.erb')
+        )
       end
     end
 
@@ -35,24 +21,10 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       let(:cfg) do
         {
           'default_template' => 'customized_default.rb',
-          'interactive_template' => 'customized_interactive.rb'
         }
       end
-
-      context 'for interactive problems' do
-        let(:interactive) { true }
-
-        it 'returns template file name' do
-          expect(subject).to eq('customized_interactive.rb')
-        end
-      end
-
-      context 'for other problems' do
-        let(:interactive) { false }
-
-        it 'returns template file name' do
-          expect(subject).to eq('customized_default.rb')
-        end
+      it 'returns template file name' do
+        expect(subject).to eq('customized_default.rb')
       end
     end
   end

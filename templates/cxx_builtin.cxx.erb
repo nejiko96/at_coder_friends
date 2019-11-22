@@ -1,16 +1,16 @@
 // /*** URL ***/
 
 #include <cstdio>
-#include <vector>
+<% if pbm.options.interactive %>#include <vector>
 #include <string>
-
+<% end %>
 using namespace std;
-
-#define DEBUG
+<% if pbm.options.interactive %>
+#define DEBUG<% end %>
 #define REP(i,n)   for(int i=0; i<(int)(n); i++)
 #define FOR(i,b,e) for(int i=(b); i<=(int)(e); i++)
 
-//------------------------------------------------------------------------------
+<% if pbm.options.interactive %>//------------------------------------------------------------------------------
 const int BUFSIZE = 1024;
 char req[BUFSIZE];
 char res[BUFSIZE];
@@ -31,12 +31,12 @@ void query() {
 }
 
 //------------------------------------------------------------------------------
-/*** CONSTS ***/
+<% end %>/*** CONSTS ***/
 
 /*** DCLS ***/
 
 void solve() {
-  printf("! %s\n", ans);
+<% if pbm.options.interactive %>  printf("! %s\n", ans);
   fflush(stdout);
 #ifdef DEBUG
   printf("query count: %d\n", responses.size());
@@ -44,15 +44,15 @@ void solve() {
   REP(i, responses.size()) {
     puts(responses[i].c_str());
   }
-#endif
+#endif<% else %>  /*** OUTPUT ***/<% end %>
 }
 
 void input() {
   /*** INPUTS ***/
-#ifdef DEBUG
+<% if pbm.options.interactive %>#ifdef DEBUG
   scanf("%s", source);
 #endif
-}
+<% end %>}
 
 int main() {
   input();

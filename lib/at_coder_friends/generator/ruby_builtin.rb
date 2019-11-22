@@ -6,11 +6,10 @@ module AtCoderFriends
     class RubyBuiltin < Base
       ACF_HOME = File.realpath(File.join(__dir__, '..', '..', '..'))
       TMPL_DIR = File.join(ACF_HOME, 'templates')
-      DEFAULT_TMPL = File.join(TMPL_DIR, 'ruby_builtin_default.rb')
-      INTERACTIVE_TMPL = File.join(TMPL_DIR, 'ruby_builtin_interactive.rb')
+      DEFAULT_TMPL = File.join(TMPL_DIR, 'ruby_builtin.rb.erb')
 
       def attrs
-        Attributes.new(:rb, DEFAULT_TMPL, INTERACTIVE_TMPL)
+        Attributes.new(:rb, DEFAULT_TMPL)
       end
 
       def render(src)

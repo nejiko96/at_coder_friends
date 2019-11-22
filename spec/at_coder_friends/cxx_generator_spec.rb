@@ -7,52 +7,25 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
   let(:cfg) { nil }
 
   describe '#select_template' do
-    subject { generator.select_template(interactive) }
+    subject { generator.select_template }
 
     context 'with default configuration' do
-      context 'for interactive problems' do
-        let(:interactive) { true }
-
-        it 'returns template file name' do
-          expect(subject).to eq(
-            File.join(TMPL_DIR, 'cxx_builtin_interactive.cxx')
-          )
-        end
-      end
-
-      context 'for other problems' do
-        let(:interactive) { false }
-
-        it 'returns template file name' do
-          expect(subject).to eq(
-            File.join(TMPL_DIR, 'cxx_builtin_default.cxx')
-          )
-        end
+      it 'returns template file name' do
+        expect(subject).to eq(
+          File.join(TMPL_DIR, 'cxx_builtin.cxx.erb')
+        )
       end
     end
 
     context 'with custom configuration' do
       let(:cfg) do
         {
-          'default_template' => 'customized_default.cxx',
-          'interactive_template' => 'customized_interactive.cxx'
+          'default_template' => 'customized_default.cxx'
         }
       end
 
-      context 'for interactive problems' do
-        let(:interactive) { true }
-
-        it 'returns template file name' do
-          expect(subject).to eq('customized_interactive.cxx')
-        end
-      end
-
-      context 'for other problems' do
-        let(:interactive) { false }
-
-        it 'returns template file name' do
-          expect(subject).to eq('customized_default.cxx')
-        end
+      it 'returns template file name' do
+        expect(subject).to eq('customized_default.cxx')
       end
     end
   end
