@@ -57,49 +57,20 @@ module AtCoderFriends
     end
 
     # generates C++ source from problem description
-    class CxxBuiltin
+    class CxxBuiltin < Base
       include CxxBuiltinConstants
 
-      attr_reader :cfg, :pbm
-
-      def initialize(cfg = nil)
-        @cfg = cfg || {}
+      def attrs
+        Attributes.new(:cxx, DEFAULT_TMPL, INTERACTIVE_TMPL)
       end
 
-      def process(pbm)
-        src = generate(pbm)
-        pbm.add_src(:cxx, src)
-      end
-
-      def generate(pbm)
-        @pbm = pbm
-        src = File.read(select_template)
+      def render(src)
         src = embed_lines(src, '/*** URL ***/', [pbm.url])
         src = embed_lines(src, '/*** CONSTS ***/', gen_consts)
         src = embed_lines(src, '/*** DCLS ***/', gen_decls)
         src = embed_lines(src, '/*** INPUTS ***/', gen_inputs)
         src = embed_lines(src, '/*** OUTPUT ***/', gen_output.split("\n"))
         src
-      end
-
-      def embed_lines(src, pat, lines)
-        re = Regexp.escape(pat)
-        src.gsub(
-          /^(.*)#{re}(.*)$/,
-          lines.compact.map { |s| '\1' + s + '\2' }.join("\n")
-        )
-      end
-
-      def select_template(interactive = pbm.options.interactive)
-        interactive ? interactive_template : default_template
-      end
-
-      def default_template
-        cfg['default_template'] || DEFAULT_TMPL
-      end
-
-      def interactive_template
-        cfg['interactive_template'] || INTERACTIVE_TMPL
       end
 
       def gen_consts(constants = pbm.constants)
