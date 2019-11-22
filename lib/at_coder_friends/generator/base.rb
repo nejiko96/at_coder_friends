@@ -40,14 +40,6 @@ module AtCoderFriends
       def select_interactive
         cfg['interactive_template'] || attrs.interactive_template
       end
-
-      def attrs
-        raise AppError, 'no implementation.'
-      end
-
-      def render(_src)
-        raise AppError, 'no implementation.'
-      end
     end
   end
 end
