@@ -198,14 +198,12 @@ ext_settings:
 ### Settings for RubyBuiltin generator
 | Setting | Description | Default |
 |---------|-------------|---------|
-|default_template|Source template file path|[/templates/ruby_builtin_default.rb](/templates/ruby_builtin_default.rb)|
-|interactive_template|Source template file path for interactive problems|[/templates/ruby_builtin_interactive.rb](/templates/ruby_builtin_interactive.rb)|
+|default_template|Source template file path|[/templates/ruby_builtin.rb.erb](/templates/ruby_builtin.rb.erb)|
 
 ### Settings for CxxBuiltin generator
 | Setting | Description | Default |
 |---------|-------------|---------|
-|default_template|Source template file path|[/templates/cxx_builtin_default.cxx](/templates/cxx_builtin_default.cxx)|
-|interactive_template|Source template file path for interactive problems|[/templates/cxx_builtin_interactive.cxx](/templates/cxx_builtin_interactive.cxx)|
+|default_template|Source template file path|[/templates/cxx_builtin.cxx.erb](/templates/cxx_builtin.cxx.erb)|
 
 ### Language ID list (2019/09/16)
 
