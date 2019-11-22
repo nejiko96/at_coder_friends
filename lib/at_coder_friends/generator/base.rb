@@ -4,10 +4,10 @@ require 'erb'
 
 module AtCoderFriends
   module Generator
+    Attributes = Struct.new(:file_ext, :default_template)
+
     # common behavior of generators
     class Base
-      Attributes = Struct.new(:file_ext, :default_template)
-
       attr_reader :cfg, :pbm
 
       def initialize(cfg = nil)
@@ -25,16 +25,16 @@ module AtCoderFriends
         render(src)
       end
 
+      def select_template
+        cfg['default_template'] || attrs.default_template
+      end
+
       def embed_lines(src, pat, lines)
         re = Regexp.escape(pat)
         src.gsub(
-          /^(.*)#{re}(.*)$/,
-          lines.compact.map { |s| '\1' + s + '\2' }.join("\n")
+          /^(.*)#{re}(.*)$\n/,
+          lines.compact.map { |s| "\\1#{s}\\2\n" }.join
         )
-      end
-
-      def select_template
-        cfg['default_template'] || attrs.default_template
       end
     end
   end

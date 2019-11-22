@@ -1,31 +1,17 @@
 # frozen_string_literal: true
 
 RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
-  TMPL_DIR = File.realpath(File.join(__dir__, '..', '..', 'templates'))
-
   subject(:generator) { described_class.new(cfg) }
   let(:cfg) { nil }
 
-  describe '#select_template' do
-    subject { generator.select_template }
+  describe '#process' do
+    subject { generator.process(pbm) }
+    let(:pbm) { AtCoderFriends::Problem.new('A') }
+    let(:ext) { pbm.sources[0].ext }
 
-    context 'with default configuration' do
-      it 'returns template file name' do
-        expect(subject).to eq(
-          File.join(TMPL_DIR, 'ruby_builtin.rb.erb')
-        )
-      end
-    end
-
-    context 'with custom configuration' do
-      let(:cfg) do
-        {
-          'default_template' => 'customized_default.rb',
-        }
-      end
-      it 'returns template file name' do
-        expect(subject).to eq('customized_default.rb')
-      end
+    it 'returns generator specific extension' do
+      subject
+      expect(ext).to match(:rb)
     end
   end
 
@@ -231,26 +217,6 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
     end
   end
 
-  describe '#gen_output' do
-    subject { generator.gen_output(vs) }
-
-    context 'for a general problem' do
-      let(:vs) { nil }
-
-      it 'generates output script' do
-        expect(subject).to eq('puts ans')
-      end
-    end
-
-    context 'for a binary problem' do
-      let(:vs) { %w[Yes No] }
-
-      it 'generates output script' do
-        expect(subject).to eq("puts cond ? 'Yes' : 'No'")
-      end
-    end
-  end
-
   describe '#generate' do
     subject { generator.generate(pbm) }
     let(:pbm) do
@@ -258,6 +224,7 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
         pbm.formats_src = formats
         pbm.constants = constants
         pbm.options.interactive = interactive
+        pbm.options.binary_values = binary_values
       end
     end
 
@@ -290,8 +257,9 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
         ]
       end
       let(:interactive) { false }
+      let(:binary_values) { nil }
 
-      it 'generates ruby source' do
+      it 'generates source' do
         expect(subject).to eq(
           <<~SRC
             # https://atcoder.jp/contests/practice/tasks/practice_1
@@ -333,8 +301,9 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
         ]
       end
       let(:interactive) { true }
+      let(:binary_values) { nil }
 
-      it 'generates ruby source' do
+      it 'generates source' do
         expect(subject).to eq(
           <<~'SRC'
             # https://atcoder.jp/contests/practice/tasks/practice_2
@@ -371,6 +340,41 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
               @responses.each { |res| puts res }
               puts "----------------------------------------"
             end
+          SRC
+        )
+      end
+    end
+
+    context 'for a binary problem' do
+      before do
+        allow(pbm).to receive(:url) do
+          'https://atcoder.jp/contests/abc006/tasks/abc006_1'
+        end
+      end
+      let(:formats) do
+        [
+          AtCoderFriends::Problem::InputFormat.new(
+            :single, :number, %w[N], []
+          )
+        ]
+      end
+      let(:constants) do
+        [
+          AtCoderFriends::Problem::Constant.new('N', :max, '9')
+        ]
+      end
+      let(:interactive) { false }
+      let(:binary_values) { %w[YES NO] }
+
+      it 'generates source' do
+        expect(subject).to eq(
+          <<~'SRC'
+            # https://atcoder.jp/contests/abc006/tasks/abc006_1
+
+
+            N = gets.to_i
+
+            puts cond ? 'YES' : 'NO'
           SRC
         )
       end

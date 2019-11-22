@@ -1,16 +1,18 @@
 // /*** URL ***/
 
-#include <cstdio>
-<% if pbm.options.interactive %>#include <vector>
+<%
+if pbm.options.interactive
+%>#include <cstdio>
+#include <vector>
 #include <string>
-<% end %>
+
 using namespace std;
-<% if pbm.options.interactive %>
-#define DEBUG<% end %>
+
+#define DEBUG
 #define REP(i,n)   for(int i=0; i<(int)(n); i++)
 #define FOR(i,b,e) for(int i=(b); i<=(int)(e); i++)
 
-<% if pbm.options.interactive %>//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 const int BUFSIZE = 1024;
 char req[BUFSIZE];
 char res[BUFSIZE];
@@ -31,12 +33,12 @@ void query() {
 }
 
 //------------------------------------------------------------------------------
-<% end %>/*** CONSTS ***/
+/*** CONSTS ***/
 
 /*** DCLS ***/
 
 void solve() {
-<% if pbm.options.interactive %>  printf("! %s\n", ans);
+  printf("! %s\n", ans);
   fflush(stdout);
 #ifdef DEBUG
   printf("query count: %d\n", responses.size());
@@ -44,15 +46,45 @@ void solve() {
   REP(i, responses.size()) {
     puts(responses[i].c_str());
   }
-#endif<% else %>  /*** OUTPUT ***/<% end %>
+#endif
 }
 
 void input() {
   /*** INPUTS ***/
-<% if pbm.options.interactive %>#ifdef DEBUG
+#ifdef DEBUG
   scanf("%s", source);
 #endif
-<% end %>}
+}<%
+else
+%>#include <cstdio>
+
+using namespace std;
+
+#define REP(i,n)   for(int i=0; i<(int)(n); i++)
+#define FOR(i,b,e) for(int i=(b); i<=(int)(e); i++)
+
+/*** CONSTS ***/
+
+/*** DCLS ***/
+
+void solve() {
+<%
+  vs = pbm.options.binary_values
+  if vs
+%>  bool cond = false;
+  puts(cond ? "<%= vs[0] %>" : "<%= vs[1] %>");<%
+  else
+%>  int ans = 0;
+  printf("%d\n", ans);<%
+  end
+%>
+}
+
+void input() {
+  /*** INPUTS ***/
+}<%
+end
+%>
 
 int main() {
   input();

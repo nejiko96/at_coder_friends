@@ -167,7 +167,7 @@ RSpec.describe AtCoderFriends::Generator::Main do
 
       it 'initializes generator by specified setting' do
         expect(subject.cfg).to match(
-          'default_template' => 'customized_default.rb',
+          'default_template' => 'customized_default.rb'
         )
       end
     end
