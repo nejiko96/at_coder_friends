@@ -43,15 +43,11 @@ module AtCoderFriends
         when :harray
           gen_harray_decl(inpdef)
         when :varray
-          if inpdef.names.size == 1
-            gen_varray_1_decl(inpdef)
-          else
-            gen_varray_n_decl(inpdef)
-          end
+          gen_varray_decl(inpdef)
         when :matrix
           gen_matrix_decl(inpdef)
-        when :vmatrix
-          gen_vmatrix_decl(inpdef)
+        when :varray_matrix
+          gen_varray_matrix_decl(inpdef)
         end
       end
 
@@ -67,6 +63,14 @@ module AtCoderFriends
         dcl = "#{v}s"
         expr = gen_expr(inpdef.item, true)
         "#{dcl} = #{expr}"
+      end
+
+      def gen_varray_decl(inpdef)
+        if inpdef.names.size == 1
+          gen_varray_1_decl(inpdef)
+        else
+          gen_varray_n_decl(inpdef)
+        end
       end
 
       def gen_varray_1_decl(inpdef)
@@ -98,14 +102,14 @@ module AtCoderFriends
         "#{decl} = Array.new(#{sz}) { #{expr} }"
       end
 
-      def gen_vmatrix_decl(inpdef)
+      def gen_varray_matrix_decl(inpdef)
         vs = inpdef.names.map { |v| "#{v}s" }
         vs[-1] += 's'
         sz = inpdef.size[0]
         dcls = vs.map { |v| "#{v}[i]" }
         dcls[-1] = '*' + dcls[-1] unless inpdef.item == :char
         dcl = dcls.join(', ')
-        expr = gen_vmatrix_expr(inpdef.item)
+        expr = gen_varray_matrix_expr(inpdef.item)
         ret = []
         ret += vs.map { |v| "#{v} = Array.new(#{sz})" }
         ret << "#{sz}.times do |i|"
@@ -125,7 +129,7 @@ module AtCoderFriends
         end
       end
 
-      def gen_vmatrix_expr(item)
+      def gen_varray_matrix_expr(item)
         case item
         when :number
           'gets.split.map(&:to_i)'

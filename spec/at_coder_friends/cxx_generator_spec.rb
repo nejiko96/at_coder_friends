@@ -245,7 +245,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
     end
 
     context 'for a jagged array of numbers' do
-      let(:container) { :vmatrix }
+      let(:container) { :varray_matrix }
       let(:item) { :number }
       let(:names) { %w[K A] }
       let(:size) { %w[N K_N] }
@@ -260,7 +260,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
     end
 
     context 'for a jagged array of characters' do
-      let(:container) { :vmatrix }
+      let(:container) { :varray_matrix }
       let(:item) { :char }
       let(:names) { %w[K p] }
       let(:size) { %w[Q 26] }
@@ -392,7 +392,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
     end
 
     context 'for a jagged array of numbers' do
-      let(:container) { :vmatrix }
+      let(:container) { :varray_matrix }
       let(:item) { :number }
       let(:names) { %w[K A] }
       let(:size) { %w[N K_N] }
@@ -409,7 +409,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
     end
 
     context 'for a jagged array of characters' do
-      let(:container) { :vmatrix }
+      let(:container) { :varray_matrix }
       let(:item) { :char }
       let(:names) { %w[K p] }
       let(:size) { %w[Q 26] }
@@ -460,7 +460,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
     subject { generator.generate(pbm) }
     let(:pbm) do
       AtCoderFriends::Problem.new('A') do |pbm|
-        pbm.formats_raw = formats
+        pbm.formats_src = formats
         pbm.constants = constants
         pbm.options.interactive = interactive
       end
@@ -474,7 +474,9 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       end
       let(:formats) do
         [
-          AtCoderFriends::Problem::InputFormat.new(:single, :number, %w[N M]),
+          AtCoderFriends::Problem::InputFormat.new(
+            :single, :number, %w[N M], []
+          ),
           AtCoderFriends::Problem::InputFormat.new(
             :varray, :number, %w[A B C T], %w[M]
           )
@@ -543,7 +545,9 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       end
       let(:formats) do
         [
-          AtCoderFriends::Problem::InputFormat.new(:single, :number, %w[N Q])
+          AtCoderFriends::Problem::InputFormat.new(
+            :single, :number, %w[N Q], []
+          )
         ]
       end
       let(:constants) do

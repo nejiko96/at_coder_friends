@@ -171,29 +171,29 @@ module AtCoderFriends
       end
 
       def gen_input(inpdef)
-        if inpdef.container == :vmatrix
-          gen_vmatrix_input(inpdef)
+        if inpdef.container == :varray_matrix
+          gen_varray_matrix_input(inpdef)
         else
           gen_plain_input(inpdef)
         end
       end
 
       def gen_plain_input(inpdef)
+        return unless inpdef.size.is_a?(Array)
+
         dim = inpdef.size.size - (inpdef.item == :char ? 1 : 0)
         scanf = SCANF_FMTS[dim]
         sz1, sz2 = inpdef.size
         fmt, addr = scanf_params(inpdef)
-        return unless fmt && addr
-
         format(scanf, sz1: sz1, sz2: sz2, fmt: fmt, addr: addr)
       end
 
-      def gen_vmatrix_input(inpdef)
+      def gen_varray_matrix_input(inpdef)
         dim = inpdef.item == :char ? 0 : 1
         scanf = SCANF_FMTS_VM[dim]
+        sz1 = inpdef.size[0]
+        sz2 = inpdef.size[1].split('_')[0]
         vadef, mxdef = inpdef.components
-        sz1 = vadef.size[0]
-        sz2 = mxdef.size[1][0]
         va_fmt, va_addr = scanf_params(vadef)
         mx_fmt, mx_addr = scanf_params(mxdef)
         format(

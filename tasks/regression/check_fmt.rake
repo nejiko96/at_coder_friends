@@ -27,7 +27,7 @@ module AtCoderFriends
 
       n_fmt = Parser::InputFormat.normalize_fmt(fmt).join("\n")
       Parser::InputFormat.process(pbm)
-      res = pbm.formats_raw.map(&:to_s).join("\n")
+      res = pbm.formats_src.map(&:to_s).join("\n")
       [fmt, n_fmt, res]
     end
   end

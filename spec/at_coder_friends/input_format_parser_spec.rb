@@ -490,7 +490,7 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
       end
     end
 
-    context 'for vmatrix(number)' do
+    context 'for varray_matrix(number)' do
       let(:fmt) do
         <<~FMT
           <pre><var>N</var> <var>M</var>
@@ -518,12 +518,13 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
           container: :single, item: :number, names: %w[N M], size: []
         )
         expect(defs[1]).to have_attributes(
-          container: :vmatrix, item: :number, names: %w[K A], size: %w[N K_N]
+          container: :varray_matrix, item: :number,
+          names: %w[K A], size: %w[N K_N]
         )
       end
     end
 
-    context 'for vmatrix(char)' do
+    context 'for varray_matrix(char)' do
       let(:fmt) do
         <<~FMT
           <pre><var>N</var>
@@ -570,7 +571,7 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
           container: :single, item: :number, names: %w[Q], size: []
         )
         expect(defs[3]).to have_attributes(
-          container: :vmatrix, item: :char, names: %w[k p], size: %w[Q 26]
+          container: :varray_matrix, item: :char, names: %w[k p], size: %w[Q 26]
         )
       end
     end

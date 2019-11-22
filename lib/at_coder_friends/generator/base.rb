@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module AtCoderFriends
   module Generator
     Attributes = Struct.new(:file_ext, :default_template, :interactive_template)
