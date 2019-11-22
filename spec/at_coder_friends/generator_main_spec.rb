@@ -89,10 +89,58 @@ RSpec.describe AtCoderFriends::Generator::Main do
       end
 
       it 'shows error' do
-        expect { subject }.to raise_error(
-          AtCoderFriends::AppError,
-          'plugin load error : generator RubyAlternative not found.'
-        )
+        expect { subject }
+          .to output(
+            <<~MSG
+              an error occurred in generator:RubyAlternative.
+              #<AtCoderFriends::AppError: plugin load error : generator RubyAlternative not found.>
+            MSG
+          )
+          .to_stdout
+      end
+    end
+
+    context 'when Ruby generation failed' do
+      before do
+        allow_any_instance_of(AtCoderFriends::Generator::RubyBuiltin)
+          .to receive(:process).and_raise(StandardError.new('error'))
+      end
+      it 'shows error' do
+        expect { subject }
+          .to output(
+            <<~MSG
+              an error occurred in generator:RubyBuiltin.
+              #<StandardError: error>
+            MSG
+          )
+          .to_stdout
+      end
+
+      it 'generates C++ source' do
+        subject
+        expect(ext_list).to match %i[cxx]
+      end
+    end
+
+    context 'when C++ generation failed' do
+      before do
+        allow_any_instance_of(AtCoderFriends::Generator::CxxBuiltin)
+          .to receive(:process).and_raise(StandardError.new('error'))
+      end
+      it 'shows error' do
+        expect { subject }
+          .to output(
+            <<~MSG
+              an error occurred in generator:CxxBuiltin.
+              #<StandardError: error>
+            MSG
+          )
+          .to_stdout
+      end
+
+      it 'generates Ruby source' do
+        subject
+        expect(ext_list).to match %i[rb]
       end
     end
   end
@@ -113,7 +161,6 @@ RSpec.describe AtCoderFriends::Generator::Main do
             generator_settings:
               RubyBuiltin:
                 default_template: customized_default.rb
-                interactive_template: customized_interactive.rb
           TEXT
         )
       end
@@ -121,7 +168,6 @@ RSpec.describe AtCoderFriends::Generator::Main do
       it 'initializes generator by specified setting' do
         expect(subject.cfg).to match(
           'default_template' => 'customized_default.rb',
-          'interactive_template' => 'customized_interactive.rb'
         )
       end
     end
