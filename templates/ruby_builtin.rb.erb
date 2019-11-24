@@ -1,6 +1,8 @@
 # ### URL ###
-<% if pbm.options.interactive %>
-def query(*args)
+
+<%
+if pbm.options.interactive
+%>def query(*args)
   puts "? #{args.join(' ')}"
   STDOUT.flush
   if $DEBUG
@@ -12,12 +14,12 @@ def query(*args)
 end
 
 $DEBUG = true
-<% end %>
+
 ### CONSTS ###
 
 ### DCLS ###
 
-<% if pbm.options.interactive %>if $DEBUG
+if $DEBUG
   @responses = []
   @source = gets.chomp
 end
@@ -31,4 +33,18 @@ if $DEBUG
   puts "query results:"
   @responses.each { |res| puts res }
   puts "----------------------------------------"
-end<% else %>### OUTPUT ###<% end %>
+end<%
+else
+%>### CONSTS ###
+
+### DCLS ###
+
+<%
+  vs = pbm.options.binary_values
+  if vs
+%>puts cond ? '<%= vs[0] %>' : '<%= vs[1] %>'<%
+  else
+%>puts ans<%
+  end
+end
+%>

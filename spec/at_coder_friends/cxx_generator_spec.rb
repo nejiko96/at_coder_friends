@@ -1,32 +1,17 @@
 # frozen_string_literal: true
 
 RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
-  TMPL_DIR = File.realpath(File.join(__dir__, '..', '..', 'templates'))
-
   subject(:generator) { described_class.new(cfg) }
   let(:cfg) { nil }
 
-  describe '#select_template' do
-    subject { generator.select_template }
+  describe '#process' do
+    subject { generator.process(pbm) }
+    let(:pbm) { AtCoderFriends::Problem.new('A') }
+    let(:ext) { pbm.sources[0].ext }
 
-    context 'with default configuration' do
-      it 'returns template file name' do
-        expect(subject).to eq(
-          File.join(TMPL_DIR, 'cxx_builtin.cxx.erb')
-        )
-      end
-    end
-
-    context 'with custom configuration' do
-      let(:cfg) do
-        {
-          'default_template' => 'customized_default.cxx'
-        }
-      end
-
-      it 'returns template file name' do
-        expect(subject).to eq('customized_default.cxx')
-      end
+    it 'returns generator specific extension' do
+      subject
+      expect(ext).to match(:cxx)
     end
   end
 
@@ -399,36 +384,6 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
     end
   end
 
-  describe 'gen_output' do
-    subject { generator.gen_output(vs) }
-
-    context 'for a general problem' do
-      let(:vs) { nil }
-
-      it 'generates output script' do
-        expect(subject).to eq(
-          <<~TEXT
-            int ans = 0;
-            printf("%d\\n", ans);
-          TEXT
-        )
-      end
-    end
-
-    context 'for a binary problem' do
-      let(:vs) { %w[Yes No] }
-
-      it 'generates output script' do
-        expect(subject).to eq(
-          <<~TEXT
-            bool cond = false;
-            puts(cond ? "Yes" : "No");
-          TEXT
-        )
-      end
-    end
-  end
-
   describe '#generate' do
     subject { generator.generate(pbm) }
     let(:pbm) do
@@ -436,6 +391,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
         pbm.formats_src = formats
         pbm.constants = constants
         pbm.options.interactive = interactive
+        pbm.options.binary_values = binary_values
       end
     end
 
@@ -465,8 +421,9 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
         ]
       end
       let(:interactive) { false }
+      let(:binary_values) { nil }
 
-      it 'generates c++ source' do
+      it 'generates source' do
         expect(subject).to eq(
           <<~SRC
             // https://atcoder.jp/contests/practice/tasks/practice_1
@@ -530,8 +487,9 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
         ]
       end
       let(:interactive) { true }
+      let(:binary_values) { nil }
 
-      it 'generates c++ source' do
+      it 'generates source' do
         expect(subject).to eq(
           <<~SRC
             // https://atcoder.jp/contests/practice/tasks/practice_2
@@ -589,6 +547,62 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
             #ifdef DEBUG
               scanf("%s", source);
             #endif
+            }
+
+            int main() {
+              input();
+              solve();
+              return 0;
+            }
+          SRC
+        )
+      end
+    end
+
+    context 'for a binary problem' do
+      before do
+        allow(pbm).to receive(:url) do
+          'https://atcoder.jp/contests/abc006/tasks/abc006_1'
+        end
+      end
+      let(:formats) do
+        [
+          AtCoderFriends::Problem::InputFormat.new(
+            :single, :number, %w[N], []
+          )
+        ]
+      end
+      let(:constants) do
+        [
+          AtCoderFriends::Problem::Constant.new('N', :max, '9')
+        ]
+      end
+      let(:interactive) { false }
+      let(:binary_values) { %w[YES NO] }
+
+      it 'generates source' do
+        expect(subject).to eq(
+          <<~SRC
+            // https://atcoder.jp/contests/abc006/tasks/abc006_1
+
+            #include <cstdio>
+
+            using namespace std;
+
+            #define REP(i,n)   for(int i=0; i<(int)(n); i++)
+            #define FOR(i,b,e) for(int i=(b); i<=(int)(e); i++)
+
+            const int N_MAX = 9;
+
+            int N;
+
+            void solve() {
+              bool cond = false;
+              puts(cond ? "YES" : "NO");
+            }
+
+            void input() {
+              scanf("%d", &N);
             }
 
             int main() {

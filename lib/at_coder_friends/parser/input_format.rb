@@ -160,9 +160,8 @@ module AtCoderFriends
           /x,
           ->(m) { m[0].split.map { |w| w.scan(RE_ITEM)[0] } },
           lambda { |vs|
-            pat2 = vs.map.with_index do |v, i|
-              v + (i.zero? ? RE_SZ : RE_IX).source
-            end
+            pat2 = [vs[0] + RE_SZ.source] +
+              vs[1..-1].map { |v| v + RE_IX.source }
             /\A#{pat2.join('\s+')}\z/
           }
         ),

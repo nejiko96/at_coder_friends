@@ -6,6 +6,7 @@ module AtCoderFriends
       ACF_HOME = File.realpath(File.join(__dir__, '..', '..', '..'))
       TMPL_DIR = File.join(ACF_HOME, 'templates')
       DEFAULT_TMPL = File.join(TMPL_DIR, 'cxx_builtin.cxx.erb')
+      ATTRS = Attributes.new(:cxx, DEFAULT_TMPL)
       SCANF_FMTS = [
         'scanf("%<fmt>s", %<addr>s);',
         'REP(i, %<sz1>s) scanf("%<fmt>s", %<addr>s);',
@@ -45,14 +46,6 @@ module AtCoderFriends
           char: '%<v>s[i]'
         }
       }.freeze
-      DEFAULT_OUTPUT = <<~TEXT
-        int ans = 0;
-        printf("%d\\n", ans);
-      TEXT
-      BINARY_OUTPUT_FMT = <<~TEXT
-        bool cond = false;
-        puts(cond ? "%s" : "%s");
-      TEXT
     end
 
     # generates C++ source from problem description
@@ -60,7 +53,7 @@ module AtCoderFriends
       include CxxBuiltinConstants
 
       def attrs
-        Attributes.new(:cxx, DEFAULT_TMPL)
+        ATTRS
       end
 
       def render(src)
@@ -68,7 +61,6 @@ module AtCoderFriends
         src = embed_lines(src, '/*** CONSTS ***/', gen_consts)
         src = embed_lines(src, '/*** DCLS ***/', gen_decls)
         src = embed_lines(src, '/*** INPUTS ***/', gen_inputs)
-        src = embed_lines(src, '/*** OUTPUT ***/', gen_output.split("\n"))
         src
       end
 
@@ -219,14 +211,6 @@ module AtCoderFriends
 
         addr_fmt = ADDR_FMTS[inpdef.container][inpdef.item]
         inpdef.names.map { |v| format(addr_fmt, v: v) }.join(', ')
-      end
-
-      def gen_output(vs = pbm.options.binary_values)
-        if vs
-          format(BINARY_OUTPUT_FMT, *vs)
-        else
-          DEFAULT_OUTPUT
-        end
       end
     end
   end

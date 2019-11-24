@@ -6,7 +6,10 @@
 
 ### Changed
 - Change template file format to ERB.
-- Integration of default template and interactive template.
+
+### Deleted
+- Integrated template for interactive problems into default template.
+- Delete '### OUTPUT ###' source embedding pattern.
 
 ## 0.6.2 (2019-11-18)
 ### Added

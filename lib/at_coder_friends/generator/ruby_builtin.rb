@@ -7,16 +7,16 @@ module AtCoderFriends
       ACF_HOME = File.realpath(File.join(__dir__, '..', '..', '..'))
       TMPL_DIR = File.join(ACF_HOME, 'templates')
       DEFAULT_TMPL = File.join(TMPL_DIR, 'ruby_builtin.rb.erb')
+      ATTRS = Attributes.new(:rb, DEFAULT_TMPL)
 
       def attrs
-        Attributes.new(:rb, DEFAULT_TMPL)
+        ATTRS
       end
 
       def render(src)
         src = embed_lines(src, '### URL ###', [pbm.url])
         src = embed_lines(src, '### CONSTS ###', gen_consts)
         src = embed_lines(src, '### DCLS ###', gen_decls)
-        src = embed_lines(src, '### OUTPUT ###', gen_output.split("\n"))
         src
       end
 
@@ -134,14 +134,6 @@ module AtCoderFriends
           'gets.split.map(&:to_i)'
         when :string, :char
           'gets.chomp.split'
-        end
-      end
-
-      def gen_output(vs = pbm.options.binary_values)
-        if vs
-          "puts cond ? '#{vs[0]}' : '#{vs[1]}'"
-        else
-          'puts ans'
         end
       end
     end
