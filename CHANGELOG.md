@@ -9,7 +9,8 @@
 
 ### Deleted
 - Integrated template for interactive problems into default template.
-- Delete '### OUTPUT ###' source embedding pattern.
+- Delete '### OUTPUT ###' embedding pattern.
+- Delete '### URL ###' embedding pattern.
 
 ## 0.6.2 (2019-11-18)
 ### Added

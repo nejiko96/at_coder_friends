@@ -57,7 +57,6 @@ module AtCoderFriends
       end
 
       def render(src)
-        src = embed_lines(src, '/*** URL ***/', [pbm.url])
         src = embed_lines(src, '/*** CONSTS ***/', gen_consts)
         src = embed_lines(src, '/*** DCLS ***/', gen_decls)
         src = embed_lines(src, '/*** INPUTS ***/', gen_inputs)
