@@ -575,6 +575,49 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
         )
       end
     end
+
+    context 'for matrix_varray(number)' do
+      let(:fmt) do
+        <<~FMT
+          <pre>
+          <var>M</var>
+          <var>city_{11}</var> <var>city_{12}</var> <var>cost_1</var>
+          :
+          :
+          <var>city_{M1}</var> <var>city_{M2}</var> <var>cost_M</var>
+          </pre>
+        FMT
+      end
+      let(:smp) do
+        <<~SMP
+          12
+          1 2 1
+          1 3 1
+          2 3 1
+          3 4 3
+          3 5 3
+          4 5 3
+          5 6 6
+          5 7 3
+          6 7 9
+          5 8 9
+          5 9 18
+          8 9 27
+        SMP
+      end
+      it 'can parse format' do
+        defs = subject
+        expect(defs.size).to eq(2)
+        expect(defs[0]).to have_attributes(
+          container: :single, item: :number, names: %w[M], size: []
+        )
+        expect(defs[1]).to have_attributes(
+          container: :matrix_varray, item: :number,
+          names: %w[city cost], size: %w[M 2]
+        )
+      end
+    end
+
     context 'for unknown format' do
       let(:fmt) do
         <<~FMT
