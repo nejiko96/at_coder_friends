@@ -69,14 +69,13 @@ using namespace std;
 
 void solve() {
 <%
-  vs = pbm.options.binary_values
-  if vs
+if (vs = pbm.options.binary_values)
 %>  bool cond = false;
   puts(cond ? "<%= vs[0] %>" : "<%= vs[1] %>");<%
-  else
+else
 %>  int ans = 0;
   printf("%d\n", ans);<%
-  end
+end
 %>
 }
 

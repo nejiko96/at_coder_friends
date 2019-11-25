@@ -2,71 +2,8 @@
 
 module AtCoderFriends
   module Generator
-    module CxxBuiltinConstants
-      ACF_HOME = File.realpath(File.join(__dir__, '..', '..', '..'))
-      TMPL_DIR = File.join(ACF_HOME, 'templates')
-      DEFAULT_TMPL = File.join(TMPL_DIR, 'cxx_builtin.cxx.erb')
-      ATTRS = Attributes.new(:cxx, DEFAULT_TMPL)
-      SCANF_FMTS = [
-        'scanf("%<fmt>s", %<addr>s);',
-        'REP(i, %<sz1>s) scanf("%<fmt>s", %<addr>s);',
-        'REP(i, %<sz1>s) REP(j, %<sz2>s) scanf("%<fmt>s", %<addr>s);'
-      ].freeze
-      SCANF_FMTS_VM0 = <<~TEXT
-        REP(i, %<sz1>s) {
-          scanf("%<va_fmt>s", %<va_addr>s);
-          scanf("%<mx_fmt>s", %<mx_addr>s);
-        }
-      TEXT
-      SCANF_FMTS_VM1 = <<~TEXT
-        REP(i, %<sz1>s) {
-          scanf("%<va_fmt>s", %<va_addr>s);
-          REP(j, %<sz2>s[i]) scanf("%<mx_fmt>s", %<mx_addr>s);
-        }
-      TEXT
-      SCANF_FMTS_VM = [SCANF_FMTS_VM0, SCANF_FMTS_VM1].freeze
-      FMT_FMTS = { number: '%d', string: '%s', char: '%s' }.freeze
-      ADDR_FMTS = {
-        single: {
-          number: '&%<v>s',
-          string: '%<v>s'
-        },
-        harray: {
-          number: '%<v>s + i',
-          string: '%<v>s[i]',
-          char: '%<v>s'
-        },
-        varray: {
-          number: '%<v>s + i',
-          string: '%<v>s[i]'
-        },
-        matrix: {
-          number: '&%<v>s[i][j]',
-          string: '%<v>s[i][j]',
-          char: '%<v>s[i]'
-        }
-      }.freeze
-    end
-
-    # generates C++ source from problem description
-    class CxxBuiltin < Base
-      include CxxBuiltinConstants
-
-      def attrs
-        ATTRS
-      end
-
-      def render(src)
-        src = embed_lines(src, '/*** CONSTS ***/', gen_consts)
-        src = embed_lines(src, '/*** DCLS ***/', gen_decls)
-        src = embed_lines(src, '/*** INPUTS ***/', gen_inputs)
-        src
-      end
-
-      def gen_consts(constants = pbm.constants)
-        constants.map { |c| gen_const(c) }
-      end
-
+    # generates C++ constants
+    module CxxBuiltinConstGen
       def gen_const(c)
         v = cnv_const_value(c.value)
         if c.type == :max
@@ -82,11 +19,10 @@ module AtCoderFriends
           .sub(/\b2\^/, '1<<')
           .gsub(',', "'")
       end
+    end
 
-      def gen_decls(inpdefs = pbm.formats)
-        inpdefs.map { |inpdef| gen_decl(inpdef) }.flatten
-      end
-
+    # generates C++ variable declarations
+    module CxxBuiltinDeclGen
       def gen_decl(inpdef)
         if inpdef.components
           inpdef.components.map { |cmp| gen_decl(cmp) }
@@ -155,10 +91,50 @@ module AtCoderFriends
       def gen_arr_size(szs)
         szs.map { |sz| sz.gsub(/([a-z][a-z0-9_]*)/i, '\1_MAX').upcase }
       end
+    end
 
-      def gen_inputs(inpdefs = pbm.formats)
-        inpdefs.map { |inpdef| gen_input(inpdef) }.flatten
-      end
+    # generates C++ input source
+    module CxxBuiltinInputGen
+      SCANF_FMTS = [
+        'scanf("%<fmt>s", %<addr>s);',
+        'REP(i, %<sz1>s) scanf("%<fmt>s", %<addr>s);',
+        'REP(i, %<sz1>s) REP(j, %<sz2>s) scanf("%<fmt>s", %<addr>s);'
+      ].freeze
+      SCANF_FMTS_VM = [
+        <<~TEXT,
+          REP(i, %<sz1>s) {
+            scanf("%<va_fmt>s", %<va_addr>s);
+            scanf("%<mx_fmt>s", %<mx_addr>s);
+          }
+        TEXT
+        <<~TEXT
+          REP(i, %<sz1>s) {
+            scanf("%<va_fmt>s", %<va_addr>s);
+            REP(j, %<sz2>s[i]) scanf("%<mx_fmt>s", %<mx_addr>s);
+          }
+        TEXT
+      ].freeze
+      FMT_FMTS = { number: '%d', string: '%s', char: '%s' }.freeze
+      ADDR_FMTS = {
+        single: {
+          number: '&%<v>s',
+          string: '%<v>s'
+        },
+        harray: {
+          number: '%<v>s + i',
+          string: '%<v>s[i]',
+          char: '%<v>s'
+        },
+        varray: {
+          number: '%<v>s + i',
+          string: '%<v>s[i]'
+        },
+        matrix: {
+          number: '&%<v>s[i][j]',
+          string: '%<v>s[i][j]',
+          char: '%<v>s[i]'
+        }
+      }.freeze
 
       def gen_input(inpdef)
         if inpdef.container == :varray_matrix
@@ -169,23 +145,24 @@ module AtCoderFriends
       end
 
       def gen_plain_input(inpdef)
-        return unless inpdef.size.is_a?(Array)
-
-        dim = inpdef.size.size - (inpdef.item == :char ? 1 : 0)
-        scanf = SCANF_FMTS[dim]
-        sz1, sz2 = inpdef.size
         fmt, addr = scanf_params(inpdef)
+        return unless fmt && addr
+
+        scanf = SCANF_FMTS[inpdef.size.size - (inpdef.item == :char ? 1 : 0)]
+        sz1, sz2 = inpdef.size
         format(scanf, sz1: sz1, sz2: sz2, fmt: fmt, addr: addr)
       end
 
       def gen_varray_matrix_input(inpdef)
-        dim = inpdef.item == :char ? 0 : 1
-        scanf = SCANF_FMTS_VM[dim]
-        sz1 = inpdef.size[0]
-        sz2 = inpdef.size[1].split('_')[0]
         vadef, mxdef = inpdef.components
         va_fmt, va_addr = scanf_params(vadef)
         mx_fmt, mx_addr = scanf_params(mxdef)
+        return unless va_fmt && va_addr
+        return unless mx_fmt && mx_addr
+
+        scanf = SCANF_FMTS_VM[inpdef.item == :char ? 0 : 1]
+        sz1 = inpdef.size[0]
+        sz2 = inpdef.size[1].split('_')[0]
         format(
           scanf,
           sz1: sz1, sz2: sz2,
@@ -210,6 +187,41 @@ module AtCoderFriends
 
         addr_fmt = ADDR_FMTS[inpdef.container][inpdef.item]
         inpdef.names.map { |v| format(addr_fmt, v: v) }.join(', ')
+      end
+    end
+
+    # generates C++ source from problem description
+    class CxxBuiltin < Base
+      include CxxBuiltinConstGen
+      include CxxBuiltinDeclGen
+      include CxxBuiltinInputGen
+
+      ACF_HOME = File.realpath(File.join(__dir__, '..', '..', '..'))
+      TMPL_DIR = File.join(ACF_HOME, 'templates')
+      DEFAULT_TMPL = File.join(TMPL_DIR, 'cxx_builtin.cxx.erb')
+      ATTRS = Attributes.new(:cxx, DEFAULT_TMPL)
+
+      def attrs
+        ATTRS
+      end
+
+      def render(src)
+        src = embed_lines(src, '/*** CONSTS ***/', gen_consts)
+        src = embed_lines(src, '/*** DCLS ***/', gen_decls)
+        src = embed_lines(src, '/*** INPUTS ***/', gen_inputs)
+        src
+      end
+
+      def gen_consts(constants = pbm.constants)
+        constants.map { |c| gen_const(c) }
+      end
+
+      def gen_decls(inpdefs = pbm.formats)
+        inpdefs.map { |inpdef| gen_decl(inpdef) }.flatten
+      end
+
+      def gen_inputs(inpdefs = pbm.formats)
+        inpdefs.map { |inpdef| gen_input(inpdef) }.flatten
       end
     end
   end
