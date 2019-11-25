@@ -618,6 +618,52 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
       end
     end
 
+    context 'for vertically expanded matrix(number)' do
+      let(:fmt) do
+        <<~FMT
+          <pre>
+          <var>N</var> <var>M</var>
+          <var>C_1</var> <var>cost_1</var>
+          <var>idol_{1,1}</var> <var>p_{1,1}</var>
+          <var>idol_{1,2}</var> <var>p_{1,2}</var>
+          :
+          <var>idol_{1,C_1}</var> <var>p_{1,C_1}</var>
+          </pre>
+        FMT
+      end
+      let(:smp) do
+        <<~SMP
+          3 3
+          2 50
+          1 99
+          2 1
+          3 300
+          1 90
+          2 9
+          3 1
+          3 3000
+          1 80
+          2 15
+          3 5
+        SMP
+      end
+      it 'can parse format' do
+        defs = subject
+        expect(defs.size).to eq(3)
+        expect(defs[0]).to have_attributes(
+          container: :single, item: :number, names: %w[N M], size: []
+        )
+        expect(defs[1]).to have_attributes(
+          container: :varray, item: :number,
+          names: %w[C cost], size: %w[1]
+        )
+        expect(defs[2]).to have_attributes(
+          container: :vmatrix, item: :number,
+          names: %w[idol p], size: %w[1 C_1]
+        )
+      end
+    end
+
     context 'for unknown format' do
       let(:fmt) do
         <<~FMT

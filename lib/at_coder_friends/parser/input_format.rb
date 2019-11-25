@@ -37,8 +37,11 @@ module AtCoderFriends
       RE_IX_00 = /(_\{*[01][,_]?[01]\}*|\{+[01][,_]?[01]\}+)/.freeze
       RE_IX_0 = /(_\{*[0-9]+\}*|\{+[0-9]+\}+)/.freeze
       RE_IX = /(_\S+?|\{\S+?\})/.freeze
-      RE_SZ = /(_(?<sz>\S+?)|\{(?<sz>\S+?)\})/.freeze
+      RE_SZ_00 =
+        /(_\{*(?<sz>[01][,_]?[01])\}*|\{+(?<sz>[01][,_]?[01])\}+)/
+        .freeze
       RE_SZ_0 = /(_\{*(?<sz>[0-9]+)\}*|\{+(?<sz>[0-9]+)\}+)/.freeze
+      RE_SZ = /(_(?<sz>\S+?)|\{(?<sz>\S+?)\})/.freeze
       RE_SZ_REF = '(_\{*\k<sz>\}*|\{+\k<sz>\}+)'
       RE_SINGLE = /[A-Za-z{][A-Za-z_0-9{}]*/.freeze
       RE_BLOCK = /(?<bl>\{(?:[^{}]|\g<bl>)*\})/.freeze
@@ -137,6 +140,17 @@ module AtCoderFriends
           /x
         }
       )
+      VMATRIX_MATCHER = InputFormatMatcher.new(
+        :vmatrix, :number,
+        /
+          \A #{RE_ITEM}#{RE_SZ_00} (\s+#{RE_ITEM}#{RE_SZ_REF})* \z
+        /x,
+        ->(m) { m[0].split.map { |w| w.scan(RE_ITEM)[0] } },
+        lambda { |vs|
+          pat2 = [vs[0] + RE_SZ.source] + vs[1..-1].map { |v| v + RE_IX.source }
+          /\A#{pat2.join('\s+')}\z/
+        }
+      )
       VARRAY_MATCHER = InputFormatMatcher.new(
         :varray, :number,
         /
@@ -161,9 +175,19 @@ module AtCoderFriends
         VARRAY_MATRIX_MATCHER,
         VARRAY_MATRIX_CHAR_MATCHER,
         MATRIX_VARRAY_MATCHER,
+        VMATRIX_MATCHER,
         VARRAY_MATCHER,
         SINGLE_MATCHER
       ].freeze
+      DIMENSION_TBL = {
+        single: 0,
+        harray: 1,
+        varray: 1,
+        matrix: 2,
+        varray_matrix: 2,
+        matrix_varray: 2,
+        vmatrix: 2
+      }.freeze
     end
 
     # parses input data format and generates input definitons
@@ -266,21 +290,20 @@ module AtCoderFriends
         names.map { |nm| nm.delete('{}').gsub(/(\A_+|_+\z)/, '') }
       end
 
+      # 1) split size by container dimension
+      # 2) remove extra underscores, N-1 -> N
       def normalize_size(container, size)
-        sz =
-          case container
-          when :matrix, :varray_matrix, :matrix_varray
+        (
+          case DIMENSION_TBL[container]
+          when 2
             split_size(size)
-          when :harray, :varray
+          when 1
             [size]
-          when :single
+          when 0
             []
           end
-        sz&.map do |w|
-          w
-            .delete('{},')
-            .gsub(/(\A_+|(_|-1)+\z)/, '') # extra underscores, N-1 -> N
-        end
+        )
+        &.map { |w| w.delete('{},').gsub(/(\A_+|(_|-1)+\z)/, '') }
       end
 
       def split_size(str)
