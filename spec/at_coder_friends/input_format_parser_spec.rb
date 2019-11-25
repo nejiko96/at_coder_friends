@@ -618,7 +618,7 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
       end
     end
 
-    context 'for vertically expanded matrix(number)' do
+    context 'for vertically expanded matrices(number)' do
       let(:fmt) do
         <<~FMT
           <pre>
@@ -664,7 +664,7 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
       end
     end
 
-    context 'for horizontally expanded matrix(number)' do
+    context 'for horizontally expanded matrices(number)' do
       let(:fmt) do
         <<~FMT
           <pre><var>N</var> <var>M</var> <var>Q</var>

@@ -34,7 +34,7 @@ module AtCoderFriends
             gen_harray_decl(inpdef)
           when :varray
             gen_varray_decl(inpdef)
-          when :matrix
+          when :matrix, :vmatrix, :hmatrix
             gen_matrix_decl(inpdef)
           end
         end
@@ -76,15 +76,15 @@ module AtCoderFriends
       end
 
       def gen_matrix_decl(inpdef)
-        v = inpdef.names[0]
+        names = inpdef.names
         sz1, sz2 = gen_arr_size(inpdef.size)
         case inpdef.item
         when :number
-          "int #{v}[#{sz1}][#{sz2}];"
+          names.map { |v| "int #{v}[#{sz1}][#{sz2}];" }
         when :string
-          "char #{v}[#{sz1}][#{sz2}][#{v.upcase}_MAX + 1];"
+          names.map { |v| "char #{v}[#{sz1}][#{sz2}][#{v.upcase}_MAX + 1];" }
         when :char
-          "char #{v}[#{sz1}][#{sz2} + 1];"
+          names.map { |v| "char #{v}[#{sz1}][#{sz2} + 1];" }
         end
       end
 
@@ -100,21 +100,44 @@ module AtCoderFriends
         'REP(i, %<sz1>s) scanf("%<fmt>s", %<addr>s);',
         'REP(i, %<sz1>s) REP(j, %<sz2>s) scanf("%<fmt>s", %<addr>s);'
       ].freeze
-      SCANF_FMTS_VM = [
-        <<~TEXT,
-          REP(i, %<sz1>s) {
-            scanf("%<va_fmt>s", %<va_addr>s);
-            scanf("%<mx_fmt>s", %<mx_addr>s);
-          }
-        TEXT
-        <<~TEXT
-          REP(i, %<sz1>s) {
-            scanf("%<va_fmt>s", %<va_addr>s);
-            REP(j, %<sz2>s[i]) scanf("%<mx_fmt>s", %<mx_addr>s);
-          }
-        TEXT
-      ].freeze
+      SCANF_FMTS_CMB = {
+        varray_matrix:
+          [
+            <<~TEXT,
+              REP(i, %<sz1>s) {
+                scanf("%<fmt1>s", %<addr1>s);
+                scanf("%<fmt2>s", %<addr2>s);
+              }
+            TEXT
+            <<~TEXT
+              REP(i, %<sz1>s) {
+                scanf("%<fmt1>s", %<addr1>s);
+                REP(j, %<sz2>s[i]) scanf("%<fmt2>s", %<addr2>s);
+              }
+            TEXT
+          ],
+        matrix_varray:
+          [
+            <<~TEXT,
+              REP(i, %<sz1>s) {
+                scanf("%<fmt1>s", %<addr1>s);
+                scanf("%<fmt2>s", %<addr2>s);
+              }
+            TEXT
+            <<~TEXT
+              REP(i, %<sz1>s) {
+                REP(j, %<sz2>s) scanf("%<fmt1>s", %<addr1>s);
+                scanf("%<fmt2>s", %<addr2>s);
+              }
+            TEXT
+          ]
+      }.freeze
       FMT_FMTS = { number: '%d', string: '%s', char: '%s' }.freeze
+      MATRIX_ADDR_FMTS = {
+        number: '&%<v>s[i][j]',
+        string: '%<v>s[i][j]',
+        char: '%<v>s[i]'
+      }.freeze
       ADDR_FMTS = {
         single: {
           number: '&%<v>s',
@@ -129,16 +152,14 @@ module AtCoderFriends
           number: '%<v>s + i',
           string: '%<v>s[i]'
         },
-        matrix: {
-          number: '&%<v>s[i][j]',
-          string: '%<v>s[i][j]',
-          char: '%<v>s[i]'
-        }
+        matrix: MATRIX_ADDR_FMTS,
+        vmatrix: MATRIX_ADDR_FMTS,
+        hmatrix: MATRIX_ADDR_FMTS
       }.freeze
 
       def gen_input(inpdef)
-        if inpdef.container == :varray_matrix
-          gen_varray_matrix_input(inpdef)
+        if inpdef.components
+          gen_cmb_input(inpdef)
         else
           gen_plain_input(inpdef)
         end
@@ -153,21 +174,21 @@ module AtCoderFriends
         format(scanf, sz1: sz1, sz2: sz2, fmt: fmt, addr: addr)
       end
 
-      def gen_varray_matrix_input(inpdef)
-        vadef, mxdef = inpdef.components
-        va_fmt, va_addr = scanf_params(vadef)
-        mx_fmt, mx_addr = scanf_params(mxdef)
-        return unless va_fmt && va_addr
-        return unless mx_fmt && mx_addr
+      def gen_cmb_input(inpdef)
+        return unless SCANF_FMTS_CMB[inpdef.container]
 
-        scanf = SCANF_FMTS_VM[inpdef.item == :char ? 0 : 1]
+        scanf = SCANF_FMTS_CMB[inpdef.container][inpdef.item == :char ? 0 : 1]
         sz1 = inpdef.size[0]
         sz2 = inpdef.size[1].split('_')[0]
+        fmt1, addr1, fmt2, addr2 =
+          inpdef.components.map { |cmp| scanf_params(cmp) }.flatten
+        return unless fmt1 && addr1 && fmt2 && addr2
+
         format(
           scanf,
           sz1: sz1, sz2: sz2,
-          va_fmt: va_fmt, va_addr: va_addr,
-          mx_fmt: mx_fmt, mx_addr: mx_addr
+          fmt1: fmt1, addr1: addr1,
+          fmt2: fmt2, addr2: addr2
         ).split("\n")
       end
 

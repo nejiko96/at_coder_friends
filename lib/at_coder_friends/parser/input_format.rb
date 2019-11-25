@@ -43,6 +43,8 @@ module AtCoderFriends
       RE_IX_99 = /(_\{*#{RE_99}\}*|\{+#{RE_99}\}+)/.freeze
       RE_SZ = /(_(?<sz>\S+?)|\{(?<sz>\S+?)\})/.freeze
       RE_SZ_REF = '(_\{*\k<sz>\}*|\{+\k<sz>\}+)'
+      RE_SZ2_0 = /(_\{*(?<sz2>#{RE_0})\}*|\{+(?<sz2>#{RE_0})\}+)/.freeze
+      RE_SZ2_REF = '(_\{*\k<sz2>\}*|\{+\k<sz2>\}+)'
       RE_SZ_0 = /(_\{*(?<sz>#{RE_0})\}*|\{+(?<sz>#{RE_0})\}+)/.freeze
       RE_SZ_00 = /(_\{*(?<sz>#{RE_00})\}*|\{+(?<sz>#{RE_00})\}+)/.freeze
       RE_SZ_99 = /(_\{*(?<sz>#{RE_99})\}*|\{+(?<sz>#{RE_99})\}+)/.freeze
@@ -131,7 +133,7 @@ module AtCoderFriends
         /
           \A (?<m>#{RE_ITEM})#{RE_IX_00} (\s+(\.+|\k<m>#{RE_IX}))*
           \s+\k<m>#{RE_SZ}
-          \s+(?<vs>#{RE_ITEM}#{RE_SZ_0} (\s+#{RE_ITEM}#{RE_SZ_REF})*) \z
+          \s+(?<vs>#{RE_ITEM}#{RE_SZ2_0} (\s+#{RE_ITEM}#{RE_SZ2_REF})*) \z
         /x,
         ->(m) { [m[:m], *m[:vs].split.map { |w| w.scan(RE_ITEM)[0] }] },
         lambda { |vs|
@@ -251,9 +253,9 @@ module AtCoderFriends
         inpdefs
       end
 
+      # 1) &npsp; , fill-width space -> half width space
+      # 2) {i, j}->{i,j} for nested {}
       def normalize_fmt(fmt)
-        # 1) &npsp; , fill-width space -> half width space
-        # 2) {i, j}->{i,j} for nested {}
         fmt
           .tr('０-９Ａ-Ｚａ-ｚ', '0-9A-Za-z')
           .gsub(/[[:space:]]/) { |c| c.gsub(/[^\n]/, ' ') } # 1)

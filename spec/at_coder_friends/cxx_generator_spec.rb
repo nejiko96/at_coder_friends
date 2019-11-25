@@ -171,7 +171,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       let(:item) { :number }
       let(:size) { %w[R C] }
       it 'generates decl' do
-        expect(subject).to eq('int A[R_MAX][C_MAX];')
+        expect(subject).to match(['int A[R_MAX][C_MAX];'])
       end
     end
 
@@ -180,7 +180,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       let(:item) { :number }
       let(:size) { %w[8 8] }
       it 'generates decl' do
-        expect(subject).to eq('int A[8][8];')
+        expect(subject).to match(['int A[8][8];'])
       end
     end
 
@@ -189,7 +189,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       let(:item) { :string }
       let(:size) { %w[R C] }
       it 'generates decl' do
-        expect(subject).to eq('char A[R_MAX][C_MAX][A_MAX + 1];')
+        expect(subject).to match(['char A[R_MAX][C_MAX][A_MAX + 1];'])
       end
     end
 
@@ -198,11 +198,11 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       let(:item) { :char }
       let(:size) { %w[R C] }
       it 'generates decl' do
-        expect(subject).to eq('char A[R_MAX][C_MAX + 1];')
+        expect(subject).to match(['char A[R_MAX][C_MAX + 1];'])
       end
     end
 
-    context 'for a jagged array of numbers' do
+    context 'for a vertical array and a matrix of numbers' do
       let(:container) { :varray_matrix }
       let(:item) { :number }
       let(:names) { %w[K A] }
@@ -211,13 +211,13 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
         expect(subject).to match(
           [
             ['int K[N_MAX];'],
-            'int A[N_MAX][K_N_MAX];'
+            ['int A[N_MAX][K_N_MAX];']
           ]
         )
       end
     end
 
-    context 'for a jagged array of characters' do
+    context 'for a vertical array and a matrix of characters' do
       let(:container) { :varray_matrix }
       let(:item) { :char }
       let(:names) { %w[K p] }
@@ -226,7 +226,52 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
         expect(subject).to match(
           [
             ['int K[Q_MAX];'],
-            'char p[Q_MAX][26 + 1];'
+            ['char p[Q_MAX][26 + 1];']
+          ]
+        )
+      end
+    end
+
+    context 'for a matrix and a vertical array of numbers' do
+      let(:container) { :matrix_varray }
+      let(:item) { :number }
+      let(:names) { %w[city cost] }
+      let(:size) { %w[M 2] }
+      it 'generates decl' do
+        expect(subject).to match(
+          [
+            ['int city[M_MAX][2];'],
+            ['int cost[M_MAX];']
+          ]
+        )
+      end
+    end
+
+    context 'for vertically expanded matrices(number)' do
+      let(:container) { :vmatrix }
+      let(:item) { :number }
+      let(:names) { %w[idol p] }
+      let(:size) { %w[1 C_1] }
+      it 'generates decl' do
+        expect(subject).to match(
+          [
+            'int idol[1][C_1_MAX];',
+            'int p[1][C_1_MAX];'
+          ]
+        )
+      end
+    end
+
+    context 'for horizontally expanded matrices(number)' do
+      let(:container) { :hmatrix }
+      let(:item) { :number }
+      let(:names) { %w[x y] }
+      let(:size) { %w[Q 2] }
+      it 'generates decl' do
+        expect(subject).to match(
+          [
+            'int x[Q_MAX][2];',
+            'int y[Q_MAX][2];'
           ]
         )
       end
@@ -349,12 +394,12 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       end
     end
 
-    context 'for a jagged array of numbers' do
+    context 'for a vertical array and a matrix of numbers' do
       let(:container) { :varray_matrix }
       let(:item) { :number }
       let(:names) { %w[K A] }
       let(:size) { %w[N K_N] }
-      it 'generates decl' do
+      it 'generates input script' do
         expect(subject).to match(
           [
             'REP(i, N) {',
@@ -366,12 +411,12 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       end
     end
 
-    context 'for a jagged array of characters' do
+    context 'for a vertical array and a matrix of characters' do
       let(:container) { :varray_matrix }
       let(:item) { :char }
       let(:names) { %w[K p] }
       let(:size) { %w[Q 26] }
-      it 'generates decl' do
+      it 'generates input script' do
         expect(subject).to match(
           [
             'REP(i, Q) {',
@@ -379,6 +424,47 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
             '  scanf("%s", p[i]);',
             '}'
           ]
+        )
+      end
+    end
+
+    context 'for a matrix and a vertical array of numbers' do
+      let(:container) { :matrix_varray }
+      let(:item) { :number }
+      let(:names) { %w[city cost] }
+      let(:size) { %w[M 2] }
+      it 'generates input script' do
+        expect(subject).to match(
+          [
+            'REP(i, M) {',
+            '  REP(j, 2) scanf("%d", &city[i][j]);',
+            '  scanf("%d", cost + i);',
+            '}'
+          ]
+        )
+      end
+    end
+
+    context 'for vertically expanded matrices(number)' do
+      let(:container) { :vmatrix }
+      let(:item) { :number }
+      let(:names) { %w[idol p] }
+      let(:size) { %w[1 C_1] }
+      it 'generates input script' do
+        expect(subject).to eq(
+          'REP(i, 1) REP(j, C_1) scanf("%d%d", &idol[i][j], &p[i][j]);'
+        )
+      end
+    end
+
+    context 'for horizontally expanded matrices(number)' do
+      let(:container) { :hmatrix }
+      let(:item) { :number }
+      let(:names) { %w[x y] }
+      let(:size) { %w[Q 2] }
+      it 'generates input script' do
+        expect(subject).to eq(
+          'REP(i, Q) REP(j, 2) scanf("%d%d", &x[i][j], &y[i][j]);'
         )
       end
     end
