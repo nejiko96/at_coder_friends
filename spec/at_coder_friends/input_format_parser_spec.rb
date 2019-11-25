@@ -664,6 +664,52 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
       end
     end
 
+    context 'for horizontally expanded matrix(number)' do
+      let(:fmt) do
+        <<~FMT
+          <pre><var>N</var> <var>M</var> <var>Q</var>
+          <var>S_{1,1}</var>..<var>S_{1,M}</var>
+          :
+          <var>S_{N,1}</var>..<var>S_{N,M}</var>
+          <var>x_{1,1}</var> <var>y_{1,1}</var> <var>x_{1,2}</var> <var>y_{1,2}</var>
+          :
+          <var>x_{Q,1}</var> <var>y_{Q,1}</var> <var>x_{Q,2}</var> <var>y_{Q,2}</var>
+          </pre>
+        FMT
+      end
+      let(:smp) do
+        <<~SMP
+          5 5 6
+          11010
+          01110
+          10101
+          11101
+          01010
+          1 1 5 5
+          1 2 4 5
+          2 3 3 4
+          3 3 3 3
+          3 1 3 5
+          1 1 3 4
+        SMP
+      end
+      it 'can parse format' do
+        defs = subject
+        expect(defs.size).to eq(3)
+        expect(defs[0]).to have_attributes(
+          container: :single, item: :number, names: %w[N M Q], size: []
+        )
+        expect(defs[1]).to have_attributes(
+          container: :matrix, item: :char,
+          names: %w[S], size: %w[N M]
+        )
+        expect(defs[2]).to have_attributes(
+          container: :hmatrix, item: :number,
+          names: %w[x y], size: %w[Q 2]
+        )
+      end
+    end
+
     context 'for unknown format' do
       let(:fmt) do
         <<~FMT

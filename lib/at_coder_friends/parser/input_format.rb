@@ -33,16 +33,19 @@ module AtCoderFriends
 
     module InputFormatConstants
       SECTIONS = [Problem::SECTION_IN_FMT, Problem::SECTION_IO_FMT].freeze
+      RE_0 = /[0-9]+/.freeze
+      RE_00 = /[01][,_]?[01]/.freeze
+      RE_99 = /[0-9]+[,_]?[0-9]+/.freeze
       RE_ITEM = /\{*[A-Za-z]+(?:_[A-Za-z]+)*\}*/.freeze
-      RE_IX_00 = /(_\{*[01][,_]?[01]\}*|\{+[01][,_]?[01]\}+)/.freeze
-      RE_IX_0 = /(_\{*[0-9]+\}*|\{+[0-9]+\}+)/.freeze
       RE_IX = /(_\S+?|\{\S+?\})/.freeze
-      RE_SZ_00 =
-        /(_\{*(?<sz>[01][,_]?[01])\}*|\{+(?<sz>[01][,_]?[01])\}+)/
-        .freeze
-      RE_SZ_0 = /(_\{*(?<sz>[0-9]+)\}*|\{+(?<sz>[0-9]+)\}+)/.freeze
+      RE_IX_0 = /(_\{*#{RE_0}\}*|\{+#{RE_0}\}+)/.freeze
+      RE_IX_00 = /(_\{*#{RE_00}\}*|\{+#{RE_00}\}+)/.freeze
+      RE_IX_99 = /(_\{*#{RE_99}\}*|\{+#{RE_99}\}+)/.freeze
       RE_SZ = /(_(?<sz>\S+?)|\{(?<sz>\S+?)\})/.freeze
       RE_SZ_REF = '(_\{*\k<sz>\}*|\{+\k<sz>\}+)'
+      RE_SZ_0 = /(_\{*(?<sz>#{RE_0})\}*|\{+(?<sz>#{RE_0})\}+)/.freeze
+      RE_SZ_00 = /(_\{*(?<sz>#{RE_00})\}*|\{+(?<sz>#{RE_00})\}+)/.freeze
+      RE_SZ_99 = /(_\{*(?<sz>#{RE_99})\}*|\{+(?<sz>#{RE_99})\}+)/.freeze
       RE_SINGLE = /[A-Za-z{][A-Za-z_0-9{}]*/.freeze
       RE_BLOCK = /(?<bl>\{(?:[^{}]|\g<bl>)*\})/.freeze
       MATRIX_MATCHER = InputFormatMatcher.new(
@@ -96,12 +99,12 @@ module AtCoderFriends
           \s+(?<m>#{RE_ITEM})#{RE_IX_00} (\s+(\.+|\k<m>#{RE_IX}))*
           \s+\k<m>#{RE_SZ} \z
         /x,
-        ->(m) { m[:vs].split.map { |w| w.scan(RE_ITEM)[0] } + [m[:m]] },
+        ->(m) { [*m[:vs].split.map { |w| w.scan(RE_ITEM)[0] }, m[:m]] },
         lambda { |vs|
-          pat2 = vs[0..-2].map { |v| v + RE_IX.source }.join('\s+')
+          ws = vs[0..-2].map { |v| v + RE_IX.source }.join('\s+')
           m = vs[-1]
           /
-            \A #{pat2} \s+#{m}#{RE_IX} (\s+(\.+|#{m}#{RE_IX}))*
+            \A #{ws} \s+#{m}#{RE_IX} (\s+(\.+|#{m}#{RE_IX}))*
             \s+(\.+|#{m}#{RE_SZ}) \z
           /x
         }
@@ -113,12 +116,12 @@ module AtCoderFriends
           \s+(?<m>#{RE_ITEM})#{RE_IX_00} (\s*\.+\s*|\k<m>#{RE_IX})*
           \k<m>#{RE_SZ} \z
         /x,
-        ->(m) { m[:vs].split.map { |w| w.scan(RE_ITEM)[0] } + [m[:m]] },
+        ->(m) { [*m[:vs].split.map { |w| w.scan(RE_ITEM)[0] }, m[:m]] },
         lambda { |vs|
-          pat2 = vs[0..-2].map { |v| v + RE_IX.source }.join('\s+')
+          ws = vs[0..-2].map { |v| v + RE_IX.source }.join('\s+')
           m = vs[-1]
           /
-            \A #{pat2} \s+#{m}#{RE_IX} (\s*\.+\s*|#{m}#{RE_IX})*
+            \A #{ws} \s+#{m}#{RE_IX} (\s*\.+\s*|#{m}#{RE_IX})*
             (\s*\.+\s*|#{m}#{RE_SZ}) \z
           /x
         }
@@ -130,13 +133,13 @@ module AtCoderFriends
           \s+\k<m>#{RE_SZ}
           \s+(?<vs>#{RE_ITEM}#{RE_SZ_0} (\s+#{RE_ITEM}#{RE_SZ_REF})*) \z
         /x,
-        ->(m) { [m[:m]] + m[:vs].split.map { |w| w.scan(RE_ITEM)[0] } },
+        ->(m) { [m[:m], *m[:vs].split.map { |w| w.scan(RE_ITEM)[0] }] },
         lambda { |vs|
           m = vs[0]
-          pat2 = vs[1..-1].map { |v| v + RE_IX.source }.join('\s+')
+          ws = vs[1..-1].map { |v| v + RE_IX.source }.join('\s+')
           /
             \A #{m}#{RE_IX} (\s+(\.+|#{m}#{RE_IX}))*
-            \s+(\.+|#{m}#{RE_SZ}) \s+#{pat2} \z
+            \s+(\.+|#{m}#{RE_SZ}) \s+#{ws} \z
           /x
         }
       )
@@ -147,8 +150,30 @@ module AtCoderFriends
         /x,
         ->(m) { m[0].split.map { |w| w.scan(RE_ITEM)[0] } },
         lambda { |vs|
-          pat2 = [vs[0] + RE_SZ.source] + vs[1..-1].map { |v| v + RE_IX.source }
-          /\A#{pat2.join('\s+')}\z/
+          ws = [
+            vs[0] + RE_SZ.source,
+            *vs[1..-1]&.map { |v| v + RE_IX.source }
+          ].join('\s+')
+          /\A#{ws}\z/
+        }
+      )
+      HMATRIX_MATCHER = InputFormatMatcher.new(
+        :hmatrix, :number,
+        /
+          \A #{RE_ITEM}#{RE_IX_00} (\s+(\.+|#{RE_ITEM}#{RE_IX_99}))*
+          \s+#{RE_ITEM}#{RE_SZ_99} \z
+        /x,
+        ->(m) { m[0].split.map { |w| w.scan(RE_ITEM)[0] }.uniq },
+        lambda { |vs|
+          p vs
+          ws1 = vs.map { |v| v + RE_IX.source }.join('\s+')
+          ws2 = [
+            vs[0] + RE_SZ.source,
+            *vs[1..-1]&.map { |v| v + RE_IX.source }
+          ].join('\s+')
+          /
+            \A #{ws1} (\s+(\.+|#{ws1}))* \s+(\.+|#{ws2}) \z
+          /x
         }
       )
       VARRAY_MATCHER = InputFormatMatcher.new(
@@ -158,8 +183,11 @@ module AtCoderFriends
         /x,
         ->(m) { m[0].split.map { |w| w.scan(RE_ITEM)[0] } },
         lambda { |vs|
-          pat2 = [vs[0] + RE_SZ.source] + vs[1..-1].map { |v| v + RE_IX.source }
-          /\A#{pat2.join('\s+')}\z/
+          ws = [
+            vs[0] + RE_SZ.source,
+            *vs[1..-1]&.map { |v| v + RE_IX.source }
+          ].join('\s+')
+          /\A#{ws}\z/
         }
       )
       SINGLE_MATCHER = InputFormatMatcher.new(
@@ -176,17 +204,19 @@ module AtCoderFriends
         VARRAY_MATRIX_CHAR_MATCHER,
         MATRIX_VARRAY_MATCHER,
         VMATRIX_MATCHER,
+        HMATRIX_MATCHER,
         VARRAY_MATCHER,
         SINGLE_MATCHER
       ].freeze
       DIMENSION_TBL = {
         single: 0,
-        harray: 1,
         varray: 1,
+        harray: 1,
         matrix: 2,
         varray_matrix: 2,
         matrix_varray: 2,
-        vmatrix: 2
+        vmatrix: 2,
+        hmatrix: 2
       }.freeze
     end
 
