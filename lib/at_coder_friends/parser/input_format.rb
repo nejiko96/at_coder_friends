@@ -33,144 +33,193 @@ module AtCoderFriends
 
     module InputFormatConstants
       SECTIONS = [Problem::SECTION_IN_FMT, Problem::SECTION_IO_FMT].freeze
+      RE_0 = /[0-9]+/.freeze
+      RE_00 = /[01][,_]?[01]/.freeze
+      RE_99 = /[0-9]+[,_]?[0-9]+/.freeze
       RE_ITEM = /\{*[A-Za-z]+(?:_[A-Za-z]+)*\}*/.freeze
-      RE_IX_00 = /(_\{*[01][,_]?[01]\}*|\{+[01][,_]?[01]\}+)/.freeze
-      RE_IX_0 = /(_\{*[0-9]+\}*|\{+[0-9]+\}+)/.freeze
       RE_IX = /(_\S+?|\{\S+?\})/.freeze
+      RE_IX_0 = /(_\{*#{RE_0}\}*|\{+#{RE_0}\}+)/.freeze
+      RE_IX_00 = /(_\{*#{RE_00}\}*|\{+#{RE_00}\}+)/.freeze
+      RE_IX_99 = /(_\{*#{RE_99}\}*|\{+#{RE_99}\}+)/.freeze
       RE_SZ = /(_(?<sz>\S+?)|\{(?<sz>\S+?)\})/.freeze
-      RE_SZ_0 = /(_\{*(?<sz>[0-9]+)\}*|\{+(?<sz>[0-9]+)\}+)/.freeze
       RE_SZ_REF = '(_\{*\k<sz>\}*|\{+\k<sz>\}+)'
+      RE_SZ2_0 = /(_\{*(?<sz2>#{RE_0})\}*|\{+(?<sz2>#{RE_0})\}+)/.freeze
+      RE_SZ2_REF = '(_\{*\k<sz2>\}*|\{+\k<sz2>\}+)'
+      RE_SZ_0 = /(_\{*(?<sz>#{RE_0})\}*|\{+(?<sz>#{RE_0})\}+)/.freeze
+      RE_SZ_00 = /(_\{*(?<sz>#{RE_00})\}*|\{+(?<sz>#{RE_00})\}+)/.freeze
+      RE_SZ_99 = /(_\{*(?<sz>#{RE_99})\}*|\{+(?<sz>#{RE_99})\}+)/.freeze
       RE_SINGLE = /[A-Za-z{][A-Za-z_0-9{}]*/.freeze
       RE_BLOCK = /(?<bl>\{(?:[^{}]|\g<bl>)*\})/.freeze
+      MATRIX_MATCHER = InputFormatMatcher.new(
+        :matrix, :number,
+        /
+          \A (?<v>#{RE_ITEM})#{RE_IX_00} (\s+(\.+|\k<v>#{RE_IX}))*
+          \s+\k<v>#{RE_SZ} \z
+        /x,
+        ->(m) { [m[:v]] },
+        lambda { |(v)|
+          /
+            \A #{v}#{RE_IX} (\s+(\.+|#{v}#{RE_IX}))*
+            \s+(\.+|#{v}#{RE_SZ}) \z
+          /x
+        }
+      )
+      MATRIX_CHAR_MATCHER = InputFormatMatcher.new(
+        :matrix, :char,
+        /
+          \A (?<v>#{RE_ITEM})#{RE_IX_00} (\s*\.+\s*|\k<v>#{RE_IX})*
+          \k<v>#{RE_SZ} \z
+        /x,
+        ->(m) { [m[:v]] },
+        lambda { |(v)|
+          /
+            \A (#{v}#{RE_IX})+ (\s*\.+\s*|#{v}#{RE_IX})*
+            (\s*\.+\s*|#{v}#{RE_SZ}) \z
+          /x
+        }
+      )
+      HARRAY_MATCHER = InputFormatMatcher.new(
+        :harray, :number,
+        /
+          \A (?<v>#{RE_ITEM})#{RE_IX_0} (\s+(\.+|\k<v>#{RE_IX}))*
+          \s+\k<v>#{RE_SZ} \z
+        /x,
+        ->(m) { [m[:v]] }
+      )
+      HARRAY_CHAR_MATCHER = InputFormatMatcher.new(
+        :harray, :char,
+        /
+          \A (?<v>#{RE_ITEM})#{RE_IX_0} (\s*\.+\s*|\k<v>#{RE_IX})*
+          \k<v>#{RE_SZ} \z
+        /x,
+        ->(m) { [m[:v]] }
+      )
+      VARRAY_MATRIX_MATCHER = InputFormatMatcher.new(
+        :varray_matrix, :number,
+        /
+          \A (?<vs>#{RE_ITEM}#{RE_SZ_0} (\s+#{RE_ITEM}#{RE_SZ_REF})*)
+          \s+(?<m>#{RE_ITEM})#{RE_IX_00} (\s+(\.+|\k<m>#{RE_IX}))*
+          \s+\k<m>#{RE_SZ} \z
+        /x,
+        ->(m) { [*m[:vs].split.map { |w| w.scan(RE_ITEM)[0] }, m[:m]] },
+        lambda { |vs|
+          ws = vs[0..-2].map { |v| v + RE_IX.source }.join('\s+')
+          m = vs[-1]
+          /
+            \A #{ws} \s+#{m}#{RE_IX} (\s+(\.+|#{m}#{RE_IX}))*
+            \s+(\.+|#{m}#{RE_SZ}) \z
+          /x
+        }
+      )
+      VARRAY_MATRIX_CHAR_MATCHER = InputFormatMatcher.new(
+        :varray_matrix, :char,
+        /
+          \A (?<vs>#{RE_ITEM}#{RE_SZ_0} (\s+#{RE_ITEM}#{RE_SZ_REF})*)
+          \s+(?<m>#{RE_ITEM})#{RE_IX_00} (\s*\.+\s*|\k<m>#{RE_IX})*
+          \k<m>#{RE_SZ} \z
+        /x,
+        ->(m) { [*m[:vs].split.map { |w| w.scan(RE_ITEM)[0] }, m[:m]] },
+        lambda { |vs|
+          ws = vs[0..-2].map { |v| v + RE_IX.source }.join('\s+')
+          m = vs[-1]
+          /
+            \A #{ws} \s+#{m}#{RE_IX} (\s*\.+\s*|#{m}#{RE_IX})*
+            (\s*\.+\s*|#{m}#{RE_SZ}) \z
+          /x
+        }
+      )
+      MATRIX_VARRAY_MATCHER = InputFormatMatcher.new(
+        :matrix_varray, :number,
+        /
+          \A (?<m>#{RE_ITEM})#{RE_IX_00} (\s+(\.+|\k<m>#{RE_IX}))*
+          \s+\k<m>#{RE_SZ}
+          \s+(?<vs>#{RE_ITEM}#{RE_SZ2_0} (\s+#{RE_ITEM}#{RE_SZ2_REF})*) \z
+        /x,
+        ->(m) { [m[:m], *m[:vs].split.map { |w| w.scan(RE_ITEM)[0] }] },
+        lambda { |vs|
+          m = vs[0]
+          ws = vs[1..-1].map { |v| v + RE_IX.source }.join('\s+')
+          /
+            \A #{m}#{RE_IX} (\s+(\.+|#{m}#{RE_IX}))*
+            \s+(\.+|#{m}#{RE_SZ}) \s+#{ws} \z
+          /x
+        }
+      )
+      VMATRIX_MATCHER = InputFormatMatcher.new(
+        :vmatrix, :number,
+        /
+          \A #{RE_ITEM}#{RE_SZ_00} (\s+#{RE_ITEM}#{RE_SZ_REF})* \z
+        /x,
+        ->(m) { m[0].split.map { |w| w.scan(RE_ITEM)[0] } },
+        lambda { |vs|
+          ws = [
+            vs[0] + RE_SZ.source,
+            *vs[1..-1]&.map { |v| v + RE_IX.source }
+          ].join('\s+')
+          /\A#{ws}\z/
+        }
+      )
+      HMATRIX_MATCHER = InputFormatMatcher.new(
+        :hmatrix, :number,
+        /
+          \A #{RE_ITEM}#{RE_IX_00} (\s+(\.+|#{RE_ITEM}#{RE_IX_99}))*
+          \s+#{RE_ITEM}#{RE_SZ_99} \z
+        /x,
+        ->(m) { m[0].split.map { |w| w.scan(RE_ITEM)[0] }.uniq },
+        lambda { |vs|
+          p vs
+          ws1 = vs.map { |v| v + RE_IX.source }.join('\s+')
+          ws2 = [
+            vs[0] + RE_SZ.source,
+            *vs[1..-1]&.map { |v| v + RE_IX.source }
+          ].join('\s+')
+          /
+            \A #{ws1} (\s+(\.+|#{ws1}))* \s+(\.+|#{ws2}) \z
+          /x
+        }
+      )
+      VARRAY_MATCHER = InputFormatMatcher.new(
+        :varray, :number,
+        /
+          \A #{RE_ITEM}#{RE_SZ_0} (\s+#{RE_ITEM}#{RE_SZ_REF})* \z
+        /x,
+        ->(m) { m[0].split.map { |w| w.scan(RE_ITEM)[0] } },
+        lambda { |vs|
+          ws = [
+            vs[0] + RE_SZ.source,
+            *vs[1..-1]&.map { |v| v + RE_IX.source }
+          ].join('\s+')
+          /\A#{ws}\z/
+        }
+      )
+      SINGLE_MATCHER = InputFormatMatcher.new(
+        :single, :number,
+        /\A(.*\s)?#{RE_SINGLE}(\s.*)?\z/,
+        ->(m) { m[0].split.select { |w| w =~ /\A#{RE_SINGLE}\z/ } }
+      )
       MATCHERS = [
-        InputFormatMatcher.new(
-          :matrix, :number,
-          /
-            \A
-            (?<v>#{RE_ITEM})#{RE_IX_00}
-            (\s+(\.+|\k<v>#{RE_IX}))*
-            \s+\k<v>#{RE_SZ}
-            \z
-          /x,
-          ->(m) { [m[:v]] },
-          lambda { |(v)|
-            /
-              \A
-              #{v}#{RE_IX}
-              (\s+(\.+|#{v}#{RE_IX}))*
-              \s+(\.+|#{v}#{RE_SZ})
-              \z
-            /x
-          }
-        ),
-        InputFormatMatcher.new(
-          :matrix, :char,
-          /
-            \A
-            (?<v>#{RE_ITEM})#{RE_IX_00}
-            (\s*\.+\s*|\k<v>#{RE_IX})*
-            \k<v>#{RE_SZ}
-            \z
-          /x,
-          ->(m) { [m[:v]] },
-          lambda { |(v)|
-            /
-              \A
-              (#{v}#{RE_IX})+
-              (\s*\.+\s*|#{v}#{RE_IX})*
-              (\s*\.+\s*|#{v}#{RE_SZ})
-              \z
-            /x
-          }
-        ),
-        InputFormatMatcher.new(
-          :harray, :number,
-          /
-            \A
-            (?<v>#{RE_ITEM})#{RE_IX_0}
-            (\s+(\.+|\k<v>#{RE_IX}))*
-            \s+\k<v>#{RE_SZ}
-            \z
-          /x,
-          ->(m) { [m[:v]] }
-        ),
-        InputFormatMatcher.new(
-          :harray, :char,
-          /
-            \A
-            (?<v>#{RE_ITEM})#{RE_IX_0}
-            (\s*\.+\s*|\k<v>#{RE_IX})*
-            \k<v>#{RE_SZ}
-            \z
-          /x,
-          ->(m) { [m[:v]] }
-        ),
-        InputFormatMatcher.new(
-          :varray_matrix, :number,
-          /
-            \A
-            (?<vs>#{RE_ITEM}#{RE_SZ_0} (\s+#{RE_ITEM}#{RE_SZ_REF})*)
-            \s+(?<m>#{RE_ITEM})#{RE_IX_00}
-            (\s+(\.+|\k<m>#{RE_IX}))*
-            \s+\k<m>#{RE_SZ}
-            \z
-          /x,
-          ->(m) { m[:vs].split.map { |w| w.scan(RE_ITEM)[0] } + [m[:m]] },
-          lambda { |vs|
-            pat2 = vs[0..-2].map { |v| v + RE_IX.source }.join('\s+')
-            m = vs[-1]
-            /
-              \A
-              #{pat2}
-              \s+#{m}#{RE_IX}
-              (\s+(\.+|#{m}#{RE_IX}))*
-              \s+(\.+|#{m}#{RE_SZ})
-              \z
-            /x
-          }
-        ),
-        InputFormatMatcher.new(
-          :varray_matrix, :char,
-          /
-            \A
-            (?<vs>#{RE_ITEM}#{RE_SZ_0} (\s+#{RE_ITEM}#{RE_SZ_REF})*)
-            \s+(?<m>#{RE_ITEM})#{RE_IX_00}
-            (\s*\.+\s*|\k<m>#{RE_IX})*
-            \k<m>#{RE_SZ}
-            \z
-          /x,
-          ->(m) { m[:vs].split.map { |w| w.scan(RE_ITEM)[0] } + [m[:m]] },
-          lambda { |vs|
-            pat2 = vs[0..-2].map { |v| v + RE_IX.source }.join('\s+')
-            m = vs[-1]
-            /
-              \A
-              #{pat2}
-              \s+#{m}#{RE_IX}
-              (\s*\.+\s*|#{m}#{RE_IX})*
-              (\s*\.+\s*|#{m}#{RE_SZ})
-              \z
-            /x
-          }
-        ),
-        InputFormatMatcher.new(
-          :varray, :number,
-          /
-            \A #{RE_ITEM}#{RE_SZ_0} (\s+#{RE_ITEM}#{RE_SZ_REF})* \z
-          /x,
-          ->(m) { m[0].split.map { |w| w.scan(RE_ITEM)[0] } },
-          lambda { |vs|
-            pat2 = [vs[0] + RE_SZ.source] +
-              vs[1..-1].map { |v| v + RE_IX.source }
-            /\A#{pat2.join('\s+')}\z/
-          }
-        ),
-        InputFormatMatcher.new(
-          :single, :number,
-          /\A(.*\s)?#{RE_SINGLE}(\s.*)?\z/,
-          ->(m) { m[0].split.select { |w| w =~ /\A#{RE_SINGLE}\z/ } }
-        )
+        MATRIX_MATCHER,
+        MATRIX_CHAR_MATCHER,
+        HARRAY_MATCHER,
+        HARRAY_CHAR_MATCHER,
+        VARRAY_MATRIX_MATCHER,
+        VARRAY_MATRIX_CHAR_MATCHER,
+        MATRIX_VARRAY_MATCHER,
+        VMATRIX_MATCHER,
+        HMATRIX_MATCHER,
+        VARRAY_MATCHER,
+        SINGLE_MATCHER
       ].freeze
+      DIMENSION_TBL = {
+        single: 0,
+        varray: 1,
+        harray: 1,
+        matrix: 2,
+        varray_matrix: 2,
+        matrix_varray: 2,
+        vmatrix: 2,
+        hmatrix: 2
+      }.freeze
     end
 
     # parses input data format and generates input definitons
@@ -204,9 +253,9 @@ module AtCoderFriends
         inpdefs
       end
 
+      # 1) &npsp; , fill-width space -> half width space
+      # 2) {i, j}->{i,j} for nested {}
       def normalize_fmt(fmt)
-        # 1) &npsp; , fill-width space -> half width space
-        # 2) {i, j}->{i,j} for nested {}
         fmt
           .tr('０-９Ａ-Ｚａ-ｚ', '0-9A-Za-z')
           .gsub(/[[:space:]]/) { |c| c.gsub(/[^\n]/, ' ') } # 1)
@@ -273,21 +322,20 @@ module AtCoderFriends
         names.map { |nm| nm.delete('{}').gsub(/(\A_+|_+\z)/, '') }
       end
 
+      # 1) split size by container dimension
+      # 2) remove extra underscores, N-1 -> N
       def normalize_size(container, size)
-        sz =
-          case container
-          when :matrix, :varray_matrix
+        (
+          case DIMENSION_TBL[container]
+          when 2
             split_size(size)
-          when :harray, :varray
+          when 1
             [size]
-          when :single
+          when 0
             []
           end
-        sz&.map do |w|
-          w
-            .delete('{},')
-            .gsub(/(\A_+|(_|-1)+\z)/, '') # extra underscores, N-1 -> N
-        end
+        )
+        &.map { |w| w.delete('{},').gsub(/(\A_+|(_|-1)+\z)/, '') }
       end
 
       def split_size(str)

@@ -3,14 +3,18 @@
 ## master (unreleased)
 ### Added
 - 'vertical array + matrix' input format support.
+- 'matrix + vertical array' input format support.
+- 'vertically expanded matrices' input format support.
+- 'horizontally expanded matrices' input format support.
 
 ### Changed
 - Change template file format to ERB.
+- Template file integration
 
 ### Deleted
-- Integrated template for interactive problems into default template.
-- Delete '### OUTPUT ###' embedding pattern.
-- Delete '### URL ###' embedding pattern.
+- Template file for interactive problems.
+- '### OUTPUT ###' embedding pattern.
+- '### URL ###' embedding pattern.
 
 ## 0.6.2 (2019-11-18)
 ### Added

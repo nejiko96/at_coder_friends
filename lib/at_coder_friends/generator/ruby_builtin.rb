@@ -44,8 +44,12 @@ module AtCoderFriends
           gen_varray_decl(inpdef)
         when :matrix
           gen_matrix_decl(inpdef)
-        when :varray_matrix
-          gen_varray_matrix_decl(inpdef)
+        when :varray_matrix, :matrix_varray
+          gen_cmb_decl(inpdef)
+        when :vmatrix
+          gen_vmatrix_decl(inpdef)
+        when :hmatrix
+          gen_hmatrix_decl(inpdef)
         end
       end
 
@@ -100,18 +104,49 @@ module AtCoderFriends
         "#{decl} = Array.new(#{sz}) { #{expr} }"
       end
 
-      def gen_varray_matrix_decl(inpdef)
+      def gen_cmb_decl(inpdef)
+        mx = inpdef.container == :varray_matrix ? -1 : 0
         vs = inpdef.names.map { |v| "#{v}s" }
-        vs[-1] += 's'
+        vs[mx] += 's'
         sz = inpdef.size[0]
         dcls = vs.map { |v| "#{v}[i]" }
-        dcls[-1] = '*' + dcls[-1] unless inpdef.item == :char
+        dcls[mx] = '*' + dcls[mx] unless inpdef.item == :char
         dcl = dcls.join(', ')
-        expr = gen_varray_matrix_expr(inpdef.item)
+        expr = gen_cmb_expr(inpdef.item)
         ret = []
         ret += vs.map { |v| "#{v} = Array.new(#{sz})" }
         ret << "#{sz}.times do |i|"
         ret << "  #{dcl} = #{expr}"
+        ret << 'end'
+        ret
+      end
+
+      def gen_vmatrix_decl(inpdef)
+        names = inpdef.names
+        sz1, sz2 = inpdef.size
+        dcl = names.map { |v| "#{v}ss[i][j]" }.join(', ')
+        expr = gen_expr(inpdef.item, true)
+        ret = []
+        ret += names.map do |v|
+          "#{v}ss = Array.new(#{sz1}) { Array.new(#{sz2}) }"
+        end
+        ret << "#{sz1}.times do |i|"
+        ret << "  #{sz2}.times do |j|"
+        ret << "    #{dcl} = #{expr}"
+        ret << '  end'
+        ret << 'end'
+        ret
+      end
+
+      def gen_hmatrix_decl(inpdef)
+        names = inpdef.names
+        sz = inpdef.size[0]
+        dcl = names.map { |v| "#{v}ss[i]" }.join(', ')
+        expr = gen_expr(inpdef.item, true)
+        ret = []
+        ret += names.map { |v| "#{v}ss = Array.new(#{sz})" }
+        ret << "#{sz}.times do |i|"
+        ret << "  #{dcl} = #{expr}.each_slice(#{names.size}).to_a.transpose"
         ret << 'end'
         ret
       end
@@ -127,7 +162,7 @@ module AtCoderFriends
         end
       end
 
-      def gen_varray_matrix_expr(item)
+      def gen_cmb_expr(item)
         case item
         when :number
           'gets.split.map(&:to_i)'

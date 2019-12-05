@@ -29,10 +29,16 @@ module AtCoderFriends
 
       def components
         @components ||=
-          if container == :varray_matrix
+          case container
+          when :varray_matrix
             [
               InputFormat.new(:varray, :number, names[0..-2], size[0..0]),
               InputFormat.new(:matrix, item, names[-1..-1], size)
+            ]
+          when :matrix_varray
+            [
+              InputFormat.new(:matrix, item, names[0..0], size),
+              InputFormat.new(:varray, :number, names[1..-1], size[0..0])
             ]
           end
       end

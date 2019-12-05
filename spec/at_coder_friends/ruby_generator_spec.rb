@@ -180,7 +180,7 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       end
     end
 
-    context 'for a jagged array of numbers' do
+    context 'for a vertical array and a matrix of numbers' do
       let(:container) { :varray_matrix }
       let(:item) { :number }
       let(:names) { %w[K A] }
@@ -198,7 +198,7 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       end
     end
 
-    context 'for a jagged array of characters' do
+    context 'for a vertical array and a matrix characters' do
       let(:container) { :varray_matrix }
       let(:item) { :char }
       let(:names) { %w[K p] }
@@ -210,6 +210,63 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
             'pss = Array.new(Q)',
             'Q.times do |i|',
             '  Ks[i], pss[i] = gets.chomp.split',
+            'end'
+          ]
+        )
+      end
+    end
+
+    context 'for a matrix and a vertical array of numbers' do
+      let(:container) { :matrix_varray }
+      let(:item) { :number }
+      let(:names) { %w[city cost] }
+      let(:size) { %w[M 2] }
+      it 'generates decl' do
+        expect(subject).to match(
+          [
+            'cityss = Array.new(M)',
+            'costs = Array.new(M)',
+            'M.times do |i|',
+            '  *cityss[i], costs[i] = gets.split.map(&:to_i)',
+            'end'
+          ]
+        )
+      end
+    end
+
+    context 'for vertically expanded matrices(number)' do
+      let(:container) { :vmatrix }
+      let(:item) { :number }
+      let(:names) { %w[idol p] }
+      let(:size) { %w[1 C_1] }
+      it 'generates decl' do
+        expect(subject).to match(
+          [
+            'idolss = Array.new(1) { Array.new(C_1) }',
+            'pss = Array.new(1) { Array.new(C_1) }',
+            '1.times do |i|',
+            '  C_1.times do |j|',
+            '    idolss[i][j], pss[i][j] = gets.split.map(&:to_i)',
+            '  end',
+            'end'
+          ]
+        )
+      end
+    end
+
+    context 'for horizontally expanded matrices(number)' do
+      let(:container) { :hmatrix }
+      let(:item) { :number }
+      let(:names) { %w[x y] }
+      let(:size) { %w[Q 2] }
+      it 'generates decl' do
+        expect(subject).to match(
+          [
+            'xss = Array.new(Q)',
+            'yss = Array.new(Q)',
+            'Q.times do |i|',
+            '  xss[i], yss[i] = ' \
+            'gets.split.map(&:to_i).each_slice(2).to_a.transpose',
             'end'
           ]
         )

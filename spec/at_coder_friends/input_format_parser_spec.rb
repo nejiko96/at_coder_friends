@@ -575,6 +575,141 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
         )
       end
     end
+
+    context 'for matrix_varray(number)' do
+      let(:fmt) do
+        <<~FMT
+          <pre>
+          <var>M</var>
+          <var>city_{11}</var> <var>city_{12}</var> <var>cost_1</var>
+          :
+          :
+          <var>city_{M1}</var> <var>city_{M2}</var> <var>cost_M</var>
+          </pre>
+        FMT
+      end
+      let(:smp) do
+        <<~SMP
+          12
+          1 2 1
+          1 3 1
+          2 3 1
+          3 4 3
+          3 5 3
+          4 5 3
+          5 6 6
+          5 7 3
+          6 7 9
+          5 8 9
+          5 9 18
+          8 9 27
+        SMP
+      end
+      it 'can parse format' do
+        defs = subject
+        expect(defs.size).to eq(2)
+        expect(defs[0]).to have_attributes(
+          container: :single, item: :number, names: %w[M], size: []
+        )
+        expect(defs[1]).to have_attributes(
+          container: :matrix_varray, item: :number,
+          names: %w[city cost], size: %w[M 2]
+        )
+      end
+    end
+
+    context 'for vertically expanded matrices(number)' do
+      let(:fmt) do
+        <<~FMT
+          <pre>
+          <var>N</var> <var>M</var>
+          <var>C_1</var> <var>cost_1</var>
+          <var>idol_{1,1}</var> <var>p_{1,1}</var>
+          <var>idol_{1,2}</var> <var>p_{1,2}</var>
+          :
+          <var>idol_{1,C_1}</var> <var>p_{1,C_1}</var>
+          </pre>
+        FMT
+      end
+      let(:smp) do
+        <<~SMP
+          3 3
+          2 50
+          1 99
+          2 1
+          3 300
+          1 90
+          2 9
+          3 1
+          3 3000
+          1 80
+          2 15
+          3 5
+        SMP
+      end
+      it 'can parse format' do
+        defs = subject
+        expect(defs.size).to eq(3)
+        expect(defs[0]).to have_attributes(
+          container: :single, item: :number, names: %w[N M], size: []
+        )
+        expect(defs[1]).to have_attributes(
+          container: :varray, item: :number,
+          names: %w[C cost], size: %w[1]
+        )
+        expect(defs[2]).to have_attributes(
+          container: :vmatrix, item: :number,
+          names: %w[idol p], size: %w[1 C_1]
+        )
+      end
+    end
+
+    context 'for horizontally expanded matrices(number)' do
+      let(:fmt) do
+        <<~FMT
+          <pre><var>N</var> <var>M</var> <var>Q</var>
+          <var>S_{1,1}</var>..<var>S_{1,M}</var>
+          :
+          <var>S_{N,1}</var>..<var>S_{N,M}</var>
+          <var>x_{1,1}</var> <var>y_{1,1}</var> <var>x_{1,2}</var> <var>y_{1,2}</var>
+          :
+          <var>x_{Q,1}</var> <var>y_{Q,1}</var> <var>x_{Q,2}</var> <var>y_{Q,2}</var>
+          </pre>
+        FMT
+      end
+      let(:smp) do
+        <<~SMP
+          5 5 6
+          11010
+          01110
+          10101
+          11101
+          01010
+          1 1 5 5
+          1 2 4 5
+          2 3 3 4
+          3 3 3 3
+          3 1 3 5
+          1 1 3 4
+        SMP
+      end
+      it 'can parse format' do
+        defs = subject
+        expect(defs.size).to eq(3)
+        expect(defs[0]).to have_attributes(
+          container: :single, item: :number, names: %w[N M Q], size: []
+        )
+        expect(defs[1]).to have_attributes(
+          container: :matrix, item: :char,
+          names: %w[S], size: %w[N M]
+        )
+        expect(defs[2]).to have_attributes(
+          container: :hmatrix, item: :number,
+          names: %w[x y], size: %w[Q 2]
+        )
+      end
+    end
+
     context 'for unknown format' do
       let(:fmt) do
         <<~FMT
