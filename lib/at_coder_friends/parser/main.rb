@@ -10,6 +10,7 @@ module AtCoderFriends
         Sections.process(pbm)
         SampleData.process(pbm)
         InputFormat.process(pbm)
+        InputType.process(pbm)
         Constraints.process(pbm)
         Modulo.process(pbm)
         Interactive.process(pbm)

@@ -231,7 +231,7 @@ module AtCoderFriends
       def process(pbm)
         return unless (str = find_fmt(pbm))
 
-        inpdefs = parse(str, pbm.samples)
+        inpdefs = parse(str)
         pbm.formats_src = inpdefs
       end
 
@@ -244,12 +244,10 @@ module AtCoderFriends
         str
       end
 
-      def parse(str, smps)
+      def parse(str)
         lines = normalize_fmt(str)
         inpdefs = parse_fmt(lines)
-        normalize_defs!(inpdefs)
-        smpx = max_smp(smps)
-        smpx && match_smp!(inpdefs, smpx)
+        normalize_defs(inpdefs)
         inpdefs
       end
 
@@ -309,7 +307,7 @@ module AtCoderFriends
         end
       end
 
-      def normalize_defs!(inpdefs)
+      def normalize_defs(inpdefs)
         inpdefs.each do |inpdef|
           inpdef.names = normalize_names(inpdef.names)
           inpdef.size = normalize_size(inpdef.container, inpdef.size)
@@ -356,25 +354,6 @@ module AtCoderFriends
         return sz if sz.size == 2
 
         [str[0] || '_', str[1..-1] || '_']
-      end
-
-      def max_smp(smps)
-        smps
-          .select { |smp| smp.ext == :in }
-          .max_by { |smp| smp.txt.size }
-          &.txt
-      end
-
-      def match_smp!(inpdefs, smp)
-        lines = smp.split("\n")
-        inpdefs.each_with_index do |inpdef, i|
-          break if i >= lines.size
-          next if inpdef.item != :number
-
-          inpdef.item = :string if lines[i] =~ /[^\-0-9 ]/
-          break unless %i[single harray].include?(inpdef.container)
-        end
-        inpdefs
       end
     end
   end
