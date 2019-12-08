@@ -6,18 +6,19 @@ module AtCoderFriends
       :container, :item,
       :pat, :gen_names, :gen_pat2
     ) do
-      attr_reader :names, :size
+      attr_reader :names, :size, :delim
 
       def initialize(container, item, pat, gen_names, gen_pat2 = nil)
         super(container, item, pat, gen_names, gen_pat2)
       end
 
-      def match(str)
+      def match(str, delim)
         return false unless (m1 = pat.match(str))
 
         @names = gen_names.call(m1)
         @pat2 = gen_pat2&.call(names)
         @size = m1.names.include?('sz') && m1['sz'] || ''
+        @delim = delim
         true
       end
 
@@ -28,6 +29,12 @@ module AtCoderFriends
 
         m2.names.include?('sz') && @size = m2['sz']
         true
+      end
+
+      def to_inpdef
+        Problem::InputFormat.new(
+          container, item, names, size, delim
+        )
       end
     end
 
@@ -253,8 +260,8 @@ module AtCoderFriends
 
       # 1) &npsp; , fill-width space -> half width space
       # 2) {i, j}->{i,j} for nested {}
-      def normalize_fmt(fmt)
-        fmt
+      def normalize_fmt(str)
+        str
           .tr('０-９Ａ-Ｚａ-ｚ', '0-9A-Za-z')
           .gsub(/[[:space:]]/) { |c| c.gsub(/[^\n]/, ' ') } # 1)
           .gsub(%r{<var>([^<>]+)</var>}i, '\1') # <sub><var>N</var></sub>
@@ -280,26 +287,28 @@ module AtCoderFriends
           .gsub(/[・．：‥⋮︙…]+/, '..')
           .gsub(/[\\$']/, '') # s' -> s
           .gsub(/[&~|]/, ' ') # |S| -> S
-          .gsub(%r{[-/:](#{RE_SINGLE})}, ' \1') # a-b, a/b, a:b -> a b
           .gsub(/^\s*[.:][\s.:]*$/, '..')
           .tr('()', '{}')
           .gsub(/#{RE_BLOCK}/) { |w| w.delete(' ') } # 2)
           .split("\n")
-          .map(&:strip)
+          .map do |line|
+            [
+              # a-b, a/b, a:b -> a b
+              line.gsub(%r{[-/:](#{RE_SINGLE})}, ' \1').strip,
+              '-:/'.chars.select { |c| line =~ /#{c}#{RE_SINGLE}/ }.join
+            ]
+          end
       end
 
       def parse_fmt(lines)
         matcher = nil
-        (lines + ['']).each_with_object([]) do |line, ret|
+        (lines + [['', '']]).each_with_object([]) do |(line, delim), ret|
           if matcher
             next if matcher.match2(line)
 
-            ret.last.size = matcher.size
+            ret << matcher.to_inpdef
           end
-          if (matcher = MATCHERS.find { |m| m.match(line) })
-            ret << Problem::InputFormat.new(
-              matcher.container, matcher.item, matcher.names, ''
-            )
+          if (matcher = MATCHERS.find { |m| m.match(line, delim) })
           elsif !line.empty?
             puts "unknown format: #{line}"
             ret << Problem::InputFormat.new(:unknown, line)

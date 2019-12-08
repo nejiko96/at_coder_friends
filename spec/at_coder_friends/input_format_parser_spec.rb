@@ -522,6 +522,32 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
         )
       end
     end
+
+    context 'for format with delimiters' do
+      let(:fmt) do
+        <<~FMT
+          <pre>
+          <var>N</var>
+          <var>S_1</var>-<var>E_1</var>
+          <var>S_2</var>-<var>E_2</var>
+          :
+          <var>S_N</var>-<var>E_N</var>
+          </pre>
+        FMT
+      end
+      it 'can parse format' do
+        defs = subject
+        expect(defs.size).to eq(2)
+        expect(defs[0]).to have_attributes(
+          container: :single, item: :number, names: %w[N], size: [],
+          delim: ''
+        )
+        expect(defs[1]).to have_attributes(
+          container: :varray, item: :number, names: %w[S E], size: %w[N],
+          delim: '-'
+        )
+      end
+    end
   end
 
   describe 'split_size' do

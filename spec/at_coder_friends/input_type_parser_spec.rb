@@ -3,17 +3,26 @@
 RSpec.describe AtCoderFriends::Parser::InputType do
   subject(:parser) { described_class }
 
-  describe '#parse' do
-    subject { parser.parse(defs, smps) }
+  describe '#max_smp' do
+    subject { parser.max_smp(smps) }
 
     let(:smps) do
       [
         AtCoderFriends::Problem::SampleData.new('1', :in, '0'),
         AtCoderFriends::Problem::SampleData.new('1', :exp, 'YES'),
         AtCoderFriends::Problem::SampleData.new('2', :in, '#'),
-        AtCoderFriends::Problem::SampleData.new('3', :in, smp)
+        AtCoderFriends::Problem::SampleData.new('3', :in, 'NO')
       ]
     end
+
+    it 'finds maximum sample' do
+      expect(subject).to eq 'NO'
+    end
+  end
+
+  describe '#match_smp' do
+    subject { parser.match_smp(defs, smp.split("\n")) }
+
     let(:smp) { '' }
     let(:f) { ->(*args) { AtCoderFriends::Problem::InputFormat.new(*args) } }
 
@@ -485,6 +494,31 @@ RSpec.describe AtCoderFriends::Parser::InputType do
         subject
         expect(defs[0].item).to eq '1'
       end
+    end
+
+    context 'for format with delimiters' do
+      let(:defs) do
+        [
+          f[:single, :number, %w[N], []],
+          f[:varray, :number, %w[S E], %w[N], '-']
+        ]
+      end
+      let(:smp) do
+        <<~SMP
+          6
+          1157-1306
+          1159-1307
+          1158-1259
+          1230-1240
+          1157-1306
+          1315-1317
+        SMP
+      end
+      it 'can detect type' do
+        subject
+        expect(defs[0].item).to eq :number
+        expect(defs[1].item).to eq :number
+       end
     end
   end
 end

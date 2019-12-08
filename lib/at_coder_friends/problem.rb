@@ -18,13 +18,13 @@ module AtCoderFriends
 
     SampleData = Struct.new(:no, :ext, :txt)
 
-    InputFormat = Struct.new(:container, :item, :names, :size) do
-      def initialize(container, item, names = nil, size = nil)
-        super(container, item, names, size)
+    InputFormat = Struct.new(:container, :item, :names, :size, :delim) do
+      def initialize(container, item, names = nil, size = nil, delim = nil)
+        super(container, item, names, size, delim)
       end
 
       def to_s
-        "#{container} #{item} #{names} #{size}"
+        "#{container} #{item} #{names} #{size} #{delim}"
       end
 
       def components

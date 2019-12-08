@@ -25,7 +25,7 @@ module AtCoderFriends
       fmt = Parser::InputFormat.find_fmt(pbm)
       return unless fmt && !fmt.empty?
 
-      n_fmt = Parser::InputFormat.normalize_fmt(fmt).join("\n")
+      n_fmt = Parser::InputFormat.normalize_fmt(fmt).transpose[0].join("\n")
       Parser::InputFormat.process(pbm)
       res = pbm.formats_src.map(&:to_s).join("\n")
       [fmt, n_fmt, res]
