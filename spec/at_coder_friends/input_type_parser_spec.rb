@@ -477,10 +477,33 @@ RSpec.describe AtCoderFriends::Parser::InputType do
       end
     end
 
+    context 'for varray(decimal)' do
+      let(:defs) do
+        [
+          f[:single, :number, %w[N], []],
+          f[:varray, :number, %w[MT mT], %w[N]]
+        ]
+      end
+      let(:smp) do
+        <<~SMP
+          4
+          32.2 25.3
+          36.4 26.4
+          24.1 18.0
+          26.0 24.9
+        SMP
+      end
+      it 'can detect type' do
+        subject
+        expect(defs[0].item).to eq :number
+        expect(defs[1].item).to eq :decimal
+      end
+    end
+
     context 'for unknown format' do
       let(:defs) do
         [
-          f[:unknown, '1', nil, nil]
+          f[:unknown, '1']
         ]
       end
       let(:smp) do
@@ -518,7 +541,7 @@ RSpec.describe AtCoderFriends::Parser::InputType do
         subject
         expect(defs[0].item).to eq :number
         expect(defs[1].item).to eq :number
-       end
+      end
     end
   end
 end

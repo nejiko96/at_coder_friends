@@ -23,6 +23,12 @@ module AtCoderFriends
 
     # generates C++ variable declarations
     module CxxBuiltinDeclGen
+      TYPE_TBL = {
+        number: 'int',
+        decimal: 'double',
+        string: 'char',
+        char: 'char'
+      }.freeze
       def gen_decl(inpdef)
         if inpdef.components
           inpdef.components.map { |cmp| gen_decl(cmp) }
@@ -41,50 +47,54 @@ module AtCoderFriends
       end
 
       def gen_single_decl(inpdef)
+        type = TYPE_TBL[inpdef.item]
         names = inpdef.names
         case inpdef.item
-        when :number
+        when :number, :decimal
           dcl = names.join(', ')
-          "int #{dcl};"
+          "#{type} #{dcl};"
         when :string
-          names.map { |v| "char #{v}[#{v.upcase}_MAX + 1];" }
+          names.map { |v| "#{type} #{v}[#{v.upcase}_MAX + 1];" }
         end
       end
 
       def gen_harray_decl(inpdef)
+        type = TYPE_TBL[inpdef.item]
         v = inpdef.names[0]
         sz = gen_arr_size(inpdef.size)[0]
         case inpdef.item
-        when :number
-          "int #{v}[#{sz}];"
+        when :number, :decimal
+          "#{type} #{v}[#{sz}];"
         when :string
-          "char #{v}[#{sz}][#{v.upcase}_MAX + 1];"
+          "#{type} #{v}[#{sz}][#{v.upcase}_MAX + 1];"
         when :char
-          "char #{v}[#{sz} + 1];"
+          "#{type} #{v}[#{sz} + 1];"
         end
       end
 
       def gen_varray_decl(inpdef)
+        type = TYPE_TBL[inpdef.item]
         names = inpdef.names
         sz = gen_arr_size(inpdef.size)[0]
         case inpdef.item
-        when :number
-          names.map { |v| "int #{v}[#{sz}];" }
+        when :number, :decimal
+          names.map { |v| "#{type} #{v}[#{sz}];" }
         when :string
-          names.map { |v| "char #{v}[#{sz}][#{v.upcase}_MAX + 1];" }
+          names.map { |v| "#{type} #{v}[#{sz}][#{v.upcase}_MAX + 1];" }
         end
       end
 
       def gen_matrix_decl(inpdef)
+        type = TYPE_TBL[inpdef.item]
         names = inpdef.names
         sz1, sz2 = gen_arr_size(inpdef.size)
         case inpdef.item
-        when :number
-          names.map { |v| "int #{v}[#{sz1}][#{sz2}];" }
+        when :number, :decimal
+          names.map { |v| "#{type} #{v}[#{sz1}][#{sz2}];" }
         when :string
-          names.map { |v| "char #{v}[#{sz1}][#{sz2}][#{v.upcase}_MAX + 1];" }
+          names.map { |v| "#{type} #{v}[#{sz1}][#{sz2}][#{v.upcase}_MAX + 1];" }
         when :char
-          names.map { |v| "char #{v}[#{sz1}][#{sz2} + 1];" }
+          names.map { |v| "#{type} #{v}[#{sz1}][#{sz2} + 1];" }
         end
       end
 
@@ -132,26 +142,32 @@ module AtCoderFriends
             TEXT
           ]
       }.freeze
-      FMT_FMTS = { number: '%d', string: '%s', char: '%s' }.freeze
+      FMT_FMTS = {
+        number: '%d',
+        decimal: '%lf',
+        string: '%s',
+        char: '%s'
+      }.freeze
+      ARRAY_ADDR_FMTS = {
+        number: '%<v>s + i',
+        decimal: '%<v>s + i',
+        string: '%<v>s[i]',
+        char: '%<v>s'
+      }.freeze
       MATRIX_ADDR_FMTS = {
         number: '&%<v>s[i][j]',
+        decimal: '&%<v>s[i][j]',
         string: '%<v>s[i][j]',
         char: '%<v>s[i]'
       }.freeze
       ADDR_FMTS = {
         single: {
           number: '&%<v>s',
+          decimal: '&%<v>s',
           string: '%<v>s'
         },
-        harray: {
-          number: '%<v>s + i',
-          string: '%<v>s[i]',
-          char: '%<v>s'
-        },
-        varray: {
-          number: '%<v>s + i',
-          string: '%<v>s[i]'
-        },
+        harray: ARRAY_ADDR_FMTS,
+        varray: ARRAY_ADDR_FMTS,
         matrix: MATRIX_ADDR_FMTS,
         vmatrix: MATRIX_ADDR_FMTS,
         hmatrix: MATRIX_ADDR_FMTS

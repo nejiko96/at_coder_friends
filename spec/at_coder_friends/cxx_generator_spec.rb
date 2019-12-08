@@ -63,25 +63,19 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       end
     end
 
+    context 'for a plain decimal' do
+      let(:container) { :single }
+      let(:item) { :decimal }
+      it 'generates decl' do
+        expect(subject).to eq('double A;')
+      end
+    end
+
     context 'for a plain string' do
       let(:container) { :single }
       let(:item) { :string }
       it 'generates decl' do
         expect(subject).to match(['char A[A_MAX + 1];'])
-      end
-    end
-
-    context 'for plain strings' do
-      let(:container) { :single }
-      let(:item) { :string }
-      let(:names) { %w[A B] }
-      it 'generates decl' do
-        expect(subject).to match(
-          [
-            'char A[A_MAX + 1];',
-            'char B[B_MAX + 1];'
-          ]
-        )
       end
     end
 
@@ -100,6 +94,15 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       let(:size) { %w[10] }
       it 'generates decl' do
         expect(subject).to eq('int A[10];')
+      end
+    end
+
+    context 'for a horizontal array of decimals' do
+      let(:container) { :harray }
+      let(:item) { :decimal }
+      let(:size) { %w[N] }
+      it 'generates decl' do
+        expect(subject).to eq('double A[N_MAX];')
       end
     end
 
@@ -151,6 +154,21 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       end
     end
 
+    context 'for vertical array of decimals' do
+      let(:container) { :varray }
+      let(:item) { :decimal }
+      let(:names) { %w[A B] }
+      let(:size) { %w[N] }
+      it 'generates decl' do
+        expect(subject).to match(
+          [
+            'double A[N_MAX];',
+            'double B[N_MAX];'
+          ]
+        )
+      end
+    end
+
     context 'for vertical array of strings' do
       let(:container) { :varray }
       let(:item) { :string }
@@ -181,6 +199,15 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       let(:size) { %w[8 8] }
       it 'generates decl' do
         expect(subject).to match(['int A[8][8];'])
+      end
+    end
+
+    context 'for a matrix of decimals' do
+      let(:container) { :matrix }
+      let(:item) { :decimal }
+      let(:size) { %w[R C] }
+      it 'generates decl' do
+        expect(subject).to match(['double A[R_MAX][C_MAX];'])
       end
     end
 
@@ -303,20 +330,19 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       end
     end
 
+    context 'for a plain decimal' do
+      let(:container) { :single }
+      let(:item) { :decimal }
+      it 'generates input script' do
+        expect(subject).to eq('scanf("%lf", &A);')
+      end
+    end
+
     context 'for a plain string' do
       let(:container) { :single }
       let(:item) { :string }
       it 'generates input script' do
         expect(subject).to eq('scanf("%s", A);')
-      end
-    end
-
-    context 'for plain strings' do
-      let(:container) { :single }
-      let(:item) { :string }
-      let(:names) { %w[A B] }
-      it 'generates read script' do
-        expect(subject).to eq('scanf("%s%s", A, B);')
       end
     end
 
@@ -326,6 +352,15 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       let(:size) { %w[N] }
       it 'generates input script' do
         expect(subject).to eq('REP(i, N) scanf("%d", A + i);')
+      end
+    end
+
+    context 'for a horizontal array of decimals' do
+      let(:container) { :harray }
+      let(:item) { :decimal }
+      let(:size) { %w[N] }
+      it 'generates input script' do
+        expect(subject).to eq('REP(i, N) scanf("%lf", A + i);')
       end
     end
 
@@ -357,6 +392,16 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       end
     end
 
+    context 'for vertical array of decimals' do
+      let(:container) { :varray }
+      let(:item) { :decimal }
+      let(:names) { %w[A B] }
+      let(:size) { %w[N] }
+      it 'generates input script' do
+        expect(subject).to eq('REP(i, N) scanf("%lf%lf", A + i, B + i);')
+      end
+    end
+
     context 'for vertical array of strings' do
       let(:container) { :varray }
       let(:item) { :string }
@@ -373,6 +418,15 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       let(:size) { %w[R C] }
       it 'generates input script' do
         expect(subject).to eq('REP(i, R) REP(j, C) scanf("%d", &A[i][j]);')
+      end
+    end
+
+    context 'for a matrix of decimals' do
+      let(:container) { :matrix }
+      let(:item) { :decimal }
+      let(:size) { %w[R C] }
+      it 'generates input script' do
+        expect(subject).to eq('REP(i, R) REP(j, C) scanf("%lf", &A[i][j]);')
       end
     end
 

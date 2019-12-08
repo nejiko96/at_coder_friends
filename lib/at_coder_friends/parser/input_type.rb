@@ -6,6 +6,17 @@ module AtCoderFriends
     module InputType
       module_function
 
+      NUMBER_PAT = /\A[+-]?[0-9]+\z/.freeze
+      TYPE_TBL = [
+        [:number, NUMBER_PAT],
+        [:decimal, /\A[+-]?[0-9]+(\.[0-9]+)?\z/]
+      ].freeze
+      TYPE_RANK = {
+        number: 1,
+        decimal: 2,
+        string: 3
+      }.freeze
+
       def process(pbm)
         parse(pbm.formats_src, pbm.samples)
       end
@@ -23,17 +34,18 @@ module AtCoderFriends
       end
 
       def match_smp(inpdefs, lines)
-        singles = {}
+        vars = {}
         inpdefs.each do |inpdef|
           break unless  (k = get_line_cnt(inpdef))
 
-          k, ctn = parse_line_cnt(k, singles)
-          dat = lines.shift(k).join("\n").gsub(/[#{inpdef.delim} ]/, ' ')
-          inpdef.item == :number &&
-            dat =~ /[^-+0-9\s]/ &&
-            inpdef.item = :string
+          k, ctn = parse_line_cnt(k, vars)
+          rows = lines.shift(k).map { |line| line.split(/[#{inpdef.delim} ]/) }
+          break if rows.empty?
+
           inpdef.container == :single &&
-            singles = singles.merge(inpdef.names.zip(dat.split).to_h)
+            vars.merge!(inpdef.names.zip(rows[0]).to_h)
+          inpdef.item == :number &&
+            inpdef.item = detect_rows_type(rows)
           break unless ctn
         end
         inpdefs
@@ -50,16 +62,34 @@ module AtCoderFriends
         end
       end
 
-      def parse_line_cnt(k, singles)
+      def parse_line_cnt(k, vars)
         if k.is_a?(Integer)
           [k, true]
-        elsif k =~ /\A[+-]?[0-9]+\z/
+        elsif k =~ NUMBER_PAT
           [k.to_i, true]
-        elsif singles[k] =~ /\A[+-]?[0-9]+\z/
-          [singles[k].to_i, true]
+        elsif vars[k] =~ NUMBER_PAT
+          [vars[k].to_i, true]
         else
           [1, false]
         end
+      end
+
+      def detect_rows_type(rows)
+        cols = fill_transpose(rows).map(&:compact)
+        types = cols.map { |col| detect_col_type(col) }
+        types.max_by { |type| TYPE_RANK[type] }
+      end
+
+      def fill_transpose(arr)
+        Array.new(arr.map(&:size).max) { |i| arr.map { |e| e[i] } }
+      end
+
+      def detect_col_type(arr)
+        ret = :string
+        TYPE_TBL.any? do |type, pat|
+          arr.all? { |v| v =~ pat } && ret = type
+        end
+        ret
       end
     end
   end

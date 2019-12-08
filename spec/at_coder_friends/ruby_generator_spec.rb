@@ -58,6 +58,23 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       end
     end
 
+    context 'for a plain decimal' do
+      let(:container) { :single }
+      let(:item) { :decimal }
+      it 'generates decl' do
+        expect(subject).to eq('A = gets.to_f')
+      end
+    end
+
+    context 'for plain decimals' do
+      let(:container) { :single }
+      let(:item) { :decimal }
+      let(:names) { %w[A B] }
+      it 'generates decl' do
+        expect(subject).to eq('A, B = gets.split.map(&:to_f)')
+      end
+    end
+
     context 'for a plain string' do
       let(:container) { :single }
       let(:item) { :string }
@@ -83,6 +100,14 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       end
     end
 
+    context 'for a horizontal array of decimals' do
+      let(:container) { :harray }
+      let(:item) { :decimal }
+      it 'generates decl' do
+        expect(subject).to eq('As = gets.split.map(&:to_f)')
+      end
+    end
+
     context 'for a horizontal array of strings' do
       let(:container) { :harray }
       let(:item) { :string }
@@ -105,6 +130,15 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       let(:size) { %w[N] }
       it 'generates decl' do
         expect(subject).to eq('As = Array.new(N) { gets.to_i }')
+      end
+    end
+
+    context 'for single vertical array of decimals' do
+      let(:container) { :varray }
+      let(:item) { :decimal }
+      let(:size) { %w[N] }
+      it 'generates decl' do
+        expect(subject).to eq('As = Array.new(N) { gets.to_f }')
       end
     end
 
@@ -135,6 +169,24 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       end
     end
 
+    context 'for multiple vertical array of decimals' do
+      let(:container) { :varray }
+      let(:item) { :decimal }
+      let(:names) { %w[A B] }
+      let(:size) { %w[N] }
+      it 'generates decl' do
+        expect(subject).to match(
+          [
+            'As = Array.new(N)',
+            'Bs = Array.new(N)',
+            'N.times do |i|',
+            '  As[i], Bs[i] = gets.split.map(&:to_f)',
+            'end'
+          ]
+        )
+      end
+    end
+
     context 'for multple vertical array of strings' do
       let(:container) { :varray }
       let(:item) { :string }
@@ -159,6 +211,15 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       let(:size) { %w[R C] }
       it 'generates decl' do
         expect(subject).to eq('Ass = Array.new(R) { gets.split.map(&:to_i) }')
+      end
+    end
+
+    context 'for a matrix of decimals' do
+      let(:container) { :matrix }
+      let(:item) { :decimal }
+      let(:size) { %w[R C] }
+      it 'generates decl' do
+        expect(subject).to eq('Ass = Array.new(R) { gets.split.map(&:to_f) }')
       end
     end
 

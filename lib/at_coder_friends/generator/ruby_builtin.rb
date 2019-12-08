@@ -155,6 +155,8 @@ module AtCoderFriends
         case item
         when :number
           split ? 'gets.split.map(&:to_i)' : 'gets.to_i'
+        when :decimal
+          split ? 'gets.split.map(&:to_f)' : 'gets.to_f'
         when :string
           split ? 'gets.chomp.split' : 'gets.chomp'
         when :char
@@ -166,6 +168,8 @@ module AtCoderFriends
         case item
         when :number
           'gets.split.map(&:to_i)'
+        when :decimal
+          'gets.split.map(&:to_f)'
         when :string, :char
           'gets.chomp.split'
         end
