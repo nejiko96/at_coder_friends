@@ -38,7 +38,7 @@ module AtCoderFriends
         inpdefs.each do |inpdef|
           break unless  (k = get_line_cnt(inpdef))
 
-          k, ctn = parse_line_cnt(k, vars)
+          k, parsed = parse_line_cnt(k, vars)
           rows = lines.shift(k).map { |line| line.split(/[#{inpdef.delim} ]/) }
           break if rows.empty?
 
@@ -46,7 +46,7 @@ module AtCoderFriends
             vars.merge!(inpdef.names.zip(rows[0]).to_h)
           inpdef.item == :number &&
             inpdef.item = detect_rows_type(rows)
-          break unless ctn
+          break unless parsed
         end
         inpdefs
       end

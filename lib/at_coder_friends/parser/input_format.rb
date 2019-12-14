@@ -2,44 +2,9 @@
 
 module AtCoderFriends
   module Parser
-    InputFormatMatcher = Struct.new(
-      :container, :item,
-      :pat, :gen_names, :gen_pat2
-    ) do
-      attr_reader :names, :size, :delim
-
-      def initialize(container, item, pat, gen_names, gen_pat2 = nil)
-        super(container, item, pat, gen_names, gen_pat2)
-      end
-
-      def match(str, delim)
-        return false unless (m1 = pat.match(str))
-
-        @names = gen_names.call(m1)
-        @pat2 = gen_pat2&.call(names)
-        @size = m1.names.include?('sz') && m1['sz'] || ''
-        @delim = delim
-        true
-      end
-
-      def match2(str)
-        return false unless @pat2
-        return true if /\A\.+\z/ =~ str
-        return false unless (m2 = @pat2.match(str))
-
-        m2.names.include?('sz') && @size = m2['sz']
-        true
-      end
-
-      def to_inpdef
-        Problem::InputFormat.new(
-          container, item, names, size, delim
-        )
-      end
-    end
-
     module InputFormatConstants
       SECTIONS = [Problem::SECTION_IN_FMT, Problem::SECTION_IO_FMT].freeze
+      DELIMS = '-/:'
       RE_0 = /[0-9]+/.freeze
       RE_00 = /[01][,_]?[01]/.freeze
       RE_99 = /[0-9]+[,_]?[0-9]+/.freeze
@@ -57,6 +22,75 @@ module AtCoderFriends
       RE_SZ_99 = /(_\{*(?<sz>#{RE_99})\}*|\{+(?<sz>#{RE_99})\}+)/.freeze
       RE_SINGLE = /[A-Za-z{][A-Za-z_0-9{}]*/.freeze
       RE_BLOCK = /(?<bl>\{(?:[^{}]|\g<bl>)*\})/.freeze
+      DIMENSION_TBL = {
+        single: 0,
+        varray: 1,
+        harray: 1,
+        matrix: 2,
+        varray_matrix: 2,
+        matrix_varray: 2,
+        vmatrix: 2,
+        hmatrix: 2
+      }.freeze
+    end
+
+    # holds regular expressions and matches it with input format string
+    class InputFormatMatcher
+      include InputFormatConstants
+
+      attr_reader :container, :item, :pat, :gen_names, :gen_pat2
+      attr_reader :names, :pat2, :size, :delim
+
+      def initialize(container, item, pat, gen_names, gen_pat2 = nil)
+        @container = container
+        @item = item
+        @pat = pat
+        @gen_names = gen_names
+        @gen_pat2 = gen_pat2
+      end
+
+      def match(str)
+        str, dlm = extract_delim(str)
+        return false unless (m1 = pat.match(str))
+
+        @names = gen_names.call(m1)
+        @pat2 = gen_pat2&.call(names)
+        @size = m1.names.include?('sz') && m1['sz'] || ''
+        @delim = dlm
+        true
+      end
+
+      def match2(str)
+        return false unless pat2
+
+        str, _dlm = extract_delim(str)
+        return true if /\A\.+\z/ =~ str
+        return false unless (m2 = pat2.match(str))
+
+        m2.names.include?('sz') && @size = m2['sz']
+        true
+      end
+
+      def extract_delim(str)
+        # a-b, a/b, a:b -> a b
+        dlm = DELIMS.chars.select do |c|
+          str =~ /#{c}#{RE_SINGLE}/ &&
+            str = str.gsub(/#{c}(#{RE_SINGLE})/, ' \1')
+        end.join
+        [str, dlm]
+      end
+
+      def to_inpdef
+        Problem::InputFormat.new(
+          container, item, names, size, delim
+        )
+      end
+    end
+
+    # matcher constants
+    module InputFormatMatcherConstants
+      include InputFormatConstants
+
       MATRIX_MATCHER = InputFormatMatcher.new(
         :matrix, :number,
         /
@@ -217,21 +251,12 @@ module AtCoderFriends
         VARRAY_MATCHER,
         SINGLE_MATCHER
       ].freeze
-      DIMENSION_TBL = {
-        single: 0,
-        varray: 1,
-        harray: 1,
-        matrix: 2,
-        varray_matrix: 2,
-        matrix_varray: 2,
-        vmatrix: 2,
-        hmatrix: 2
-      }.freeze
     end
 
     # parses input data format and generates input definitons
     module InputFormat
       include InputFormatConstants
+      include InputFormatMatcherConstants
 
       module_function
 
@@ -291,24 +316,18 @@ module AtCoderFriends
           .tr('()', '{}')
           .gsub(/#{RE_BLOCK}/) { |w| w.delete(' ') } # 2)
           .split("\n")
-          .map do |line|
-            [
-              # a-b, a/b, a:b -> a b
-              line.gsub(%r{[-/:](#{RE_SINGLE})}, ' \1').strip,
-              '-:/'.chars.select { |c| line =~ /#{c}#{RE_SINGLE}/ }.join
-            ]
-          end
+          .map(&:strip)
       end
 
       def parse_fmt(lines)
         matcher = nil
-        (lines + [['', '']]).each_with_object([]) do |(line, delim), ret|
+        (lines + ['']).each_with_object([]) do |line, ret|
           if matcher
             next if matcher.match2(line)
 
             ret << matcher.to_inpdef
           end
-          if (matcher = MATCHERS.find { |m| m.match(line, delim) })
+          if (matcher = MATCHERS.find { |m| m.match(line) })
           elsif !line.empty?
             puts "unknown format: #{line}"
             ret << Problem::InputFormat.new(:unknown, line)
