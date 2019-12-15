@@ -29,8 +29,8 @@ RSpec.describe AtCoderFriends::Parser::InputType do
     context 'for single(number)-varray(number)' do
       let(:defs) do
         [
-          f[:single, :number, %w[N M P Q R], []],
-          f[:varray, :number, %w[x y z], %w[R]]
+          f[:single, nil, %w[N M P Q R], []],
+          f[:varray, nil, %w[x y z], %w[R]]
         ]
       end
       let(:smp) do
@@ -57,7 +57,7 @@ RSpec.describe AtCoderFriends::Parser::InputType do
     context 'for single(number)' do
       let(:defs) do
         [
-          f[:single, :number, %w[Deg Dis], []]
+          f[:single, nil, %w[Deg Dis], []]
         ]
       end
       let(:smp) { '113 201' }
@@ -100,7 +100,7 @@ RSpec.describe AtCoderFriends::Parser::InputType do
     context 'for single(number)' do
       let(:defs) do
         [
-          f[:single, :number, %w[x_a y_a x_b y_b x_c y_c], []]
+          f[:single, nil, %w[x_a y_a x_b y_b x_c y_c], []]
         ]
       end
       let(:smp) { '298 520 903 520 4 663' }
@@ -113,8 +113,8 @@ RSpec.describe AtCoderFriends::Parser::InputType do
     context 'for single(number)-harray(number)' do
       let(:defs) do
         [
-          f[:single, :number, %w[N K], []],
-          f[:harray, :number, %w[R], %w[N]]
+          f[:single, nil, %w[N K], []],
+          f[:harray, nil, %w[R], %w[N]]
         ]
       end
       let(:smp) do
@@ -133,8 +133,8 @@ RSpec.describe AtCoderFriends::Parser::InputType do
     context 'for single(number)-varray(string)' do
       let(:defs) do
         [
-          f[:single, :number, %w[R C K], []],
-          f[:varray, :number, %w[s], %w[R]]
+          f[:single, nil, %w[R C K], []],
+          f[:varray, nil, %w[s], %w[R]]
         ]
       end
       let(:smp) do
@@ -160,7 +160,7 @@ RSpec.describe AtCoderFriends::Parser::InputType do
     context 'for single(string)' do
       let(:defs) do
         [
-          f[:single, :number, %w[X], []]
+          f[:single, nil, %w[X], []]
         ]
       end
       let(:smp) { 'atcoder' }
@@ -173,7 +173,7 @@ RSpec.describe AtCoderFriends::Parser::InputType do
     context 'for varray(number)' do
       let(:defs) do
         [
-          f[:varray, :number, %w[s e], %w[3]]
+          f[:varray, nil, %w[s e], %w[3]]
         ]
       end
       let(:smp) do
@@ -192,7 +192,7 @@ RSpec.describe AtCoderFriends::Parser::InputType do
     context 'for matrix(string)' do
       let(:defs) do
         [
-          f[:matrix, :number, %w[c], %w[3 3]]
+          f[:matrix, nil, %w[c], %w[3 3]]
         ]
       end
       let(:smp) do
@@ -212,10 +212,10 @@ RSpec.describe AtCoderFriends::Parser::InputType do
     context 'for single(number)-varray(number)*2' do
       let(:defs) do
         [
-          f[:single, :number, %w[N], []],
-          f[:varray, :number, %w[x y], %w[N]],
-          f[:single, :number, %w[Q], []],
-          f[:varray, :number, %w[a b], %w[Q]]
+          f[:single, nil, %w[N], []],
+          f[:varray, nil, %w[x y], %w[N]],
+          f[:single, nil, %w[Q], []],
+          f[:varray, nil, %w[a b], %w[Q]]
         ]
       end
       let(:smp) do
@@ -247,7 +247,7 @@ RSpec.describe AtCoderFriends::Parser::InputType do
     context 'for single(number)-matrix(char)' do
       let(:defs) do
         [
-          f[:single, :number, %w[H W T], []],
+          f[:single, nil, %w[H W T], []],
           f[:matrix, :char, %w[s], %w[H W]]
         ]
       end
@@ -269,7 +269,7 @@ RSpec.describe AtCoderFriends::Parser::InputType do
     context 'for single(number)-harray(char)' do
       let(:defs) do
         [
-          f[:single, :number, %w[N], []],
+          f[:single, nil, %w[N], []],
           f[:harray, :char, %w[c], %w[N]]
         ]
       end
@@ -289,7 +289,7 @@ RSpec.describe AtCoderFriends::Parser::InputType do
     context 'for single(number)-matrix(char)' do
       let(:defs) do
         [
-          f[:single, :number, %w[N], []],
+          f[:single, nil, %w[N], []],
           f[:matrix, :char, %w[x], %w[N 9]]
         ]
       end
@@ -323,8 +323,8 @@ RSpec.describe AtCoderFriends::Parser::InputType do
     context 'for varray_matrix(number)' do
       let(:defs) do
         [
-          f[:single, :number, %w[N M], []],
-          f[:varray_matrix, :number, %w[K A], %w[N K_N]]
+          f[:single, nil, %w[N M], []],
+          f[:varray_matrix, nil, %w[K A], %w[N K_N]]
         ]
       end
       let(:smp) do
@@ -347,9 +347,9 @@ RSpec.describe AtCoderFriends::Parser::InputType do
     context 'for varray_matrix(char)' do
       let(:defs) do
         [
-          f[:single, :number, %w[N], []],
-          f[:varray, :number, %w[S], %w[N]],
-          f[:single, :number, %w[Q], []],
+          f[:single, nil, %w[N], []],
+          f[:varray, nil, %w[S], %w[N]],
+          f[:single, nil, %w[Q], []],
           f[:varray_matrix, :char, %w[k p], %w[Q 26]]
         ]
       end
@@ -385,8 +385,8 @@ RSpec.describe AtCoderFriends::Parser::InputType do
     context 'for matrix_varray(number)' do
       let(:defs) do
         [
-          f[:single, :number, %w[M], []],
-          f[:matrix_varray, :number, %w[city cost], %w[M 2]]
+          f[:single, nil, %w[M], []],
+          f[:matrix_varray, nil, %w[city cost], %w[M 2]]
         ]
       end
       let(:smp) do
@@ -416,9 +416,9 @@ RSpec.describe AtCoderFriends::Parser::InputType do
     context 'for vertically expanded matrices(number)' do
       let(:defs) do
         [
-          f[:single, :number, %w[N M], []],
-          f[:varray, :number, %w[C cost], %w[1]],
-          f[:vmatrix, :number, %w[idol p], %w[1 C_1]]
+          f[:single, nil, %w[N M], []],
+          f[:varray, nil, %w[C cost], %w[1]],
+          f[:vmatrix, nil, %w[idol p], %w[1 C_1]]
         ]
       end
       let(:smp) do
@@ -448,9 +448,9 @@ RSpec.describe AtCoderFriends::Parser::InputType do
     context 'for horizontally expanded matrices(number)' do
       let(:defs) do
         [
-          f[:single, :number, %w[N M Q], []],
+          f[:single, nil, %w[N M Q], []],
           f[:matrix, :char, %w[S], %w[N M]],
-          f[:hmatrix, :number, %w[x y], %w[Q 2]]
+          f[:hmatrix, nil, %w[x y], %w[Q 2]]
         ]
       end
       let(:smp) do
@@ -480,8 +480,8 @@ RSpec.describe AtCoderFriends::Parser::InputType do
     context 'for varray(decimal)' do
       let(:defs) do
         [
-          f[:single, :number, %w[N], []],
-          f[:varray, :number, %w[MT mT], %w[N]]
+          f[:single, nil, %w[N], []],
+          f[:varray, nil, %w[MT mT], %w[N]]
         ]
       end
       let(:smp) do
@@ -522,8 +522,8 @@ RSpec.describe AtCoderFriends::Parser::InputType do
     context 'for format with delimiters' do
       let(:defs) do
         [
-          f[:single, :number, %w[N], []],
-          f[:varray, :number, %w[S E], %w[N], '-']
+          f[:single, nil, %w[N], []],
+          f[:varray, nil, %w[S E], %w[N], '-']
         ]
       end
       let(:smp) do

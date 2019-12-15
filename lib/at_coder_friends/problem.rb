@@ -18,13 +18,37 @@ module AtCoderFriends
 
     SampleData = Struct.new(:no, :ext, :txt)
 
-    InputFormat = Struct.new(:container, :item, :names, :size, :delim) do
-      def initialize(container, item, names = nil, size = nil, delim = nil)
-        super(container, item, names, size, delim)
+    # holds information about input format
+    class InputFormat
+      ITEM_RANK = { number: 1, decimal: 2, string: 3 }.freeze
+
+      attr_reader :container
+      attr_accessor :names, :size, :delim, :items
+
+
+      def initialize(
+        container, item,
+        names = nil, size = nil,
+        delim = '', items = []
+      )
+        @container = container
+        @item = item
+        @names = names
+        @size = size
+        @delim = delim
+        @items = items
       end
 
       def to_s
-        "#{container} #{item} #{names} #{size} #{delim}"
+        if container == :unknown
+          "#{container} #{item}"
+        else
+          "#{container} #{item}(#{items}) #{names} #{size} #{delim}"
+        end
+      end
+
+      def item
+        @item || @items.max_by { |k| ITEM_RANK[k] } || :number
       end
 
       def components
@@ -39,15 +63,27 @@ module AtCoderFriends
 
       def varray_matrix_components
         [
-          InputFormat.new(:varray, :number, names[0..-2], size[0..0]),
-          InputFormat.new(:matrix, item, names[-1..-1], size)
+          self.class.new(
+            :varray, nil, names[0..-2], size[0..0],
+            delim, items[0..-2]
+          ),
+          self.class.new(
+            :matrix, item, names[-1..-1], size,
+            delim, items[-1..-1] || []
+          )
         ]
       end
 
       def matrix_varray_components
         [
-          InputFormat.new(:matrix, item, names[0..0], size),
-          InputFormat.new(:varray, :number, names[1..-1], size[0..0])
+          self.class.new(
+            :matrix, item, names[0..0], size,
+            delim, items[0..0]
+          ),
+          self.class.new(
+            :varray, nil, names[1..-1], size[0..0],
+            delim, items[1..-1] || []
+          )
         ]
       end
     end

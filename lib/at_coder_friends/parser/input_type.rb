@@ -11,11 +11,6 @@ module AtCoderFriends
         [:number, NUMBER_PAT],
         [:decimal, /\A[+-]?[0-9]+(\.[0-9]+)?\z/]
       ].freeze
-      TYPE_RANK = {
-        number: 1,
-        decimal: 2,
-        string: 3
-      }.freeze
 
       def process(pbm)
         parse(pbm.formats_src, pbm.samples)
@@ -44,8 +39,7 @@ module AtCoderFriends
 
           inpdef.container == :single &&
             vars.merge!(inpdef.names.zip(rows[0]).to_h)
-          inpdef.item == :number &&
-            inpdef.item = detect_rows_type(rows)
+          inpdef.items = detect_rows_type(rows)
           break unless parsed
         end
         inpdefs
@@ -76,8 +70,7 @@ module AtCoderFriends
 
       def detect_rows_type(rows)
         cols = fill_transpose(rows).map(&:compact)
-        types = cols.map { |col| detect_col_type(col) }
-        types.max_by { |type| TYPE_RANK[type] }
+        cols.map { |col| detect_col_type(col) }
       end
 
       def fill_transpose(arr)

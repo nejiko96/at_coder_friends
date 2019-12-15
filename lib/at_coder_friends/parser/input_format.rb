@@ -92,7 +92,7 @@ module AtCoderFriends
       include InputFormatConstants
 
       MATRIX_MATCHER = InputFormatMatcher.new(
-        :matrix, :number,
+        :matrix, nil,
         /
           \A (?<v>#{RE_ITEM})#{RE_IX_00} (\s+(\.+|\k<v>#{RE_IX}))*
           \s+\k<v>#{RE_SZ} \z
@@ -120,7 +120,7 @@ module AtCoderFriends
         }
       )
       HARRAY_MATCHER = InputFormatMatcher.new(
-        :harray, :number,
+        :harray, nil,
         /
           \A (?<v>#{RE_ITEM})#{RE_IX_0} (\s+(\.+|\k<v>#{RE_IX}))*
           \s+\k<v>#{RE_SZ} \z
@@ -136,7 +136,7 @@ module AtCoderFriends
         ->(m) { [m[:v]] }
       )
       VARRAY_MATRIX_MATCHER = InputFormatMatcher.new(
-        :varray_matrix, :number,
+        :varray_matrix, nil,
         /
           \A (?<vs>#{RE_ITEM}#{RE_SZ_0} (\s+#{RE_ITEM}#{RE_SZ_REF})*)
           \s+(?<m>#{RE_ITEM})#{RE_IX_00} (\s+(\.+|\k<m>#{RE_IX}))*
@@ -170,7 +170,7 @@ module AtCoderFriends
         }
       )
       MATRIX_VARRAY_MATCHER = InputFormatMatcher.new(
-        :matrix_varray, :number,
+        :matrix_varray, nil,
         /
           \A (?<m>#{RE_ITEM})#{RE_IX_00} (\s+(\.+|\k<m>#{RE_IX}))*
           \s+\k<m>#{RE_SZ}
@@ -187,7 +187,7 @@ module AtCoderFriends
         }
       )
       VMATRIX_MATCHER = InputFormatMatcher.new(
-        :vmatrix, :number,
+        :vmatrix, nil,
         /
           \A #{RE_ITEM}#{RE_SZ_00} (\s+#{RE_ITEM}#{RE_SZ_REF})* \z
         /x,
@@ -201,7 +201,7 @@ module AtCoderFriends
         }
       )
       HMATRIX_MATCHER = InputFormatMatcher.new(
-        :hmatrix, :number,
+        :hmatrix, nil,
         /
           \A #{RE_ITEM}#{RE_IX_00} (\s+(\.+|#{RE_ITEM}#{RE_IX_99}))*
           \s+#{RE_ITEM}#{RE_SZ_99} \z
@@ -220,7 +220,7 @@ module AtCoderFriends
         }
       )
       VARRAY_MATCHER = InputFormatMatcher.new(
-        :varray, :number,
+        :varray, nil,
         /
           \A #{RE_ITEM}#{RE_SZ_0} (\s+#{RE_ITEM}#{RE_SZ_REF})* \z
         /x,
@@ -234,7 +234,7 @@ module AtCoderFriends
         }
       )
       SINGLE_MATCHER = InputFormatMatcher.new(
-        :single, :number,
+        :single, nil,
         /\A(.*\s)?#{RE_SINGLE}(\s.*)?\z/,
         ->(m) { m[0].split.select { |w| w =~ /\A#{RE_SINGLE}\z/ } }
       )
