@@ -26,47 +26,6 @@ RSpec.describe AtCoderFriends::Parser::InputType do
     let(:smp) { '' }
     let(:f) { ->(*args) { AtCoderFriends::Problem::InputFormat.new(*args) } }
 
-    context 'for single(number)-varray(number)' do
-      let(:defs) do
-        [
-          f[:single, nil, %w[N M P Q R], []],
-          f[:varray, nil, %w[x y z], %w[R]]
-        ]
-      end
-      let(:smp) do
-        <<~SMP
-          4 5 3 2 9
-          2 3 5
-          3 1 4
-          2 2 2
-          4 1 9
-          3 5 3
-          3 3 8
-          1 4 5
-          1 5 7
-          2 4 8
-        SMP
-      end
-      it 'can detect type' do
-        subject
-        expect(defs[0].item).to eq :number
-        expect(defs[1].item).to eq :number
-      end
-    end
-
-    context 'for single(number)' do
-      let(:defs) do
-        [
-          f[:single, nil, %w[Deg Dis], []]
-        ]
-      end
-      let(:smp) { '113 201' }
-      it 'can detect type' do
-        subject
-        expect(defs[0].item).to eq :number
-      end
-    end
-
     context 'for single(number)-matrix(number)-single(number)-varray(number)' do
       let(:defs) do
         [
@@ -90,23 +49,18 @@ RSpec.describe AtCoderFriends::Parser::InputType do
       end
       it 'can detect type' do
         subject
-        expect(defs[0].item).to eq :number
-        expect(defs[1].item).to eq :number
-        expect(defs[2].item).to eq :number
-        expect(defs[3].item).to eq :number
-      end
-    end
-
-    context 'for single(number)' do
-      let(:defs) do
-        [
-          f[:single, nil, %w[x_a y_a x_b y_b x_c y_c], []]
-        ]
-      end
-      let(:smp) { '298 520 903 520 4 663' }
-      it 'can detect type' do
-        subject
-        expect(defs[0].item).to eq :number
+        expect(defs[0]).to have_attributes(
+          item: :number, cols: %i[number]
+        )
+        expect(defs[1]).to have_attributes(
+          item: :number, cols: %i[number] * 3
+        )
+        expect(defs[2]).to have_attributes(
+          item: :number, cols: %i[number]
+        )
+        expect(defs[3]).to have_attributes(
+          item: :number, cols: %i[number]
+        )
       end
     end
 
@@ -125,8 +79,12 @@ RSpec.describe AtCoderFriends::Parser::InputType do
       end
       it 'can detect type' do
         subject
-        expect(defs[0].item).to eq :number
-        expect(defs[1].item).to eq :number
+        expect(defs[0]).to have_attributes(
+          item: :number, cols: %i[number] * 2
+        )
+        expect(defs[1]).to have_attributes(
+          item: :number, cols: %i[number] * 10
+        )
       end
     end
 
@@ -152,8 +110,12 @@ RSpec.describe AtCoderFriends::Parser::InputType do
       end
       it 'can detect type' do
         subject
-        expect(defs[0].item).to eq :number
-        expect(defs[1].item).to eq :string
+        expect(defs[0]).to have_attributes(
+          item: :number, cols: %i[number] * 3
+        )
+        expect(defs[1]).to have_attributes(
+          item: :string, cols: %i[string]
+        )
       end
     end
 
@@ -166,26 +128,9 @@ RSpec.describe AtCoderFriends::Parser::InputType do
       let(:smp) { 'atcoder' }
       it 'can detect type' do
         subject
-        expect(defs[0].item).to eq :string
-      end
-    end
-
-    context 'for varray(number)' do
-      let(:defs) do
-        [
-          f[:varray, nil, %w[s e], %w[3]]
-        ]
-      end
-      let(:smp) do
-        <<~SMP
-          990 10
-          990 10
-          990 10
-        SMP
-      end
-      it 'can detect type' do
-        subject
-        expect(defs[0].item).to eq :number
+        expect(defs[0]).to have_attributes(
+          item: :string, cols: %i[string]
+        )
       end
     end
 
@@ -205,42 +150,9 @@ RSpec.describe AtCoderFriends::Parser::InputType do
       end
       it 'can detect type' do
         subject
-        expect(defs[0].item).to eq :string
-      end
-    end
-
-    context 'for single(number)-varray(number)*2' do
-      let(:defs) do
-        [
-          f[:single, nil, %w[N], []],
-          f[:varray, nil, %w[x y], %w[N]],
-          f[:single, nil, %w[Q], []],
-          f[:varray, nil, %w[a b], %w[Q]]
-        ]
-      end
-      let(:smp) do
-        <<~SMP
-          7
-          3 1
-          2 1
-          2 4
-          2 5
-          3 6
-          3 7
-          5
-          4 5
-          1 6
-          5 6
-          4 7
-          5 3
-        SMP
-      end
-      it 'can detect type' do
-        subject
-        expect(defs[0].item).to eq :number
-        expect(defs[1].item).to eq :number
-        expect(defs[2].item).to eq :number
-        expect(defs[3].item).to eq :number
+        expect(defs[0]).to have_attributes(
+          item: :string, cols: %i[string] * 4
+        )
       end
     end
 
@@ -261,8 +173,12 @@ RSpec.describe AtCoderFriends::Parser::InputType do
       end
       it 'can detect type' do
         subject
-        expect(defs[0].item).to eq :number
-        expect(defs[1].item).to eq :char
+        expect(defs[0]).to have_attributes(
+          item: :number, cols: %i[number] * 3
+        )
+        expect(defs[1]).to have_attributes(
+          item: :char, cols: %i[string]
+        )
       end
     end
 
@@ -281,42 +197,12 @@ RSpec.describe AtCoderFriends::Parser::InputType do
       end
       it 'can detect type' do
         subject
-        expect(defs[0].item).to eq :number
-        expect(defs[1].item).to eq :char
-      end
-    end
-
-    context 'for single(number)-matrix(char)' do
-      let(:defs) do
-        [
-          f[:single, nil, %w[N], []],
-          f[:matrix, :char, %w[x], %w[N 9]]
-        ]
-      end
-      let(:smp) do
-        <<~SMP
-          15
-          .........
-          .x.......
-          .........
-          ...x.....
-          .........
-          .......o.
-          .......o.
-          .......o.
-          .........
-          ..x.....o
-          ........o
-          ........o
-          ....x...o
-          .x......o
-          ........o
-        SMP
-      end
-      it 'can detect type' do
-        subject
-        expect(defs[0].item).to eq :number
-        expect(defs[1].item).to eq :char
+        expect(defs[0]).to have_attributes(
+          item: :number, cols: %i[number]
+        )
+        expect(defs[1]).to have_attributes(
+          item: :char, cols: %i[number]
+        )
       end
     end
 
@@ -339,8 +225,12 @@ RSpec.describe AtCoderFriends::Parser::InputType do
       end
       it 'can detect type' do
         subject
-        expect(defs[0].item).to eq :number
-        expect(defs[1].item).to eq :number
+        expect(defs[0]).to have_attributes(
+          item: :number, cols: %i[number] * 2
+        )
+        expect(defs[1]).to have_attributes(
+          item: :number, cols: %i[number] * 5
+        )
       end
     end
 
@@ -375,10 +265,18 @@ RSpec.describe AtCoderFriends::Parser::InputType do
       end
       it 'can detect type' do
         subject
-        expect(defs[0].item).to eq :number
-        expect(defs[1].item).to eq :string
-        expect(defs[2].item).to eq :number
-        expect(defs[3].item).to eq :char
+        expect(defs[0]).to have_attributes(
+          item: :number, cols: %i[number]
+        )
+        expect(defs[1]).to have_attributes(
+          item: :string, cols: %i[string]
+        )
+        expect(defs[2]).to have_attributes(
+          item: :number, cols: %i[number]
+        )
+        expect(defs[3]).to have_attributes(
+          item: :char, cols: %i[number string]
+        )
       end
     end
 
@@ -408,8 +306,12 @@ RSpec.describe AtCoderFriends::Parser::InputType do
       end
       it 'can detect type' do
         subject
-        expect(defs[0].item).to eq :number
-        expect(defs[1].item).to eq :number
+        expect(defs[0]).to have_attributes(
+          item: :number, cols: %i[number]
+        )
+        expect(defs[1]).to have_attributes(
+          item: :number, cols: %i[number] * 3
+        )
       end
     end
 
@@ -439,9 +341,15 @@ RSpec.describe AtCoderFriends::Parser::InputType do
       end
       it 'can detect type' do
         subject
-        expect(defs[0].item).to eq :number
-        expect(defs[1].item).to eq :number
-        expect(defs[2].item).to eq :number
+        expect(defs[0]).to have_attributes(
+          item: :number, cols: %i[number] * 2
+        )
+        expect(defs[1]).to have_attributes(
+          item: :number, cols: %i[number] * 2
+        )
+        expect(defs[2]).to have_attributes(
+          item: :number, cols: %i[number] * 2
+        )
       end
     end
 
@@ -471,9 +379,15 @@ RSpec.describe AtCoderFriends::Parser::InputType do
       end
       it 'can detect type' do
         subject
-        expect(defs[0].item).to eq :number
-        expect(defs[1].item).to eq :char
-        expect(defs[2].item).to eq :number
+        expect(defs[0]).to have_attributes(
+          item: :number, cols: %i[number] * 3
+        )
+        expect(defs[1]).to have_attributes(
+          item: :char, cols: %i[number]
+        )
+        expect(defs[2]).to have_attributes(
+          item: :number, cols: %i[number] * 4
+        )
       end
     end
 
@@ -495,8 +409,12 @@ RSpec.describe AtCoderFriends::Parser::InputType do
       end
       it 'can detect type' do
         subject
-        expect(defs[0].item).to eq :number
-        expect(defs[1].item).to eq :decimal
+        expect(defs[0]).to have_attributes(
+          item: :number, cols: %i[number]
+        )
+        expect(defs[1]).to have_attributes(
+          item: :decimal, cols: %i[decimal] * 2
+        )
       end
     end
 
@@ -515,7 +433,9 @@ RSpec.describe AtCoderFriends::Parser::InputType do
       end
       it 'can detect type' do
         subject
-        expect(defs[0].item).to eq '1'
+        expect(defs[0]).to have_attributes(
+          item: '1', cols: []
+        )
       end
     end
 
@@ -539,8 +459,12 @@ RSpec.describe AtCoderFriends::Parser::InputType do
       end
       it 'can detect type' do
         subject
-        expect(defs[0].item).to eq :number
-        expect(defs[1].item).to eq :number
+        expect(defs[0]).to have_attributes(
+          item: :number, cols: %i[number]
+        )
+        expect(defs[1]).to have_attributes(
+          item: :number, cols: %i[number] * 2
+        )
       end
     end
   end

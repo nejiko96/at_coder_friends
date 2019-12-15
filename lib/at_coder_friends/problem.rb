@@ -23,32 +23,35 @@ module AtCoderFriends
       ITEM_RANK = { number: 1, decimal: 2, string: 3 }.freeze
 
       attr_reader :container
-      attr_accessor :names, :size, :delim, :items
-
+      attr_accessor :names, :size, :delim, :cols
 
       def initialize(
-        container, item,
-        names = nil, size = nil,
-        delim = '', items = []
+        container, item, names = nil, size = nil,
+        delim = '', cols = []
       )
         @container = container
         @item = item
         @names = names
         @size = size
         @delim = delim
-        @items = items
+        @cols = cols
       end
 
       def to_s
         if container == :unknown
           "#{container} #{item}"
         else
-          "#{container} #{item}(#{items}) #{names} #{size} #{delim}"
+          "#{container} #{item}(#{cols}) #{names} #{size} #{delim}"
         end
       end
 
       def item
-        @item || @items.max_by { |k| ITEM_RANK[k] } || :number
+        @item || cols.max_by { |k| ITEM_RANK[k] } || :number
+      end
+
+      def vars
+        tmp = @item.nil? ? cols : [@item]
+        names.zip(tmp).map { |(name, col)| [name, col || :number] }
       end
 
       def components
@@ -65,11 +68,11 @@ module AtCoderFriends
         [
           self.class.new(
             :varray, nil, names[0..-2], size[0..0],
-            delim, items[0..-2]
+            delim, cols[0..-2]
           ),
           self.class.new(
-            :matrix, item, names[-1..-1], size,
-            delim, items[-1..-1] || []
+            :matrix, @item, names[-1..-1], size,
+            delim, cols[-1..-1] || []
           )
         ]
       end
@@ -77,12 +80,12 @@ module AtCoderFriends
       def matrix_varray_components
         [
           self.class.new(
-            :matrix, item, names[0..0], size,
-            delim, items[0..0]
+            :matrix, @item, names[0..0], size,
+            delim, cols[0..0]
           ),
           self.class.new(
             :varray, nil, names[1..-1], size[0..0],
-            delim, items[1..-1] || []
+            delim, cols[1..-1] || []
           )
         ]
       end

@@ -39,7 +39,7 @@ module AtCoderFriends
 
           inpdef.container == :single &&
             vars.merge!(inpdef.names.zip(rows[0]).to_h)
-          inpdef.items = detect_rows_type(rows)
+          inpdef.cols = detect_cols_type(rows)
           break unless parsed
         end
         inpdefs
@@ -68,7 +68,7 @@ module AtCoderFriends
         end
       end
 
-      def detect_rows_type(rows)
+      def detect_cols_type(rows)
         cols = fill_transpose(rows).map(&:compact)
         cols.map { |col| detect_col_type(col) }
       end
