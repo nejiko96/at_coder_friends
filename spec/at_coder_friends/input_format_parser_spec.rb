@@ -518,7 +518,7 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
         defs = subject
         expect(defs.size).to eq(1)
         expect(defs[0]).to have_attributes(
-          container: :unknown, item: '1', names: nil, size: nil
+          container: :unknown, item: '1'
         )
       end
     end

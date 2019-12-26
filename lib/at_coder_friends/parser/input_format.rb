@@ -208,7 +208,6 @@ module AtCoderFriends
         /x,
         ->(m) { m[0].split.map { |w| w.scan(RE_ITEM)[0] }.uniq },
         lambda { |vs|
-          p vs
           ws1 = vs.map { |v| v + RE_IX.source }.join('\s+')
           ws2 = [
             vs[0] + RE_SZ.source,

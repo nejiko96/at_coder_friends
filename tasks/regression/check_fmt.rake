@@ -22,11 +22,13 @@ module AtCoderFriends
     def process_fmt(contest, q, url)
       pbm = local_scraping_agent(nil, contest).fetch_problem(q, url)
       Parser::Sections.process(pbm)
+      Parser::SampleData.process(pbm)
       fmt = Parser::InputFormat.find_fmt(pbm)
       return unless fmt && !fmt.empty?
 
       n_fmt = Parser::InputFormat.normalize_fmt(fmt).join("\n")
       Parser::InputFormat.process(pbm)
+      Parser::InputType.process(pbm)
       res = pbm.formats_src.map(&:to_s).join("\n")
       [fmt, n_fmt, res]
     end

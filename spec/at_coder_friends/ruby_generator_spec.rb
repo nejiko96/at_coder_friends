@@ -36,10 +36,13 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
   describe '#gen_decl' do
     subject { generator.gen_decl(inpdef) }
     let(:inpdef) do
-      AtCoderFriends::Problem::InputFormat.new(container, item, names, size)
+      AtCoderFriends::Problem::InputFormat.new(
+        container, item, names, size, delim
+      )
     end
     let(:names) { %w[A] }
     let(:size) { [] }
+    let(:delim) { '' }
 
     context 'for a plain number' do
       let(:container) { :single }
@@ -328,6 +331,25 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
             'Q.times do |i|',
             '  xss[i], yss[i] = ' \
             'gets.split.map(&:to_i).each_slice(2).to_a.transpose',
+            'end'
+          ]
+        )
+      end
+    end
+
+    context 'for format with delimiters' do
+      let(:container) { :varray }
+      let(:item) { :number }
+      let(:names) { %w[S E] }
+      let(:size) { %w[N] }
+      let(:delim) { '-' }
+      it 'generates decl' do
+        expect(subject).to match(
+          [
+            'Ss = Array.new(N)',
+            'Es = Array.new(N)',
+            'N.times do |i|',
+            "  Ss[i], Es[i] = gets.gsub('-', ' ').split.map(&:to_i)",
             'end'
           ]
         )
