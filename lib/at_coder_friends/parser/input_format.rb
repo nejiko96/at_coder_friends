@@ -138,7 +138,7 @@ module AtCoderFriends
       VARRAY_MATRIX_MATCHER = InputFormatMatcher.new(
         :varray_matrix, nil,
         /
-          \A (?<vs>#{RE_ITEM}#{RE_SZ_0} (\s+#{RE_ITEM}#{RE_SZ_REF})*)
+          \A (?<vs>#{RE_ITEM}#{RE_SZ2_0} (\s+#{RE_ITEM}#{RE_SZ2_REF})*)
           \s+(?<m>#{RE_ITEM})#{RE_IX_00} (\s+(\.+|\k<m>#{RE_IX}))*
           \s+\k<m>#{RE_SZ} \z
         /x,
@@ -155,7 +155,7 @@ module AtCoderFriends
       VARRAY_MATRIX_CHAR_MATCHER = InputFormatMatcher.new(
         :varray_matrix, :char,
         /
-          \A (?<vs>#{RE_ITEM}#{RE_SZ_0} (\s+#{RE_ITEM}#{RE_SZ_REF})*)
+          \A (?<vs>#{RE_ITEM}#{RE_SZ2_0} (\s+#{RE_ITEM}#{RE_SZ2_REF})*)
           \s+(?<m>#{RE_ITEM})#{RE_IX_00} (\s*\.+\s*|\k<m>#{RE_IX})*
           \k<m>#{RE_SZ} \z
         /x,
