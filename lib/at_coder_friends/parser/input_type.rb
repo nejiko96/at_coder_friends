@@ -46,7 +46,7 @@ module AtCoderFriends
       end
 
       def get_line_cnt(inpdef)
-        case inpdef.size&.size
+        case inpdef.size.size
         when 0
           1
         when 1

@@ -42,7 +42,12 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
     subject { generator.gen_decl(inpdef) }
     let(:inpdef) do
       AtCoderFriends::Problem::InputFormat.new(
-        container, item, names, size, '', cols
+        container: container,
+        item: item,
+        names: names,
+        size: size,
+        delim: '',
+        cols: cols
       )
     end
     let(:item) { nil }
@@ -361,7 +366,12 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
     subject { generator.gen_input(inpdef) }
     let(:inpdef) do
       AtCoderFriends::Problem::InputFormat.new(
-        container, item, names, size, '', cols
+        container: container,
+        item: item,
+        names: names,
+        size: size,
+        delim: '',
+        cols: cols
       )
     end
     let(:item) { nil }
@@ -620,10 +630,15 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       let(:formats) do
         [
           AtCoderFriends::Problem::InputFormat.new(
-            :single, nil, %w[N M], [], '', %i[number] * 2
+            container: :single,
+            names: %w[N M],
+            cols: %i[number] * 2
           ),
           AtCoderFriends::Problem::InputFormat.new(
-            :varray, nil, %w[A B C T], %w[M], '', %i[number] * 4
+            container: :varray,
+            names: %w[A B C T],
+            size: %w[M],
+            cols: %i[number] * 4
           )
         ]
       end
@@ -692,7 +707,9 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       let(:formats) do
         [
           AtCoderFriends::Problem::InputFormat.new(
-            :single, nil, %w[N Q], [], '', %i[number] * 2
+            container: :single,
+            names: %w[N Q],
+            cols: %i[number] * 2
           )
         ]
       end
@@ -784,7 +801,9 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       let(:formats) do
         [
           AtCoderFriends::Problem::InputFormat.new(
-            :single, nil, %w[N], [], '', %i[number]
+            container: :single,
+            names: %w[N],
+            cols: %i[number]
           )
         ]
       end

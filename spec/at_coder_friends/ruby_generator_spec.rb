@@ -37,7 +37,11 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
     subject { generator.gen_decl(inpdef) }
     let(:inpdef) do
       AtCoderFriends::Problem::InputFormat.new(
-        container, item, names, size, delim
+        container: container,
+        item: item,
+        names: names,
+        size: size,
+        delim: delim
       )
     end
     let(:names) { %w[A] }
@@ -377,16 +381,16 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       let(:formats) do
         [
           AtCoderFriends::Problem::InputFormat.new(
-            :single, :number, %w[N], []
+            container: :single, names: %w[N]
           ),
           AtCoderFriends::Problem::InputFormat.new(
-            :varray, :number, %w[x y], %w[N]
+            container: :varray, names: %w[x y], size: %w[N]
           ),
           AtCoderFriends::Problem::InputFormat.new(
-            :single, :string, %w[Q], []
+            container: :single, item: :string, names: %w[Q]
           ),
           AtCoderFriends::Problem::InputFormat.new(
-            :harray, :string, %w[a], %w[Q]
+            container: :harray, item: :string, names: %w[a], size: %w[Q]
           )
         ]
       end
@@ -430,7 +434,7 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       let(:formats) do
         [
           AtCoderFriends::Problem::InputFormat.new(
-            :single, :number, %w[N Q], []
+            container: :single, names: %w[N Q]
           )
         ]
       end
@@ -494,7 +498,7 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       let(:formats) do
         [
           AtCoderFriends::Problem::InputFormat.new(
-            :single, :number, %w[N], []
+            container: :single, names: %w[N]
           )
         ]
       end

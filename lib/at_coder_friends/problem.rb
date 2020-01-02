@@ -26,8 +26,12 @@ module AtCoderFriends
       attr_accessor :names, :size, :delim, :cols
 
       def initialize(
-        container, item, names = nil, size = nil,
-        delim = '', cols = []
+        container: nil,
+        item: nil,
+        names: [],
+        size: [],
+        delim: '',
+        cols: []
       )
         @container = container
         @item = item
@@ -50,7 +54,7 @@ module AtCoderFriends
       end
 
       def vars
-        tmp = @item.nil? ? cols : [@item]
+        tmp = @item && [@item] || cols
         names.zip(tmp).map { |(name, col)| [name, col || :number] }
       end
 
@@ -67,12 +71,19 @@ module AtCoderFriends
       def varray_matrix_components
         [
           self.class.new(
-            :varray, nil, names[0..-2], size[0..0],
-            delim, cols[0..-2]
+            container: :varray,
+            names: names[0..-2],
+            size: size[0..0],
+            delim: delim,
+            cols: cols[0..-2]
           ),
           self.class.new(
-            :matrix, @item, names[-1..-1], size,
-            delim, cols[-1..-1] || []
+            container: :matrix,
+            item: @item,
+            names: names[-1..-1],
+            size: size,
+            delim: delim,
+            cols: cols[-1..-1] || []
           )
         ]
       end
@@ -80,12 +91,19 @@ module AtCoderFriends
       def matrix_varray_components
         [
           self.class.new(
-            :matrix, @item, names[0..0], size,
-            delim, cols[0..0]
+            container: :matrix,
+            item: @item,
+            names: names[0..0],
+            size: size,
+            delim: delim,
+            cols: cols[0..0]
           ),
           self.class.new(
-            :varray, nil, names[1..-1], size[0..0],
-            delim, cols[1..-1] || []
+            container: :varray,
+            names: names[1..-1],
+            size: size[0..0],
+            delim: delim,
+            cols: cols[1..-1] || []
           )
         ]
       end
