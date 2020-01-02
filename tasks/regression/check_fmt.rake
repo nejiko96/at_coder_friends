@@ -23,14 +23,16 @@ module AtCoderFriends
       pbm = local_scraping_agent(nil, contest).fetch_problem(q, url)
       Parser::Sections.process(pbm)
       Parser::SampleData.process(pbm)
-      fmt = Parser::InputFormat.find_fmt(pbm)
-      return unless fmt && !fmt.empty?
+      fmt1 = Parser::InputFormat.find_fmt(pbm)
+      return unless fmt1 && !fmt1.empty?
 
-      n_fmt = Parser::InputFormat.normalize_fmt(fmt).join("\n")
+      fmt2 = Parser::InputFormat.normalize_fmt(fmt1).join("\n")
       Parser::InputFormat.process(pbm)
       Parser::InputType.process(pbm)
-      res = pbm.formats_src.map(&:to_s).join("\n")
-      [fmt, n_fmt, res]
+      inpdefs = pbm.formats_src
+      fmt3 = inpdefs.map(&:to_s).join("\n")
+      fmt4 = inpdefs.any? { |inpdef| inpdef.cols.empty? } ? '○' : ''
+      [fmt1, fmt2, fmt3, fmt4]
     end
   end
 end

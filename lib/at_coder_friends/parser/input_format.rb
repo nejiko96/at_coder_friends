@@ -5,8 +5,8 @@ module AtCoderFriends
     module InputFormatConstants
       SECTIONS = [Problem::SECTION_IN_FMT, Problem::SECTION_IO_FMT].freeze
       DELIMS = '-/:'
-      RE_0 = /[0-9]+/.freeze
-      RE_00 = /[01][,_]?[01]/.freeze
+      RE_0 = /(?<o>[0-9]+)/.freeze
+      RE_00 = /(?<o>[01])[,_]?[01]/.freeze
       RE_99 = /[0-9]+[,_]?[0-9]+/.freeze
       RE_ITEM = /\{*[A-Za-z]+(?:_[A-Za-z]+)*\}*/.freeze
       RE_IX = /(_\S+?|\{\S+?\})/.freeze
@@ -15,11 +15,11 @@ module AtCoderFriends
       RE_IX_99 = /(_\{*#{RE_99}\}*|\{+#{RE_99}\}+)/.freeze
       RE_SZ = /(_(?<sz>\S+?)|\{(?<sz>\S+?)\})/.freeze
       RE_SZ_REF = '(_\{*\k<sz>\}*|\{+\k<sz>\}+)'
-      RE_SZ2_0 = /(_\{*(?<sz2>#{RE_0})\}*|\{+(?<sz2>#{RE_0})\}+)/.freeze
-      RE_SZ2_REF = '(_\{*\k<sz2>\}*|\{+\k<sz2>\}+)'
       RE_SZ_0 = /(_\{*(?<sz>#{RE_0})\}*|\{+(?<sz>#{RE_0})\}+)/.freeze
       RE_SZ_00 = /(_\{*(?<sz>#{RE_00})\}*|\{+(?<sz>#{RE_00})\}+)/.freeze
       RE_SZ_99 = /(_\{*(?<sz>#{RE_99})\}*|\{+(?<sz>#{RE_99})\}+)/.freeze
+      RE_SZ2_0 = /(_\{*(?<sz2>#{RE_0})\}*|\{+(?<sz2>#{RE_0})\}+)/.freeze
+      RE_SZ2_REF = '(_\{*\k<sz2>\}*|\{+\k<sz2>\}+)'
       RE_SINGLE = /[A-Za-z{][A-Za-z_0-9{}]*/.freeze
       RE_BLOCK = /(?<bl>\{(?:[^{}]|\g<bl>)*\})/.freeze
       DIMENSION_TBL = {
@@ -34,9 +34,101 @@ module AtCoderFriends
       }.freeze
     end
 
+    # utilities for parse input formats
+    module InputFormatUtils
+      include InputFormatConstants
+
+      # 1) &npsp; , fill-width space -> half width space
+      # 2) {i, j}->{i,j} for nested {}
+      def normalize_fmt(str)
+        str
+          .tr('０-９Ａ-Ｚａ-ｚ', '0-9A-Za-z')
+          .gsub(/[[:space:]]/) { |c| c.gsub(/[^\n]/, ' ') } # 1)
+          .gsub(%r{<var>([^<>]+)</var>}i, '\1') # <sub><var>N</var></sub>
+          .gsub(%r{<sup>([^<>]+)</sup>}i, '^\1')
+          .gsub(%r{<sub>([^<>]+)</sub>}i, '_{\1}')
+          .gsub(%r{<sub>([^<>]+)</sub>}i, '_{\1}') # for nested<sub>
+          .gsub(/<("[^"]*"|'[^']*'|[^'"<>])*>/, '')
+          .gsub('&amp;', '&')
+          .gsub('&gt;', '>')
+          .gsub('&lt;', '<')
+          .gsub('\\ ', ' ')
+          .gsub('\\(', '')
+          .gsub('\\)', '')
+          .gsub('\\lvert', '|')
+          .gsub('\\rvert', '|')
+          .gsub('\\mathit', '')
+          .gsub('\\times', '*')
+          .gsub(/\\begin(\{[^{}]*\})*/, '')
+          .gsub(/\\end(\{[^{}]*\})*/, '')
+          .gsub(/\\[cdlv]?dots/, '..')
+          .gsub(/\{\}/, ' ')
+          .gsub('−', '-') # full width hyphen
+          .gsub(/[・．：‥⋮︙…]+/, '..')
+          .gsub(/[\\$']/, '') # s' -> s
+          .gsub(/[&~|]/, ' ') # |S| -> S
+          .gsub(/^\s*[.:][\s.:]*$/, '..')
+          .tr('()', '{}')
+          .gsub(/#{RE_BLOCK}/) { |w| w.delete(' ') } # 2)
+          .split("\n")
+          .map(&:strip)
+      end
+
+      def extract_delim(str)
+        # a-b, a/b, a:b -> a b
+        dlm = DELIMS.chars.select do |c|
+          str =~ /#{c}#{RE_SINGLE}/ &&
+            str = str.gsub(/#{c}(#{RE_SINGLE})/, ' \1')
+        end.join
+        [str, dlm]
+      end
+
+      def normalize_names(names)
+        return names unless names.is_a?(Array)
+
+        names.map { |nm| nm.delete('{}').gsub(/(\A_+|_+\z)/, '') }
+      end
+
+      # 1) split size by container dimension
+      # 2) remove extra underscores, N-1 -> N
+      def normalize_size(container, size)
+        (
+          case DIMENSION_TBL[container]
+          when 2
+            split_size(size)
+          when 1
+            [size]
+          when 0
+            []
+          end
+        )
+        &.map { |w| w.delete('{},').gsub(/(\A_+|(_|-1)+\z)/, '') }
+      end
+
+      def split_size(str)
+        str = str.gsub(/(\A\{|\}\z)/, '') while str =~ /\A#{RE_BLOCK}\z/
+
+        sz = str.split(',')
+        return sz if sz.size == 2
+
+        sz = str.scan(/(?<nbl>[^{}]+)|#{RE_BLOCK}/).flatten.compact
+        return sz if sz.size == 2
+
+        str = str.delete('{},')
+
+        sz = str.scan(/[^_](?:_[^_])?/)
+        return sz if sz.size == 2
+
+        sz = str.split('_')
+        return sz if sz.size == 2
+
+        [str[0] || '_', str[1..-1] || '_']
+      end
+    end
+
     # holds regular expressions and matches it with input format string
     class InputFormatMatcher
-      include InputFormatConstants
+      include InputFormatUtils
 
       attr_reader :container, :item, :pat, :gen_names, :gen_pat2
       attr_reader :names, :pat2, :size, :delim
@@ -71,18 +163,12 @@ module AtCoderFriends
         true
       end
 
-      def extract_delim(str)
-        # a-b, a/b, a:b -> a b
-        dlm = DELIMS.chars.select do |c|
-          str =~ /#{c}#{RE_SINGLE}/ &&
-            str = str.gsub(/#{c}(#{RE_SINGLE})/, ' \1')
-        end.join
-        [str, dlm]
-      end
-
       def to_inpdef
         Problem::InputFormat.new(
-          container, item, names, size, delim
+          container, item,
+          normalize_names(names),
+          normalize_size(container, size),
+          delim
         )
       end
     end
@@ -254,6 +340,7 @@ module AtCoderFriends
 
     # parses input data format and generates input definitons
     module InputFormat
+      extend InputFormatUtils
       include InputFormatConstants
       include InputFormatMatcherConstants
 
@@ -277,45 +364,7 @@ module AtCoderFriends
 
       def parse(str)
         lines = normalize_fmt(str)
-        inpdefs = parse_fmt(lines)
-        normalize_defs(inpdefs)
-        inpdefs
-      end
-
-      # 1) &npsp; , fill-width space -> half width space
-      # 2) {i, j}->{i,j} for nested {}
-      def normalize_fmt(str)
-        str
-          .tr('０-９Ａ-Ｚａ-ｚ', '0-9A-Za-z')
-          .gsub(/[[:space:]]/) { |c| c.gsub(/[^\n]/, ' ') } # 1)
-          .gsub(%r{<var>([^<>]+)</var>}i, '\1') # <sub><var>N</var></sub>
-          .gsub(%r{<sup>([^<>]+)</sup>}i, '^\1')
-          .gsub(%r{<sub>([^<>]+)</sub>}i, '_{\1}')
-          .gsub(%r{<sub>([^<>]+)</sub>}i, '_{\1}') # for nested<sub>
-          .gsub(/<("[^"]*"|'[^']*'|[^'"<>])*>/, '')
-          .gsub('&amp;', '&')
-          .gsub('&gt;', '>')
-          .gsub('&lt;', '<')
-          .gsub('\\ ', ' ')
-          .gsub('\\(', '')
-          .gsub('\\)', '')
-          .gsub('\\lvert', '|')
-          .gsub('\\rvert', '|')
-          .gsub('\\mathit', '')
-          .gsub('\\times', '*')
-          .gsub(/\\begin(\{[^{}]*\})*/, '')
-          .gsub(/\\end(\{[^{}]*\})*/, '')
-          .gsub(/\\[cdlv]?dots/, '..')
-          .gsub(/\{\}/, ' ')
-          .gsub('−', '-') # full width hyphen
-          .gsub(/[・．：‥⋮︙…]+/, '..')
-          .gsub(/[\\$']/, '') # s' -> s
-          .gsub(/[&~|]/, ' ') # |S| -> S
-          .gsub(/^\s*[.:][\s.:]*$/, '..')
-          .tr('()', '{}')
-          .gsub(/#{RE_BLOCK}/) { |w| w.delete(' ') } # 2)
-          .split("\n")
-          .map(&:strip)
+        parse_fmt(lines)
       end
 
       def parse_fmt(lines)
@@ -332,55 +381,6 @@ module AtCoderFriends
             ret << Problem::InputFormat.new(:unknown, line)
           end
         end
-      end
-
-      def normalize_defs(inpdefs)
-        inpdefs.each do |inpdef|
-          inpdef.names = normalize_names(inpdef.names)
-          inpdef.size = normalize_size(inpdef.container, inpdef.size)
-        end
-      end
-
-      def normalize_names(names)
-        return names unless names.is_a?(Array)
-
-        names.map { |nm| nm.delete('{}').gsub(/(\A_+|_+\z)/, '') }
-      end
-
-      # 1) split size by container dimension
-      # 2) remove extra underscores, N-1 -> N
-      def normalize_size(container, size)
-        (
-          case DIMENSION_TBL[container]
-          when 2
-            split_size(size)
-          when 1
-            [size]
-          when 0
-            []
-          end
-        )
-        &.map { |w| w.delete('{},').gsub(/(\A_+|(_|-1)+\z)/, '') }
-      end
-
-      def split_size(str)
-        str = str.gsub(/(\A\{|\}\z)/, '') while str =~ /\A#{RE_BLOCK}\z/
-
-        sz = str.split(',')
-        return sz if sz.size == 2
-
-        sz = str.scan(/(?<nbl>[^{}]+)|#{RE_BLOCK}/).flatten.compact
-        return sz if sz.size == 2
-
-        str = str.delete('{},')
-
-        sz = str.scan(/[^_](?:_[^_])?/)
-        return sz if sz.size == 2
-
-        sz = str.split('_')
-        return sz if sz.size == 2
-
-        [str[0] || '_', str[1..-1] || '_']
       end
     end
   end
