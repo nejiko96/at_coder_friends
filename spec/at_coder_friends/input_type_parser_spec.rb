@@ -22,7 +22,9 @@ RSpec.describe AtCoderFriends::Parser::InputType do
 
   describe '#match_smp' do
     subject { parser.match_smp(defs, smp.split("\n")) }
-    let(:defs) { def_params.map { |h| AtCoderFriends::Problem::InputFormat.new(h) } }
+    let(:defs) do
+      def_params.map { |h| AtCoderFriends::Problem::InputFormat.new(h) }
+    end
     let(:smp) { '' }
 
     context 'for single(number)-matrix(number)-single(number)-varray(number)' do
@@ -465,6 +467,48 @@ RSpec.describe AtCoderFriends::Parser::InputType do
           item: :number, cols: %i[number]
         )
         expect(defs[1]).to have_attributes(
+          item: :number, cols: %i[number] * 2
+        )
+      end
+    end
+
+    context 'for N-1 lines input' do
+      let(:def_params) do
+        [
+          { container: :single, names: %w[N] },
+          { container: :varray, names: %w[a b c], size: %w[N-1] },
+          { container: :single, names: %w[Q K] },
+          { container: :varray, names: %w[x y], size: %w[Q] }
+        ]
+      end
+      let(:smp) do
+        <<~SMP
+          10
+          1 2 1000000000
+          2 3 1000000000
+          3 4 1000000000
+          4 5 1000000000
+          5 6 1000000000
+          6 7 1000000000
+          7 8 1000000000
+          8 9 1000000000
+          9 10 1000000000
+          1 1
+          9 10
+        SMP
+      end
+      it 'can detect type' do
+        subject
+        expect(defs[0]).to have_attributes(
+          item: :number, cols: %i[number]
+        )
+        expect(defs[1]).to have_attributes(
+          item: :number, cols: %i[number] * 3
+        )
+        expect(defs[2]).to have_attributes(
+          item: :number, cols: %i[number] * 2
+        )
+        expect(defs[3]).to have_attributes(
           item: :number, cols: %i[number] * 2
         )
       end

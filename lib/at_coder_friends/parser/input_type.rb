@@ -63,6 +63,8 @@ module AtCoderFriends
           [k.to_i, true]
         elsif vars[k] =~ NUMBER_PAT
           [vars[k].to_i, true]
+        elsif vars[(k2 = k.gsub(/-1\z/, ''))] =~ NUMBER_PAT
+          [vars[k2].to_i - 1, true]
         else
           [1, false]
         end

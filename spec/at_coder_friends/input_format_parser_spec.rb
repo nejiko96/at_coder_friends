@@ -69,7 +69,7 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
 
     context 'for single(number)-varray(number)' do
       let(:fmt) do
-        <<~FMT
+        <<~'FMT'
           <pre>
           <var>N</var> <var>M</var> <var>P</var> <var>Q</var> <var>R</var>
           <var>x_1</var> <var>y_1</var> <var>z_1</var>
@@ -93,7 +93,7 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
 
     context 'for single(number)' do
       let(:fmt) do
-        <<~FMT
+        <<~'FMT'
           <pre>
           <var>Deg</var> <var>Dis</var>
           </pre>
@@ -110,7 +110,7 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
 
     context 'for single(number)-matrix(number)-single(number)-varray(number)' do
       let(:fmt) do
-        <<~FMT
+        <<~'FMT'
           <pre>
           <var>N</var>
           <var>D<sub>11</sub> D<sub>12</sub> ... D<sub>1N</sub></var>
@@ -145,7 +145,7 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
 
     context 'for single(number)' do
       let(:fmt) do
-        <<~FMT
+        <<~'FMT'
           <pre>
           <var>x_a</var> <var>y_a</var> <var>x_b</var> <var>y_b</var> <var>x_c</var> <var>y_c</var>
           </pre>
@@ -163,7 +163,7 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
 
     context 'for single(number)-harray(number)' do
       let(:fmt) do
-        <<~FMT
+        <<~'FMT'
           <pre>
           <var>N</var> <var>K</var>
           <var>R_1</var> <var>R_2</var> ... <var>R_N</var>
@@ -184,7 +184,7 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
 
     context 'for single(number)-varray(string)' do
       let(:fmt) do
-        <<~FMT
+        <<~'FMT'
           <pre>
           <var>R</var> <var>C</var> <var>K</var>
           <var>s_1</var>
@@ -208,7 +208,7 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
 
     context 'for single(string)' do
       let(:fmt) do
-        <<~FMT
+        <<~'FMT'
           <pre>
           <var>X</var>
           </pre>
@@ -225,7 +225,7 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
 
     context 'for varray(number)' do
       let(:fmt) do
-        <<~FMT
+        <<~'FMT'
           <pre>
           <var>s_1</var> <var>e_1</var>
           <var>s_2</var> <var>e_2</var>
@@ -244,7 +244,7 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
 
     context 'for matrix(string)' do
       let(:fmt) do
-        <<~FMT
+        <<~'FMT'
           <pre>
           <var>c_{0,0}</var> <var>c_{0,1}</var> <var>c_{0,2}</var> <var>c_{0,3}</var>
           <var>c_{1,0}</var> <var>c_{1,1}</var> <var>c_{1,2}</var> <var>c_{1,3}</var>
@@ -262,9 +262,9 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
       end
     end
 
-    context 'for single(number)-varray(number)*2' do
+    context 'for single(number)-varray(number)*2, 1..N-1' do
       let(:fmt) do
-        <<~FMT
+        <<~'FMT'
           <pre>
           <var>N</var>
           <var>x_1\ y_1</var>
@@ -286,7 +286,7 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
           container: :single, item: :number, names: %w[N], size: []
         )
         expect(defs[1]).to have_attributes(
-          container: :varray, item: :number, names: %w[x y], size: %w[N]
+          container: :varray, item: :number, names: %w[x y], size: %w[N-1]
         )
         expect(defs[2]).to have_attributes(
           container: :single, item: :number, names: %w[Q], size: []
@@ -299,7 +299,7 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
 
     context 'for single(number)-matrix(char)' do
       let(:fmt) do
-        <<~FMT
+        <<~'FMT'
           <pre>
           <var>H</var> <var>W</var> <var>T</var>
           <var>s_{1,1}</var><var>s_{1,2}</var> .. <var>s_{1,W}</var>
@@ -323,7 +323,7 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
 
     context 'for single(number)-harray(char)' do
       let(:fmt) do
-        <<~FMT
+        <<~'FMT'
           <pre>
           <var>N</var>
           <var>c_1c_2c_3…c_N</var>
@@ -344,7 +344,7 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
 
     context 'for single(number)-matrix(char)' do
       let(:fmt) do
-        <<~FMT
+        <<~'FMT'
           <pre>
           <var>N</var>
           <var>x_{11}</var><var>x_{12}</var><var>...</var><var>x_{18}</var><var>x_{19}</var>
@@ -368,7 +368,7 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
 
     context 'for varray_matrix(number)' do
       let(:fmt) do
-        <<~FMT
+        <<~'FMT'
           <pre><var>N</var> <var>M</var>
           <var>K_1</var> <var>A_{11}</var> <var>A_{12}</var> <var>...</var> <var>A_{1K_1}</var>
           <var>K_2</var> <var>A_{21}</var> <var>A_{22}</var> <var>...</var> <var>A_{2K_2}</var>
@@ -392,7 +392,7 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
 
     context 'for varray_matrix(char)' do
       let(:fmt) do
-        <<~FMT
+        <<~'FMT'
           <pre><var>N</var>
           <var>S_1</var>
           :
@@ -424,7 +424,7 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
 
     context 'for matrix_varray(number)' do
       let(:fmt) do
-        <<~FMT
+        <<~'FMT'
           <pre>
           <var>M</var>
           <var>city_{11}</var> <var>city_{12}</var> <var>cost_1</var>
@@ -449,7 +449,7 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
 
     context 'for vertically expanded matrices(number)' do
       let(:fmt) do
-        <<~FMT
+        <<~'FMT'
           <pre>
           <var>N</var> <var>M</var>
           <var>C_1</var> <var>cost_1</var>
@@ -479,7 +479,7 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
 
     context 'for horizontally expanded matrices(number)' do
       let(:fmt) do
-        <<~FMT
+        <<~'FMT'
           <pre><var>N</var> <var>M</var> <var>Q</var>
           <var>S_{1,1}</var>..<var>S_{1,M}</var>
           :
@@ -509,7 +509,7 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
 
     context 'for unknown format' do
       let(:fmt) do
-        <<~FMT
+        <<~'FMT'
           <pre>1
           </pre>
         FMT
@@ -525,7 +525,7 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
 
     context 'for format with delimiters' do
       let(:fmt) do
-        <<~FMT
+        <<~'FMT'
           <pre>
           <var>N</var>
           <var>S_1</var>-<var>E_1</var>
@@ -545,6 +545,60 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
         expect(defs[1]).to have_attributes(
           container: :varray, item: :number, names: %w[S E], size: %w[N],
           delim: '-'
+        )
+      end
+    end
+
+    context 'for 0..N-2 lines' do
+      let(:fmt) do
+        <<~'FMT'
+          <pre><var>N</var> <var>Q</var>
+          <var>A_0</var> <var>B_0</var>
+          <var>A_1</var> <var>B_1</var>
+          <var>\vdots</var>
+          <var>A_{N-2}</var> <var>B_{N-2}</var>
+          <var>X_0</var>
+          <var>X_1</var>
+          <var>\vdots</var>
+          <var>X_{Q-1}</var>
+          </pre>
+        FMT
+      end
+      it 'can parse format' do
+        defs = subject
+        expect(defs.size).to eq(3)
+        expect(defs[0]).to have_attributes(
+          container: :single, item: :number, names: %w[N Q], size: []
+        )
+        expect(defs[1]).to have_attributes(
+          container: :varray, item: :number, names: %w[A B], size: %w[N-1]
+        )
+        expect(defs[2]).to have_attributes(
+          container: :varray, item: :number, names: %w[X], size: %w[Q]
+        )
+      end
+    end
+
+    context 'for 0..0 lines' do
+      let(:fmt) do
+        <<~FMT
+          <pre><var>N</var>
+          <var>S_0</var>
+          <var>T</var>
+          </pre>
+        FMT
+      end
+      it 'can parse format' do
+        defs = subject
+        expect(defs.size).to eq(3)
+        expect(defs[0]).to have_attributes(
+          container: :single, item: :number, names: %w[N], size: []
+        )
+        expect(defs[1]).to have_attributes(
+          container: :varray, item: :number, names: %w[S], size: %w[1]
+        )
+        expect(defs[2]).to have_attributes(
+          container: :single, item: :number, names: %w[T], size: []
         )
       end
     end
@@ -609,7 +663,7 @@ RSpec.describe AtCoderFriends::Parser::InputFormat do
       end
     end
 
-    context 'when no size detected' do
+    context 'when no size specified' do
       let(:str) { '' }
 
       it 'returns underscore' do

@@ -4,23 +4,26 @@ module AtCoderFriends
   module Parser
     module InputFormatConstants
       SECTIONS = [Problem::SECTION_IN_FMT, Problem::SECTION_IO_FMT].freeze
-      DELIMS = '-/:'
+      DELIMS = %w[- / :].freeze
       RE_SINGLE = /[A-Za-z{][A-Za-z_0-9{}]*/.freeze
       RE_ITEM = /\{*[A-Za-z]+(?:_[A-Za-z]+)*\}*/.freeze
-      RE_0 = /(?<o>[0-9]+)/.freeze
-      RE_00 = /(?<o>[01])[,_]?[01]/.freeze
+      RE_0 = /[0-9]+/.freeze
+      RE_00 = /[01][,_]?[01]/.freeze
       RE_99 = /[0-9]+[,_]?[0-9]+/.freeze
-      RE_IX = /(_\S+?|\{\S+?\})/.freeze
-      RE_IX_0 = /(_\{*#{RE_0}\}*|\{+#{RE_0}\}+)/.freeze
-      RE_IX_00 = /(_\{*#{RE_00}\}*|\{+#{RE_00}\}+)/.freeze
-      RE_IX_99 = /(_\{*#{RE_99}\}*|\{+#{RE_99}\}+)/.freeze
-      RE_SZ = /(_(?<sz>\S+?)|\{(?<sz>\S+?)\})/.freeze
-      RE_SZ_0 = /(_\{*(?<sz>#{RE_0})\}*|\{+(?<sz>#{RE_0})\}+)/.freeze
-      RE_SZ_00 = /(_\{*(?<sz>#{RE_00})\}*|\{+(?<sz>#{RE_00})\}+)/.freeze
-      RE_SZ_99 = /(_\{*(?<sz>#{RE_99})\}*|\{+(?<sz>#{RE_99})\}+)/.freeze
-      RE_SZ_REF = '(_\{*\k<sz>\}*|\{+\k<sz>\}+)'
-      RE_SZ2_0 = /(_\{*(?<sz2>#{RE_0})\}*|\{+(?<sz2>#{RE_0})\}+)/.freeze
-      RE_SZ2_REF = '(_\{*\k<sz2>\}*|\{+\k<sz2>\}+)'
+      ADD_TAG = ->(tag, re) { /(?<#{tag}>#{re})/ }
+      TO_SUFFIX = ->(re) { /(_\{*#{re}\}*|\{+#{re}\}+)/ }
+      TO_SUFFIX_STR = ->(str) { "(_\\{*#{str}\\}*|\\{+#{str}\\}+)" }
+      RE_IX = TO_SUFFIX[/\S+?/]
+      RE_IX_0 = TO_SUFFIX[ADD_TAG['ix0', RE_0]]
+      RE_IX_00 = TO_SUFFIX[ADD_TAG['ix0', RE_00]]
+      RE_IX_99 = TO_SUFFIX[RE_99]
+      RE_SZ = TO_SUFFIX[ADD_TAG['sz', /\S+?/]]
+      RE_SZ_0 = TO_SUFFIX[ADD_TAG['sz', RE_0]]
+      RE_SZ_00 = TO_SUFFIX[ADD_TAG['sz', RE_00]]
+      RE_SZ_99 = TO_SUFFIX[ADD_TAG['sz', RE_99]]
+      RE_SZ_REF = TO_SUFFIX_STR['\k<sz>']
+      RE_SZ2_0 = TO_SUFFIX[ADD_TAG['sz2', RE_0]]
+      RE_SZ2_REF = TO_SUFFIX_STR['\k<sz2>']
       RE_BLOCK = /(?<bl>\{(?:[^{}]|\g<bl>)*\})/.freeze
       DIMENSION_TBL = {
         single: 0,
@@ -77,23 +80,35 @@ module AtCoderFriends
       def extract_delim(str)
         # a-b, a/b, a:b -> a b
         str = str.dup
-        dlms = DELIMS.chars.select do |c|
-          str.gsub!(/#{c}(#{RE_SINGLE})/, ' \1')
-        end.join
+        dlms =
+          DELIMS.select { |c| str.gsub!(/#{c}(#{RE_SINGLE})/, ' \1') }.join
         [str, dlms]
       end
 
-      def normalize_symbol(s)
+      def normalize_name(s)
         s.delete('{},').gsub(/(\A_+|_+\z)/, '')
       end
 
       def normalize_names(names)
-        names.map { |nm| normalize_symbol(nm) }
+        names.map { |nm| normalize_name(nm) }
       end
 
-      # 1) split size by container dimension
-      # 2) remove extra underscores, N-1 -> N
-      def normalize_size(container, size)
+      def normalize_size(container, size, ix0)
+        sz = size_array(container, size)
+        sz0 = size_array(container, ix0)
+
+        sz.map.with_index do |s, i|
+          if sz0[i] == '0'
+            # 0 -> 1,  N-1 -> N, N-2 -> N-1 if 0 origin
+            s.gsub(/\A0\z/, '1').gsub(/-1\z/, '').gsub(/-2\z/, '-1')
+          else
+            s
+          end
+        end
+      end
+
+      # split size by container dimension
+      def size_array(container, size)
         (
           case DIMENSION_TBL[container]
           when 2
@@ -103,9 +118,7 @@ module AtCoderFriends
           when 0
             []
           end
-        )
-          .map { |s| normalize_symbol(s) }
-          .map { |s| s.gsub(/-1\z/, '') }
+        ).map { |s| normalize_name(s) }
       end
 
       def split_size(str)
@@ -134,14 +147,11 @@ module AtCoderFriends
       include InputFormatUtils
 
       attr_reader :container, :item, :pat, :gen_names, :gen_pat2
-      attr_reader :names, :pat2, :size, :delim
+      attr_reader :names, :pat2, :size, :delim, :ix0
 
       def initialize(
-        container: nil,
-        item: nil,
-        pat: nil,
-        gen_names: nil,
-        gen_pat2: nil
+        container: nil, item: nil,
+        pat: nil, gen_names: nil, gen_pat2: nil
       )
         @container = container
         @item = item
@@ -157,6 +167,7 @@ module AtCoderFriends
         @names = gen_names.call(m1)
         @pat2 = gen_pat2&.call(names)
         @size = m1.names.include?('sz') && m1['sz'] || ''
+        @ix0 = m1.names.include?('ix0') && m1['ix0'] || size
         @delim = dlm
         true
       end
@@ -174,10 +185,9 @@ module AtCoderFriends
 
       def to_inpdef
         Problem::InputFormat.new(
-          container: container,
-          item: item,
+          container: container, item: item,
           names: normalize_names(names),
-          size: normalize_size(container, size),
+          size: normalize_size(container, size, ix0),
           delim: delim
         )
       end
@@ -439,8 +449,7 @@ module AtCoderFriends
       def find_fmt(pbm)
         str = nil
         SECTIONS.any? do |key|
-          str = pbm.sections[key]&.code_block_html
-          str && !str.empty?
+          (str = pbm.sections[key]&.code_block_html) && !str.empty?
         end
         str
       end

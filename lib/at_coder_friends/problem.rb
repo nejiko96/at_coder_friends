@@ -22,8 +22,8 @@ module AtCoderFriends
     class InputFormat
       ITEM_RANK = { number: 1, decimal: 2, string: 3 }.freeze
 
-      attr_reader :container
-      attr_accessor :names, :size, :delim, :cols
+      attr_reader :container, :names, :size, :delim
+      attr_accessor :cols
 
       def initialize(
         container: nil,
@@ -72,18 +72,13 @@ module AtCoderFriends
         [
           self.class.new(
             container: :varray,
-            names: names[0..-2],
-            size: size[0..0],
-            delim: delim,
-            cols: cols[0..-2]
+            names: names[0..-2], size: size[0..0],
+            delim: delim, cols: cols[0..-2]
           ),
           self.class.new(
-            container: :matrix,
-            item: @item,
-            names: names[-1..-1],
-            size: size,
-            delim: delim,
-            cols: cols[-1..-1] || []
+            container: :matrix, item: @item,
+            names: names[-1..-1], size: size,
+            delim: delim, cols: cols[-1..-1] || []
           )
         ]
       end
@@ -91,19 +86,14 @@ module AtCoderFriends
       def matrix_varray_components
         [
           self.class.new(
-            container: :matrix,
-            item: @item,
-            names: names[0..0],
-            size: size,
-            delim: delim,
-            cols: cols[0..0]
+            container: :matrix, item: @item,
+            names: names[0..0], size: size,
+            delim: delim, cols: cols[0..0]
           ),
           self.class.new(
             container: :varray,
-            names: names[1..-1],
-            size: size[0..0],
-            delim: delim,
-            cols: cols[1..-1] || []
+            names: names[1..-1], size: size[0..0],
+            delim: delim, cols: cols[1..-1] || []
           )
         ]
       end
