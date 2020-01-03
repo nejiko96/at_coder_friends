@@ -23,6 +23,12 @@ module AtCoderFriends
 
     # generates C++ variable declarations
     module CxxBuiltinDeclGen
+      TYPE_TBL = {
+        number: 'int',
+        decimal: 'double',
+        string: 'char',
+        char: 'char'
+      }.tap { |h| h.default = 'int' }
       def gen_decl(inpdef)
         if inpdef.components
           inpdef.components.map { |cmp| gen_decl(cmp) }
@@ -41,50 +47,53 @@ module AtCoderFriends
       end
 
       def gen_single_decl(inpdef)
-        names = inpdef.names
-        case inpdef.item
-        when :number
+        names, cols = inpdef.vars.transpose
+        if cols.uniq.size == 1 && cols[0] != :string
+          type = TYPE_TBL[cols[0]]
           dcl = names.join(', ')
-          "int #{dcl};"
-        when :string
-          names.map { |v| "char #{v}[#{v.upcase}_MAX + 1];" }
+          "#{type} #{dcl};"
+        else
+          inpdef.vars.map do |v, item|
+            type = TYPE_TBL[item]
+            dcl = v
+            dcl += "[#{v.upcase}_MAX + 1]" if item == :string
+            "#{type} #{dcl};"
+          end
         end
       end
 
       def gen_harray_decl(inpdef)
+        type = TYPE_TBL[inpdef.item]
         v = inpdef.names[0]
         sz = gen_arr_size(inpdef.size)[0]
         case inpdef.item
-        when :number
-          "int #{v}[#{sz}];"
+        when :number, :decimal
+          "#{type} #{v}[#{sz}];"
         when :string
-          "char #{v}[#{sz}][#{v.upcase}_MAX + 1];"
+          "#{type} #{v}[#{sz}][#{v.upcase}_MAX + 1];"
         when :char
-          "char #{v}[#{sz} + 1];"
+          "#{type} #{v}[#{sz} + 1];"
         end
       end
 
       def gen_varray_decl(inpdef)
-        names = inpdef.names
         sz = gen_arr_size(inpdef.size)[0]
-        case inpdef.item
-        when :number
-          names.map { |v| "int #{v}[#{sz}];" }
-        when :string
-          names.map { |v| "char #{v}[#{sz}][#{v.upcase}_MAX + 1];" }
+        inpdef.vars.map do |v, item|
+          type = TYPE_TBL[item]
+          dcl = "#{v}[#{sz}]"
+          dcl += "[#{v.upcase}_MAX + 1]" if item == :string
+          "#{type} #{dcl};"
         end
       end
 
       def gen_matrix_decl(inpdef)
-        names = inpdef.names
         sz1, sz2 = gen_arr_size(inpdef.size)
-        case inpdef.item
-        when :number
-          names.map { |v| "int #{v}[#{sz1}][#{sz2}];" }
-        when :string
-          names.map { |v| "char #{v}[#{sz1}][#{sz2}][#{v.upcase}_MAX + 1];" }
-        when :char
-          names.map { |v| "char #{v}[#{sz1}][#{sz2} + 1];" }
+        inpdef.vars.map do |v, item|
+          type = TYPE_TBL[item]
+          dcl = "#{v}[#{sz1}]"
+          dcl += item == :char ? "[#{sz2} + 1]" : "[#{sz2}]"
+          dcl += "[#{v.upcase}_MAX + 1]" if item == :string
+          "#{type} #{dcl};"
         end
       end
 
@@ -131,31 +140,38 @@ module AtCoderFriends
               }
             TEXT
           ]
-      }.freeze
-      FMT_FMTS = { number: '%d', string: '%s', char: '%s' }.freeze
+      }.tap { |h| h.default = h[:varray_matrix] }
+      FMT_FMTS = {
+        number: '%d',
+        decimal: '%lf',
+        string: '%s',
+        char: '%s'
+      }.tap { |h| h.default = h[:number] }
+      SINGLE_ADDR_FMTS = {
+        number: '&%<v>s',
+        decimal: '&%<v>s',
+        string: '%<v>s'
+      }.tap { |h| h.default = h[:number] }
+      ARRAY_ADDR_FMTS = {
+        number: '%<v>s + i',
+        decimal: '%<v>s + i',
+        string: '%<v>s[i]',
+        char: '%<v>s'
+      }.tap { |h| h.default = h[:number] }
       MATRIX_ADDR_FMTS = {
         number: '&%<v>s[i][j]',
+        decimal: '&%<v>s[i][j]',
         string: '%<v>s[i][j]',
         char: '%<v>s[i]'
-      }.freeze
+      }.tap { |h| h.default = h[:number] }
       ADDR_FMTS = {
-        single: {
-          number: '&%<v>s',
-          string: '%<v>s'
-        },
-        harray: {
-          number: '%<v>s + i',
-          string: '%<v>s[i]',
-          char: '%<v>s'
-        },
-        varray: {
-          number: '%<v>s + i',
-          string: '%<v>s[i]'
-        },
+        single: SINGLE_ADDR_FMTS,
+        harray: ARRAY_ADDR_FMTS,
+        varray: ARRAY_ADDR_FMTS,
         matrix: MATRIX_ADDR_FMTS,
         vmatrix: MATRIX_ADDR_FMTS,
         hmatrix: MATRIX_ADDR_FMTS
-      }.freeze
+      }.tap { |h| h.default = h[:single] }
 
       def gen_input(inpdef)
         if inpdef.components
@@ -166,24 +182,20 @@ module AtCoderFriends
       end
 
       def gen_plain_input(inpdef)
-        fmt, addr = scanf_params(inpdef)
-        return unless fmt && addr
-
         scanf = SCANF_FMTS[inpdef.size.size - (inpdef.item == :char ? 1 : 0)]
         sz1, sz2 = inpdef.size
+        fmt, addr = scanf_params(inpdef)
         format(scanf, sz1: sz1, sz2: sz2, fmt: fmt, addr: addr)
       end
 
       def gen_cmb_input(inpdef)
-        return unless SCANF_FMTS_CMB[inpdef.container]
-
-        scanf = SCANF_FMTS_CMB[inpdef.container][inpdef.item == :char ? 0 : 1]
+        scanf = SCANF_FMTS_CMB.dig(
+          inpdef.container, inpdef.item == :char ? 0 : 1
+        )
         sz1 = inpdef.size[0]
         sz2 = inpdef.size[1].split('_')[0]
         fmt1, addr1, fmt2, addr2 =
           inpdef.components.map { |cmp| scanf_params(cmp) }.flatten
-        return unless fmt1 && addr1 && fmt2 && addr2
-
         format(
           scanf,
           sz1: sz1, sz2: sz2,
@@ -197,17 +209,14 @@ module AtCoderFriends
       end
 
       def scanf_fmt(inpdef)
-        return unless FMT_FMTS[inpdef.item]
-
-        FMT_FMTS[inpdef.item] * inpdef.names.size
+        inpdef.vars.map { |(_v, item)| FMT_FMTS[item] }.join
       end
 
       def scanf_addr(inpdef)
-        return unless ADDR_FMTS[inpdef.container]
-        return unless ADDR_FMTS[inpdef.container][inpdef.item]
-
-        addr_fmt = ADDR_FMTS[inpdef.container][inpdef.item]
-        inpdef.names.map { |v| format(addr_fmt, v: v) }.join(', ')
+        inpdef.vars.map do |(v, item)|
+          addr_fmt = ADDR_FMTS.dig(inpdef.container, item)
+          format(addr_fmt, v: v)
+        end.join(', ')
       end
     end
 

@@ -36,10 +36,17 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
   describe '#gen_decl' do
     subject { generator.gen_decl(inpdef) }
     let(:inpdef) do
-      AtCoderFriends::Problem::InputFormat.new(container, item, names, size)
+      AtCoderFriends::Problem::InputFormat.new(
+        container: container,
+        item: item,
+        names: names,
+        size: size,
+        delim: delim
+      )
     end
     let(:names) { %w[A] }
     let(:size) { [] }
+    let(:delim) { '' }
 
     context 'for a plain number' do
       let(:container) { :single }
@@ -55,6 +62,23 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       let(:names) { %w[A B] }
       it 'generates decl' do
         expect(subject).to eq('A, B = gets.split.map(&:to_i)')
+      end
+    end
+
+    context 'for a plain decimal' do
+      let(:container) { :single }
+      let(:item) { :decimal }
+      it 'generates decl' do
+        expect(subject).to eq('A = gets.to_f')
+      end
+    end
+
+    context 'for plain decimals' do
+      let(:container) { :single }
+      let(:item) { :decimal }
+      let(:names) { %w[A B] }
+      it 'generates decl' do
+        expect(subject).to eq('A, B = gets.split.map(&:to_f)')
       end
     end
 
@@ -83,6 +107,14 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       end
     end
 
+    context 'for a horizontal array of decimals' do
+      let(:container) { :harray }
+      let(:item) { :decimal }
+      it 'generates decl' do
+        expect(subject).to eq('As = gets.split.map(&:to_f)')
+      end
+    end
+
     context 'for a horizontal array of strings' do
       let(:container) { :harray }
       let(:item) { :string }
@@ -105,6 +137,15 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       let(:size) { %w[N] }
       it 'generates decl' do
         expect(subject).to eq('As = Array.new(N) { gets.to_i }')
+      end
+    end
+
+    context 'for single vertical array of decimals' do
+      let(:container) { :varray }
+      let(:item) { :decimal }
+      let(:size) { %w[N] }
+      it 'generates decl' do
+        expect(subject).to eq('As = Array.new(N) { gets.to_f }')
       end
     end
 
@@ -135,6 +176,24 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       end
     end
 
+    context 'for multiple vertical array of decimals' do
+      let(:container) { :varray }
+      let(:item) { :decimal }
+      let(:names) { %w[A B] }
+      let(:size) { %w[N] }
+      it 'generates decl' do
+        expect(subject).to match(
+          [
+            'As = Array.new(N)',
+            'Bs = Array.new(N)',
+            'N.times do |i|',
+            '  As[i], Bs[i] = gets.split.map(&:to_f)',
+            'end'
+          ]
+        )
+      end
+    end
+
     context 'for multple vertical array of strings' do
       let(:container) { :varray }
       let(:item) { :string }
@@ -159,6 +218,15 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       let(:size) { %w[R C] }
       it 'generates decl' do
         expect(subject).to eq('Ass = Array.new(R) { gets.split.map(&:to_i) }')
+      end
+    end
+
+    context 'for a matrix of decimals' do
+      let(:container) { :matrix }
+      let(:item) { :decimal }
+      let(:size) { %w[R C] }
+      it 'generates decl' do
+        expect(subject).to eq('Ass = Array.new(R) { gets.split.map(&:to_f) }')
       end
     end
 
@@ -272,6 +340,25 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
         )
       end
     end
+
+    context 'for format with delimiters' do
+      let(:container) { :varray }
+      let(:item) { :number }
+      let(:names) { %w[S E] }
+      let(:size) { %w[N] }
+      let(:delim) { '-' }
+      it 'generates decl' do
+        expect(subject).to match(
+          [
+            'Ss = Array.new(N)',
+            'Es = Array.new(N)',
+            'N.times do |i|',
+            "  Ss[i], Es[i] = gets.gsub('-', ' ').split.map(&:to_i)",
+            'end'
+          ]
+        )
+      end
+    end
   end
 
   describe '#generate' do
@@ -294,16 +381,16 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       let(:formats) do
         [
           AtCoderFriends::Problem::InputFormat.new(
-            :single, :number, %w[N], []
+            container: :single, names: %w[N]
           ),
           AtCoderFriends::Problem::InputFormat.new(
-            :varray, :number, %w[x y], %w[N]
+            container: :varray, names: %w[x y], size: %w[N]
           ),
           AtCoderFriends::Problem::InputFormat.new(
-            :single, :string, %w[Q], []
+            container: :single, item: :string, names: %w[Q]
           ),
           AtCoderFriends::Problem::InputFormat.new(
-            :harray, :string, %w[a], %w[Q]
+            container: :harray, item: :string, names: %w[a], size: %w[Q]
           )
         ]
       end
@@ -347,7 +434,7 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       let(:formats) do
         [
           AtCoderFriends::Problem::InputFormat.new(
-            :single, :number, %w[N Q], []
+            container: :single, names: %w[N Q]
           )
         ]
       end
@@ -411,7 +498,7 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       let(:formats) do
         [
           AtCoderFriends::Problem::InputFormat.new(
-            :single, :number, %w[N], []
+            container: :single, names: %w[N]
           )
         ]
       end

@@ -31,7 +31,7 @@ module AtCoderFriends
         q = File.basename(pbm_path, '.html')
         url = "file://#{pbm_path}"
         [contest, q, url]
-      end.sort
+      end.sort # .take(10)
     end
 
     def pbm_list_from_file(file)

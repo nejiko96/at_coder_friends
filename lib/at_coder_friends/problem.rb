@@ -18,29 +18,84 @@ module AtCoderFriends
 
     SampleData = Struct.new(:no, :ext, :txt)
 
-    InputFormat = Struct.new(:container, :item, :names, :size) do
-      def initialize(container, item, names = nil, size = nil)
-        super(container, item, names, size)
+    # holds information about input format
+    class InputFormat
+      ITEM_RANK = { number: 1, decimal: 2, string: 3 }.freeze
+
+      attr_reader :container, :names, :size, :delim
+      attr_accessor :cols
+
+      def initialize(
+        container: nil,
+        item: nil,
+        names: [],
+        size: [],
+        delim: '',
+        cols: []
+      )
+        @container = container
+        @item = item
+        @names = names
+        @size = size
+        @delim = delim
+        @cols = cols
       end
 
       def to_s
-        "#{container} #{item} #{names} #{size}"
+        if container == :unknown
+          "#{container} #{item}"
+        else
+          "#{container} #{item}(#{cols}) #{names} #{size} #{delim}"
+        end
+      end
+
+      def item
+        @item || cols.max_by { |k| ITEM_RANK[k] } || :number
+      end
+
+      def vars
+        tmp = @item && [@item] || cols
+        names.zip(tmp).map { |(name, col)| [name, col || :number] }
       end
 
       def components
         @components ||=
           case container
           when :varray_matrix
-            [
-              InputFormat.new(:varray, :number, names[0..-2], size[0..0]),
-              InputFormat.new(:matrix, item, names[-1..-1], size)
-            ]
+            varray_matrix_components
           when :matrix_varray
-            [
-              InputFormat.new(:matrix, item, names[0..0], size),
-              InputFormat.new(:varray, :number, names[1..-1], size[0..0])
-            ]
+            matrix_varray_components
           end
+      end
+
+      def varray_matrix_components
+        [
+          self.class.new(
+            container: :varray,
+            names: names[0..-2], size: size[0..0],
+            delim: delim, cols: cols[0..-2]
+          ),
+          self.class.new(
+            container: :matrix, item: @item,
+            names: names[-1..-1], size: size,
+            delim: delim, cols: cols[-1..-1] || []
+          )
+        ]
+      end
+
+      def matrix_varray_components
+        [
+          self.class.new(
+            container: :matrix, item: @item,
+            names: names[0..0], size: size,
+            delim: delim, cols: cols[0..0]
+          ),
+          self.class.new(
+            container: :varray,
+            names: names[1..-1], size: size[0..0],
+            delim: delim, cols: cols[1..-1] || []
+          )
+        ]
       end
     end
 

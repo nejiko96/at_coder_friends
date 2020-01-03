@@ -56,14 +56,14 @@ module AtCoderFriends
       def gen_single_decl(inpdef)
         names = inpdef.names
         dcl = names.join(', ')
-        expr = gen_expr(inpdef.item, names.size > 1)
+        expr = gen_expr(inpdef, names.size > 1)
         "#{dcl} = #{expr}"
       end
 
       def gen_harray_decl(inpdef)
         v = inpdef.names[0]
         dcl = "#{v}s"
-        expr = gen_expr(inpdef.item, true)
+        expr = gen_expr(inpdef, true)
         "#{dcl} = #{expr}"
       end
 
@@ -79,7 +79,7 @@ module AtCoderFriends
         v = inpdef.names[0]
         sz = inpdef.size[0]
         dcl = "#{v}s"
-        expr = gen_expr(inpdef.item, false)
+        expr = gen_expr(inpdef, false)
         "#{dcl} = Array.new(#{sz}) { #{expr} }"
       end
 
@@ -87,7 +87,7 @@ module AtCoderFriends
         names = inpdef.names
         sz = inpdef.size[0]
         dcl = names.map { |v| "#{v}s[i]" }.join(', ')
-        expr = gen_expr(inpdef.item, true)
+        expr = gen_expr(inpdef, true)
         ret = []
         ret += names.map { |v| "#{v}s = Array.new(#{sz})" }
         ret << "#{sz}.times do |i|"
@@ -100,7 +100,7 @@ module AtCoderFriends
         v = inpdef.names[0]
         sz = inpdef.size[0]
         decl = "#{v}ss"
-        expr = gen_expr(inpdef.item, true)
+        expr = gen_expr(inpdef, true)
         "#{decl} = Array.new(#{sz}) { #{expr} }"
       end
 
@@ -112,7 +112,7 @@ module AtCoderFriends
         dcls = vs.map { |v| "#{v}[i]" }
         dcls[mx] = '*' + dcls[mx] unless inpdef.item == :char
         dcl = dcls.join(', ')
-        expr = gen_cmb_expr(inpdef.item)
+        expr = gen_cmb_expr(inpdef)
         ret = []
         ret += vs.map { |v| "#{v} = Array.new(#{sz})" }
         ret << "#{sz}.times do |i|"
@@ -125,7 +125,7 @@ module AtCoderFriends
         names = inpdef.names
         sz1, sz2 = inpdef.size
         dcl = names.map { |v| "#{v}ss[i][j]" }.join(', ')
-        expr = gen_expr(inpdef.item, true)
+        expr = gen_expr(inpdef, true)
         ret = []
         ret += names.map do |v|
           "#{v}ss = Array.new(#{sz1}) { Array.new(#{sz2}) }"
@@ -142,7 +142,7 @@ module AtCoderFriends
         names = inpdef.names
         sz = inpdef.size[0]
         dcl = names.map { |v| "#{v}ss[i]" }.join(', ')
-        expr = gen_expr(inpdef.item, true)
+        expr = gen_expr(inpdef, true)
         ret = []
         ret += names.map { |v| "#{v}ss = Array.new(#{sz})" }
         ret << "#{sz}.times do |i|"
@@ -151,24 +151,34 @@ module AtCoderFriends
         ret
       end
 
-      def gen_expr(item, split)
-        case item
+      def gen_expr(inpdef, split)
+        delim = gen_sub_delim(inpdef.delim)
+        case inpdef.item
         when :number
-          split ? 'gets.split.map(&:to_i)' : 'gets.to_i'
+          split ? "gets#{delim}.split.map(&:to_i)" : 'gets.to_i'
+        when :decimal
+          split ? "gets#{delim}.split.map(&:to_f)" : 'gets.to_f'
         when :string
-          split ? 'gets.chomp.split' : 'gets.chomp'
+          split ? "gets#{delim}.chomp.split" : 'gets.chomp'
         when :char
           'gets.chomp'
         end
       end
 
-      def gen_cmb_expr(item)
-        case item
+      def gen_cmb_expr(inpdef)
+        delim = gen_sub_delim(inpdef.delim)
+        case inpdef.item
         when :number
-          'gets.split.map(&:to_i)'
+          "gets#{delim}.split.map(&:to_i)"
+        when :decimal
+          "gets#{delim}.split.map(&:to_f)"
         when :string, :char
-          'gets.chomp.split'
+          "gets#{delim}.chomp.split"
         end
+      end
+
+      def gen_sub_delim(delim)
+        delim.chars.map { |d| ".gsub('#{d}', ' ')" }.join
       end
     end
   end
