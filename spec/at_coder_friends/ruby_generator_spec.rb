@@ -265,7 +265,7 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       end
     end
 
-    context 'for a vertical array and a matrix characters' do
+    context 'for a vertical array and a matrix of characters' do
       let(:container) { :varray_matrix }
       let(:item) { :char }
       let(:names) { %w[K p] }

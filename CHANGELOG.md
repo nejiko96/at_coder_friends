@@ -1,6 +1,8 @@
 # Change log
 
 ## master (unreleased)
+
+## 0.6.3 (2020-01-05)
 ### Added
 - 'vertical array + matrix' input format support.
 - 'matrix + vertical array' input format support.
