@@ -152,33 +152,34 @@ module AtCoderFriends
       end
 
       def gen_expr(inpdef, split)
-        delim = gen_sub_delim(inpdef.delim)
+        read = gen_read(inpdef.delim)
         case inpdef.item
         when :number
-          split ? "gets#{delim}.split.map(&:to_i)" : 'gets.to_i'
+          split ? "#{read}.split.map(&:to_i)" : "#{read}.to_i"
         when :decimal
-          split ? "gets#{delim}.split.map(&:to_f)" : 'gets.to_f'
+          split ? "#{read}.split.map(&:to_f)" : "#{read}.to_f"
         when :string
-          split ? "gets#{delim}.chomp.split" : 'gets.chomp'
+          split ? "#{read}.chomp.split" : "#{read}.chomp"
         when :char
           'gets.chomp'
         end
       end
 
       def gen_cmb_expr(inpdef)
-        delim = gen_sub_delim(inpdef.delim)
+        read = gen_read(inpdef.delim)
         case inpdef.item
         when :number
-          "gets#{delim}.split.map(&:to_i)"
+          "#{read}.split.map(&:to_i)"
         when :decimal
-          "gets#{delim}.split.map(&:to_f)"
+          "#{read}.split.map(&:to_f)"
         when :string, :char
-          "gets#{delim}.chomp.split"
+          "#{read}.chomp.split"
         end
       end
 
-      def gen_sub_delim(delim)
-        delim.chars.map { |d| ".gsub('#{d}', ' ')" }.join
+      def gen_read(delim)
+        sub = delim.chars.map { |d| ".gsub('#{d}', ' ')" }.join
+        "gets#{sub}"
       end
     end
   end

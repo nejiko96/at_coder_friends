@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
-  subject(:generator) { described_class.new(cfg) }
-  let(:cfg) { nil }
+  subject(:generator) { described_class.new }
 
   describe '#process' do
     subject { generator.process(pbm) }
