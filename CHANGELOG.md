@@ -6,6 +6,10 @@
 - 'matrix + vertical array' input format support.
 - 'vertically expanded matrices' input format support.
 - 'horizontally expanded matrices' input format support.
+- decimal type support.
+- input data with delimiter(- : /) support.
+- input data of mixed type support.
+- input of N-1 lines support.
 
 ### Changed
 - Change template file format to ERB.
