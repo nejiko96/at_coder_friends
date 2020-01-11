@@ -513,5 +513,32 @@ RSpec.describe AtCoderFriends::Parser::InputType do
         )
       end
     end
+
+    context 'when line count parse failed' do
+      let(:def_params) do
+        [
+          { container: :varray, names: %w[MT mT], size: %w[N] },
+          { container: :single, names: %w[S] }
+        ]
+      end
+      let(:smp) do
+        <<~SMP
+          32.2 25.3
+          36.4 26.4
+          24.1 18.0
+          26.0 24.9
+          abc
+        SMP
+      end
+      it 'stops detecting type' do
+        subject
+        expect(defs[0]).to have_attributes(
+          item: :decimal, cols: %i[decimal] * 2
+        )
+        expect(defs[1]).to have_attributes(
+          item: :number, cols: []
+        )
+      end
+    end
   end
 end
