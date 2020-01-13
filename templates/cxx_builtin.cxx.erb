@@ -1,8 +1,8 @@
 // <%= pbm.url %>
-
 <%
 if pbm.options.interactive
-%>#include <cstdio>
+%>
+#include <cstdio>
 #include <vector>
 #include <string>
 
@@ -33,10 +33,10 @@ void query() {
 }
 
 //------------------------------------------------------------------------------
-/*** CONSTS ***/
-
-/*** DCLS ***/
-
+<% gen_consts.each do |const| %><%= const %>
+<% end %>
+<% gen_decls.each do |dcl| %><%= dcl %>
+<% end %>
 void solve() {
   printf("! %s\n", ans);
   fflush(stdout);
@@ -50,23 +50,26 @@ void solve() {
 }
 
 void input() {
-  /*** INPUTS ***/
-#ifdef DEBUG
+<% gen_inputs.each do |input| %>  <%= input %>
+<% end
+%>#ifdef DEBUG
   scanf("%s", source);
 #endif
-}<%
+}
+<%
 else
-%>#include <cstdio>
+%>
+#include <cstdio>
 
 using namespace std;
 
 #define REP(i,n)   for(int i=0; i<(int)(n); i++)
 #define FOR(i,b,e) for(int i=(b); i<=(int)(e); i++)
 
-/*** CONSTS ***/
-
-/*** DCLS ***/
-
+<% gen_consts.each do |const| %><%= const %>
+<% end %>
+<% gen_decls.each do |dcl| %><%= dcl %>
+<% end %>
 void solve() {
 <%
 if (vs = pbm.options.binary_values)
@@ -80,11 +83,12 @@ end
 }
 
 void input() {
-  /*** INPUTS ***/
-}<%
+<% gen_inputs.each do |input| %>  <%= input %>
+<% end
+%>}
+<%
 end
 %>
-
 int main() {
   input();
   solve();

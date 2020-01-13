@@ -22,7 +22,8 @@ module AtCoderFriends
         @pbm = pbm
         src = File.read(select_template)
         src = ERB.new(src).result(binding)
-        render(src)
+        src = render(src) if respond_to?(:render)
+        src
       end
 
       def select_template
