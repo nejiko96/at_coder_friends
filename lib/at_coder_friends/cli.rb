@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'optparse'
-require 'launchy'
 
 module AtCoderFriends
   # command line interface
@@ -140,6 +139,7 @@ module AtCoderFriends
     end
 
     def open_contest
+      require 'launchy'
       Launchy.open(ctx.scraping_agent.contest_url)
     end
   end

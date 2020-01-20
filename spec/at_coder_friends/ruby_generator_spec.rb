@@ -265,6 +265,24 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       end
     end
 
+    context 'for a vertical array and a matrix of decimals' do
+      let(:container) { :varray_matrix }
+      let(:item) { :decimal }
+      let(:names) { %w[K A] }
+      let(:size) { %w[N K_N] }
+      it 'generates decl' do
+        expect(subject).to match(
+          [
+            'Ks = Array.new(N)',
+            'Ass = Array.new(N)',
+            'N.times do |i|',
+            '  Ks[i], *Ass[i] = gets.split.map(&:to_f)',
+            'end'
+          ]
+        )
+      end
+    end
+
     context 'for a vertical array and a matrix of characters' do
       let(:container) { :varray_matrix }
       let(:item) { :char }

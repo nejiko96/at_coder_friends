@@ -447,4 +447,12 @@ RSpec.describe AtCoderFriends::CLI do
       end
     end
   end
+
+  describe 'open-contest' do
+    let(:command) { 'open-contest' }
+
+    it 'does not raise error' do
+      expect { subject }.not_to raise_error
+    end
+  end
 end
