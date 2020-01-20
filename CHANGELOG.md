@@ -1,6 +1,9 @@
 # Change log
 
 ## master (unreleased)
+### Changed
+- Max value RegExp pattern.
+- Minor changes in ERB.
 
 ## 0.6.3 (2020-01-05)
 ### Added
