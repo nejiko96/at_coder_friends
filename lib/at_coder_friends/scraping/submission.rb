@@ -4,10 +4,8 @@ module AtCoderFriends
   module Scraping
     # submit sources on submit page
     module Submission
-      include AtCoderFriends::PathUtil
-
       def submit
-        path, _dir, prg, _base, ext, q = split_prg_path(ctx.path)
+        path, _dir, prg, _base, ext, q = ctx.path_info.components
         puts "***** submit #{prg} *****"
         lang = lang_id(ext)
         src = File.read(path, encoding: Encoding::UTF_8)

@@ -7,11 +7,15 @@ module AtCoderFriends
   # - configuration
   # - application modules
   class Context
-    attr_reader :options, :path
+    attr_reader :options, :path_info
 
     def initialize(options, path)
       @options = options
-      @path = File.expand_path(path)
+      @path_info = PathInfo.new(File.expand_path(path))
+    end
+
+    def path
+      path_info.path
     end
 
     def config
@@ -26,6 +30,10 @@ module AtCoderFriends
       @generator ||= Generator::Main.new(self)
     end
 
+    def emitter
+      @emitter ||= Emitter.new(self)
+    end
+
     def sample_test_runner
       @sample_test_runner ||= TestRunner::Sample.new(self)
     end
@@ -36,10 +44,6 @@ module AtCoderFriends
 
     def verifier
       @verifier ||= Verifier.new(self)
-    end
-
-    def emitter
-      @emitter ||= Emitter.new(self)
     end
 
     def post_process

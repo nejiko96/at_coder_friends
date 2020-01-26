@@ -7,7 +7,6 @@ module AtCoderFriends
   module Scraping
     # common functions for scraping
     class Agent
-      include AtCoderFriends::PathUtil
       include Session
       include Authentication
       include Tasks
@@ -29,7 +28,7 @@ module AtCoderFriends
       end
 
       def contest
-        @contest ||= contest_name(ctx.path)
+        @contest ||= ctx.path_info.contest_name
       end
 
       def common_url(path)

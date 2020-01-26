@@ -8,6 +8,7 @@ module AtCoderFriends
     # run tests for the specified program.
     class Base
       include PathUtil
+
       STATUS_STR = {
         OK: '<< OK >>'.green,
         WA: '!!!!! WA !!!!!'.red,
@@ -19,7 +20,7 @@ module AtCoderFriends
 
       def initialize(ctx)
         @ctx = ctx
-        @path, @dir, @prg, @base, @ext, @q = split_prg_path(ctx.path)
+        @path, @dir, @prg, @base, @ext, @q = ctx.path_info.components
         @detail = true
       end
 

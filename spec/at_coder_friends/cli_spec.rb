@@ -258,13 +258,13 @@ RSpec.describe AtCoderFriends::CLI do
   describe 'judge-one' do
     let(:args) { [command, path, id] }
     let(:command) { 'judge-one' }
-    let(:id) { '00_sample_1' }
+    let(:id) { '00_sample_1.txt' }
 
     it 'runs specified test case' do
       expect { subject }.to output(
         <<~OUTPUT
           ***** judge_one A.rb (local) *****
-          ==== 00_sample_1 ====
+          ==== 00_sample_1.txt ====
           -- input --
           1
           2 3
@@ -286,9 +286,9 @@ RSpec.describe AtCoderFriends::CLI do
       expect { subject }.to output(
         <<~OUTPUT
           ***** judge_all A.rb (local) *****
-          ==== 00_sample_1 ====
+          ==== 00_sample_1.txt ====
           \e[0;32;49m<< OK >>\e[0m
-          ==== 00_sample_2 ====
+          ==== 00_sample_2.txt ====
           \e[0;32;49m<< OK >>\e[0m
         OUTPUT
       ).to_stdout

@@ -4,13 +4,11 @@ module AtCoderFriends
   module TestRunner
     # run test cases for the specified program with sample input/output.
     class Sample < Base
-      include PathUtil
-
       attr_reader :data_dir
 
       def initialize(ctx)
         super(ctx)
-        @data_dir = smp_dir(dir)
+        @data_dir = ctx.path_info.smp_dir
       end
 
       def test_all

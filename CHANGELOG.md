@@ -2,8 +2,8 @@
 
 ## master (unreleased)
 ### Changed
-- Max value RegExp pattern.
-- Minor changes in ERB.
+- Modulo RegExp pattern.
+- Minor changes in ERBs.
 
 ## 0.6.3 (2020-01-05)
 ### Added
