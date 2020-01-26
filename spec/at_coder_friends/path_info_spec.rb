@@ -27,13 +27,13 @@ RSpec.describe AtCoderFriends::PathInfo do
 
   describe '#components' do
     subject { path_info.components }
-    let(:path) { File.join(contest_root, 'A_v2.rb') }
+    let(:path) { '/foo/bar/contest/A_v2.rb' }
 
     it 'splits given path' do
       expect(subject).to match(
         [
-          path,
-          contest_root,
+          '/foo/bar/contest/A_v2.rb',
+          '/foo/bar/contest',
           'A_v2.rb',
           'A_v2',
           'rb',
