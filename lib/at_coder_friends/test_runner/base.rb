@@ -33,11 +33,23 @@ module AtCoderFriends
       end
 
       def test_loc
-        test_cmd ? 'local' : 'remote'
+        if test_cmd
+          'local'
+        elsif ctx.scraping_agent.respond_to?(:code_test)
+          'remote'
+        else
+          raise AppError, "test_cmd for .#{ext} is not specified."
+        end
       end
 
       def test_mtd
-        test_cmd ? :local_test : :remote_test
+        if test_cmd
+          :local_test
+        elsif ctx.scraping_agent.respond_to?(:code_test)
+          :remote_test
+        else
+          raise AppError, "test_cmd for .#{ext} is not specified."
+        end
       end
 
       def run_test(id, infile, outfile, expfile)
