@@ -5,87 +5,89 @@ generators:
   - CxxBuiltin
 ext_settings:
   'awk':
-    submit_lang: '3506' # Awk (mawk)
+    submit_lang: '4009' # Awk (mawk)
   'bf':
-    submit_lang: '3507' # Brainfuck
+    submit_lang: '4062' # Brainfuck
   'c':
-    submit_lang: '3002' # C (GCC)
+    submit_lang: '4001' # C (GCC)
     test_cmd:
       default: '"{dir}/{base}"'
       windows: '"{dir}/{base}.exe"'
   'cbl':
-    submit_lang: '3526' # COBOL - Free
+    submit_lang: '4061' # COBOL - Free
   'clj':
-    submit_lang: '3007' # Clojure
+    submit_lang: '4013' # Clojure
   'cr':
-    submit_lang: '3511' # Crystal
+    submit_lang: '4014' # Crystal
   'cs':
-    submit_lang: '3006' # C# (Mono)
+    submit_lang: '4011' # C# (Mono-mcs)
     test_cmd:
       default: 'mono "{dir}/{base}.exe"'
       windows: '"{dir}/{base}.exe"'
   'cxx':
-    submit_lang: '3003' # C++14 (GCC)
+    submit_lang: '4003' # C++ (GCC)
     test_cmd:
       default: '"{dir}/{base}"'
       windows: '"{dir}/{base}.exe"'
   'd':
-    submit_lang: '3009' # D (DMD64)
+    submit_lang: '4015' # D (DMD64)
+  'dart':
+    submit_lang: '4018' # Dart
   'f90':
-    submit_lang: '3012' # Fortran (gfortran)
+    submit_lang: '4025' # Fortran (gfortran)
   'fs':
-    submit_lang: '3512' # F# (Mono)
+    submit_lang: '4023' # F# (Mono)
   'go':
-    submit_lang: '3013' # Go
+    submit_lang: '4026' # Go
   'hs':
-    submit_lang: '3014' # Haskell (GHC)
+    submit_lang: '4027' # Haskell (GHC)
   'java':
-    submit_lang: '3016' # Java8 (OpenJDK)
+    submit_lang: '4005' # Java (OpenJDK)
     test_cmd:
       default: 'java -cp "{dir}" Main'
   'jl':
-    submit_lang: '3518' # Julia
+    submit_lang: '4031' # Julia
   'js':
-    submit_lang: '3017' # JavaScript (node.js)
+    submit_lang: '4030' # JavaScript (node.js)
   'kt':
-    submit_lang: '3523' # Kotlin
+    submit_lang: '4032' # Kotlin
   'lisp':
-    submit_lang: '3008' # Common Lisp
+    submit_lang: '4038' # Common Lisp
   'lua':
-    submit_lang: '3515' # LuaJIT
+    submit_lang: '4034' # LuaJIT
   'm':
-    submit_lang: '3519' # Octave
+    submit_lang: '4040' # Octave
   'ml':
-    submit_lang: '3018' # OCaml
+    submit_lang: '4039' # OCaml
   'nim':
-    submit_lang: '3520' # Nim
+    submit_lang: '4036' # Nim
   'pas':
-    submit_lang: '3019' # Pascal (FPC)
+    submit_lang: '4041' # Pascal (FPC)
   'php':
-    submit_lang: '3524' # PHP7
+    submit_lang: '4044' # PHP7
   'pl':
-    submit_lang: '3020' # Perl
+    submit_lang: '4042' # Perl
   'py':
-    submit_lang: '3023' # Python3
+    submit_lang: '4006' # Python3
   'rb':
-    submit_lang: '3024' # Ruby
+    submit_lang: '4049' # Ruby
     test_cmd:
       default: 'ruby "{dir}/{base}.rb"'
   'rs':
-    submit_lang: '3504' # Rust
+    submit_lang: '4050' # Rust
   'scala':
-    submit_lang: '3025' # Scala
+    submit_lang: '4051' # Scala
   'scm':
-    submit_lang: '3026' # Scheme (Gauche)
+    submit_lang: '4053' # Scheme (Gauche)
   'sed':
-    submit_lang: '3505' # Sed (GNU sed)
+    submit_lang: '4066' # Sed (GNU sed)
   'sh':
-    submit_lang: '3001' # Bash (GNU bash)
+    submit_lang: '4007' # Bash (GNU bash)
   'swift':
-    submit_lang: '3503' # Swift
+    submit_lang: '4055' # Swift
   'ts':
-    submit_lang: '3521' # TypeScript
+    submit_lang: '4057' # TypeScript
   'txt':
-    submit_lang: '3027' # Text (cat)
+    submit_lang: '4056' # Text (cat)
   'vb':
-    submit_lang: '3028' # Visual Basic (Mono)
+    submit_lang: '4058' # Visual Basic (Mono)
