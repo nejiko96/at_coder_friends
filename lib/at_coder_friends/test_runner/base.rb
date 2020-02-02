@@ -76,7 +76,7 @@ module AtCoderFriends
       end
 
       def local_test(infile, outfile)
-        system("#{test_cmd} < #{infile} > #{outfile}")
+        system("#{test_cmd} < \"#{infile}\" > \"#{outfile}\"")
       end
 
       def remote_test(infile, outfile)
