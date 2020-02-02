@@ -8,6 +8,7 @@ module AtCoderFriends
     # run tests for the specified program.
     class Base
       include PathUtil
+
       STATUS_STR = {
         OK: '<< OK >>'.green,
         WA: '!!!!! WA !!!!!'.red,
@@ -19,7 +20,7 @@ module AtCoderFriends
 
       def initialize(ctx)
         @ctx = ctx
-        @path, @dir, @prg, @base, @ext, @q = split_prg_path(ctx.path)
+        @path, @dir, @prg, @base, @ext, @q = ctx.path_info.components
         @detail = true
       end
 
@@ -32,11 +33,23 @@ module AtCoderFriends
       end
 
       def test_loc
-        test_cmd ? 'local' : 'remote'
+        if test_cmd
+          'local'
+        elsif ctx.scraping_agent.respond_to?(:code_test)
+          'remote'
+        else
+          raise AppError, "test_cmd for .#{ext} is not specified."
+        end
       end
 
       def test_mtd
-        test_cmd ? :local_test : :remote_test
+        if test_cmd
+          :local_test
+        elsif ctx.scraping_agent.respond_to?(:code_test)
+          :remote_test
+        else
+          raise AppError, "test_cmd for .#{ext} is not specified."
+        end
       end
 
       def run_test(id, infile, outfile, expfile)
@@ -63,7 +76,7 @@ module AtCoderFriends
       end
 
       def local_test(infile, outfile)
-        system("#{test_cmd} < #{infile} > #{outfile}")
+        system("#{test_cmd} < \"#{infile}\" > \"#{outfile}\"")
       end
 
       def remote_test(infile, outfile)

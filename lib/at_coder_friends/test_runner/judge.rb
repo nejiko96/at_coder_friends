@@ -4,20 +4,18 @@ module AtCoderFriends
   module TestRunner
     # run test cases for the specified program with judge input/output.
     class Judge < Base
-      include PathUtil
-
       attr_reader :data_dir, :result_dir
 
       def initialize(ctx)
         super(ctx)
-        @data_dir = cases_dir(dir)
-        @result_dir = cases_dir(tmp_dir(path))
+        @data_dir = ctx.path_info.cases_dir
+        @result_dir = ctx.path_info.cases_out_dir
       end
 
       def judge_all
         puts "***** judge_all #{prg} (#{test_loc}) *****"
-        results = Dir["#{data_dir}/#{q}/in/*.txt"].sort.map do |infile|
-          id = File.basename(infile, '.txt')
+        results = Dir["#{data_dir}/#{q}/in/*"].sort.map do |infile|
+          id = File.basename(infile)
           judge(id, false)
         end
         !results.empty? && results.all?
@@ -30,9 +28,9 @@ module AtCoderFriends
 
       def judge(id, detail = true)
         @detail = detail
-        infile = "#{data_dir}/#{q}/in/#{id}.txt"
-        outfile = "#{result_dir}/#{q}/result/#{id}.txt"
-        expfile = "#{data_dir}/#{q}/out/#{id}.txt"
+        infile = "#{data_dir}/#{q}/in/#{id}"
+        outfile = "#{result_dir}/#{q}/result/#{id}"
+        expfile = "#{data_dir}/#{q}/out/#{id}"
         run_test(id, infile, outfile, expfile)
       end
     end

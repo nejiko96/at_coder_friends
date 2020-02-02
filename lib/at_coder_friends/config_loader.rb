@@ -11,20 +11,28 @@ module AtCoderFriends
     DEFAULT_FILE = File.join(ACF_HOME, 'config', 'default.yml')
 
     class << self
+      def dotfile
+        DOTFILE
+      end
+
+      def default_file
+        DEFAULT_FILE
+      end
+
       def load_config(ctx)
         path = config_file_for(ctx.path)
         config = load_yaml(path)
-        return config if path == DEFAULT_FILE
+        return config if path == default_file
 
         merge_with_default(config)
       end
 
       def config_file_for(target_dir)
-        find_project_dotfile(target_dir) || DEFAULT_FILE
+        find_project_dotfile(target_dir) || default_file
       end
 
       def find_project_dotfile(target_dir)
-        find_file_upwards(DOTFILE, target_dir)
+        find_file_upwards(dotfile, target_dir)
       end
 
       def find_file_upwards(filename, start_dir)

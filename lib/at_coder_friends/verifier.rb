@@ -10,9 +10,8 @@ module AtCoderFriends
     attr_reader :path, :file, :vdir, :vpath
 
     def initialize(ctx)
-      @path = ctx.path
-      @file = File.basename(path)
-      @vdir = tmp_dir(path)
+      @path, _dir, @file = ctx.path_info.components
+      @vdir = ctx.path_info.tmp_dir
       @vpath = File.join(vdir, "#{file}.verified")
     end
 

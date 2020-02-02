@@ -10,15 +10,15 @@ RSpec.describe AtCoderFriends::TestRunner::Judge do
 
   describe '#judge_one' do
     subject { runner.judge_one(id) }
-    let(:id) { '00_sample_1' }
+    let(:id) { '00_sample_1.txt' }
 
     context 'when the test case does not exist' do
-      let(:id) { '00_sample_9' }
+      let(:id) { '00_sample_9.txt' }
       it 'shows error' do
         expect { subject }.to output(
           <<~OUTPUT
             ***** judge_one A.rb (local) *****
-            ==== 00_sample_9 ====
+            ==== 00_sample_9.txt ====
             00_sample_9.txt not found.
           OUTPUT
         ).to_stdout
@@ -31,7 +31,7 @@ RSpec.describe AtCoderFriends::TestRunner::Judge do
         expect { subject }.to output(
           <<~OUTPUT
             ***** judge_one A.rb (local) *****
-            ==== 00_sample_1 ====
+            ==== 00_sample_1.txt ====
             -- input --
             1
             2 3
@@ -55,7 +55,7 @@ RSpec.describe AtCoderFriends::TestRunner::Judge do
         expect { subject }.to output(
           <<~OUTPUT
             ***** judge_one A.py (remote) *****
-            ==== 00_sample_1 ====
+            ==== 00_sample_1.txt ====
             logged in as foo (Contestant)
             Exit code: 0
             Time: 17ms
@@ -84,9 +84,9 @@ RSpec.describe AtCoderFriends::TestRunner::Judge do
         expect { subject }.to output(
           <<~OUTPUT
             ***** judge_all A.rb (local) *****
-            ==== 00_sample_1 ====
+            ==== 00_sample_1.txt ====
             \e[0;32;49m<< OK >>\e[0m
-            ==== 00_sample_2 ====
+            ==== 00_sample_2.txt ====
             \e[0;32;49m<< OK >>\e[0m
           OUTPUT
         ).to_stdout
@@ -102,13 +102,13 @@ RSpec.describe AtCoderFriends::TestRunner::Judge do
         expect { subject }.to output(
           <<~OUTPUT
             ***** judge_all A.py (remote) *****
-            ==== 00_sample_1 ====
+            ==== 00_sample_1.txt ====
             logged in as foo (Contestant)
             Exit code: 0
             Time: 17ms
             Memory: 5536KB
             \e[0;32;49m<< OK >>\e[0m
-            ==== 00_sample_2 ====
+            ==== 00_sample_2.txt ====
             Exit code: 0
             Time: 17ms
             Memory: 5536KB

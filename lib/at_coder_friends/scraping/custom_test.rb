@@ -6,10 +6,8 @@ module AtCoderFriends
   module Scraping
     # run tests on custom_test page
     module CustomTest
-      include AtCoderFriends::PathUtil
-
       def code_test(infile)
-        path, _dir, _prg, _base, ext, _q = split_prg_path(ctx.path)
+        path, _dir, _prg, _base, ext, _q = ctx.path_info.components
         lang = lang_id(ext)
         src = File.read(path, encoding: Encoding::UTF_8)
         data = File.read(infile)

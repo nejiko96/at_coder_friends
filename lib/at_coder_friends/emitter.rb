@@ -9,8 +9,8 @@ module AtCoderFriends
     include PathUtil
 
     def initialize(ctx)
-      @src_dir = ctx.path
-      @smp_dir = smp_dir(@src_dir)
+      @src_dir = ctx.path_info.src_dir
+      @smp_dir = ctx.path_info.smp_dir
     end
 
     def emit(pbm)
