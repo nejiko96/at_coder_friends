@@ -24,7 +24,7 @@ module AtCoderFriends
       # overwrites @dir here for non-existent files (test purpose)
       @dir, prg = File.split(path)
       base, ext = prg.split('.')
-      q = base.split('_')[0]
+      q = base.gsub(/_[^#_]+\z/, '')
       [path, dir, prg, base, ext, q]
     end
 
