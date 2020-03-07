@@ -1,9 +1,18 @@
 # Change log
 
 ## master (unreleased)
-### Changed
+
+## 0.6.4 (2020-03-08)
+### Added
 - Modulo RegExp pattern.
-- Minor changes in ERBs.
+
+### Changed
+- minor changes in ERBs.
+- allow underscores in problem ID.
+- allow whitespaces in data file path.
+
+### Deleted
+- remove tasks folder from installation
 
 ## 0.6.3 (2020-01-05)
 ### Added
