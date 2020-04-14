@@ -29,91 +29,165 @@ generators:
   - RubyBuiltin
   - CxxBuiltin
 ext_settings:
-  'awk':
-    submit_lang: '3506' # Awk (mawk)
-  'bf':
-    submit_lang: '3507' # Brainfuck
-  'c':
-    submit_lang: '3002' # C (GCC)
+  'awk': # Awk (mawk)
+    submit_lang:
+      - '4009'
+      - '3506'
+  'bf': # Brainfuck
+    submit_lang:
+      - '4062'
+      - '3507'
+  'c': # C (GCC)
+    submit_lang:
+      - '4001'
+      - '3002'
     test_cmd:
       default: '"{dir}/{base}"'
       windows: '"{dir}/{base}.exe"'
-  'cbl':
-    submit_lang: '3526' # COBOL - Free
-  'clj':
-    submit_lang: '3007' # Clojure
-  'cr':
-    submit_lang: '3511' # Crystal
-  'cs':
-    submit_lang: '3006' # C# (Mono)
+  'cbl': # COBOL - Free
+    submit_lang:
+      - '4061'
+      - '3526'
+  'clj': # Clojure
+    submit_lang:
+      - '4013'
+      - '3007'
+  'cr': # Crystal
+    submit_lang:
+      - '4014'
+      - '3511'
+  'cs': # C# (Mono-mcs)
+    submit_lang:
+      - '4011'
+      - '3006'
     test_cmd:
       default: 'mono "{dir}/{base}.exe"'
       windows: '"{dir}/{base}.exe"'
-  'cxx':
-    submit_lang: '3003' # C++14 (GCC)
+  'cxx': # C++ (GCC)
+    submit_lang:
+      - '4003'
+      - '3003'
     test_cmd:
       default: '"{dir}/{base}"'
       windows: '"{dir}/{base}.exe"'
-  'd':
-    submit_lang: '3009' # D (DMD64)
-  'f90':
-    submit_lang: '3012' # Fortran (gfortran)
-  'fs':
-    submit_lang: '3512' # F# (Mono)
-  'go':
-    submit_lang: '3013' # Go
-  'hs':
-    submit_lang: '3014' # Haskell (GHC)
-  'java':
-    submit_lang: '3016' # Java8 (OpenJDK)
+  'd': # D (DMD64)
+    submit_lang:
+      - '4015'
+      - '3009'
+  'dart': # Dart
+    submit_lang: '4018'
+  'f90': # Fortran (gfortran)
+    submit_lang:
+      - '4025'
+      - '3012'
+  'fs': # F# (Mono)
+    submit_lang:
+      - '4023'
+      - '3512'
+  'go': # Go
+    submit_lang:
+      - '4026'
+      - '3013'
+  'hs': # Haskell (GHC)
+    submit_lang:
+      - '4027'
+      - '3014'
+  'java': # Java (OpenJDK)
+    submit_lang:
+      - '4005'
+      - '3016'
     test_cmd:
       default: 'java -cp "{dir}" Main'
-  'jl':
-    submit_lang: '3518' # Julia
-  'js':
-    submit_lang: '3017' # JavaScript (node.js)
-  'kt':
-    submit_lang: '3523' # Kotlin
-  'lisp':
-    submit_lang: '3008' # Common Lisp
-  'lua':
-    submit_lang: '3515' # LuaJIT
-  'm':
-    submit_lang: '3519' # Octave
-  'ml':
-    submit_lang: '3018' # OCaml
-  'nim':
-    submit_lang: '3520' # Nim
-  'pas':
-    submit_lang: '3019' # Pascal (FPC)
-  'php':
-    submit_lang: '3524' # PHP7
-  'pl':
-    submit_lang: '3020' # Perl
-  'py':
-    submit_lang: '3023' # Python3
-  'rb':
-    submit_lang: '3024' # Ruby
+  'jl': # Julia
+    submit_lang:
+      - '4031'
+      - '3518'
+  'js': # JavaScript (node.js)
+    submit_lang:
+      - '4030'
+      - '3017'
+  'kt': # Kotlin
+    submit_lang:
+      - '4032'
+      - '3523'
+  'lisp': # Common Lisp
+    submit_lang:
+      - '4038'
+      - '3008'
+  'lua': # LuaJIT
+    submit_lang:
+      - '4034'
+      - '3515'
+  'm': # Octave
+    submit_lang:
+      - '4040'
+      - '3519'
+  'ml': # OCaml
+    submit_lang:
+      - '4039'
+      - '3018'
+  'nim': # Nim
+    submit_lang:
+      - '4036'
+      - '3520'
+  'pas': # Pascal (FPC)
+    submit_lang:
+      - '4041'
+      - '3019'
+  'php': # PHP7
+    submit_lang:
+      - '4044'
+      - '3524'
+  'pl': # Perl
+    submit_lang:
+      - '4042'
+      - '3020'
+  'py': # Python3
+    submit_lang:
+      - '4006'
+      - '3023'
+  'rb': # Ruby
+    submit_lang:
+      - '4049'
+      - '3024'
     test_cmd:
       default: 'ruby "{dir}/{base}.rb"'
-  'rs':
-    submit_lang: '3504' # Rust
-  'scala':
-    submit_lang: '3025' # Scala
-  'scm':
-    submit_lang: '3026' # Scheme (Gauche)
-  'sed':
-    submit_lang: '3505' # Sed (GNU sed)
-  'sh':
-    submit_lang: '3001' # Bash (GNU bash)
-  'swift':
-    submit_lang: '3503' # Swift
-  'ts':
-    submit_lang: '3521' # TypeScript
-  'txt':
-    submit_lang: '3027' # Text (cat)
-  'vb':
-    submit_lang: '3028' # Visual Basic (Mono)
+  'rs': # Rust
+    submit_lang:
+      - '4050'
+      - '3504'
+  'scala': # Scala
+    submit_lang:
+      - '4051'
+      - '3025'
+  'scm': # Scheme (Gauche)
+    submit_lang:
+      - '4053'
+      - '3026'
+  'sed': # Sed (GNU sed)
+    submit_lang:
+      - '4066'
+      - '3505'
+  'sh': # Bash (GNU bash)
+    submit_lang:
+      - '4007'
+      - '3001'
+  'swift': # Swift
+    submit_lang:
+      - '4055'
+      - '3503'
+  'ts': # TypeScript
+    submit_lang:
+      - '4057'
+      - '3521'
+  'txt': # Text (cat)
+    submit_lang:
+      - '4056'
+      - '3027'
+  'vb': # Visual Basic (Mono)
+    submit_lang:
+      - '4058'
+      - '3028'
 ```
 
 ## Configuration options
@@ -205,7 +279,7 @@ ext_settings:
 |---------|-------------|---------|
 |default_template|Source template file path|[/templates/cxx_builtin.cxx.erb](/templates/cxx_builtin.cxx.erb)|
 
-### Language ID list (2019/09/16)
+### Language ID list (2020/04/14)
 
 | Language ID | Description |
 |-------------|-------------|
@@ -265,6 +339,74 @@ ext_settings:
 |3524|PHP7 (7.0.15)|
 |3525|COBOL - Fixed (OpenCOBOL 1.1.0)|
 |3526|COBOL - Free (OpenCOBOL 1.1.0)|
+|4001|C (GCC 9.2.1)|
+|4002|C (Clang 10.0.0)|
+|4003|C++ (GCC 9.2.1)|
+|4004|C++ (Clang 10.0.0)|
+|4005|Java (OpenJDK 11.0.6)|
+|4006|Python (3.8.2)|
+|4007|Bash (5.0.11)|
+|4008|bc (1.07.1)|
+|4009|Awk (GNU Awk 4.1.4)|
+|4010|C# (.NET Core 3.1.201)|
+|4011|C# (Mono-mcs 6.8.0.105)|
+|4012|C# (Mono-csc 3.5.0)|
+|4013|Clojure (1.10.1.536)|
+|4014|Crystal (0.33.0)|
+|4015|D (DMD 2.091.0)|
+|4016|D (GDC 9.2.1)|
+|4017|D (LDC 1.20.1)|
+|4018|Dart (2.7.2)|
+|4019|dc (1.4.1)|
+|4020|Erlang (22.3)|
+|4021|Elixir (1.10.2)|
+|4022|F# (.NET Core 3.1.201)|
+|4023|F# (Mono 10.2.3)|
+|4024|Forth (gforth 0.7.3)|
+|4025|Fortran(GNU Fortran 9.2.1)|
+|4026|Go (1.14.1)|
+|4027|Haskell (GHC 8.8.3)|
+|4028|Haxe (4.0.3); js|
+|4029|Haxe (4.0.3); Java|
+|4030|JavaScript (Node.js 12.16.1)|
+|4031|Julia (1.4.0)|
+|4032|Kotlin (1.3.71)|
+|4033|Lua (Lua 5.3.5)|
+|4034|Lua (LuaJIT 2.1.0)|
+|4035|Dash (0.5.8)|
+|4036|Nim (1.0.6)|
+|4037|Objective-C (Clang 10.0.0)|
+|4038|Common Lisp (SBCL 2.0.3)|
+|4039|OCaml (4.10.0)|
+|4040|Octave (5.2.0)|
+|4041|Pascal (FPC 3.0.4)|
+|4042|Perl (5.26.1)|
+|4043|Raku (Rakudo 2020.02.1)|
+|4044|PHP (7.4.4)|
+|4045|Prolog (SWI-Prolog 8.0.3)|
+|4046|PyPy2 (7.3.0)|
+|4047|PyPy3 (7.3.0)|
+|4048|Racket (7.6)|
+|4049|Ruby (2.7.1)|
+|4050|Rust (1.42.0)|
+|4051|Scala (2.13.1)|
+|4052|Java (OpenJDK 1.8.0)|
+|4053|Scheme (Gauche 0.9.9)|
+|4054|Standard ML (MLton 20130715)|
+|4055|Swift (5.2.1)|
+|4056|Text (cat 8.28)|
+|4057|TypeScript (3.8)|
+|4058|Visual Basic (.NET Core 3.1.101)|
+|4059|Zsh (5.4.2)|
+|4060|COBOL - Fixed (OpenCOBOL 1.1.0)|
+|4061|COBOL - Free (OpenCOBOL 1.1.0)|
+|4062|Brainfuck (bf 20041219)|
+|4063|Ada2012 (GNAT 9.2.1)|
+|4064|Unlambda (2.0.0)|
+|4065|Cython (0.29.16)|
+|4066|Sed (4.4)|
+|4067|Vim (8.2.0460)|
+
 
 ### Variables in test_cmd string
 

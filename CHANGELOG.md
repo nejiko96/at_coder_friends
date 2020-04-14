@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+## 0.6.5 (2020-04-15)
+### Added
+- multiple language version support.
+
 ## 0.6.4 (2020-03-08)
 ### Added
 - Modulo RegExp pattern.
