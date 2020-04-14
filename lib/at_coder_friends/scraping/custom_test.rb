@@ -8,16 +8,17 @@ module AtCoderFriends
     module CustomTest
       def code_test(infile)
         path, _dir, _prg, _base, ext, _q = ctx.path_info.components
-        lang = lang_id(ext)
+        langs = lang_id(ext)
         src = File.read(path, encoding: Encoding::UTF_8)
         data = File.read(infile)
 
-        post_custom_test(lang, src, data)
+        post_custom_test(langs, src, data)
         check_custom_test
       end
 
-      def post_custom_test(lang, src, data)
+      def post_custom_test(langs, src, data)
         page = fetch_with_auth(contest_url('custom_test'))
+        lang = find_lang(page, langs)
         script = page.search('script').text
         csrf_token = script.scan(/var csrfToken = "(.*)"/)[0][0]
 
