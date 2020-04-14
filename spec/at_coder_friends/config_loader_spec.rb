@@ -44,7 +44,8 @@ RSpec.describe AtCoderFriends::ConfigLoader do
       it 'maps each extension to proper language' do
         lst = ctx.scraping_agent.lang_list
         subject['ext_settings'].each do |ext, conf|
-          lang_name = lst.find { |opt| opt[:v] == conf['submit_lang'] }[:t]
+          lang_ids = [conf['submit_lang']].flatten
+          lang_name = lst.find { |opt| lang_ids.include?(opt[:v]) }&.fetch(:t)
           puts "#{ext} -> #{lang_name}"
         end
         # puts lst.map { |opt| "|#{opt[:v]}|#{opt[:t]}|" }.join("\n")

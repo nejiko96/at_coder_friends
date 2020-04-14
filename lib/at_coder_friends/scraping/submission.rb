@@ -7,14 +7,15 @@ module AtCoderFriends
       def submit
         path, _dir, prg, _base, ext, q = ctx.path_info.components
         puts "***** submit #{prg} *****"
-        lang = lang_id(ext)
+        langs = lang_id(ext)
         src = File.read(path, encoding: Encoding::UTF_8)
 
-        post_submit(q, lang, src)
+        post_submit(q, langs, src)
       end
 
-      def post_submit(q, lang, src)
+      def post_submit(q, langs, src)
         page = fetch_with_auth(contest_url('submit'))
+        lang = find_lang(page, langs)
         form = page.forms[1]
         form.field_with(name: 'data.TaskScreenName') do |sel|
           option = sel.options.find { |op| op.text.start_with?(q) }

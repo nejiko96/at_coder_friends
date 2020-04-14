@@ -40,6 +40,10 @@ module AtCoderFriends
       end
 
       def lang_id(ext)
+        [lang_id_conf(ext)].flatten
+      end
+
+      def lang_id_conf(ext)
         ctx.config.dig('ext_settings', ext, 'submit_lang') || (
           msg = <<~MSG
             submit_lang for .#{ext} is not specified.
@@ -48,6 +52,12 @@ module AtCoderFriends
           MSG
           raise AppError, msg
         )
+      end
+
+      def find_lang(page, langs)
+        langs.find do |lng|
+          page.search("div#select-lang select option[value=#{lng}]")[0]
+        end || langs[0]
       end
 
       def lang_list_txt
