@@ -18,7 +18,7 @@ module AtCoderFriends
         lang = find_lang(page, langs)
         form = page.forms[1]
         form.field_with(name: 'data.TaskScreenName') do |sel|
-          option = sel.options.find { |op| op.text.start_with?(q) }
+          option = sel.options.find { |op| op.text =~ /\A#{q}\W/ }
           option&.select || (raise AppError, "unknown problem:#{q}.")
         end
         form.add_field!('data.LanguageId', lang)
