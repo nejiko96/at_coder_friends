@@ -1,6 +1,9 @@
 # Change log
 
 ## master (unreleased)
+### Changed
+- change task id match pattern on submission
+- treat input more than 19 digits as string
 
 ## 0.6.5 (2020-04-15)
 ### Added
