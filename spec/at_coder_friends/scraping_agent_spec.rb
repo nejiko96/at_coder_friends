@@ -142,7 +142,7 @@ RSpec.describe AtCoderFriends::Scraping::Agent do
       let(:ext) { 'rb' }
 
       it 'returns LanguageId' do
-        expect(subject).to eq(['4049', '3024'])
+        expect(subject).to eq(%w[4049 3024])
       end
     end
 

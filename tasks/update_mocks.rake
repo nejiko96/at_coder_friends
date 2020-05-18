@@ -4,6 +4,7 @@ module AtCoderFriends
   # miscellaneous tasks
   module Misc
     module_function
+
     URL_BASE = 'https://atcoder.jp/'
     ACF_HOME = File.expand_path(File.join(__dir__, '..'))
     MOCK_BASE = File.join(ACF_HOME, 'spec', 'mocks')
