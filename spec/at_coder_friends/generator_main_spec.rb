@@ -90,12 +90,12 @@ RSpec.describe AtCoderFriends::Generator::Main do
 
       it 'shows error' do
         expect { subject }
-          .to output(
+          .to output(Regexp.compile(Regexp.escape(
             <<~MSG
               an error occurred in generator:RubyAlternative.
-              #<AtCoderFriends::AppError: plugin load error : generator RubyAlternative not found.>
+              plugin load error : generator RubyAlternative not found.
             MSG
-          )
+          )))
           .to_stdout
       end
     end
@@ -107,12 +107,12 @@ RSpec.describe AtCoderFriends::Generator::Main do
       end
       it 'shows error' do
         expect { subject }
-          .to output(
+          .to output(Regexp.compile(Regexp.escape(
             <<~MSG
               an error occurred in generator:RubyBuiltin.
-              #<StandardError: error>
+              error
             MSG
-          )
+          )))
           .to_stdout
       end
 
@@ -129,12 +129,12 @@ RSpec.describe AtCoderFriends::Generator::Main do
       end
       it 'shows error' do
         expect { subject }
-          .to output(
+          .to output(Regexp.compile(Regexp.escape(
             <<~MSG
               an error occurred in generator:CxxBuiltin.
-              #<StandardError: error>
+              error
             MSG
-          )
+          )))
           .to_stdout
       end
 
