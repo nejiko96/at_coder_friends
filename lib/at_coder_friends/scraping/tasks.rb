@@ -7,9 +7,14 @@ module AtCoderFriends
       def fetch_all
         puts "***** fetch_all #{contest} *****"
         fetch_assignments.map do |q, url|
-          pbm = fetch_problem(q, url)
-          yield pbm if block_given?
-          pbm
+          begin
+            pbm = fetch_problem(q, url)
+            yield pbm if block_given?
+            pbm
+          rescue StandardError => e
+            puts e.to_s
+            puts e.backtrace
+          end
         end
       end
 

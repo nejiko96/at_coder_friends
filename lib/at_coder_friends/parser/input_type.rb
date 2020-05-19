@@ -6,10 +6,11 @@ module AtCoderFriends
     module InputType
       module_function
 
-      NUMBER_PAT = /\A[+-]?[0-9]+\z/.freeze
+      NUMBER_PAT = /\A[+-]?[0-9]{1,19}\z/.freeze
+      DECIMAL_PAT = /\A[+-]?[0-9]{1,19}(\.[0-9]+)?\z/.freeze
       TYPE_TBL = [
         [:number, NUMBER_PAT],
-        [:decimal, /\A[+-]?[0-9]+(\.[0-9]+)?\z/]
+        [:decimal, DECIMAL_PAT]
       ].freeze
 
       def process(pbm)

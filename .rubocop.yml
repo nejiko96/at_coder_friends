@@ -26,5 +26,5 @@ Metrics/ModuleLength:
   Exclude:
     - 'spec/**/*.rb'
 
-Naming/UncommunicativeMethodParamName:
+Naming/MethodParameterName:
   MinNameLength: 1

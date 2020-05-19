@@ -202,7 +202,7 @@ RSpec.describe AtCoderFriends::Parser::InputType do
           item: :number, cols: %i[number]
         )
         expect(defs[1]).to have_attributes(
-          item: :char, cols: %i[number]
+          item: :char, cols: %i[string]
         )
       end
     end
