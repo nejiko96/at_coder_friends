@@ -1,9 +1,13 @@
 # Change log
 
 ## master (unreleased)
+### Added
+- error handling in fetch_problem.
+- remove \mathrm{...} from input format text.
+
 ### Changed
-- change task id match pattern on submission
-- treat input more than 19 digits as string
+- change task id match pattern on submission.
+- treat input more than 19 digits as string.
 
 ## 0.6.5 (2020-04-15)
 ### Added
