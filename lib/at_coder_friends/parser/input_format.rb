@@ -61,6 +61,7 @@ module AtCoderFriends
           .gsub('\\lvert', '|')
           .gsub('\\rvert', '|')
           .gsub('\\mathit', '')
+          .gsub('\\mathrm', '')
           .gsub('\\times', '*')
           .gsub(/\\begin(\{[^{}]*\})*/, '')
           .gsub(/\\end(\{[^{}]*\})*/, '')
