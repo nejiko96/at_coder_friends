@@ -8,8 +8,8 @@ module AtCoderFriends
     module_function
 
     def setup
-      rmdir_force(PAGES_DIR)
-      rmdir_force(EMIT_ORG_DIR)
+      # rmdir_force(PAGES_DIR)
+      # rmdir_force(EMIT_ORG_DIR)
       contest_id_list.each do |contest|
         setup_by_contest(contest)
         sleep 3
@@ -21,7 +21,8 @@ module AtCoderFriends
         setup_by_pbm(contest, pbm)
       end
     rescue StandardError => e
-      p e
+      puts e.to_s
+      puts e.backtrace
     end
 
     def setup_by_pbm(contest, pbm)
@@ -29,7 +30,8 @@ module AtCoderFriends
       save_file(html_path, pbm.page.body)
       pipeline(pbm)
     rescue StandardError => e
-      p e
+      puts e.to_s
+      puts e.backtrace
     end
 
     def save_file(path, content)
