@@ -14,6 +14,7 @@ module AtCoderFriends
     ACF_HOME = File.expand_path(File.join(__dir__, '..', '..'))
     REGRESSION_HOME = File.join(ACF_HOME, 'regression')
     PAGES_DIR = File.join(REGRESSION_HOME, 'pages')
+    PAGES_DIR_FMT = File.join(REGRESSION_HOME, 'pages_%<now>s')
     EMIT_ORG_DIR = File.join(REGRESSION_HOME, 'emit_org')
     EMIT_DIR_FMT = File.join(REGRESSION_HOME, 'emit_%<now>s')
     PERM_CONTEST_LIST = %w[practice apg4b].freeze

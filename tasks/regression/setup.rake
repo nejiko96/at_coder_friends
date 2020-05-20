@@ -8,8 +8,12 @@ module AtCoderFriends
     module_function
 
     def setup
-      # rmdir_force(PAGES_DIR)
-      # rmdir_force(EMIT_ORG_DIR)
+      @emit_dir = format(EMIT_DIR_FMT, now: Time.now.strftime('%Y%m%d%H%M%S'))
+      rmdir_force(@emit_dir)
+
+      @pages_dir = format(PAGES_DIR_FMT, now: Time.now.strftime('%Y%m%d%H%M%S'))
+      rmdir_force(@pages_dir)
+
       contest_id_list.each do |contest|
         setup_by_contest(contest)
         sleep 3
@@ -17,7 +21,7 @@ module AtCoderFriends
     end
 
     def setup_by_contest(contest)
-      scraping_agent(EMIT_ORG_DIR, contest).fetch_all do |pbm|
+      scraping_agent(@emit_dir, contest).fetch_all do |pbm|
         setup_by_pbm(contest, pbm)
       end
     rescue StandardError => e
@@ -26,7 +30,7 @@ module AtCoderFriends
     end
 
     def setup_by_pbm(contest, pbm)
-      html_path = File.join(PAGES_DIR, contest, "#{pbm.q}.html")
+      html_path = File.join(@pages_dir, contest, "#{pbm.q}.html")
       save_file(html_path, pbm.page.body)
       pipeline(pbm)
     rescue StandardError => e
