@@ -89,14 +89,16 @@ RSpec.describe AtCoderFriends::Generator::Main do
       end
 
       it 'shows error' do
-        expect { subject }
-          .to output(Regexp.compile(Regexp.escape(
-            <<~MSG
-              an error occurred in generator:RubyAlternative.
-              plugin load error : generator RubyAlternative not found.
-            MSG
-          )))
-          .to_stdout
+        expect { subject }.to output(
+          Regexp.compile(
+            Regexp.escape(
+              <<~MSG
+                an error occurred in generator:RubyAlternative.
+                plugin load error : generator RubyAlternative not found.
+              MSG
+            )
+          )
+        ).to_stdout
       end
     end
 
@@ -106,14 +108,16 @@ RSpec.describe AtCoderFriends::Generator::Main do
           .to receive(:process).and_raise(StandardError.new('error'))
       end
       it 'shows error' do
-        expect { subject }
-          .to output(Regexp.compile(Regexp.escape(
-            <<~MSG
-              an error occurred in generator:RubyBuiltin.
-              error
-            MSG
-          )))
-          .to_stdout
+        expect { subject }.to output(
+          Regexp.compile(
+            Regexp.escape(
+              <<~MSG
+                an error occurred in generator:RubyBuiltin.
+                error
+              MSG
+            )
+          )
+        ).to_stdout
       end
 
       it 'generates C++ source' do
@@ -128,14 +132,16 @@ RSpec.describe AtCoderFriends::Generator::Main do
           .to receive(:process).and_raise(StandardError.new('error'))
       end
       it 'shows error' do
-        expect { subject }
-          .to output(Regexp.compile(Regexp.escape(
-            <<~MSG
-              an error occurred in generator:CxxBuiltin.
-              error
-            MSG
-          )))
-          .to_stdout
+        expect { subject }.to output(
+          Regexp.compile(
+            Regexp.escape(
+              <<~MSG
+                an error occurred in generator:CxxBuiltin.
+                error
+              MSG
+            )
+          )
+        ).to_stdout
       end
 
       it 'generates Ruby source' do

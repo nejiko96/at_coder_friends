@@ -14,15 +14,18 @@ module AtCoderFriends
     ACF_HOME = File.expand_path(File.join(__dir__, '..', '..'))
     REGRESSION_HOME = File.join(ACF_HOME, 'regression')
     PAGES_DIR = File.join(REGRESSION_HOME, 'pages')
+    PAGES_DIR_FMT = File.join(REGRESSION_HOME, 'pages_%<now>s')
     EMIT_ORG_DIR = File.join(REGRESSION_HOME, 'emit_org')
     EMIT_DIR_FMT = File.join(REGRESSION_HOME, 'emit_%<now>s')
+    PERM_CONTEST_LIST = %w[practice apg4b].freeze
 
     def contest_id_list
+      contests = PERM_CONTEST_LIST
       uri = URI.parse(CONTEST_LIST_URL)
       json = Net::HTTP.get(uri)
-      contests = JSON.parse(json)
+      contests += JSON.parse(json).map { |h| h['id'] }
       puts "Total #{contests.size} contests"
-      contests.map { |h| h['id'] }
+      contests
     end
 
     def local_pbm_list

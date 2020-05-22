@@ -1,11 +1,11 @@
 inherit_from: .rubocop_todo.yml
 
 AllCops:
+  TargetRubyVersion: 2.3
   Exclude:
     - 'templates/**/*'
     - 'spec/fixtures/**/*'
     - 'regression/**/*'
-  TargetRubyVersion: 2.3
 
 Lint/AmbiguousBlockAssociation:
   Exclude:
