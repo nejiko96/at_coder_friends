@@ -3,7 +3,7 @@
 ## master (unreleased)
 ### Added
 - error handling in fetch_problem.
-- remove \mathrm{...} from input format text.
+- remove \mathrm{...} from expressions.
 
 ### Changed
 - change task id match pattern on submission.
