@@ -6,3 +6,19 @@ Metrics/ClassLength:
 
 Metrics/MethodLength:
   Max: 15
+
+# enable new cops to avoid warnings
+Lint/RaiseException:
+  Enabled: true
+
+Lint/StructNewOverride:
+  Enabled: true
+
+Style/HashEachMethods:
+  Enabled: true
+
+Style/HashTransformKeys:
+  Enabled: true
+
+Style/HashTransformValues:
+  Enabled: true
