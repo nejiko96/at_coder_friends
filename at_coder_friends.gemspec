@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-lib = File.expand_path('lib', __dir__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'at_coder_friends/version'
+require_relative 'lib/at_coder_friends/version'
 
 Gem::Specification.new do |spec|
   spec.name          = 'at_coder_friends'
@@ -35,7 +33,7 @@ Gem::Specification.new do |spec|
   spec.metadata = {
     'homepage_uri' => spec.homepage,
     'source_code_uri' => spec.homepage,
-    'changelog_uri' => 'https://github.com/nejiko96/at_coder_friends/blob/master/CHANGELOG.md'
+    'changelog_uri' => spec.homepage + '/blob/master/CHANGELOG.md'
   }
 
   spec.add_dependency 'colorize', '~> 0.8.1'

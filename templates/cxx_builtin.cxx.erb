@@ -1,17 +1,20 @@
 // <%= pbm.url %>
-<%
-if pbm.options.interactive
-%>
+
 #include <cstdio>
+<% if pbm.options.interactive -%>
 #include <vector>
 #include <string>
+<% end -%>
 
 using namespace std;
 
+<% if pbm.options.interactive -%>
 #define DEBUG
+<% end -%>
 #define REP(i,n)   for(int i=0; i<(int)(n); i++)
 #define FOR(i,b,e) for(int i=(b); i<=(int)(e); i++)
 
+<% if pbm.options.interactive -%>
 //------------------------------------------------------------------------------
 const int BUFSIZE = 1024;
 char req[BUFSIZE];
@@ -33,11 +36,17 @@ void query() {
 }
 
 //------------------------------------------------------------------------------
-<% gen_consts.each do |const| %><%= const %>
-<% end %>
-<% gen_decls.each do |dcl| %><%= dcl %>
-<% end %>
+<% end -%>
+<% gen_consts.each do |line| -%>
+<%= line %>
+<% end -%>
+
+<% gen_decls.each do |line| -%>
+<%= line %>
+<% end -%>
+
 void solve() {
+<% if pbm.options.interactive -%>
   printf("! %s\n", ans);
   fflush(stdout);
 #ifdef DEBUG
@@ -47,48 +56,26 @@ void solve() {
     puts(responses[i].c_str());
   }
 #endif
+<% elsif (vs = pbm.options.binary_values) -%>
+  bool cond = false;
+  puts(cond ? "<%= vs[0] %>" : "<%= vs[1] %>");
+<% else -%>
+  int ans = 0;
+  printf("%d\n", ans);
+<% end -%>
 }
 
 void input() {
-<% gen_inputs.each do |input| %>  <%= input %>
-<% end
-%>#ifdef DEBUG
+<% gen_inputs.each do |line| -%>
+  <%= line %>
+<% end -%>
+<% if pbm.options.interactive -%>
+#ifdef DEBUG
   scanf("%s", source);
 #endif
-}
-<%
-else
-%>
-#include <cstdio>
-
-using namespace std;
-
-#define REP(i,n)   for(int i=0; i<(int)(n); i++)
-#define FOR(i,b,e) for(int i=(b); i<=(int)(e); i++)
-
-<% gen_consts.each do |const| %><%= const %>
-<% end %>
-<% gen_decls.each do |dcl| %><%= dcl %>
-<% end %>
-void solve() {
-<%
-if (vs = pbm.options.binary_values)
-%>  bool cond = false;
-  puts(cond ? "<%= vs[0] %>" : "<%= vs[1] %>");<%
-else
-%>  int ans = 0;
-  printf("%d\n", ans);<%
-end
-%>
+<% end -%>
 }
 
-void input() {
-<% gen_inputs.each do |input| %>  <%= input %>
-<% end
-%>}
-<%
-end
-%>
 int main() {
   input();
   solve();

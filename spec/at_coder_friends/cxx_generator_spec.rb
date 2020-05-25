@@ -381,7 +381,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
     context 'for a plain number' do
       let(:container) { :single }
       let(:cols) { %i[number] }
-      it 'generates input script' do
+      it 'generates input code' do
         expect(subject).to eq('scanf("%d", &A);')
       end
     end
@@ -390,7 +390,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       let(:container) { :single }
       let(:cols) { %i[number] * 2 }
       let(:names) { %w[A B] }
-      it 'generates input script' do
+      it 'generates input code' do
         expect(subject).to eq('scanf("%d%d", &A, &B);')
       end
     end
@@ -398,7 +398,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
     context 'for a plain decimal' do
       let(:container) { :single }
       let(:cols) { %i[decimal] }
-      it 'generates input script' do
+      it 'generates input code' do
         expect(subject).to eq('scanf("%lf", &A);')
       end
     end
@@ -406,7 +406,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
     context 'for a plain string' do
       let(:container) { :single }
       let(:cols) { %i[string] }
-      it 'generates input script' do
+      it 'generates input code' do
         expect(subject).to eq('scanf("%s", A);')
       end
     end
@@ -415,7 +415,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       let(:container) { :single }
       let(:cols) { %i[number decimal string] }
       let(:names) { %w[A B C] }
-      it 'generates input script' do
+      it 'generates input code' do
         expect(subject).to eq('scanf("%d%lf%s", &A, &B, C);')
       end
     end
@@ -424,7 +424,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       let(:container) { :harray }
       let(:cols) { %i[number] }
       let(:size) { %w[N] }
-      it 'generates input script' do
+      it 'generates input code' do
         expect(subject).to eq('REP(i, N) scanf("%d", A + i);')
       end
     end
@@ -433,7 +433,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       let(:container) { :harray }
       let(:cols) { %i[decimal] }
       let(:size) { %w[N] }
-      it 'generates input script' do
+      it 'generates input code' do
         expect(subject).to eq('REP(i, N) scanf("%lf", A + i);')
       end
     end
@@ -442,7 +442,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       let(:container) { :harray }
       let(:cols) { %i[string] }
       let(:size) { %w[N] }
-      it 'generates read script' do
+      it 'generates input code' do
         expect(subject).to eq('REP(i, N) scanf("%s", A[i]);')
       end
     end
@@ -451,7 +451,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       let(:container) { :harray }
       let(:item) { :char }
       let(:size) { %w[N] }
-      it 'generates read script' do
+      it 'generates input code' do
         expect(subject).to eq('scanf("%s", A);')
       end
     end
@@ -461,7 +461,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       let(:cols) { %i[number] }
       let(:names) { %w[A B] }
       let(:size) { %w[N] }
-      it 'generates input script' do
+      it 'generates input code' do
         expect(subject).to eq('REP(i, N) scanf("%d%d", A + i, B + i);')
       end
     end
@@ -471,7 +471,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       let(:cols) { %i[decimal] * 2 }
       let(:names) { %w[A B] }
       let(:size) { %w[N] }
-      it 'generates input script' do
+      it 'generates input code' do
         expect(subject).to eq('REP(i, N) scanf("%lf%lf", A + i, B + i);')
       end
     end
@@ -481,7 +481,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       let(:cols) { %i[string] * 2 }
       let(:names) { %w[A B] }
       let(:size) { %w[N] }
-      it 'generates read script' do
+      it 'generates input code' do
         expect(subject).to eq('REP(i, N) scanf("%s%s", A[i], B[i]);')
       end
     end
@@ -491,7 +491,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       let(:cols) { %i[number decimal string] }
       let(:names) { %w[A B C] }
       let(:size) { %w[N] }
-      it 'generates decl' do
+      it 'generates input code' do
         expect(subject).to eq('REP(i, N) scanf("%d%lf%s", A + i, B + i, C[i]);')
       end
     end
@@ -500,7 +500,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       let(:container) { :matrix }
       let(:cols) { %i[number] }
       let(:size) { %w[R C] }
-      it 'generates input script' do
+      it 'generates input code' do
         expect(subject).to eq('REP(i, R) REP(j, C) scanf("%d", &A[i][j]);')
       end
     end
@@ -509,7 +509,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       let(:container) { :matrix }
       let(:cols) { %i[decimal] }
       let(:size) { %w[R C] }
-      it 'generates input script' do
+      it 'generates input code' do
         expect(subject).to eq('REP(i, R) REP(j, C) scanf("%lf", &A[i][j]);')
       end
     end
@@ -518,7 +518,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       let(:container) { :matrix }
       let(:cols) { %i[string] }
       let(:size) { %w[R C] }
-      it 'generates input script' do
+      it 'generates input code' do
         expect(subject).to eq('REP(i, R) REP(j, C) scanf("%s", A[i][j]);')
       end
     end
@@ -527,7 +527,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       let(:container) { :matrix }
       let(:item) { :char }
       let(:size) { %w[R C] }
-      it 'generates input script' do
+      it 'generates input code' do
         expect(subject).to eq('REP(i, R) scanf("%s", A[i]);')
       end
     end
@@ -537,7 +537,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       let(:cols) { %i[number] * 2 }
       let(:names) { %w[K A] }
       let(:size) { %w[N K_N] }
-      it 'generates input script' do
+      it 'generates input code' do
         expect(subject).to match(
           [
             'REP(i, N) {',
@@ -555,7 +555,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       let(:cols) { %i[number string] }
       let(:names) { %w[K p] }
       let(:size) { %w[Q 26] }
-      it 'generates input script' do
+      it 'generates input code' do
         expect(subject).to match(
           [
             'REP(i, Q) {',
@@ -572,7 +572,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       let(:cols) { %i[number] * 2 }
       let(:names) { %w[city cost] }
       let(:size) { %w[M 2] }
-      it 'generates input script' do
+      it 'generates input code' do
         expect(subject).to match(
           [
             'REP(i, M) {',
@@ -589,7 +589,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       let(:cols) { %i[number] * 2 }
       let(:names) { %w[idol p] }
       let(:size) { %w[1 C_1] }
-      it 'generates input script' do
+      it 'generates input code' do
         expect(subject).to eq(
           'REP(i, 1) REP(j, C_1) scanf("%d%d", &idol[i][j], &p[i][j]);'
         )
@@ -601,7 +601,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       let(:cols) { %i[number] }
       let(:names) { %w[x y] }
       let(:size) { %w[Q 2] }
-      it 'generates input script' do
+      it 'generates input code' do
         expect(subject).to eq(
           'REP(i, Q) REP(j, 2) scanf("%d%d", &x[i][j], &y[i][j]);'
         )

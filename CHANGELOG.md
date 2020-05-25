@@ -2,6 +2,7 @@
 
 ## master (unreleased)
 ### Added
+- enable -%> in ERBs.
 - error handling in fetch_problem.
 - remove \mathrm{...} from expressions.
 
