@@ -37,7 +37,7 @@ Gem::Specification.new do |spec|
   }
 
   spec.add_dependency 'colorize', '~> 0.8.1'
-  spec.add_dependency 'launchy', '~> 2.4.3'
+  spec.add_dependency 'launchy', '>= 2.4.3', '< 2.6.0'
   spec.add_dependency 'mechanize', '~> 2.0'
 
   spec.add_development_dependency 'bundler', '~> 2.0'
