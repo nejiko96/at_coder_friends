@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'optparse'
+require 'launchy'
 
 module AtCoderFriends
   # command line interface
@@ -116,6 +117,7 @@ module AtCoderFriends
 
       ctx.scraping_agent.submit
       vf.unverify
+      open_submission_list
     end
 
     def check_and_go
@@ -124,6 +126,7 @@ module AtCoderFriends
         # submit automatically
         ctx.scraping_agent.submit
         vf.unverify
+        open_submission_list
       else
         # enable manual submit
         vf.verify
@@ -139,8 +142,13 @@ module AtCoderFriends
     end
 
     def open_contest
-      require 'launchy'
       Launchy.open(ctx.scraping_agent.contest_url)
+    end
+
+    def open_submission_list
+      url = ctx.scraping_agent.contest_url('submissions/me')
+      puts "submission status : #{url}"
+      Launchy.open(url)
     end
   end
 end

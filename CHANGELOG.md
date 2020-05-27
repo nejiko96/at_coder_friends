@@ -2,6 +2,7 @@
 
 ## master (unreleased)
 ### Added
+- open submission list after submit.
 - enable -%> in ERBs.
 - error handling in fetch_problem.
 - remove \mathrm{...} from expressions.

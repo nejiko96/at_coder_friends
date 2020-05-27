@@ -318,6 +318,7 @@ RSpec.describe AtCoderFriends::CLI do
           <<~OUTPUT
             ***** submit A.rb *****
             logged in as foo (Contestant)
+            submission status : https://atcoder.jp/contests/practice/submissions/me
           OUTPUT
         ).to_stdout
       end
@@ -389,6 +390,7 @@ RSpec.describe AtCoderFriends::CLI do
             \e[0;32;49m<< OK >>\e[0m
             ***** submit A.rb *****
             logged in as foo (Contestant)
+            submission status : https://atcoder.jp/contests/practice/submissions/me
           OUTPUT
         ).to_stdout
       end
