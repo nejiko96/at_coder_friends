@@ -3,7 +3,7 @@ PATH
   specs:
     at_coder_friends (0.6.5)
       colorize (~> 0.8.1)
-      launchy (~> 2.4.3)
+      launchy (>= 2.4.3, < 2.6.0)
       mechanize (~> 2.0)
 
 GEM
