@@ -1,6 +1,8 @@
 # Change log
 
 ## master (unreleased)
+
+## 0.6.6 (2020-05-29)
 ### Added
 - open submission list after submit.
 - enable -%> in ERBs.
