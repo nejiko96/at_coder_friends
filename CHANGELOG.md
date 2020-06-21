@@ -1,6 +1,8 @@
 # Change log
 
 ## master (unreleased)
+### Deleted
+- drop Ruby2.3 from target version.
 
 ## 0.6.6 (2020-05-29)
 ### Added
