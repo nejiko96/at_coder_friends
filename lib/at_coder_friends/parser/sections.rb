@@ -63,7 +63,7 @@ module AtCoderFriends
         {
           key: Problem::SECTION_IN_SMP,
           pattern: /
-            \A(
+            \A(?:
               入力例\s*(?<no>\d+)?
               |入力\s*(?<no>\d+)
               |Sample\s*Input\s*(?<no>\d+)?
@@ -75,14 +75,14 @@ module AtCoderFriends
         {
           key: Problem::SECTION_OUT_SMP,
           pattern: /
-            \A(
+            \A(?:
               出力例\s*(?<no>\d+)?
               |出力\s*(?<no>\d+)
               |入力例\s*(?<no>\d+)?\s*に対する出力例
               |Sample\s*Output\s*(?<no>\d+)?
               |Output\s*Example\s*(?<no>\d+)?
               |Output\s*(?<no>\d+)
-              |Output\s*for\s*(the)?\s*Sample\s*Input\s*(?<no>\d+)?
+              |Output\s*for\s*(?:the)?\s*Sample\s*Input\s*(?<no>\d+)?
             )\z
           /xi
         },
