@@ -56,6 +56,7 @@ module AtCoderFriends
           .gsub('&gt;', '>')
           .gsub('&lt;', '<')
           .gsub('\\ ', ' ')
+          .gsub(/\\hspace\{\d+pt\}/, ' ')
           .gsub('\\(', '')
           .gsub('\\)', '')
           .gsub('\\lvert', '|')
