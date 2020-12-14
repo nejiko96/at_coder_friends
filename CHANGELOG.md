@@ -1,6 +1,8 @@
 # Change log
 
 ## master (unreleased)
+### Changed
+- replace hspace with ' ' [#85](https://github.com/nejiko96/at_coder_friends/pull/85) ([suzukiapple](https://github.com/suzukiapple))
 ### Deleted
 - drop Ruby2.3 from target version.
 
