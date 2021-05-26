@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+## 0.6.8 (2021-05-27)
+### Deleted
+- drop Ruby2.4 from target version.
+
 ## 0.6.7 (2020-12-20)
 ### Changed
 - replace hspace with ' ' [#85](https://github.com/nejiko96/at_coder_friends/pull/85) ([suzukiapple](https://github.com/suzukiapple))
