@@ -16,7 +16,7 @@ AtCoderFriends automates tasks about [AtCoder](https://atcoder.jp/) programming 
 
 ## Dependencies
 
-- Ruby 2.4 or newer
+- Ruby 2.5 or newer
 - [Mechanize](https://github.com/sparklemotion/mechanize)
 
 ## Installation
