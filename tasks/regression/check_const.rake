@@ -78,7 +78,7 @@ module AtCoderFriends
             .map { |key, grp| [key, grp.map { |row| row[2] }.join("\n")] }
             .each do |key, txt|
               tbl[key] ||= { 'v1' => '', 'v2' => '' }
-              tbl[key]["v#{n}"] = '"' + txt + '"'
+              tbl[key]["v#{n}"] = %("#{txt}")
             end
         end
       tbl
@@ -92,8 +92,8 @@ module AtCoderFriends
       end
     end
 
-    def open_const_report(act, tgt)
-      open_report("#{act}_#{tgt}.txt") { |f| yield f }
+    def open_const_report(act, tgt, &block)
+      open_report("#{act}_#{tgt}.txt", &block)
     end
 
     def load_const_report(act, tgt)

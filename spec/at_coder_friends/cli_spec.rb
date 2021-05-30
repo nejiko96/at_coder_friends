@@ -63,7 +63,7 @@ RSpec.describe AtCoderFriends::CLI do
       let(:args) { ['--nothing'] }
       it 'shows usage' do
         expect { subject }.to \
-          output(USAGE + "error: invalid option: --nothing\n").to_stderr
+          output("#{USAGE}error: invalid option: --nothing\n").to_stderr
         expect(subject).to eq(1)
       end
     end

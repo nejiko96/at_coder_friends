@@ -32,7 +32,7 @@ module AtCoderFriends
       agent = Context.new({}, __FILE__).scraping_agent
       MOCK_PAGES.each do |path|
         url = File.join(URL_BASE, path)
-        file = File.join(MOCK_BASE, path + '.html')
+        file = File.join(MOCK_BASE, "#{path}.html")
         puts "#{url} -> #{file}"
         page = (
           if path.include?('/practice')

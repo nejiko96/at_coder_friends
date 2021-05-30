@@ -71,7 +71,7 @@ StubRequest = Struct.new(:mtd, :path, :param, :result) do
         requested_page(result)
       else
         # invalid session => show login form
-        redirect_to('/login?continue=' + CGI.escape(request.uri.to_s))
+        redirect_to("/login?continue=#{CGI.escape(request.uri.to_s)}")
       end
     end
   end
