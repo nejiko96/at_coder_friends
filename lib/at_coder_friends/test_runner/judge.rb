@@ -16,17 +16,17 @@ module AtCoderFriends
         puts "***** judge_all #{prg} (#{test_loc}) *****"
         results = Dir["#{data_dir}/#{q}/in/*"].sort.map do |infile|
           id = File.basename(infile)
-          judge(id, false)
+          judge(id, detail: false)
         end
         !results.empty? && results.all?
       end
 
       def judge_one(id)
         puts "***** judge_one #{prg} (#{test_loc}) *****"
-        judge(id, true)
+        judge(id, detail: true)
       end
 
-      def judge(id, detail = true)
+      def judge(id, detail: true)
         @detail = detail
         infile = "#{data_dir}/#{q}/in/#{id}"
         outfile = "#{result_dir}/#{q}/result/#{id}"

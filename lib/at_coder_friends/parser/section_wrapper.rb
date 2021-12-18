@@ -52,7 +52,7 @@ module AtCoderFriends
 
       def code_block(mtd)
         elem = find_element(%w[pre blockquote])
-        elem && elem.send(mtd).lstrip.gsub("\r\n", "\n") || ''
+        (elem && elem.send(mtd).lstrip.gsub("\r\n", "\n")) || ''
       end
     end
   end

@@ -51,18 +51,17 @@ module AtCoderFriends
       end
 
       def merge(base_hash, derived_hash)
-        res = base_hash.merge(derived_hash) do |_, base_val, derived_val|
+        base_hash.merge(derived_hash) do |_, base_val, derived_val|
           if base_val.is_a?(Hash) && derived_val.is_a?(Hash)
             merge(base_val, derived_val)
           else
             derived_val
           end
         end
-        res
       end
 
       def load_yaml(path)
-        yaml = IO.read(path, encoding: Encoding::UTF_8)
+        yaml = File.read(path, encoding: Encoding::UTF_8)
         YAML.safe_load(yaml, [], [], false, path) || {}
       rescue Errno::ENOENT
         raise ConfigNotFoundError,

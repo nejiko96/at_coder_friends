@@ -37,7 +37,7 @@ module AtCoderFriends
       s
         .tr('０-９Ａ-Ｚａ-ｚ', '0-9A-Za-z')
         .gsub(/[[:space:]]/, '')
-        .gsub(/[^一-龠_ぁ-ん_ァ-ヶーa-zA-Z0-9 ]/, '')
+        .gsub(/[^一-龠ぁ-ん_ァ-ヶーa-zA-Z0-9 ]/, '')
         .downcase
         .gsub(/\d+/, '{N}')
         .strip

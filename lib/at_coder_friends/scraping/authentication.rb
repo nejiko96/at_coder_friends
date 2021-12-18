@@ -25,7 +25,7 @@ module AtCoderFriends
           raise e if username_link(e.page)
         end
 
-        agent.get(common_url('login') + '?continue=' + CGI.escape(url))
+        agent.get("#{common_url('login')}?continue=#{CGI.escape(url)}")
       end
 
       def post_login(page)
@@ -40,13 +40,13 @@ module AtCoderFriends
         user = ctx.config['user'].to_s
         if user.empty?
           print('enter username:')
-          user = STDIN.gets.chomp
+          user = $stdin.gets.chomp
         end
 
         pass = ctx.config['password'].to_s
         if pass.empty?
           print("enter password for #{user}:")
-          pass = STDIN.noecho(&:gets).chomp
+          pass = $stdin.noecho(&:gets).chomp
           puts
         end
         [user, pass]

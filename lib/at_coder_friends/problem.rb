@@ -54,7 +54,7 @@ module AtCoderFriends
       end
 
       def vars
-        tmp = @item && [@item] || cols
+        tmp = (@item && [@item]) || cols
         names.zip(tmp).map { |(name, col)| [name, col || :number] }
       end
 

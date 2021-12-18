@@ -16,9 +16,10 @@ module AtCoderFriends
         re1, re2 = vs.map { |v| Regexp.escape(v) }
 
         pbm.options.binary_values =
-          if out_fmt =~ /#{re1}.+#{re2}/m
+          case out_fmt
+          when /#{re1}.+#{re2}/m
             vs
-          elsif out_fmt =~ /#{re2}.+#{re1}/m
+          when /#{re2}.+#{re1}/m
             vs.reverse
           end
       end

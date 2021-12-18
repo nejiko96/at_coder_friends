@@ -148,8 +148,8 @@ module AtCoderFriends
     class InputFormatMatcher
       include InputFormatUtils
 
-      attr_reader :container, :item, :pat, :gen_names, :gen_pat2
-      attr_reader :names, :pat2, :size, :delim, :ix0
+      attr_reader :container, :item, :pat, :gen_names, :gen_pat2,
+                  :names, :pat2, :size, :delim, :ix0
 
       def initialize(
         container: nil, item: nil,
@@ -168,8 +168,8 @@ module AtCoderFriends
 
         @names = gen_names.call(m1)
         @pat2 = gen_pat2&.call(names)
-        @size = m1.names.include?('sz') && m1['sz'] || ''
-        @ix0 = m1.names.include?('ix0') && m1['ix0'] || size
+        @size = (m1.names.include?('sz') && m1['sz']) || ''
+        @ix0 = (m1.names.include?('ix0') && m1['ix0']) || size
         @delim = dlm
         true
       end
@@ -416,7 +416,7 @@ module AtCoderFriends
       SINGLE_MATCHER = InputFormatMatcher.new(
         container: :single,
         pat: /\A(.*\s)?#{RE_SINGLE}(\s.*)?\z/,
-        gen_names: ->(m) { m[0].split.select { |w| w =~ /\A#{RE_SINGLE}\z/ } }
+        gen_names: ->(m) { m[0].split.grep(/\A#{RE_SINGLE}\z/) }
       )
       MATCHERS = [
         MATRIX_MATCHER,
@@ -469,8 +469,8 @@ module AtCoderFriends
 
             ret << matcher.to_inpdef
           end
-          if (matcher = MATCHERS.find { |m| m.match(line) })
-          elsif !line.empty?
+          matcher = MATCHERS.find { |m| m.match(line) }
+          if !line.empty? && matcher.nil?
             puts "unknown format: #{line}"
             ret << unknown_fmt(line)
           end
