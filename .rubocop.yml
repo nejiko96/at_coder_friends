@@ -12,6 +12,13 @@ Lint/AmbiguousBlockAssociation:
   Exclude:
     - 'spec/**/*.rb'
 
+Lint/ConstantDefinitionInBlock:
+  Exclude:
+    - 'spec/**/*.rb'
+
+Lint/DuplicateBranch:
+  Enabled: false
+
 Metrics/BlockLength:
   Exclude:
     - 'Rakefile'

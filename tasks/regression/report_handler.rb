@@ -5,8 +5,8 @@ module AtCoderFriends
   module Regression
     module_function
 
-    def open_report(file)
-      File.open(report_path(file), 'wb') { |f| yield f }
+    def open_report(file, &block)
+      File.open(report_path(file), 'wb', &block)
     end
 
     def report_path(file)
@@ -14,7 +14,7 @@ module AtCoderFriends
     end
 
     def tsv_escape(str)
-      '"' + str.gsub('"', '""').gsub("\t", ' ') + '"'
+      %("#{str.gsub('"', '""').gsub("\t", ' ')}")
     end
   end
 end

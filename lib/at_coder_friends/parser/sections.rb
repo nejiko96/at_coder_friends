@@ -129,7 +129,7 @@ module AtCoderFriends
         key = nil
         SECTION_DEFS.any? do |grp|
           if (m = title.match(grp[:pattern]))
-            no = m.names.include?('no') && m['no'] || '1'
+            no = (m.names.include?('no') && m['no']) || '1'
             key = format(grp[:key], no: no)
           end
         end
@@ -140,7 +140,7 @@ module AtCoderFriends
         s
           .tr('０-９Ａ-Ｚａ-ｚ', '0-9A-Za-z')
           .gsub(/[[:space:]]/, ' ') # &npsp; full-width space
-          .gsub(/[^一-龠_ぁ-ん_ァ-ヶーa-zA-Z0-9 ]/, '')
+          .gsub(/[^一-龠_ぁ-んァ-ヶーa-zA-Z0-9 ]/, '')
           .strip
       end
     end

@@ -63,7 +63,7 @@ RSpec.describe AtCoderFriends::CLI do
       let(:args) { ['--nothing'] }
       it 'shows usage' do
         expect { subject }.to \
-          output(USAGE + "error: invalid option: --nothing\n").to_stderr
+          output("#{USAGE}error: invalid option: --nothing\n").to_stderr
         expect(subject).to eq(1)
       end
     end
@@ -72,7 +72,7 @@ RSpec.describe AtCoderFriends::CLI do
       let(:args) { ['setup'] }
       it 'shows usage' do
         expect { subject }.to \
-          output(USAGE + "error: command or path is not specified.\n")
+          output("#{USAGE}error: command or path is not specified.\n")
           .to_stderr
         expect(subject).to eq(1)
       end
@@ -82,7 +82,7 @@ RSpec.describe AtCoderFriends::CLI do
       let(:command) { 'init' }
       it 'shows usage' do
         expect { subject }.to \
-          output(USAGE + "error: unknown command: init\n").to_stderr
+          output("#{USAGE}error: unknown command: init\n").to_stderr
         expect(subject).to eq(1)
       end
     end

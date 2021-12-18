@@ -6,7 +6,6 @@ module AtCoderFriends
     module Modulo
       module_function
 
-      # rubocop:disable Style/AsciiComments
       SECTIONS = [
         Problem::SECTION_OUT_FMT,
         Problem::SECTION_STATEMENT,
@@ -32,7 +31,6 @@ module AtCoderFriends
           |(?:modulo|mod|divided\s*by|dividing\s*by)\s*#{VALUE_PATTERN}
         )
       /xi.freeze
-      # rubocop:enable Style/AsciiComments
 
       def process(pbm)
         mods = []
@@ -59,7 +57,7 @@ module AtCoderFriends
         s
           .tr('０-９Ａ-Ｚａ-ｚ', '0-9A-Za-z')
           .gsub(/[[:space:]]/, ' ')
-          .gsub(%r{[^一-龠_ぁ-ん_ァ-ヶーa-zA-Z0-9 -/:-@\[-`\{-~]}, '')
+          .gsub(%r{[^一-龠_ぁ-んァ-ヶーa-zA-Z0-9 -/:-@\[-`\{-~]}, '')
           .gsub(/{\\rm\s*mod\s*}\\?/i, 'mod') # {\rm mod} -> mod
           .gsub(/\\rm\s*{\s*mod\s*}\\?/i, 'mod') # \rm{mod}\ -> mod
           .gsub(/\\mbox\s*{\s*mod\s*}/i, 'mod') # \mbox{mod} -> mod

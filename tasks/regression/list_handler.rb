@@ -29,7 +29,7 @@ module AtCoderFriends
     end
 
     def local_pbm_list
-      Dir.glob(PAGES_DIR + '/**/*.html').map do |pbm_path|
+      Dir.glob("#{PAGES_DIR}/**/*.html").map do |pbm_path|
         contest = File.basename(File.dirname(pbm_path))
         q = File.basename(pbm_path, '.html')
         url = "file://#{pbm_path}"

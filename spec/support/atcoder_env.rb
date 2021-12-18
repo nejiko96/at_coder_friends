@@ -17,7 +17,7 @@ shared_context :atcoder_env do
 
   after :all do
     rmdir_force(tmp_dir)
-    FileUtils.rm(Dir.glob(smp_dir + '/*.out'))
+    FileUtils.rm(Dir.glob("#{smp_dir}/*.out"))
   end
 
   attr_reader :project_root, :contest_root, :smp_dir, :tmp_dir

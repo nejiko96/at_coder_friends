@@ -5,7 +5,7 @@ shared_context :evacuate_session do
 
   before :all do
     @sess_dir = File.join(Dir.home, '.at_coder_friends')
-    @bak_dir = File.join(Dir.home, '.at_coder_friends_bak_' + SecureRandom.hex)
+    @bak_dir = File.join(Dir.home, ".at_coder_friends_bak_#{SecureRandom.hex}")
     rmdir_force(bak_dir)
     FileUtils.mv(sess_dir, bak_dir) if Dir.exist?(sess_dir)
   end

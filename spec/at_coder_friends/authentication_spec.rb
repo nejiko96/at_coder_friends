@@ -102,8 +102,8 @@ RSpec.describe AtCoderFriends::CLI do
       context 'when session is not saved' do
         before(:each) { File.delete(sess_file) if File.exist?(sess_file) }
         before(:each) do
-          allow(STDIN).to receive(:gets) do
-            input.shift.to_s + "\n"
+          allow($stdin).to receive(:gets) do
+            "#{input.shift}\n"
           end
         end
 

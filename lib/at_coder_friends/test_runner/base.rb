@@ -121,7 +121,7 @@ module AtCoderFriends
       end
 
       def which_os
-        @which_os ||= begin
+        @which_os ||=
           case RbConfig::CONFIG['host_os']
           when /mswin|msys|mingw|cygwin|bccwin|wince|emc/
             :windows
@@ -134,7 +134,6 @@ module AtCoderFriends
           else
             :unknown
           end
-        end
       end
     end
   end

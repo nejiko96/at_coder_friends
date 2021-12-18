@@ -15,8 +15,7 @@ module AtCoderFriends
 
       def render(src)
         src = embed_lines(src, '### CONSTS ###', gen_consts)
-        src = embed_lines(src, '### DCLS ###', gen_decls)
-        src
+        embed_lines(src, '### DCLS ###', gen_decls)
       end
 
       def gen_consts(constants = pbm.constants)
@@ -110,7 +109,7 @@ module AtCoderFriends
         vs[mx] += 's'
         sz = inpdef.size[0]
         dcls = vs.map { |v| "#{v}[i]" }
-        dcls[mx] = '*' + dcls[mx] unless inpdef.item == :char
+        dcls[mx] = "*#{dcls[mx]}" unless inpdef.item == :char
         dcl = dcls.join(', ')
         expr = gen_cmb_expr(inpdef)
         ret = []
