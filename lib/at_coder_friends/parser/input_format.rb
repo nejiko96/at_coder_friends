@@ -56,7 +56,6 @@ module AtCoderFriends
           .gsub('&gt;', '>')
           .gsub('&lt;', '<')
           .gsub('\\ ', ' ')
-          .gsub(/\\hspace\{\d+pt\}/, ' ')
           .gsub('\\(', '')
           .gsub('\\)', '')
           .gsub('\\lvert', '|')
@@ -66,7 +65,9 @@ module AtCoderFriends
           .gsub('\\times', '*')
           .gsub(/\\begin(\{[^{}]*\})*/, '')
           .gsub(/\\end(\{[^{}]*\})*/, '')
+          .gsub(/\\hspace(\{[^{}]*\})*/, ' ')
           .gsub(/\\[cdlv]?dots/, '..')
+          .gsub(/\\text\{([^{}]*)\}/, '\1')
           .gsub(/\{\}/, ' ')
           .gsub('−', '-') # full width hyphen
           .gsub(/[・．：‥⋮︙…]+/, '..')
