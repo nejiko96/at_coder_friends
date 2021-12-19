@@ -78,7 +78,7 @@ module AtCoderFriends
             .map { |key, grp| [key, grp.map { |row| row[2] }.join("\n")] }
             .each do |key, txt|
               tbl[key] ||= { 'v1' => '', 'v2' => '' }
-              tbl[key]["v#{n}"] = %("#{txt}")
+              tbl[key]["v#{n}"] = tsv_escape(txt)
             end
         end
       tbl
