@@ -78,7 +78,7 @@ module AtCoderFriends
             .map { |key, grp| [key, grp.map { |row| row[2] }.join("\n")] }
             .each do |key, txt|
               tbl[key] ||= { 'v1' => '', 'v2' => '' }
-              tbl[key]["v#{n}"] = %("#{txt}")
+              tbl[key]["v#{n}"] = tsv_escape(txt)
             end
         end
       tbl
@@ -116,7 +116,7 @@ namespace :regression do
   end
 
   desc 'merge mod values list'
-  task :merge_mod do
+  task merge_mod: %i[collect_mod check_mod] do
     AtCoderFriends::Regression.merge_list('mod')
   end
 
@@ -131,7 +131,7 @@ namespace :regression do
   end
 
   desc 'merge max values list'
-  task :merge_max do
+  task merge_max: %i[collect_max check_max] do
     AtCoderFriends::Regression.merge_list('max')
   end
 end

@@ -17,6 +17,7 @@ module AtCoderFriends
       VALUE_PATTERN = %r{
         (?:
           <var>([^<>]+)</var>
+          |\(([^()]+)\)
           |\\\(([^()]+)\\\)
           |\$([^$]+)\$
           |\{([^{}]+)\}
@@ -28,7 +29,7 @@ module AtCoderFriends
       MOD_PATTERN = /
         (?:
           #{VALUE_PATTERN}\s*(?:\([^()]+\)\s*)?で割った(?:剰余|余り|あまり)
-          |(?:modulo|mod|divided\s*by|dividing\s*by)\s*#{VALUE_PATTERN}
+          |(?:modulo|mod|divid(?:ed|ing)\s*by)\s*#{VALUE_PATTERN}
         )
       /xi.freeze
 
@@ -58,9 +59,8 @@ module AtCoderFriends
           .tr('０-９Ａ-Ｚａ-ｚ', '0-9A-Za-z')
           .gsub(/[[:space:]]/, ' ')
           .gsub(%r{[^一-龠_ぁ-んァ-ヶーa-zA-Z0-9 -/:-@\[-`\{-~]}, '')
-          .gsub(/{\\rm\s*mod\s*}\\?/i, 'mod') # {\rm mod} -> mod
-          .gsub(/\\rm\s*{\s*mod\s*}\\?/i, 'mod') # \rm{mod}\ -> mod
-          .gsub(/\\mbox\s*{\s*mod\s*}/i, 'mod') # \mbox{mod} -> mod
+          .gsub(/{\\[a-z]+\s*mod\s*}\\?/i, 'mod') # {\rm mod}, {\bmod} -> mod
+          .gsub(/\\[a-z]+\s*{\s*mod\s*}\\?/i, 'mod') # \text{mod} -> mod
           .gsub(%r{<var>\s*mod\s*</var>}i, 'mod') # <var>mod</var> -> mod
       end
 

@@ -88,7 +88,7 @@ RSpec.describe AtCoderFriends::CLI do
           sleep 0.1
         end
 
-        it 'loads session per user' do
+        xit 'loads session per user' do
           expect { subject }.to change { File.atime(sess_file) }
         end
 
@@ -158,7 +158,7 @@ RSpec.describe AtCoderFriends::CLI do
           sleep 0.1
         end
 
-        it 'loads global session' do
+        xit 'loads global session' do
           expect { subject }.to change { File.atime(sess_file) }
         end
 
