@@ -1,5 +1,7 @@
 [![Gem Version](https://badge.fury.io/rb/at_coder_friends.svg)](https://badge.fury.io/rb/at_coder_friends)
-[![Build Status](https://travis-ci.org/nejiko96/at_coder_friends.svg?branch=master)](https://travis-ci.org/nejiko96/at_coder_friends)
+[![Ruby](https://github.com/nejiko96/at_coder_friends/actions/workflows/ruby.yml/badge.svg)](https://github.com/nejiko96/at_coder_friends/actions/workflows/ruby.yml)
+<!-- [![Build Status](https://travis-ci.org/nejiko96/at_coder_friends.svg?branch=master)](https://travis-ci.org/nejiko96/at_coder_friends) -->
+[![CodeQL](https://github.com/nejiko96/at_coder_friends/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/nejiko96/at_coder_friends/actions/workflows/codeql-analysis.yml)
 [![Maintainability](https://api.codeclimate.com/v1/badges/dcd1ce08d11703be2f00/maintainability)](https://codeclimate.com/github/nejiko96/at_coder_friends/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/dcd1ce08d11703be2f00/test_coverage)](https://codeclimate.com/github/nejiko96/at_coder_friends/test_coverage)
 
