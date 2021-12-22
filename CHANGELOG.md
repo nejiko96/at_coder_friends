@@ -1,7 +1,10 @@
 # Change log
 
 ## master (unreleased)
-
+### Changed
+- input_format.rb : \hspace{...}, \text{...} support
+- input_format.rb : \rm, \textrm{...} support
+- modulo.rb : \text{mod}, {\bmod}, (10^9+7) support
 ## 0.6.8 (2021-05-27)
 ### Deleted
 - drop Ruby2.4 from target version.
