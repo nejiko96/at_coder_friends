@@ -1,6 +1,8 @@
 # Change log
 
 ## master (unreleased)
+
+## 0.6.9 (2021-12-25)
 ### Added
 - input_format.rb : \hspace{...}, \text{...} support
 - input_format.rb : \rm, \textrm{...} support
