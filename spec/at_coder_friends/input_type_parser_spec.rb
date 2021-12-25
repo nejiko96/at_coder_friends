@@ -23,7 +23,7 @@ RSpec.describe AtCoderFriends::Parser::InputType do
   describe '#match_smp' do
     subject { parser.match_smp(defs, smp.split("\n")) }
     let(:defs) do
-      def_params.map { |h| AtCoderFriends::Problem::InputFormat.new(h) }
+      def_params.map { |h| AtCoderFriends::Problem::InputFormat.new(**h) }
     end
     let(:smp) { '' }
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe AtCoderFriends::Problem::InputFormat do
-  subject(:inpdef) { described_class.new(params) }
+  subject(:inpdef) { described_class.new(**params) }
 
   describe '#to_s' do
     subject { inpdef.to_s }
