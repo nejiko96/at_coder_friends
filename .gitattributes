@@ -1,1 +1,1 @@
-spec/mocks/* linguist-vendored
+spec/mocks/** linguist-vendored
