@@ -30,3 +30,9 @@ jobs:
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
     - name: Run tests
       run: script -e -c "bundle exec rspec"
+      env:
+        COVERAGE: true
+    - name: publish code coverage
+      uses: paambaati/codeclimate-action@v3.0.0
+      env:
+        CC_TEST_REPORTER_ID: cb942bcc168feb78c43c506364d5344c5ec9a46a0b68dc66acb581e77c981ff1
