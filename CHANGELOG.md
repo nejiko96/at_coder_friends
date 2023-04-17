@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Added
+- add AnyBuiltin Generator
+- add file extension setteing to generator configuration
+
 ## 0.6.9 (2021-12-25)
 ### Added
 - input_format.rb : \hspace{...}, \text{...} support
