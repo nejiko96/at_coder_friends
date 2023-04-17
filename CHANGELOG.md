@@ -4,7 +4,8 @@
 
 ### Added
 - add AnyBuiltin Generator
-- add file extension setteing to generator configuration
+- add file extension to generator settings
+- enable multiple configuration for one generator
 
 ## 0.6.9 (2021-12-25)
 ### Added

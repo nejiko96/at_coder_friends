@@ -25,7 +25,8 @@ module AtCoderFriends
 
       def load_obj(gen_name)
         @cache[gen_name] ||= begin
-          gen_class = load_class(gen_name)
+          cls_name = gen_name.split('_')[0]
+          gen_class = load_class(cls_name)
           gen_cnf = config_for(gen_name)
           gen_class.new(gen_cnf)
         end

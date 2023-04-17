@@ -152,7 +152,8 @@ RSpec.describe AtCoderFriends::Generator::Main do
   end
 
   describe '#load_obj' do
-    subject { generator.load_obj('RubyBuiltin') }
+    subject { generator.load_obj(gen_name) }
+    let(:gen_name) { 'RubyBuiltin' }
 
     context 'with default configuration' do
       it 'initializes generator by empty setting' do
@@ -172,6 +173,31 @@ RSpec.describe AtCoderFriends::Generator::Main do
       end
 
       it 'initializes generator by specified setting' do
+        expect(subject.cfg).to match(
+          'default_template' => 'customized_default.rb'
+        )
+      end
+    end
+
+    context 'with generator name contains separator' do
+      let(:gen_name) { 'RubyBuiltin_1' }
+      before :each do
+        create_config(
+          <<~TEXT
+            generator_settings:
+              RubyBuiltin_1:
+                default_template: customized_default.rb
+          TEXT
+        )
+      end
+
+      it 'takes class name from the first token' do
+        expect(subject).to be_an_instance_of(
+          AtCoderFriends::Generator::RubyBuiltin
+        )
+      end
+
+      it 'takes generator settings by full name' do
         expect(subject.cfg).to match(
           'default_template' => 'customized_default.rb'
         )

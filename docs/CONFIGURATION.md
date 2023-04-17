@@ -225,6 +225,14 @@ ext_settings:
   
   [search generator in GitHub](https://github.com/search?q=at_coder_friends-generator)
 
+　 The same generator can be used multiple times
+   by adding suffix starts with underscore to the generator name,
+   such as "AnyBuiltin_1" or "AnyBuiltin_JS".
+
+  「AnyBuiltin_1」「AnyBuiltin_JS」のように
+  クラス名にアンダースコアで始まるサフィックスを付加すると
+  同じジェネレータを設定を変えて複数回指定することができます
+
 - generator_settings
   - _(generator name)_  
     Settings for each generator  
