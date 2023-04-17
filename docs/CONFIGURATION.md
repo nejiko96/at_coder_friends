@@ -206,11 +206,11 @@ ext_settings:
 
 - generators  
   List of source generator class names  
-  In default, ```RubyBuiltin``` and ```CxxBuiltin``` are available.  
+  In default, ```RubyBuiltin``` , ```CxxBuiltin``` and ```AnyBuiltin``` are available.  
   For other generators, corresponding plugin will be used  
   if it has been installed.  
   ソースジェネレータのクラス名（リスト形式）  
-  既定の状態では「RubyBuiltin」と「CxxBuiltin」が利用でき、  
+  既定の状態では「RubyBuiltin」「CxxBuiltin」「AnyBuiltin」が利用でき、  
   その他のジェネレータは、対応するプラグインがインストールされていれば  
   利用できます  
 
@@ -270,14 +270,22 @@ ext_settings:
 
 <a id="builtin-generator-settings"></a>
 ### Settings for RubyBuiltin generator
-| Setting | Description | Default |
-|---------|-------------|---------|
-|default_template|Source template file path|[/templates/ruby_builtin.rb.erb](/templates/ruby_builtin.rb.erb)|
+| Setting | Description  | Default |
+|---------|--------------|---------|
+|file_ext |File extension|rb       |
+|default_template|Template file path|[/templates/ruby_builtin.rb.erb](/templates/ruby_builtin.rb.erb)|
 
 ### Settings for CxxBuiltin generator
-| Setting | Description | Default |
-|---------|-------------|---------|
-|default_template|Source template file path|[/templates/cxx_builtin.cxx.erb](/templates/cxx_builtin.cxx.erb)|
+| Setting | Description  | Default |
+|---------|--------------|---------|
+|file_ext |File extension|cxx      |
+|default_template|Template file path|[/templates/cxx_builtin.cxx.erb](/templates/cxx_builtin.cxx.erb)|
+
+### Settings for AnyBuiltin generator
+| Setting | Description  | Default |
+|---------|--------------|---------|
+|file_ext |File extension|txt      |
+|default_template|Template file path|[/templates/any_builtin.txt.erb](/templates/any_builtin.txt.erb)|
 
 ### Language ID list (2020/06/21)
 
