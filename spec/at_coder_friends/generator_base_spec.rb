@@ -15,6 +15,26 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
     end
   end
 
+  describe '#select_file_ext' do
+    subject { generator.select_file_ext }
+
+    context 'with default configuration' do
+      it 'returns file extension' do
+        expect(subject).to eq(generator.attrs.file_ext)
+      end
+    end
+
+    context 'with custom configuration' do
+      let(:cfg) do
+        { 'file_ext' => 'cpp' }
+      end
+
+      it 'returns file extension' do
+        expect(subject).to eq('cpp')
+      end
+    end
+  end
+
   describe '#select_template' do
     subject { generator.select_template }
 

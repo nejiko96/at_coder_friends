@@ -15,7 +15,7 @@ module AtCoderFriends
       end
 
       def process(pbm)
-        pbm.add_src(attrs.file_ext, generate(pbm))
+        pbm.add_src(select_file_ext, generate(pbm))
       end
 
       def generate(pbm)
@@ -24,6 +24,10 @@ module AtCoderFriends
         src = ERB.new(src, safe_level = nil, trim_mode = '-').result(binding)
         src = render(src) if respond_to?(:render)
         src
+      end
+
+      def select_file_ext
+        cfg['file_ext'] || attrs.file_ext
       end
 
       def select_template

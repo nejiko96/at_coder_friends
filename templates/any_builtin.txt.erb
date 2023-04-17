@@ -1,0 +1,17 @@
+AnyBuiltin Generator
+====================
+
+## Usage
+- Prepare a source template file.
+- Specify the path to the template file
+  and file extension for the generated file (Here we use 'js')
+  in ```.at_coder_friends.yml``` as follows:
+
+```
+generators:
+  - AnyBuiltin
+generator_settings:
+  AnyBuiltin:
+    default_template: /path/to/template
+    file_ext: js
+```
