@@ -6,6 +6,7 @@
 - add AnyBuiltin Generator
 - add file extension to generator settings
 - enable multiple configuration for one generator
+- add CBuiltin Generator
 
 ## 0.6.9 (2021-12-25)
 ### Added

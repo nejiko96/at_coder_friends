@@ -1,0 +1,36 @@
+// <%= pbm.url %>
+
+#include <stdio.h>
+
+#define REP(i,n)   for(int i=0; i<(int)(n); i++)
+#define FOR(i,b,e) for(int i=(b); i<=(int)(e); i++)
+
+<% gen_consts.each do |line| -%>
+<%= line %>
+<% end -%>
+
+<% gen_decls.each do |line| -%>
+<%= line %>
+<% end -%>
+
+void solve() {
+<% if (vs = pbm.options.binary_values) -%>
+  int cond = 0;
+  puts(cond ? "<%= vs[0] %>" : "<%= vs[1] %>");
+<% else -%>
+  int ans = 0;
+  printf("%d\n", ans);
+<% end -%>
+}
+
+void input() {
+<% gen_inputs.each do |line| -%>
+  <%= line %>
+<% end -%>
+}
+
+int main() {
+  input();
+  solve();
+  return 0;
+}

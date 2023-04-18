@@ -2,6 +2,25 @@
 
 module AtCoderFriends
   module Generator
+    # generates C constants
+    module CBuiltinConstGen
+      def gen_const(c)
+        v = cnv_const_value(c.value)
+        if c.type == :max
+          "#define #{c.name.upcase}_MAX #{v}"
+        else
+          "#define MOD #{v}"
+        end
+      end
+
+      def cnv_const_value(v)
+        v
+          .sub(/\b10\^/, '1e')
+          .sub(/\b2\^/, '1<<')
+          .gsub(',', '')
+      end
+    end
+
     # generates C++ constants
     module CxxBuiltinConstGen
       def gen_const(c)
@@ -22,7 +41,7 @@ module AtCoderFriends
     end
 
     # generates C++ variable declarations
-    module CxxBuiltinDeclGen
+    module CLikeBuiltinDeclGen
       TYPE_TBL = {
         number: 'int',
         decimal: 'double',
@@ -103,7 +122,7 @@ module AtCoderFriends
     end
 
     # generates C++ input source
-    module CxxBuiltinInputGen
+    module CLikeBuiltinInputGen
       SCANF_FMTS = [
         'scanf("%<fmt>s", %<addr>s);',
         'REP(i, %<sz1>s) scanf("%<fmt>s", %<addr>s);',
@@ -221,11 +240,49 @@ module AtCoderFriends
     end
 
     # generates C++ source from problem description
-    class CxxBuiltin < Base
-      include CxxBuiltinConstGen
-      include CxxBuiltinDeclGen
-      include CxxBuiltinInputGen
+    class CLikeBuiltin < Base
+      include CLikeBuiltinDeclGen
+      include CLikeBuiltinInputGen
 
+      def render(src)
+        src = embed_lines(src, '/*** CONSTS ***/', gen_consts)
+        src = embed_lines(src, '/*** DCLS ***/', gen_decls)
+        embed_lines(src, '/*** INPUTS ***/', gen_inputs)
+      end
+
+      def gen_consts(_constants)
+        raise NotImplementedError, "#{self.class}##{__method__} is an abstract method."
+      end
+
+      def gen_decls(inpdefs = pbm.formats)
+        inpdefs.map { |inpdef| gen_decl(inpdef) }.flatten
+      end
+
+      def gen_inputs(inpdefs = pbm.formats)
+        inpdefs.map { |inpdef| gen_input(inpdef) }.flatten
+      end
+    end
+
+    # generates C source from problem description
+    class CBuiltin < CLikeBuiltin
+      include CBuiltinConstGen
+      ACF_HOME = File.realpath(File.join(__dir__, '..', '..', '..'))
+      TMPL_DIR = File.join(ACF_HOME, 'templates')
+      DEFAULT_TMPL = File.join(TMPL_DIR, 'c_builtin.c.erb')
+      ATTRS = Attributes.new(:c, DEFAULT_TMPL)
+
+      def attrs
+        ATTRS
+      end
+
+      def gen_consts(constants = pbm.constants)
+        constants.map { |c| gen_const(c) }
+      end
+    end
+
+    # generates C++ source from problem description
+    class CxxBuiltin < CLikeBuiltin
+      include CxxBuiltinConstGen
       ACF_HOME = File.realpath(File.join(__dir__, '..', '..', '..'))
       TMPL_DIR = File.join(ACF_HOME, 'templates')
       DEFAULT_TMPL = File.join(TMPL_DIR, 'cxx_builtin.cxx.erb')
@@ -235,22 +292,8 @@ module AtCoderFriends
         ATTRS
       end
 
-      def render(src)
-        src = embed_lines(src, '/*** CONSTS ***/', gen_consts)
-        src = embed_lines(src, '/*** DCLS ***/', gen_decls)
-        embed_lines(src, '/*** INPUTS ***/', gen_inputs)
-      end
-
       def gen_consts(constants = pbm.constants)
         constants.map { |c| gen_const(c) }
-      end
-
-      def gen_decls(inpdefs = pbm.formats)
-        inpdefs.map { |inpdef| gen_decl(inpdef) }.flatten
-      end
-
-      def gen_inputs(inpdefs = pbm.formats)
-        inpdefs.map { |inpdef| gen_input(inpdef) }.flatten
       end
     end
   end
