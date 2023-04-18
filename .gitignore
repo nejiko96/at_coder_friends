@@ -19,3 +19,6 @@
 
 # regression environment
 /regression
+
+# Visual Studio Code local settings
+.vscode/
