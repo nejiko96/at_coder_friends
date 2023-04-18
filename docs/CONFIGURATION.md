@@ -205,13 +205,12 @@ ext_settings:
   省略した場合、初回のログイン時に入力を求められます
 
 - generators  
-  List of source generator class names  
-  In default, ```RubyBuiltin``` , ```CxxBuiltin``` and ```AnyBuiltin``` are available.  
-  For other generators, corresponding plugin will be used  
-  if it has been installed.  
+  A list of class names for source code generators.  
+  By default, ```RubyBuiltin```, ```CxxBuiltin```, ```CBuiltin``` and ```AnyBuiltin``` are available.  
+  Other generators can be used if the corresponding plugin has been installed.  
   ソースジェネレータのクラス名（リスト形式）  
-  既定の状態では「RubyBuiltin」「CxxBuiltin」「AnyBuiltin」が利用でき、  
-  その他のジェネレータは、対応するプラグインがインストールされていれば  
+  既定の状態では「RubyBuiltin」「CxxBuiltin」「CBuiltin」「AnyBuiltin」が利用でき、  
+  その他のジェネレータが指定された場合は、対応するプラグインがインストールされていれば  
   利用できます  
 
   For example, if ```RubyAlt``` is specified as generator name,  
@@ -226,7 +225,7 @@ ext_settings:
   [search generator in GitHub](https://github.com/search?q=at_coder_friends-generator)
 
 　 The same generator can be used multiple times
-   by adding suffix starts with underscore to the generator name,
+   by adding suffix starts with underscore to the class name,
    such as "AnyBuiltin_1" or "AnyBuiltin_JS".
 
   「AnyBuiltin_1」「AnyBuiltin_JS」のように
@@ -288,6 +287,12 @@ ext_settings:
 |---------|--------------|---------|
 |file_ext |File extension|cxx      |
 |default_template|Template file path|[/templates/cxx_builtin.cxx.erb](/templates/cxx_builtin.cxx.erb)|
+
+### Settings for CBuiltin generator
+| Setting | Description  | Default |
+|---------|--------------|---------|
+|file_ext |File extension|c        |
+|default_template|Template file path|[/templates/c_builtin.c.erb](/templates/c_builtin.c.erb)|
 
 ### Settings for AnyBuiltin generator
 | Setting | Description  | Default |
