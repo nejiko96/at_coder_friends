@@ -94,7 +94,13 @@ RSpec.describe AtCoderFriends::Generator::Main do
             Regexp.escape(
               <<~MSG
                 an error occurred in generator:RubyAlternative.
-                plugin load error : generator RubyAlternative not found.
+                Error: Failed to load plugin.
+                The 'RubyAlternative' plugin could not be found. To use this plugin, please install the required gem by following these steps:
+
+                1. Open a terminal or command prompt.
+                2. Run the following command:
+                   gem install at_coder_friends-generator-ruby_alternative
+                3. Once the above command completes, please run the program again.
               MSG
             )
           )

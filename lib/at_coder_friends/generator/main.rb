@@ -33,12 +33,19 @@ module AtCoderFriends
       end
 
       def load_class(gen_name)
-        unless AtCoderFriends::Generator.const_defined?(gen_name)
-          require "at_coder_friends/generator/#{to_snake(gen_name)}"
-        end
+        snake_gen_name = to_snake(gen_name)
+        require "at_coder_friends/generator/#{snake_gen_name}" unless AtCoderFriends::Generator.const_defined?(gen_name)
         AtCoderFriends::Generator.const_get(gen_name)
       rescue LoadError
-        raise AppError, "plugin load error : generator #{gen_name} not found."
+        raise AppError, <<~MSG
+          Error: Failed to load plugin.
+          The '#{gen_name}' plugin could not be found. To use this plugin, please install the required gem by following these steps:
+
+          1. Open a terminal or command prompt.
+          2. Run the following command:
+             gem install at_coder_friends-generator-#{snake_gen_name}
+          3. Once the above command completes, please run the program again.
+        MSG
       end
 
       def config_for(gen_name)
