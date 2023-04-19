@@ -280,25 +280,25 @@ ext_settings:
 | Setting | Description  | Default |
 |---------|--------------|---------|
 |file_ext |File extension|rb       |
-|default_template|Template file path|[/templates/ruby_builtin.rb.erb](/templates/ruby_builtin.rb.erb)|
+|template (formerly default_template)|Template file path|[/templates/ruby_builtin.rb.erb](/templates/ruby_builtin.rb.erb)|
 
 ### Settings for CxxBuiltin generator
 | Setting | Description  | Default |
 |---------|--------------|---------|
 |file_ext |File extension|cxx      |
-|default_template|Template file path|[/templates/cxx_builtin.cxx.erb](/templates/cxx_builtin.cxx.erb)|
+|template (formerly default_template)|Template file path|[/templates/cxx_builtin.cxx.erb](/templates/cxx_builtin.cxx.erb)|
 
 ### Settings for CBuiltin generator
 | Setting | Description  | Default |
 |---------|--------------|---------|
 |file_ext |File extension|c        |
-|default_template|Template file path|[/templates/c_builtin.c.erb](/templates/c_builtin.c.erb)|
+|template |Template file path|[/templates/c_builtin.c.erb](/templates/c_builtin.c.erb)|
 
 ### Settings for AnyBuiltin generator
 | Setting | Description  | Default |
 |---------|--------------|---------|
 |file_ext |File extension|txt      |
-|default_template|Template file path|[/templates/any_builtin.txt.erb](/templates/any_builtin.txt.erb)|
+|template |Template file path|[/templates/any_builtin.txt.erb](/templates/any_builtin.txt.erb)|
 
 ### Language ID list (2020/06/21)
 

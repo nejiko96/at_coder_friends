@@ -163,14 +163,14 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       let(:names) { %w[A B] }
       let(:size) { %w[N] }
       it 'generates decl' do
-        expect(subject).to match(
-          [
-            'As = Array.new(N)',
-            'Bs = Array.new(N)',
-            'N.times do |i|',
-            '  As[i], Bs[i] = gets.split.map(&:to_i)',
-            'end'
-          ]
+        expect(subject).to eq(
+          <<~SRC
+            As = Array.new(N)
+            Bs = Array.new(N)
+            N.times do |i|
+              As[i], Bs[i] = gets.split.map(&:to_i)
+            end
+          SRC
         )
       end
     end
@@ -181,14 +181,14 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       let(:names) { %w[A B] }
       let(:size) { %w[N] }
       it 'generates decl' do
-        expect(subject).to match(
-          [
-            'As = Array.new(N)',
-            'Bs = Array.new(N)',
-            'N.times do |i|',
-            '  As[i], Bs[i] = gets.split.map(&:to_f)',
-            'end'
-          ]
+        expect(subject).to eq(
+          <<~SRC
+            As = Array.new(N)
+            Bs = Array.new(N)
+            N.times do |i|
+              As[i], Bs[i] = gets.split.map(&:to_f)
+            end
+          SRC
         )
       end
     end
@@ -199,14 +199,14 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       let(:names) { %w[A B] }
       let(:size) { %w[N] }
       it 'generates decl' do
-        expect(subject).to match(
-          [
-            'As = Array.new(N)',
-            'Bs = Array.new(N)',
-            'N.times do |i|',
-            '  As[i], Bs[i] = gets.chomp.split',
-            'end'
-          ]
+        expect(subject).to eq(
+          <<~SRC
+            As = Array.new(N)
+            Bs = Array.new(N)
+            N.times do |i|
+              As[i], Bs[i] = gets.chomp.split
+            end
+          SRC
         )
       end
     end
@@ -253,14 +253,14 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       let(:names) { %w[K A] }
       let(:size) { %w[N K_N] }
       it 'generates decl' do
-        expect(subject).to match(
-          [
-            'Ks = Array.new(N)',
-            'Ass = Array.new(N)',
-            'N.times do |i|',
-            '  Ks[i], *Ass[i] = gets.split.map(&:to_i)',
-            'end'
-          ]
+        expect(subject).to eq(
+          <<~SRC
+            Ks = Array.new(N)
+            Ass = Array.new(N)
+            N.times do |i|
+              Ks[i], *Ass[i] = gets.split.map(&:to_i)
+            end
+          SRC
         )
       end
     end
@@ -271,14 +271,14 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       let(:names) { %w[K A] }
       let(:size) { %w[N K_N] }
       it 'generates decl' do
-        expect(subject).to match(
-          [
-            'Ks = Array.new(N)',
-            'Ass = Array.new(N)',
-            'N.times do |i|',
-            '  Ks[i], *Ass[i] = gets.split.map(&:to_f)',
-            'end'
-          ]
+        expect(subject).to eq(
+          <<~SRC
+            Ks = Array.new(N)
+            Ass = Array.new(N)
+            N.times do |i|
+              Ks[i], *Ass[i] = gets.split.map(&:to_f)
+            end
+          SRC
         )
       end
     end
@@ -289,14 +289,14 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       let(:names) { %w[K p] }
       let(:size) { %w[Q 26] }
       it 'generates decl' do
-        expect(subject).to match(
-          [
-            'Ks = Array.new(Q)',
-            'pss = Array.new(Q)',
-            'Q.times do |i|',
-            '  Ks[i], pss[i] = gets.chomp.split',
-            'end'
-          ]
+        expect(subject).to eq(
+          <<~SRC
+            Ks = Array.new(Q)
+            pss = Array.new(Q)
+            Q.times do |i|
+              Ks[i], pss[i] = gets.chomp.split
+            end
+          SRC
         )
       end
     end
@@ -307,14 +307,14 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       let(:names) { %w[city cost] }
       let(:size) { %w[M 2] }
       it 'generates decl' do
-        expect(subject).to match(
-          [
-            'cityss = Array.new(M)',
-            'costs = Array.new(M)',
-            'M.times do |i|',
-            '  *cityss[i], costs[i] = gets.split.map(&:to_i)',
-            'end'
-          ]
+        expect(subject).to eq(
+          <<~SRC
+            cityss = Array.new(M)
+            costs = Array.new(M)
+            M.times do |i|
+              *cityss[i], costs[i] = gets.split.map(&:to_i)
+            end
+          SRC
         )
       end
     end
@@ -325,16 +325,16 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       let(:names) { %w[idol p] }
       let(:size) { %w[1 C_1] }
       it 'generates decl' do
-        expect(subject).to match(
-          [
-            'idolss = Array.new(1) { Array.new(C_1) }',
-            'pss = Array.new(1) { Array.new(C_1) }',
-            '1.times do |i|',
-            '  C_1.times do |j|',
-            '    idolss[i][j], pss[i][j] = gets.split.map(&:to_i)',
-            '  end',
-            'end'
-          ]
+        expect(subject).to eq(
+          <<~SRC
+            idolss = Array.new(1) { Array.new(C_1) }
+            pss = Array.new(1) { Array.new(C_1) }
+            1.times do |i|
+              C_1.times do |j|
+                idolss[i][j], pss[i][j] = gets.split.map(&:to_i)
+              end
+            end
+          SRC
         )
       end
     end
@@ -345,15 +345,14 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       let(:names) { %w[x y] }
       let(:size) { %w[Q 2] }
       it 'generates decl' do
-        expect(subject).to match(
-          [
-            'xss = Array.new(Q)',
-            'yss = Array.new(Q)',
-            'Q.times do |i|',
-            '  xss[i], yss[i] = ' \
-            'gets.split.map(&:to_i).each_slice(2).to_a.transpose',
-            'end'
-          ]
+        expect(subject).to eq(
+          <<~SRC
+            xss = Array.new(Q)
+            yss = Array.new(Q)
+            Q.times do |i|
+              xss[i], yss[i] = gets.split.map(&:to_i).each_slice(2).to_a.transpose
+            end
+          SRC
         )
       end
     end
@@ -365,14 +364,14 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       let(:size) { %w[N] }
       let(:delim) { '-' }
       it 'generates decl' do
-        expect(subject).to match(
-          [
-            'Ss = Array.new(N)',
-            'Es = Array.new(N)',
-            'N.times do |i|',
-            "  Ss[i], Es[i] = gets.gsub('-', ' ').split.map(&:to_i)",
-            'end'
-          ]
+        expect(subject).to eq(
+          <<~SRC
+            Ss = Array.new(N)
+            Es = Array.new(N)
+            N.times do |i|
+              Ss[i], Es[i] = gets.gsub('-', ' ').split.map(&:to_i)
+            end
+          SRC
         )
       end
     end
@@ -529,7 +528,7 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
 
       it 'generates source' do
         expect(subject).to eq(
-          <<~'SRC'
+          <<~SRC
             # https://atcoder.jp/contests/abc006/tasks/abc006_1
 
 

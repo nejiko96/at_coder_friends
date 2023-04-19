@@ -173,14 +173,14 @@ RSpec.describe AtCoderFriends::Generator::Main do
           <<~TEXT
             generator_settings:
               RubyBuiltin:
-                default_template: customized_default.rb
+                template: customized_default.rb
           TEXT
         )
       end
 
       it 'initializes generator by specified setting' do
         expect(subject.cfg).to match(
-          'default_template' => 'customized_default.rb'
+          'template' => 'customized_default.rb'
         )
       end
     end
@@ -192,7 +192,7 @@ RSpec.describe AtCoderFriends::Generator::Main do
           <<~TEXT
             generator_settings:
               RubyBuiltin_1:
-                default_template: customized_default.rb
+                template: customized_default.rb
           TEXT
         )
       end
@@ -205,7 +205,7 @@ RSpec.describe AtCoderFriends::Generator::Main do
 
       it 'takes generator settings by full name' do
         expect(subject.cfg).to match(
-          'default_template' => 'customized_default.rb'
+          'template' => 'customized_default.rb'
         )
       end
     end
