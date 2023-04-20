@@ -61,8 +61,7 @@ module AtCoderFriends
       end
 
       def load_yaml(path)
-        yaml = File.read(path, encoding: Encoding::UTF_8)
-        YAML.safe_load(yaml) || {}
+        YAML.load_file(path) || {}
       rescue Errno::ENOENT
         raise ConfigNotFoundError,
               "Configuration file not found: #{path}"
