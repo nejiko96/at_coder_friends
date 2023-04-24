@@ -25,7 +25,7 @@ module AtCoderFriends
         setup_by_pbm(contest, pbm)
       end
     rescue StandardError => e
-      puts e.to_s
+      puts e
       puts e.backtrace
     end
 
@@ -34,13 +34,13 @@ module AtCoderFriends
       save_file(html_path, pbm.page.body)
       pipeline(pbm)
     rescue StandardError => e
-      puts e.to_s
+      puts e
       puts e.backtrace
     end
 
     def save_file(path, content)
       dir = File.dirname(path)
-      FileUtils.makedirs(dir) unless Dir.exist?(dir)
+      FileUtils.makedirs(dir)
       File.binwrite(path, content)
     end
   end

@@ -15,7 +15,7 @@ module AtCoderFriends
 
       def render(*keys)
         template = templates.dig(*keys) || (raise AppError, "fragment key #{keys} not found")
-        ERB.new(template, nil, '-').result(binding)
+        ERB.new(template, trim_mode: '-').result(binding)
       end
 
       # delegate method calls to obj

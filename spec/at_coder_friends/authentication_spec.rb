@@ -69,7 +69,7 @@ RSpec.describe AtCoderFriends::CLI do
       end
 
       context 'when session is not saved' do
-        before(:each) { File.delete(sess_file) if File.exist?(sess_file) }
+        before(:each) { FileUtils.rm_f(sess_file) }
 
         it_behaves_like 'normal case'
 
@@ -83,7 +83,7 @@ RSpec.describe AtCoderFriends::CLI do
 
       context 'when session is saved' do
         before(:each) do
-          File.delete(sess_file) if File.exist?(sess_file)
+          FileUtils.rm_f(sess_file)
           create_file(sess_file, SESSION_CONTENT)
           sleep 0.1
         end
@@ -100,7 +100,7 @@ RSpec.describe AtCoderFriends::CLI do
       let(:sess_file) { File.join(sess_dir, '_session.yml') }
 
       context 'when session is not saved' do
-        before(:each) { File.delete(sess_file) if File.exist?(sess_file) }
+        before(:each) { FileUtils.rm_f(sess_file) }
         before(:each) do
           allow($stdin).to receive(:gets) do
             "#{input.shift}\n"
@@ -153,7 +153,7 @@ RSpec.describe AtCoderFriends::CLI do
 
       context 'when session is saved' do
         before(:each) do
-          File.delete(sess_file) if File.exist?(sess_file)
+          FileUtils.rm_f(sess_file)
           create_file(sess_file, SESSION_CONTENT)
           sleep 0.1
         end

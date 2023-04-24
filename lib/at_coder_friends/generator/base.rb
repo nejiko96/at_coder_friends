@@ -22,7 +22,7 @@ module AtCoderFriends
       def generate(pbm)
         @pbm = pbm
         src = File.read(select_template)
-        src = ERB.new(src, safe_level = nil, trim_mode = '-').result(binding)
+        src = ERB.new(src, trim_mode: '-').result(binding)
         src = render(src) if respond_to?(:render)
         src
       end

@@ -156,15 +156,14 @@ REQS = [
     :post, 'contests/practice/custom_test/submit/json',
     'data.LanguageId': '4006',
     csrf_token: 'Z66S2ieHP1AC3P9JfCbHCzGdYA/JhAStb0KsQ0kOC0s=',
-    sourceCode: (
-      <<~SRC
+    sourceCode:
+      <<~SRC,
         # -*- coding: utf-8 -*-
         a = int(input())
         b, c = map(int, input().split())
         s = input()
         print("{} {}".format(a+b+c, s))
       SRC
-    ),
     input:
       <<~DATA
         1
@@ -176,15 +175,14 @@ REQS = [
     :post, 'contests/practice/custom_test/submit/json',
     'data.LanguageId': '4006',
     csrf_token: 'Z66S2ieHP1AC3P9JfCbHCzGdYA/JhAStb0KsQ0kOC0s=',
-    sourceCode: (
-      <<~SRC
+    sourceCode:
+      <<~SRC,
         # -*- coding: utf-8 -*-
         a = int(input())
         b, c = map(int, input().split())
         s = input()
         print(ans)
       SRC
-    ),
     input:
       <<~DATA
         1
@@ -196,15 +194,14 @@ REQS = [
     :post, 'contests/practice/custom_test/submit/json',
     'data.LanguageId': '4006',
     csrf_token: 'Z66S2ieHP1AC3P9JfCbHCzGdYA/JhAStb0KsQ0kOC0s=',
-    sourceCode: (
-      <<~SRC
+    sourceCode:
+      <<~SRC,
         # -*- coding: utf-8 -*-
         a = int(input())
         b, c = map(int, input().split())
         s = input()
         print("{}_{}".format(a+b+c, s))
       SRC
-    ),
     input:
       <<~DATA
         1
@@ -217,15 +214,14 @@ REQS = [
     result: 'ERROR',
     'data.LanguageId': '0000',
     csrf_token: 'Z66S2ieHP1AC3P9JfCbHCzGdYA/JhAStb0KsQ0kOC0s=',
-    sourceCode: (
-      <<~SRC
+    sourceCode:
+      <<~SRC,
         # -*- coding: utf-8 -*-
         a = int(input())
         b, c = map(int, input().split())
         s = input()
         print("{} {}".format(a+b+c, s))
       SRC
-    ),
     input:
       <<~DATA
         1
@@ -237,15 +233,14 @@ REQS = [
     :post, 'contests/practice/custom_test/submit/json',
     'data.LanguageId': '4006',
     csrf_token: 'Z66S2ieHP1AC3P9JfCbHCzGdYA/JhAStb0KsQ0kOC0s=',
-    sourceCode: (
-      <<~SRC
+    sourceCode:
+      <<~SRC,
         # -*- coding: utf-8 -*-
         a = int(input())
         b, c = map(int, input().split())
         s = input()
         print("{} {}".format(a+b+c, s))
       SRC
-    ),
     input:
       <<~DATA
         72
