@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
+require 'yaml'
 require 'erb'
 
 module AtCoderFriends
   module Generator
-    Attributes = Struct.new(:file_ext, :default_template)
+    Attributes = Struct.new(:file_ext, :template, :fragments)
 
     # common behavior of generators
     class Base
@@ -31,15 +32,24 @@ module AtCoderFriends
       end
 
       def select_template
-        cfg['default_template'] || attrs.default_template
+        cfg['template'] || cfg['default_template'] || attrs.template
       end
 
+      def select_fragments
+        cfg['fragments'] || attrs.fragments
+      end
+
+      # deprecated, use ERB syntax
       def embed_lines(src, pat, lines)
         re = Regexp.escape(pat)
         src.gsub(
           /^(.*)#{re}(.*)$\n/,
           lines.compact.map { |s| "\\1#{s}\\2\n" }.join
         )
+      end
+
+      def fragments
+        @fragments ||= YAML.load_file(select_fragments)
       end
     end
   end

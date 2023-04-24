@@ -1,0 +1,85 @@
+constant:
+  value_print: <%= value.sub(/\b10\^/, '1e').sub(/\b2\^/, '1<<').gsub(',', '') %>
+  max: '#define <%= name.upcase %>_MAX <%= value_print %>'
+  mod: '#define MOD <%= value_print %>'
+cxx_constant:
+  value_print: <%= value.sub(/\b10\^/, '1e').sub(/\b2\^/, '1<<').gsub(',', "'") %>
+  max: const int <%= name.upcase %>_MAX = <%= value_print %>;
+  mod: const int MOD = <%= value_print %>;
+declaration:
+  type:
+    number: int
+    decimal: double
+    string: char
+    char: char
+  arr_sz1: <%= sz1.gsub(/([a-z][a-z0-9_]*)/i, '\1_MAX').upcase%>
+  arr_sz2: <%= sz2.gsub(/([a-z][a-z0-9_]*)/i, '\1_MAX').upcase%>
+  arr_sz: <%= arr_sz1 %>
+  null_alloc: <% if item == :char %> + 1<% end %>
+  string_alloc: <% if item == :string %>[<%= v.upcase %>_MAX + 1]<% end %>
+  line:
+    single: <%= type %> <%= v %><%= string_alloc %>;
+    multi: <%= type %> <%= vs.join(', ') %>;
+    array: <%= type %> <%= v %>[<%= arr_sz %><%= null_alloc %>]<%= string_alloc %>;
+    matrix: <%= type %> <%= v %>[<%= arr_sz1 %>][<%= arr_sz2 %><%= null_alloc %>]<%= string_alloc %>;
+  main:
+    single: <%= line %>
+    multi: |
+      <% vars.each do |var| -%>
+      <%= var.line %>
+      <% end -%>
+    combi: <% components.each do |cmp| %><%= cmp.main %><% end %>
+input:
+  item_format:
+    number: '%d'
+    decimal: '%lf'
+    string: '%s'
+    char: '%s'
+  line_format: <%= vars.map { |var| var.item_format }.join %>
+  address_type: <%= ['single', 'array', 'matrix'][size.size] %>
+  item_address:
+    single:
+      number: '&<%= v %>'
+      decimal: '&<%= v %>'
+      string: <%= v %>
+    array:
+      number: <%= v %> + i
+      decimal: <%= v %> + i
+      string: <%= v %>[i]
+      char: <%= v %>
+    matrix:
+      number: '&<%= v %>[i][j]'
+      decimal: '&<%= v %>[i][j]'
+      string: <%= v %>[i][j]
+      char: <%= v %>[i]
+  line_address: <%= vars.map { |var| var.item_address }.join(', ') %>
+  input_type: <% if components %><%= container.to_s %><% else %>plain<% end %>
+  dim_type: '<%= size.size - (item == :char ? 1 : 0) %>_dim'
+  sz2_body: <%= sz2.split('_')[0] %>
+  main:
+    plain:
+      0_dim: scanf("<%= line_format %>", <%= line_address %>);
+      1_dim: REP(i, <%= sz1 %>) scanf("<%= line_format %>", <%= line_address %>);
+      2_dim: REP(i, <%= sz1 %>) REP(j, <%= sz2 %>) scanf("<%= line_format %>", <%= line_address %>);
+    varray_matrix:
+      1_dim: |
+        REP(i, <%= sz1 %>) {
+          scanf("<%= components[0].line_format %>", <%= components[0].line_address %>);
+          scanf("<%= components[1].line_format %>", <%= components[1].line_address %>);
+        }
+      2_dim: |
+        REP(i, <%= sz1 %>) {
+          scanf("<%= components[0].line_format %>", <%= components[0].line_address %>);
+          REP(j, <%= sz2_body %>[i]) scanf("<%= components[1].line_format %>", <%= components[1].line_address %>);
+        }
+    matrix_varray:
+      1_dim: |
+        REP(i, <%= sz1 %>) {
+          scanf("<%= components[0].line_format %>", <%= components[0].line_address %>);
+          scanf("<%= components[1].line_format %>", <%= components[1].line_address %>);
+        }
+      2_dim: |
+        REP(i, <%= sz1 %>) {
+          REP(j, <%= sz2_body %>) scanf("<%= components[0].line_format %>", <%= components[0].line_address %>);
+          scanf("<%= components[1].line_format %>", <%= components[1].line_address %>);
+        }

@@ -1,0 +1,63 @@
+constant:
+  value_print: <%= value.gsub('^', '**').gsub(',', '_') %>
+  mod: MOD = <%= value_print %>
+declaration:
+  read: gets<% delims.each do |d| %>.gsub('<%= d %>', ' ')<% end %>
+  input:
+    number:
+      single: <%= read %>.to_i
+      multi: <%= read %>.split.map(&:to_i)
+    decimal:
+      single: <%= read %>.to_f
+      multi: <%= read %>.split.map(&:to_f)
+    string:
+      single: <%= read %>.chomp
+      multi: <%= read %>.chomp.split
+    char:
+      single: <%= read %>.chomp
+      multi: <%= read %>.chomp.split
+  splat: <% unless item == :char %>*<% end %>
+  main:
+    single: <%= vs.join(', ') %> = <%= input %>
+    harray: <%= v %>s = <%= input %>
+    varray_1: <%= v %>s = Array.new(<%= sz %>) { <%= input %> }
+    varray_n: |
+      <% vs.each do |v| -%>
+      <%= v %>s = Array.new(<%= sz %>)
+      <% end -%>
+      <%= sz %>.times do |i|
+        <%= vs.map { |v| "#{v}s[i]" }.join(', ') %> = <%= input %>
+      end
+    matrix: <%= v %>ss = Array.new(<%= sz %>) { <%= input %> }
+    varray_matrix: |
+      <% vs[0..-2].each do |v| -%>
+      <%= v %>s = Array.new(<%= sz %>)
+      <% end -%>
+      <%= vs[-1] %>ss = Array.new(<%= sz %>)
+      <%= sz %>.times do |i|
+        <%= vs[0..-2].map { |v| "#{v}s[i]" }.join(', ') %>, <%= splat %><%= vs[-1] %>ss[i] = <%= input %>
+      end
+    matrix_varray: |
+      <%= vs[0] %>ss = Array.new(<%= sz %>)
+      <% vs[1..-1].each do |v| -%>
+      <%= v %>s = Array.new(<%= sz %>)
+      <% end -%>
+      <%= sz %>.times do |i|
+        <%= splat %><%= vs[0] %>ss[i], <%= vs[1..-1].map { |v| "#{v}s[i]" }.join(', ') %> = <%= input %>
+      end
+    vmatrix: |
+      <% vs.each do |v| -%>
+      <%= v %>ss = Array.new(<%= sz1 %>) { Array.new(<%= sz2 %>) }
+      <% end -%>
+      <%= sz1 %>.times do |i|
+        <%= sz2 %>.times do |j|
+          <%= vs.map { |v| "#{v}ss[i][j]" }.join(', ') %> = <%= input %>
+        end
+      end
+    hmatrix: |
+      <% vs.each do |v| -%>
+      <%= v %>ss = Array.new(<%= sz %>)
+      <% end -%>
+      <%= sz %>.times do |i|
+        <%= vs.map { |v| "#{v}ss[i]" }.join(', ') %> = <%= input %>.each_slice(<%= vs.size %>).to_a.transpose
+      end
