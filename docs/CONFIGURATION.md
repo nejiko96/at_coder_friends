@@ -297,8 +297,8 @@ ext_settings:
 ### Settings for AnyBuiltin generator
 | Setting | Description  | Default |
 |---------|--------------|---------|
-|file_ext |File extension|txt      |
-|template |Template file path|[/templates/any_builtin.txt.erb](/templates/any_builtin.txt.erb)|
+|file_ext |File extension|md       |
+|template |Template file path|[/templates/any_builtin.md.erb](/templates/any_builtin.md.erb)|
 
 ### Language ID list (2020/06/21)
 

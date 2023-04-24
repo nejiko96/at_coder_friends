@@ -1,0 +1,5 @@
+constant:
+  mod: type=<%= type %> name=<%= name %> value=<%= value %>
+  max: type=<%= type %> name=<%= name %> value=<%= value %>
+declaration:
+  main: <%= to_s %>

@@ -15,3 +15,16 @@ AnyBuiltin Generator
       file_ext: js
       template: /path/to/template
   ```
+
+## Problem URL
+<%= pbm.url %>
+
+## Constants
+<% gen_consts.each do |line| -%>
+- [<%= line %>]
+<% end -%>
+
+## Variables
+<% gen_decls.each do |line| -%>
+- [<%= line %>]
+<% end -%>
