@@ -144,7 +144,7 @@ module AtCoderFriends
         sz = str.split('_')
         return sz if sz.size == 2
 
-        [str[0] || '_', str[1..-1] || '_']
+        [str[0] || '_', str[1..] || '_']
       end
     end
 
@@ -343,7 +343,7 @@ module AtCoderFriends
         gen_pat2:
           lambda { |vs|
             m = vs[0]
-            ws = vs[1..-1].map { |v| v + RE_IX.source }.join('\s+')
+            ws = vs[1..].map { |v| v + RE_IX.source }.join('\s+')
             /
               \A
               #{m}#{RE_IX}
@@ -367,7 +367,7 @@ module AtCoderFriends
           lambda { |vs|
             ws = [
               vs[0] + RE_SZ.source,
-              *vs[1..-1]&.map { |v| v + RE_IX.source }
+              *vs[1..]&.map { |v| v + RE_IX.source }
             ].join('\s+')
             /\A#{ws}\z/
           }
@@ -389,7 +389,7 @@ module AtCoderFriends
             ws1 = vs.map { |v| v + RE_IX.source }.join('\s+')
             ws2 = [
               vs[0] + RE_SZ.source,
-              *vs[1..-1]&.map { |v| v + RE_IX.source }
+              *vs[1..]&.map { |v| v + RE_IX.source }
             ].join('\s+')
             /
               \A
@@ -412,7 +412,7 @@ module AtCoderFriends
           lambda { |vs|
             ws = [
               vs[0] + RE_SZ.source,
-              *vs[1..-1]&.map { |v| v + RE_IX.source }
+              *vs[1..]&.map { |v| v + RE_IX.source }
             ].join('\s+')
             /\A#{ws}\z/
           }

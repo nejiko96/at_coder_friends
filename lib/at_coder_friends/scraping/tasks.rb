@@ -11,7 +11,7 @@ module AtCoderFriends
           yield pbm if block_given?
           pbm
         rescue StandardError => e
-          puts e.to_s
+          puts e
           puts e.backtrace
         end
       end

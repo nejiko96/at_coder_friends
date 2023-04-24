@@ -18,7 +18,7 @@ module AtCoderFriends
           gen_obj.process(pbm)
         rescue StandardError => e
           puts "an error occurred in generator:#{gen_name}."
-          puts e.to_s
+          puts e
           puts e.backtrace
         end
       end

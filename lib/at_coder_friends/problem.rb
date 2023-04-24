@@ -77,8 +77,8 @@ module AtCoderFriends
           ),
           self.class.new(
             container: :matrix, item: @item,
-            names: names[-1..-1], size: size,
-            delim: delim, cols: cols[-1..-1] || []
+            names: names[-1..], size: size,
+            delim: delim, cols: cols[-1..] || []
           )
         ]
       end
@@ -92,8 +92,8 @@ module AtCoderFriends
           ),
           self.class.new(
             container: :varray,
-            names: names[1..-1], size: size[0..0],
-            delim: delim, cols: cols[1..-1] || []
+            names: names[1..], size: size[0..0],
+            delim: delim, cols: cols[1..] || []
           )
         ]
       end

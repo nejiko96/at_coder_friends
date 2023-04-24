@@ -14,7 +14,7 @@ module AtCoderFriends
 
       def save_session
         dir = File.dirname(session_store)
-        Dir.mkdir(dir) unless Dir.exist?(dir)
+        FileUtils.mkdir_p(dir)
         agent.cookie_jar.save_as(session_store)
       end
 
