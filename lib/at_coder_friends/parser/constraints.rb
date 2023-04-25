@@ -35,14 +35,13 @@ module AtCoderFriends
       def parse(str)
         str = normalize_content(str)
         pats = str.scan(MAX_PATTERN).map(&:compact)
-        h = pats.each_with_object({}) do |(k, v), result|
+        pairs = pats.each_with_object([]) do |(k, v), result|
           value = normalize_value(v)
           next unless value && !value.empty?
 
-          normalize_names(k).each { |name| result[name] = value }
+          normalize_names(k).each { |name| result << [name, value] }
         end
-
-        h.map { |k, v| Problem::Constant.new(k, :max, v) }
+        pairs.uniq.map { |k, v| Problem::Constant.new(k, :max, v) }
       end
 
       def normalize_content(s)
