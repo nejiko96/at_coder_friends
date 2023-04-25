@@ -99,7 +99,7 @@ at_coder_friends check-and-go  /path/to/contest/source_file
 
 ## Configuration
 
-See [CONFIGURATION.md](docs/CONFIGURATION.md) for details.
+See [Wiki](https://github.com/nejiko96/at_coder_friends/wiki/Configuration-Details) for details.
 
 ## For Sublime Text user
 
