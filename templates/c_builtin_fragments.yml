@@ -19,7 +19,7 @@ declaration:
   string_alloc: <% if item == :string %>[<%= v.upcase %>_MAX + 1]<% end %>
   line:
     single: <%= type %> <%= v %><%= string_alloc %>;
-    multi: <%= type %> <%= vs.join(', ') %>;
+    multi: <%= type(vars[0].item) %> <%= vs.join(', ') %>;
     array: <%= type %> <%= v %>[<%= arr_sz %><%= null_alloc %>]<%= string_alloc %>;
     matrix: <%= type %> <%= v %>[<%= arr_sz1 %>][<%= arr_sz2 %><%= null_alloc %>]<%= string_alloc %>;
   main:

@@ -16,8 +16,8 @@ module AtCoderFriends
         render('line', horizontal_type)
       end
 
-      def type
-        render('type', item.to_s)
+      def type(the_item = item)
+        render('type', the_item.to_s)
       end
 
       def vertical_type
@@ -103,7 +103,7 @@ module AtCoderFriends
       end
 
       def gen_inputs(inpdefs = pbm.formats)
-        inpdefs.map { |inpdef| gen_input(inpdef) }.flatten
+        inpdefs.map { |inpdef| gen_input(inpdef).split("\n") }.flatten
       end
 
       def gen_input(inpdef)

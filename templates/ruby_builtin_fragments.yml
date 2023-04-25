@@ -39,11 +39,11 @@ declaration:
       end
     matrix_varray: |
       <%= vs[0] %>ss = Array.new(<%= sz %>)
-      <% vs[1..-1].each do |v| -%>
+      <% vs[1..].each do |v| -%>
       <%= v %>s = Array.new(<%= sz %>)
       <% end -%>
       <%= sz %>.times do |i|
-        <%= splat %><%= vs[0] %>ss[i], <%= vs[1..-1].map { |v| "#{v}s[i]" }.join(', ') %> = <%= input %>
+        <%= splat %><%= vs[0] %>ss[i], <%= vs[1..].map { |v| "#{v}s[i]" }.join(', ') %> = <%= input %>
       end
     vmatrix: |
       <% vs.each do |v| -%>
