@@ -8,9 +8,7 @@ module AtCoderFriends
 
       def process(pbm)
         vs = exp_values(pbm)
-        return unless vs.size == 2
-        return if vs.any? { |v| v.include?("\n") }
-        return if vs.any? { |v| v =~ /\A[0-9\s]*\z/ }
+        return unless binary_values?(vs)
 
         out_fmt = output_format(pbm)
         re1, re2 = vs.map { |v| Regexp.escape(v) }
@@ -30,6 +28,14 @@ module AtCoderFriends
           .select { |smp| smp.ext == :exp }
           .map { |smp| smp.txt.chomp }
           .uniq
+      end
+
+      def binary_values?(vs)
+        return false unless vs.size == 2
+        return false if vs.any? { |v| v.include?("\n") }
+        return false if vs.any? { |v| v =~ /\A[0-9\s]*\z/ }
+
+        true
       end
 
       def output_format(pbm)

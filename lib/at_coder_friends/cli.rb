@@ -67,30 +67,15 @@ module AtCoderFriends
 
     def exec_command(command, path, *args)
       @ctx = Context.new(@options, path)
-      case command
-      when 'setup'
-        setup
-      when 'test-one'
-        test_one(*args)
-      when 'test-all'
-        test_all
-      when 'submit'
-        submit
-      when 'check-and-go'
-        check_and_go
-      when 'judge-one'
-        judge_one(*args)
-      when 'judge-all'
-        judge_all
-      when 'open-contest'
-        open_contest
-      else
-        raise ParamError, "unknown command: #{command}"
-      end
+
+      mtd = "command_#{command.gsub('-', '_')}"
+      raise ParamError, "unknown command: #{command}" unless respond_to?(mtd)
+
+      send(mtd, *args)
       ctx.post_process
     end
 
-    def setup
+    def command_setup
       path = ctx.path
       raise AppError, "#{path} is not empty." \
         if Dir.exist?(path) && !Dir["#{path}/*"].empty?
@@ -102,16 +87,16 @@ module AtCoderFriends
       end
     end
 
-    def test_one(id = '001')
+    def command_test_one(id = '001')
       ctx.sample_test_runner.test_one(id)
     end
 
-    def test_all
+    def command_test_all
       ctx.sample_test_runner.test_all
       ctx.verifier.verify
     end
 
-    def submit
+    def command_submit
       vf = ctx.verifier
       raise AppError, "#{vf.file} has not been tested." unless vf.verified?
 
@@ -120,7 +105,7 @@ module AtCoderFriends
       open_submission_list
     end
 
-    def check_and_go
+    def command_check_and_go
       vf = ctx.verifier
       if ctx.sample_test_runner.test_all
         # submit automatically
@@ -133,15 +118,15 @@ module AtCoderFriends
       end
     end
 
-    def judge_one(id = '')
+    def command_judge_one(id = '')
       ctx.judge_test_runner.judge_one(id)
     end
 
-    def judge_all
+    def command_judge_all
       ctx.judge_test_runner.judge_all
     end
 
-    def open_contest
+    def command_open_contest
       Launchy.open(ctx.scraping_agent.contest_url)
     end
 

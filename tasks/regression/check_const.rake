@@ -68,26 +68,33 @@ module AtCoderFriends
     end
 
     def load_merge_list(tgt)
+      collect_report, check_report = %w[collect check].map do |act|
+        data = load_const_report(act, tgt)
+        group_by_problem(data)
+      end
       tbl = {}
-      %w[collect check]
-        .map { |act| load_const_report(act, tgt) }
-        .each
-        .with_index(1) do |data, n|
-          data
-            .group_by { |contest, q, _| "#{contest}\t#{q}" }
-            .map { |key, grp| [key, grp.map { |row| row[2] }.join("\n")] }
-            .each do |key, txt|
-              tbl[key] ||= { 'v1' => '', 'v2' => '' }
-              tbl[key]["v#{n}"] = tsv_escape(txt)
-            end
-        end
+      add_merged_list(tbl, collect_report, 0)
+      add_merged_list(tbl, check_report, 1)
       tbl
+    end
+
+    def group_by_problem(data)
+      data
+        .group_by { |contest, q, _| "#{contest}\t#{q}" }
+        .map { |key, grp| [key, grp.map { |row| row[2] }.join("\n")] }
+    end
+
+    def add_merged_list(tbl, data, i)
+      data.each do |key, txt|
+        tbl[key] ||= ['', '']
+        tbl[key][i] = tsv_escape(txt)
+      end
     end
 
     def save_merge_list(tgt, tbl)
       open_const_report('merge', tgt) do |f|
-        tbl.sort.each do |k, h|
-          f.puts [k, h['v1'], h['v2']].join("\t")
+        tbl.sort.each do |k, (v1, v2)|
+          f.puts [k, v1, v2].join("\t")
         end
       end
     end
