@@ -34,6 +34,10 @@ module AtCoderFriends
           templates.key?(name.to_s) ||
           super
       end
+
+      def to_s
+        @obj.to_s
+      end
     end
 
     # base class for constant declaration generator
