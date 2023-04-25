@@ -41,17 +41,12 @@ StubRequest = Struct.new(:mtd, :path, :param, :result) do
   end
 
   def login_response
-    if mtd == :get
-      # always show login form
-      requested_page(result)
-    elsif param && param[:username] == 'foo' && param[:password] == 'bar'
+    # always show login form
+    return requested_page(result) if mtd == :get
+
+    if param&.dig(:username) == 'foo' && param&.dig(:password) == 'bar'
       # authentication success => redirect to requested page
-      proc do |request|
-        redirect_to(request.uri.query_values['continue'])
-          .tap do |h|
-            h[:headers][:set_cookie] = 'SessionKey=4b12f708b5a219ec; Path=/;'
-          end
-      end
+      proc { |request| auth_success(request.uri.query_values['continue']) }
     else
       # authentication fail => show login form again
       proc { |request| redirect_to(request.uri) }
@@ -97,6 +92,12 @@ StubRequest = Struct.new(:mtd, :path, :param, :result) do
       headers: { content_type: 'text/html' },
       body: mock_page('404')
     }
+  end
+
+  def auth_success(location)
+    redirect_to(location).tap do |h|
+      h[:headers][:set_cookie] = 'SessionKey=4b12f708b5a219ec; Path=/;'
+    end
   end
 
   def content_type
