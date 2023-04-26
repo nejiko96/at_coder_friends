@@ -1,6 +1,6 @@
 constant:
   value_print: <%= value.sub(/\b10\^/, '1e').sub(/\b2\^/, '1<<').gsub(',', '_') %>
-  max: const int <%= name.upcase %>_MAX = <%= value_print %>;
+  max: // const int <%= name.upcase %>_MAX = <%= value_print %>;
   mod: const int MOD = <%= value_print %>;
 declaration:
   read: Console.ReadLine()<% delims.each do |d| %>.Replace('<%= d %>', ' ')<% end %>
