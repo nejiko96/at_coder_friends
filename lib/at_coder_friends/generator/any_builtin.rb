@@ -13,9 +13,9 @@ module AtCoderFriends
     class AnyBuiltin < Base
       ACF_HOME = File.realpath(File.join(__dir__, '..', '..', '..'))
       TMPL_DIR = File.join(ACF_HOME, 'templates')
-      DEFAULT_TMPL = File.join(TMPL_DIR, 'any_builtin.md.erb')
+      TEMPLATE = File.join(TMPL_DIR, 'any_builtin.md.erb')
       FRAGMENTS = File.join(TMPL_DIR, 'any_builtin_fragments.yml')
-      ATTRS = Attributes.new(:md, DEFAULT_TMPL, FRAGMENTS)
+      ATTRS = Attributes.new(:md, TEMPLATE, FRAGMENTS)
 
       def attrs
         ATTRS

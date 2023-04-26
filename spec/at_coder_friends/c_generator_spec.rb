@@ -662,6 +662,12 @@ RSpec.describe AtCoderFriends::Generator::CBuiltin do
             names: %w[A B C T],
             size: %w[M],
             cols: %i[number] * 4
+          ),
+          AtCoderFriends::Problem::InputFormat.new(
+            container: :varray_matrix,
+            names: %w[K A],
+            size: %w[N K_N],
+            cols: %i[number] * 2
           )
         ]
       end
@@ -698,6 +704,8 @@ RSpec.describe AtCoderFriends::Generator::CBuiltin do
             int B[M_MAX];
             int C[M_MAX];
             int T[M_MAX];
+            int K[N_MAX];
+            int A[N_MAX][K_N_MAX];
 
             void solve() {
               int ans = 0;
@@ -707,6 +715,10 @@ RSpec.describe AtCoderFriends::Generator::CBuiltin do
             void input() {
               scanf("%d%d", &N, &M);
               REP(i, M) scanf("%d%d%d%d", A + i, B + i, C + i, T + i);
+              REP(i, N) {
+                scanf("%d", K + i);
+                REP(j, K[i]) scanf("%d", &A[i][j]);
+              }
             }
 
             int main() {

@@ -407,6 +407,12 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
           ),
           AtCoderFriends::Problem::InputFormat.new(
             container: :harray, item: :string, names: %w[a], size: %w[Q]
+          ),
+          AtCoderFriends::Problem::InputFormat.new(
+            container: :varray_matrix,
+            item: :number,
+            names: %w[K A],
+            size: %w[N K_N]
           )
         ]
       end
@@ -434,6 +440,11 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
             end
             Q = gets.chomp
             as = gets.chomp.split
+            Ks = Array.new(N)
+            Ass = Array.new(N)
+            N.times do |i|
+              Ks[i], *Ass[i] = gets.split.map(&:to_i)
+            end
 
             puts ans
           SRC
