@@ -66,6 +66,12 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
             names: %w[A B C T],
             size: %w[M],
             cols: %i[number] * 4
+          ),
+          AtCoderFriends::Problem::InputFormat.new(
+            container: :varray_matrix,
+            names: %w[K A],
+            size: %w[N K_N],
+            cols: %i[number] * 2
           )
         ]
       end
@@ -104,6 +110,8 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
             int B[M_MAX];
             int C[M_MAX];
             int T[M_MAX];
+            int K[N_MAX];
+            int A[N_MAX][K_N_MAX];
 
             void solve() {
               int ans = 0;
@@ -113,6 +121,10 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
             void input() {
               scanf("%d%d", &N, &M);
               REP(i, M) scanf("%d%d%d%d", A + i, B + i, C + i, T + i);
+              REP(i, N) {
+                scanf("%d", K + i);
+                REP(j, K[i]) scanf("%d", &A[i][j]);
+              }
             }
 
             int main() {
@@ -265,78 +277,6 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
 
             void input() {
               scanf("%d", &N);
-            }
-
-            int main() {
-              input();
-              solve();
-              return 0;
-            }
-          SRC
-        )
-      end
-    end
-
-    context 'for a problem using varray_matrix' do
-      before do
-        allow(pbm).to receive(:url) do
-          'https://atcoder.jp/contests/abc118/tasks/abc118_b'
-        end
-      end
-      let(:formats) do
-        [
-          AtCoderFriends::Problem::InputFormat.new(
-            container: :single,
-            names: %w[N M],
-            cols: %i[number] * 2
-          ),
-          AtCoderFriends::Problem::InputFormat.new(
-            container: :varray_matrix,
-            names: %w[K A],
-            size: %w[N K_N],
-            cols: %i[number] * 2
-          )
-        ]
-      end
-      let(:constants) do
-        [
-          AtCoderFriends::Problem::Constant.new('N', :max, '30'),
-          AtCoderFriends::Problem::Constant.new('M', :max, '30')
-        ]
-      end
-      let(:interactive) { false }
-      let(:binary_values) { nil }
-
-      it 'generates source' do
-        expect(subject).to eq(
-          <<~SRC
-            // https://atcoder.jp/contests/abc118/tasks/abc118_b
-
-            #include <cstdio>
-
-            using namespace std;
-
-            #define REP(i,n)   for(int i=0; i<(int)(n); i++)
-            #define FOR(i,b,e) for(int i=(b); i<=(int)(e); i++)
-
-            const int N_MAX = 30;
-            const int M_MAX = 30;
-
-            int N, M;
-            int K[N_MAX];
-            int A[N_MAX][K_N_MAX];
-
-            void solve() {
-              int ans = 0;
-              printf("%d\\n", ans);
-            }
-
-            void input() {
-              scanf("%d%d", &N, &M);
-              REP(i, N) {
-                scanf("%d", K + i);
-                REP(j, K[i]) scanf("%d", &A[i][j]);
-              }
             }
 
             int main() {

@@ -41,9 +41,9 @@ module AtCoderFriends
     class RubyBuiltin < Base
       ACF_HOME = File.realpath(File.join(__dir__, '..', '..', '..'))
       TMPL_DIR = File.join(ACF_HOME, 'templates')
-      DEFAULT_TMPL = File.join(TMPL_DIR, 'ruby_builtin.rb.erb')
+      TEMPLATE = File.join(TMPL_DIR, 'ruby_builtin.rb.erb')
       FRAGMENTS = File.realpath(File.join(TMPL_DIR, 'ruby_builtin_fragments.yml'))
-      ATTRS = Attributes.new(:rb, DEFAULT_TMPL, FRAGMENTS)
+      ATTRS = Attributes.new(:rb, TEMPLATE, FRAGMENTS)
 
       def attrs
         ATTRS

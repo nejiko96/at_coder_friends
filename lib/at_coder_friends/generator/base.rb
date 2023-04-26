@@ -28,7 +28,7 @@ module AtCoderFriends
       end
 
       def select_file_ext
-        cfg['file_ext'] || attrs.file_ext
+        cfg['file_ext']&.to_sym || attrs.file_ext
       end
 
       def select_template

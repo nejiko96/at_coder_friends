@@ -1,0 +1,152 @@
+constant:
+  value_print: <%= value.sub(/\b10\^/, '1e').sub(/\b2\^/, '1<<').gsub(',', '_') %>
+  max: const int <%= name.upcase %>_MAX = <%= value_print %>;
+  mod: const int MOD = <%= value_print %>;
+declaration:
+  read: Console.ReadLine()<% delims.each do |d| %>.Replace('<%= d %>', ' ')<% end %>
+  multiplicity: |
+    <%
+      case container
+      when :single, :varray
+        if vs.size > 1 && item != :char
+          %>multi<%
+        else
+          %>single<%
+        end
+      when :harray, :matrix
+        if item != :char
+          %>multi<%
+        else
+          %>single<%
+        end
+      else
+        %>multi<%
+      end
+    -%>
+  input_tmpl:
+    number:
+      single: int.Parse(<%= read %>)
+      multi: <%= read %>.Split().Select(int.Parse).ToArray()
+    decimal:
+      single: double.Parse(<%= read %>)
+      multi: <%= read %>.Split().Select(double.Parse).ToArray()
+    string:
+      single: <%= read %>
+      multi: <%= read %>.Split()
+    char:
+      single: <%= read %>
+      multi: <%= read %>.Split()
+  input: <%= render('input_tmpl', item.to_s, multiplicity) %>
+  type_tmpl:
+    number: int
+    decimal: double
+    string: string
+    char: string
+  type: <%= render('type_tmpl', item.to_s) %>
+  decl_type: |
+    <%
+      case container
+      when :single
+        if vs.size > 1 %>single_n<% else %>single_1<% end
+      when :varray
+        if vs.size > 1 %>varray_n<% else %>varray_1<% end
+      when :varray_matrix
+        if item == :char %>varray_matrix_1<% else %>varray_matrix_2<% end
+      else
+        %><%= container.to_s %><%
+      end
+    -%>
+  line_buf: <%= vs.join() %>
+  arr_cnt: <%= vs.size - 1 %>
+  main_tmpl:
+    single_1: var <%= v %> = <%= input %>;
+    single_n: |
+      var <%= line_buf %> = <%= input %>;
+      <% vs.each.with_index do |v, k| -%>
+      var <%= v %> = <%= line_buf %>[<%= k %>];
+      <% end -%>
+    harray: var <%= v %> = <%= input %>;
+    varray_1: var <%= v %> = Enumerable.Range(0, <%= sz %>).Select(_ => <%= input %>).ToArray();
+    varray_n: |
+      <% vs.each do |v| -%>
+      var <%= v %> = new <%= type %>[<%= sz %>];
+      <% end -%>
+      for (int i = 0; i < <%= sz %>; i++)
+      {
+          var <%= line_buf %> = <%= input %>;
+      <% vs.each.with_index do |v, k| -%>
+          <%= v %>[i] = <%= line_buf %>[<%= k %>];
+      <% end -%>
+      }
+    matrix: |
+      var <%= v %> = Enumerable.Range(0, <%= sz %>).Select(_ =>
+          <%= input %>
+      ).ToArray();
+    varray_matrix_1: |
+      <% vs[0..-2].each do |v| -%>
+      var <%= v %> = new <%= type %>[<%= sz %>];
+      <% end -%>
+      var <%= vs[-1] %> = new <%= type %>[<%= sz %>];
+      for (int i = 0; i < <%= sz %>; i++)
+      {
+          var <%= line_buf %> = <%= input %>;
+      <% vs[0..-2].each.with_index do |v, k| -%>
+          <%= v %>[i] = <%= line_buf %>[<%= k %>];
+      <% end -%>
+          <%= vs[-1] %>[i] = <%= line_buf %>.Last();
+      }
+    varray_matrix_2: |
+      <% vs[0..-2].each do |v| -%>
+      var <%= v %> = new <%= type %>[<%= sz %>];
+      <% end -%>
+      var <%= vs[-1] %> = new <%= type %>[<%= sz %>][];
+      for (int i = 0; i < <%= sz %>; i++)
+      {
+          var <%= line_buf %> = <%= input %>;
+      <% vs[0..-2].each.with_index do |v, k| -%>
+          <%= v %>[i] = <%= line_buf %>[<%= k %>];
+      <% end -%>
+          <%= vs[-1] %>[i] = <%= line_buf %>.Skip(<%= arr_cnt %>).ToArray();
+      }
+    matrix_varray: |
+      var <%= vs[0] %> = new <%= type %>[<%= sz %>][];
+      <% vs[1..].each do |v| -%>
+      var <%= v %> = new <%= type %>[<%= sz %>];
+      <% end -%>
+      for (int i = 0; i < <%= sz %>; i++)
+      {
+          var <%= line_buf %> = <%= input %>;
+          <%= vs[0] %>[i] = <%= line_buf %>.Take(<%= line_buf %>.Count - <%= arr_cnt %>).ToArray();
+      <% vs[1..].each.with_index do |v, k| -%>
+          <%= v %>[i] = <%= line_buf %>[<%= line_buf %>.Count - <%= arr_cnt.to_i - k %>];
+      <% end -%>
+      }
+    vmatrix: |
+      <% vs.each do |v| -%>
+      var <%= v %> = new <%= type %>[<%= sz1 %>][<%= sz2 %>];
+      <% end -%>
+      for (int i = 0; i < <%= sz1 %>; i++)
+      {
+          for (int j = 0; j < <%= sz2 %>; j++)
+          {
+              var <%= line_buf %> = <%= input %>;
+      <% vs.each.with_index do |v, k| -%>
+              <%= v %>[i][j] = <%= line_buf %>[<%= k %>];
+      <% end -%>
+          }
+      }
+    hmatrix: |
+      <% vs.each do |v| -%>
+      var <%= v %> = new <%= type %>[<%= sz1 %>][<%= sz2 %>];
+      <% end -%>
+      for (int i = 0; i < <%= sz1 %>; i++)
+      {
+          var <%= line_buf %> = <%= input %>;
+          for (int j = 0; j < <%= sz2 %>; j++)
+          {
+      <% vs.each.with_index do |v, k| -%>
+              <%= v %>[i][j] = <%= line_buf %>[j * <%= vs.size %> + <%= k %>];
+      <% end -%>
+          }
+      }
+  main: <%= render('main_tmpl', decl_type) %>

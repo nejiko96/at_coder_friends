@@ -30,7 +30,7 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
       end
 
       it 'returns file extension' do
-        expect(subject).to eq('cpp')
+        expect(subject).to eq(:cpp)
       end
     end
   end

@@ -1,7 +1,19 @@
 # frozen_string_literal: true
 
-RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
-  subject(:generator) { described_class.new }
+ACF_HOME = File.realpath(File.join(__dir__, '..', '..'))
+TMPL_DIR = File.join(ACF_HOME, 'templates')
+TEMPLATE = File.join(TMPL_DIR, 'csharp_sample.cs.erb')
+FRAGMENTS = File.join(TMPL_DIR, 'csharp_sample_fragments.yml')
+
+RSpec.describe AtCoderFriends::Generator::AnyBuiltin do
+  subject(:generator) { described_class.new(cfg) }
+  let(:cfg) do
+    {
+      'file_ext' => 'cs',
+      'template' => TEMPLATE,
+      'fragments' => FRAGMENTS
+    }
+  end
 
   describe '#process' do
     subject { generator.process(pbm) }
@@ -10,7 +22,7 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
 
     it 'returns generator specific extension' do
       subject
-      expect(ext).to match(:rb)
+      expect(ext).to match(:cs)
     end
   end
 
@@ -19,6 +31,8 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
     let(:constants) do
       [
         AtCoderFriends::Problem::Constant.new('N', :max, '10,000'),
+        AtCoderFriends::Problem::Constant.new('M', :max, '10^9'),
+        AtCoderFriends::Problem::Constant.new('C_i', :max, '2*10^5'),
         AtCoderFriends::Problem::Constant.new(nil, :mod, '998,244,353')
       ]
     end
@@ -26,7 +40,10 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
     it 'generates constant decls' do
       expect(subject).to match(
         [
-          'MOD = 998_244_353'
+          'const int N_MAX = 10_000;',
+          'const int M_MAX = 1e9;',
+          'const int C_I_MAX = 2*1e5;',
+          'const int MOD = 998_244_353;'
         ]
       )
     end
@@ -51,7 +68,7 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       let(:container) { :single }
       let(:item) { :number }
       it 'generates decl' do
-        expect(subject).to eq('A = gets.to_i')
+        expect(subject).to eq('var A = int.Parse(Console.ReadLine());')
       end
     end
 
@@ -60,7 +77,13 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       let(:item) { :number }
       let(:names) { %w[A B] }
       it 'generates decl' do
-        expect(subject).to eq('A, B = gets.split.map(&:to_i)')
+        expect(subject).to eq(
+          <<~SRC
+            var AB = Console.ReadLine().Split().Select(int.Parse).ToArray();
+            var A = AB[0];
+            var B = AB[1];
+          SRC
+        )
       end
     end
 
@@ -68,7 +91,7 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       let(:container) { :single }
       let(:item) { :decimal }
       it 'generates decl' do
-        expect(subject).to eq('A = gets.to_f')
+        expect(subject).to eq('var A = double.Parse(Console.ReadLine());')
       end
     end
 
@@ -77,7 +100,13 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       let(:item) { :decimal }
       let(:names) { %w[A B] }
       it 'generates decl' do
-        expect(subject).to eq('A, B = gets.split.map(&:to_f)')
+        expect(subject).to eq(
+          <<~SRC
+            var AB = Console.ReadLine().Split().Select(double.Parse).ToArray();
+            var A = AB[0];
+            var B = AB[1];
+          SRC
+        )
       end
     end
 
@@ -85,7 +114,7 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       let(:container) { :single }
       let(:item) { :string }
       it 'generates decl' do
-        expect(subject).to eq('A = gets.chomp')
+        expect(subject).to eq('var A = Console.ReadLine();')
       end
     end
 
@@ -94,7 +123,13 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       let(:item) { :string }
       let(:names) { %w[A B] }
       it 'generates decl' do
-        expect(subject).to eq('A, B = gets.chomp.split')
+        expect(subject).to eq(
+          <<~SRC
+            var AB = Console.ReadLine().Split();
+            var A = AB[0];
+            var B = AB[1];
+          SRC
+        )
       end
     end
 
@@ -102,7 +137,9 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       let(:container) { :harray }
       let(:item) { :number }
       it 'generates decl' do
-        expect(subject).to eq('As = gets.split.map(&:to_i)')
+        expect(subject).to eq(
+          'var A = Console.ReadLine().Split().Select(int.Parse).ToArray();'
+        )
       end
     end
 
@@ -110,7 +147,9 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       let(:container) { :harray }
       let(:item) { :decimal }
       it 'generates decl' do
-        expect(subject).to eq('As = gets.split.map(&:to_f)')
+        expect(subject).to eq(
+          'var A = Console.ReadLine().Split().Select(double.Parse).ToArray();'
+        )
       end
     end
 
@@ -118,7 +157,7 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       let(:container) { :harray }
       let(:item) { :string }
       it 'generates decl' do
-        expect(subject).to eq('As = gets.chomp.split')
+        expect(subject).to eq('var A = Console.ReadLine().Split();')
       end
     end
 
@@ -126,7 +165,7 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       let(:container) { :harray }
       let(:item) { :char }
       it 'generates decl' do
-        expect(subject).to eq('As = gets.chomp')
+        expect(subject).to eq('var A = Console.ReadLine();')
       end
     end
 
@@ -135,7 +174,9 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       let(:item) { :number }
       let(:size) { %w[N] }
       it 'generates decl' do
-        expect(subject).to eq('As = Array.new(N) { gets.to_i }')
+        expect(subject).to eq(
+          'var A = Enumerable.Range(0, N).Select(_ => int.Parse(Console.ReadLine())).ToArray();'
+        )
       end
     end
 
@@ -144,7 +185,9 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       let(:item) { :decimal }
       let(:size) { %w[N] }
       it 'generates decl' do
-        expect(subject).to eq('As = Array.new(N) { gets.to_f }')
+        expect(subject).to eq(
+          'var A = Enumerable.Range(0, N).Select(_ => double.Parse(Console.ReadLine())).ToArray();'
+        )
       end
     end
 
@@ -153,7 +196,9 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       let(:item) { :string }
       let(:size) { %w[N] }
       it 'generates decl' do
-        expect(subject).to eq('As = Array.new(N) { gets.chomp }')
+        expect(subject).to eq(
+          'var A = Enumerable.Range(0, N).Select(_ => Console.ReadLine()).ToArray();'
+        )
       end
     end
 
@@ -165,11 +210,14 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       it 'generates decl' do
         expect(subject).to eq(
           <<~SRC
-            As = Array.new(N)
-            Bs = Array.new(N)
-            N.times do |i|
-              As[i], Bs[i] = gets.split.map(&:to_i)
-            end
+            var A = new int[N];
+            var B = new int[N];
+            for (int i = 0; i < N; i++)
+            {
+                var AB = Console.ReadLine().Split().Select(int.Parse).ToArray();
+                A[i] = AB[0];
+                B[i] = AB[1];
+            }
           SRC
         )
       end
@@ -183,11 +231,14 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       it 'generates decl' do
         expect(subject).to eq(
           <<~SRC
-            As = Array.new(N)
-            Bs = Array.new(N)
-            N.times do |i|
-              As[i], Bs[i] = gets.split.map(&:to_f)
-            end
+            var A = new double[N];
+            var B = new double[N];
+            for (int i = 0; i < N; i++)
+            {
+                var AB = Console.ReadLine().Split().Select(double.Parse).ToArray();
+                A[i] = AB[0];
+                B[i] = AB[1];
+            }
           SRC
         )
       end
@@ -201,11 +252,14 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       it 'generates decl' do
         expect(subject).to eq(
           <<~SRC
-            As = Array.new(N)
-            Bs = Array.new(N)
-            N.times do |i|
-              As[i], Bs[i] = gets.chomp.split
-            end
+            var A = new string[N];
+            var B = new string[N];
+            for (int i = 0; i < N; i++)
+            {
+                var AB = Console.ReadLine().Split();
+                A[i] = AB[0];
+                B[i] = AB[1];
+            }
           SRC
         )
       end
@@ -216,7 +270,13 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       let(:item) { :number }
       let(:size) { %w[R C] }
       it 'generates decl' do
-        expect(subject).to eq('Ass = Array.new(R) { gets.split.map(&:to_i) }')
+        expect(subject).to eq(
+          <<~SRC
+            var A = Enumerable.Range(0, R).Select(_ =>
+                Console.ReadLine().Split().Select(int.Parse).ToArray()
+            ).ToArray();
+          SRC
+        )
       end
     end
 
@@ -225,7 +285,13 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       let(:item) { :decimal }
       let(:size) { %w[R C] }
       it 'generates decl' do
-        expect(subject).to eq('Ass = Array.new(R) { gets.split.map(&:to_f) }')
+        expect(subject).to eq(
+          <<~SRC
+            var A = Enumerable.Range(0, R).Select(_ =>
+                Console.ReadLine().Split().Select(double.Parse).ToArray()
+            ).ToArray();
+          SRC
+        )
       end
     end
 
@@ -234,7 +300,13 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       let(:item) { :string }
       let(:size) { %w[R C] }
       it 'generates decl' do
-        expect(subject).to eq('Ass = Array.new(R) { gets.chomp.split }')
+        expect(subject).to eq(
+          <<~SRC
+            var A = Enumerable.Range(0, R).Select(_ =>
+                Console.ReadLine().Split()
+            ).ToArray();
+          SRC
+        )
       end
     end
 
@@ -243,7 +315,13 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       let(:item) { :char }
       let(:size) { %w[R C] }
       it 'generates decl' do
-        expect(subject).to eq('Ass = Array.new(R) { gets.chomp }')
+        expect(subject).to eq(
+          <<~SRC
+            var A = Enumerable.Range(0, R).Select(_ =>
+                Console.ReadLine()
+            ).ToArray();
+          SRC
+        )
       end
     end
 
@@ -255,11 +333,14 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       it 'generates decl' do
         expect(subject).to eq(
           <<~SRC
-            Ks = Array.new(N)
-            Ass = Array.new(N)
-            N.times do |i|
-              Ks[i], *Ass[i] = gets.split.map(&:to_i)
-            end
+            var K = new int[N];
+            var A = new int[N][];
+            for (int i = 0; i < N; i++)
+            {
+                var KA = Console.ReadLine().Split().Select(int.Parse).ToArray();
+                K[i] = KA[0];
+                A[i] = KA.Skip(1).ToArray();
+            }
           SRC
         )
       end
@@ -273,11 +354,14 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       it 'generates decl' do
         expect(subject).to eq(
           <<~SRC
-            Ks = Array.new(N)
-            Ass = Array.new(N)
-            N.times do |i|
-              Ks[i], *Ass[i] = gets.split.map(&:to_f)
-            end
+            var K = new double[N];
+            var A = new double[N][];
+            for (int i = 0; i < N; i++)
+            {
+                var KA = Console.ReadLine().Split().Select(double.Parse).ToArray();
+                K[i] = KA[0];
+                A[i] = KA.Skip(1).ToArray();
+            }
           SRC
         )
       end
@@ -291,11 +375,14 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       it 'generates decl' do
         expect(subject).to eq(
           <<~SRC
-            Ks = Array.new(Q)
-            pss = Array.new(Q)
-            Q.times do |i|
-              Ks[i], pss[i] = gets.chomp.split
-            end
+            var K = new string[Q];
+            var p = new string[Q];
+            for (int i = 0; i < Q; i++)
+            {
+                var Kp = Console.ReadLine().Split();
+                K[i] = Kp[0];
+                p[i] = Kp.Last();
+            }
           SRC
         )
       end
@@ -309,11 +396,14 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       it 'generates decl' do
         expect(subject).to eq(
           <<~SRC
-            cityss = Array.new(M)
-            costs = Array.new(M)
-            M.times do |i|
-              *cityss[i], costs[i] = gets.split.map(&:to_i)
-            end
+            var city = new int[M][];
+            var cost = new int[M];
+            for (int i = 0; i < M; i++)
+            {
+                var citycost = Console.ReadLine().Split().Select(int.Parse).ToArray();
+                city[i] = citycost.Take(citycost.Count - 1).ToArray();
+                cost[i] = citycost[citycost.Count - 1];
+            }
           SRC
         )
       end
@@ -327,13 +417,17 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       it 'generates decl' do
         expect(subject).to eq(
           <<~SRC
-            idolss = Array.new(1) { Array.new(C_1) }
-            pss = Array.new(1) { Array.new(C_1) }
-            1.times do |i|
-              C_1.times do |j|
-                idolss[i][j], pss[i][j] = gets.split.map(&:to_i)
-              end
-            end
+            var idol = new int[1][C_1];
+            var p = new int[1][C_1];
+            for (int i = 0; i < 1; i++)
+            {
+                for (int j = 0; j < C_1; j++)
+                {
+                    var idolp = Console.ReadLine().Split().Select(int.Parse).ToArray();
+                    idol[i][j] = idolp[0];
+                    p[i][j] = idolp[1];
+                }
+            }
           SRC
         )
       end
@@ -347,11 +441,17 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       it 'generates decl' do
         expect(subject).to eq(
           <<~SRC
-            xss = Array.new(Q)
-            yss = Array.new(Q)
-            Q.times do |i|
-              xss[i], yss[i] = gets.split.map(&:to_i).each_slice(2).to_a.transpose
-            end
+            var x = new int[Q][2];
+            var y = new int[Q][2];
+            for (int i = 0; i < Q; i++)
+            {
+                var xy = Console.ReadLine().Split().Select(int.Parse).ToArray();
+                for (int j = 0; j < 2; j++)
+                {
+                    x[i][j] = xy[j * 2 + 0];
+                    y[i][j] = xy[j * 2 + 1];
+                }
+            }
           SRC
         )
       end
@@ -366,11 +466,14 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       it 'generates decl' do
         expect(subject).to eq(
           <<~SRC
-            Ss = Array.new(N)
-            Es = Array.new(N)
-            N.times do |i|
-              Ss[i], Es[i] = gets.gsub('-', ' ').split.map(&:to_i)
-            end
+            var S = new int[N];
+            var E = new int[N];
+            for (int i = 0; i < N; i++)
+            {
+                var SE = Console.ReadLine().Replace('-', ' ').Split().Select(int.Parse).ToArray();
+                S[i] = SE[0];
+                E[i] = SE[1];
+            }
           SRC
         )
       end
@@ -428,89 +531,45 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       it 'generates source' do
         expect(subject).to eq(
           <<~SRC
-            # https://atcoder.jp/contests/practice/tasks/practice_1
+            // https://atcoder.jp/contests/practice/tasks/practice_1
 
-            MOD = 10**9+7
+            using System;
+            using System.Collections;
+            using System.Collections.Generic;
+            using System.Linq;
+            using System.Text;
 
-            N = gets.to_i
-            xs = Array.new(N)
-            ys = Array.new(N)
-            N.times do |i|
-              xs[i], ys[i] = gets.split.map(&:to_i)
-            end
-            Q = gets.chomp
-            as = gets.chomp.split
-            Ks = Array.new(N)
-            Ass = Array.new(N)
-            N.times do |i|
-              Ks[i], *Ass[i] = gets.split.map(&:to_i)
-            end
+            class Program
+            {
+                static void Main(string[] args)
+                {
+                    const int N_MAX = 100000;
+                    const int MOD = 1e9+7;
 
-            puts ans
-          SRC
-        )
-      end
-    end
+                    var N = int.Parse(Console.ReadLine());
+                    var x = new int[N];
+                    var y = new int[N];
+                    for (int i = 0; i < N; i++)
+                    {
+                        var xy = Console.ReadLine().Split().Select(int.Parse).ToArray();
+                        x[i] = xy[0];
+                        y[i] = xy[1];
+                    }
+                    var Q = Console.ReadLine();
+                    var a = Console.ReadLine().Split();
+                    var K = new int[N];
+                    var A = new int[N][];
+                    for (int i = 0; i < N; i++)
+                    {
+                        var KA = Console.ReadLine().Split().Select(int.Parse).ToArray();
+                        K[i] = KA[0];
+                        A[i] = KA.Skip(1).ToArray();
+                    }
 
-    context 'for an interactive problem' do
-      before do
-        allow(pbm).to receive(:url) do
-          'https://atcoder.jp/contests/practice/tasks/practice_2'
-        end
-      end
-      let(:formats) do
-        [
-          AtCoderFriends::Problem::InputFormat.new(
-            container: :single, names: %w[N Q]
-          )
-        ]
-      end
-      let(:constants) do
-        [
-          AtCoderFriends::Problem::Constant.new('N', :max, '26'),
-          AtCoderFriends::Problem::Constant.new(nil, :mod, '2^32')
-        ]
-      end
-      let(:interactive) { true }
-      let(:binary_values) { nil }
-
-      it 'generates source' do
-        expect(subject).to eq(
-          <<~'SRC'
-            # https://atcoder.jp/contests/practice/tasks/practice_2
-
-            def query(*args)
-              puts "? #{args.join(' ')}"
-              STDOUT.flush
-              if $DEBUG
-                res = 'generate response from @source'
-                res.tap { |res| @responses << res }
-              else
-                gets.chomp
-              end
-            end
-
-            $DEBUG = true
-
-            MOD = 2**32
-
-            N, Q = gets.split.map(&:to_i)
-
-            if $DEBUG
-              @responses = []
-              @source = gets.chomp
-            end
-
-            puts "! #{ans}"
-            STDOUT.flush
-
-            if $DEBUG
-              puts "----------------------------------------"
-              puts "query count: #{@responses.size}"
-              puts "query results:"
-              @responses.each { |res| puts res }
-              puts "----------------------------------------"
-            end
+                    int ans = 0;
+                    Console.WriteLine(ans);
+                }
+            }
           SRC
         )
       end
@@ -540,12 +599,26 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
       it 'generates source' do
         expect(subject).to eq(
           <<~SRC
-            # https://atcoder.jp/contests/abc006/tasks/abc006_1
+            // https://atcoder.jp/contests/abc006/tasks/abc006_1
 
+            using System;
+            using System.Collections;
+            using System.Collections.Generic;
+            using System.Linq;
+            using System.Text;
 
-            N = gets.to_i
+            class Program
+            {
+                static void Main(string[] args)
+                {
+                    const int N_MAX = 9;
 
-            puts cond ? 'YES' : 'NO'
+                    var N = int.Parse(Console.ReadLine());
+
+                    bool cond = false;
+                    Console.WriteLine(cond ? "YES" : "NO");
+                }
+            }
           SRC
         )
       end

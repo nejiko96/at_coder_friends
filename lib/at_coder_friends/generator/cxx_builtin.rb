@@ -4,8 +4,8 @@ module AtCoderFriends
   module Generator
     # generates C++ source from problem description
     class CxxBuiltin < CBuiltin
-      DEFAULT_TMPL = File.join(TMPL_DIR, 'cxx_builtin.cxx.erb')
-      ATTRS = Attributes.new(:cxx, DEFAULT_TMPL, FRAGMENTS)
+      TEMPLATE = File.join(TMPL_DIR, 'cxx_builtin.cxx.erb')
+      ATTRS = Attributes.new(:cxx, TEMPLATE, FRAGMENTS)
 
       def attrs
         ATTRS

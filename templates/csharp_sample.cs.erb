@@ -1,0 +1,29 @@
+// <%= pbm.url %>
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+<% gen_consts.each do |line| -%>
+        <%= line %>
+<% end -%>
+
+<% gen_decls.each do |line| -%>
+        <%= line %>
+<% end -%>
+
+<% if (vs = pbm.options.binary_values) -%>
+        bool cond = false;
+        Console.WriteLine(cond ? "<%= vs[0] %>" : "<%= vs[1] %>");
+<% else -%>
+        int ans = 0;
+        Console.WriteLine(ans);
+<% end -%>
+    }
+}
