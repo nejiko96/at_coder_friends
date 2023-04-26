@@ -1,5 +1,5 @@
 constant:
-  value_print: <%= value.sub(/\b10\^/, '1e').sub(/\b2\^/, '1<<').gsub(',', '') %>
+  value_print: <%= value.sub(/\b10\^/, '(int)1e').sub(/\b2\^/, '1<<').gsub(',', '') %>
   max: '#define <%= name.upcase %>_MAX <%= value_print %>'
   mod: '#define MOD <%= value_print %>'
 cxx_constant:

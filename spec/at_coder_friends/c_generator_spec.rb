@@ -29,8 +29,8 @@ RSpec.describe AtCoderFriends::Generator::CBuiltin do
       expect(subject).to match(
         [
           '#define N_MAX 10000',
-          '#define M_MAX 1e9',
-          '#define C_I_MAX 2*1e5',
+          '#define M_MAX (int)1e9',
+          '#define C_I_MAX 2*(int)1e5',
           '#define MOD 998244353'
         ]
       )
@@ -694,10 +694,10 @@ RSpec.describe AtCoderFriends::Generator::CBuiltin do
             #define FOR(i,b,e) for(int i=(b); i<=(int)(e); i++)
 
             #define N_MAX 100000
-            #define M_MAX 1e9
-            #define C_I_MAX 2*1e5
+            #define M_MAX (int)1e9
+            #define C_I_MAX 2*(int)1e5
             #define T_I_MAX 1000000
-            #define MOD 1e9+7
+            #define MOD (int)1e9+7
 
             int N, M;
             int A[M_MAX];

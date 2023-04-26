@@ -40,9 +40,9 @@ RSpec.describe AtCoderFriends::Generator::AnyBuiltin do
     it 'generates constant decls' do
       expect(subject).to match(
         [
-          '// const int N_MAX = 10_000;',
-          '// const int M_MAX = 1e9;',
-          '// const int C_I_MAX = 2*1e5;',
+          'const int N_MAX = 10_000;',
+          'const int M_MAX = (int)1e9;',
+          'const int C_I_MAX = 2*(int)1e5;',
           'const int MOD = 998_244_353;'
         ]
       )
@@ -543,8 +543,8 @@ RSpec.describe AtCoderFriends::Generator::AnyBuiltin do
             {
                 static void Main(string[] args)
                 {
-                    // const int N_MAX = 100000;
-                    const int MOD = 1e9+7;
+                    const int N_MAX = 100000;
+                    const int MOD = (int)1e9+7;
 
                     var N = int.Parse(Console.ReadLine());
                     var x = new int[N];
@@ -611,7 +611,7 @@ RSpec.describe AtCoderFriends::Generator::AnyBuiltin do
             {
                 static void Main(string[] args)
                 {
-                    // const int N_MAX = 9;
+                    const int N_MAX = 9;
 
                     var N = int.Parse(Console.ReadLine());
 
