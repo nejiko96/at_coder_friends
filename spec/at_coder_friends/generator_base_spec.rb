@@ -46,11 +46,11 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
 
     context 'with custom configuration' do
       let(:cfg) do
-        { 'template' => 'customized_default.cxx' }
+        { 'template' => 'custom_default.cxx' }
       end
 
       it 'returns template file name' do
-        expect(subject).to eq('customized_default.cxx')
+        expect(subject).to eq('custom_default.cxx')
       end
     end
 
@@ -61,6 +61,26 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
 
       it 'returns template file name' do
         expect(subject).to eq('old_default.cxx')
+      end
+    end
+
+    context 'when the path starts with "@"' do
+      let(:cfg) do
+        { 'template' => '@/sample_default.cxx' }
+      end
+
+      it 'replaces "@" to the template folder in the gem' do
+        expect(subject).to end_with('/at_coder_friends/templates/sample_default.cxx')
+      end
+    end
+
+    context 'when the path not starts with "@"' do
+      let(:cfg) do
+        { 'template' => '/@sample_default.cxx' }
+      end
+
+      it 'not replace "@"' do
+        expect(subject).to eq('/@sample_default.cxx')
       end
     end
   end
@@ -76,11 +96,31 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
 
     context 'with custom configuration' do
       let(:cfg) do
-        { 'fragments' => 'customized_fragments.yaml' }
+        { 'fragments' => 'custom_fragments.yml' }
       end
 
       it 'returns fragments file name' do
-        expect(subject).to eq('customized_fragments.yaml')
+        expect(subject).to eq('custom_fragments.yml')
+      end
+    end
+
+    context 'when the path starts with "@"' do
+      let(:cfg) do
+        { 'fragments' => '@/sample_fragments.yml' }
+      end
+
+      it 'replaces "@" to the template folder in the gem' do
+        expect(subject).to end_with('/at_coder_friends/templates/sample_fragments.yml')
+      end
+    end
+
+    context 'when the path not starts with "@"' do
+      let(:cfg) do
+        { 'fragments' => '/@sample_fragments.yml' }
+      end
+
+      it 'not replace "@"' do
+        expect(subject).to eq('/@sample_fragments.yml')
       end
     end
   end

@@ -9,6 +9,9 @@ module AtCoderFriends
 
     # common behavior of generators
     class Base
+      ACF_HOME = File.realpath(File.join(__dir__, '..', '..', '..'))
+      TMPL_DIR = File.join(ACF_HOME, 'templates')
+
       attr_reader :cfg, :pbm
 
       def initialize(cfg = nil)
@@ -32,11 +35,13 @@ module AtCoderFriends
       end
 
       def select_template
-        cfg['template'] || cfg['default_template'] || attrs.template
+        template = cfg['template'] || cfg['default_template'] || attrs.template
+        template.sub(/\A@/, TMPL_DIR)
       end
 
       def select_fragments
-        cfg['fragments'] || attrs.fragments
+        fragments = cfg['fragments'] || attrs.fragments
+        fragments.sub(/\A@/, TMPL_DIR)
       end
 
       # deprecated, use ERB syntax
