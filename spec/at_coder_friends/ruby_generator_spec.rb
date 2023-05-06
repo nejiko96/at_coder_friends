@@ -14,11 +14,11 @@ RSpec.describe AtCoderFriends::Generator::RubyBuiltin do
     end
   end
 
-  describe '#gen_consts' do
-    subject { generator.gen_consts(constants) }
+  describe '#gen_const' do
+    subject { constants.map { |c| generator.gen_const(c) } }
     let(:constants) do
       [
-        AtCoderFriends::Problem::Constant.new('N', :max, '10,000'),
+        # AtCoderFriends::Problem::Constant.new('N', :max, '10,000'),
         AtCoderFriends::Problem::Constant.new(nil, :mod, '998,244,353')
       ]
     end

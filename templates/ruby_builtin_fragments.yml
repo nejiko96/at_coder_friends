@@ -3,7 +3,27 @@ constant:
   mod: MOD = <%= value_print %>
 declaration:
   read: gets<% delims.each do |d| %>.gsub('<%= d %>', ' ')<% end %>
+  multiplicity: |
+    <%
+      case container
+      when :single, :varray
+        if vs.size > 1 && item != :char
+          %>multi<%
+        else
+          %>single<%
+        end
+      when :harray, :matrix
+        if item != :char
+          %>multi<%
+        else
+          %>single<%
+        end
+      else
+        %>multi<%
+      end
+    -%>
   input:
+    __key: [item, multiplicity]
     number:
       single: <%= read %>.to_i
       multi: <%= read %>.split.map(&:to_i)
@@ -16,8 +36,18 @@ declaration:
     char:
       single: <%= read %>.chomp
       multi: <%= read %>.chomp.split
+  decl_type: |
+    <%
+      case container
+      when :varray
+        if vs.size > 1 %>varray_n<% else %>varray_1<% end
+      else
+        %><%= container.to_s %><%
+      end
+    -%>
   splat: <% unless item == :char %>*<% end %>
   main:
+    __key: [decl_type]
     single: <%= vs.join(', ') %> = <%= input %>
     harray: <%= v %>s = <%= input %>
     varray_1: <%= v %>s = Array.new(<%= sz %>) { <%= input %> }

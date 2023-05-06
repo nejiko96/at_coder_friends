@@ -8,21 +8,60 @@ cxx_constant:
   mod: const int MOD = <%= value_print %>;
 declaration:
   type:
+    __key: [item]
     number: int
     decimal: double
     string: char
     char: char
+  horizontal_type: |
+    <%
+      case container
+      when :single
+        items = vars.map(&:item)
+        if items.uniq.size == 1 && items[0] != :string
+          %>multi<%
+        else
+          %>single<%
+        end
+      when :harray, :varray
+        %>array<%
+      else # :matrix, :vmatrix, :hmatrix
+        %>matrix<%
+      end
+    -%>
   arr_sz1: <%= sz1.gsub(/([a-z][a-z0-9_]*)/i, '\1_MAX').upcase%>
   arr_sz2: <%= sz2.gsub(/([a-z][a-z0-9_]*)/i, '\1_MAX').upcase%>
   arr_sz: <%= arr_sz1 %>
   null_alloc: <% if item == :char %> + 1<% end %>
   string_alloc: <% if item == :string %>[<%= v.upcase %>_MAX + 1]<% end %>
   line:
+    __key: [horizontal_type]
     single: <%= type %> <%= v %><%= string_alloc %>;
     multi: <%= type(vars[0].item) %> <%= vs.join(', ') %>;
     array: <%= type %> <%= v %>[<%= arr_sz %><%= null_alloc %>]<%= string_alloc %>;
     matrix: <%= type %> <%= v %>[<%= arr_sz1 %>][<%= arr_sz2 %><%= null_alloc %>]<%= string_alloc %>;
+  vertical_type: |
+    <%
+      if components
+        %>combi<%
+      else
+        case container
+          when :single
+            items = vars.map(&:item)
+            if items.uniq.size == 1 && items[0] != :string
+              %>single<%
+            else
+              %>multi<%
+            end
+          when :harray
+            %>single<%
+          else # :varray. :matrix, :vmatrix, :hmatrix
+            %>multi<%
+        end
+      end
+    -%>
   main:
+    __key: [vertical_type]
     single: <%= line %>
     multi: |
       <% vars.each do |var| -%>
@@ -31,6 +70,7 @@ declaration:
     combi: <% components.each do |cmp| %><%= cmp.main %><% end %>
 input:
   item_format:
+    __key: [item]
     number: '%d'
     decimal: '%lf'
     string: '%s'
@@ -38,6 +78,7 @@ input:
   line_format: <%= vars.map { |var| var.item_format }.join %>
   address_type: <%= ['single', 'array', 'matrix'][size.size] %>
   item_address:
+    __key: [address_type, item]
     single:
       number: '&<%= v %>'
       decimal: '&<%= v %>'
@@ -57,6 +98,7 @@ input:
   dim_type: '<%= size.size - (item == :char ? 1 : 0) %>_dim'
   sz2_body: <%= sz2.split('_')[0] %>
   main:
+    __key: [input_type, dim_type]
     plain:
       0_dim: scanf("<%= line_format %>", <%= line_address %>);
       1_dim: REP(i, <%= sz1 %>) scanf("<%= line_format %>", <%= line_address %>);

@@ -23,7 +23,8 @@ declaration:
         %>multi<%
       end
     -%>
-  input_tmpl:
+  input:
+    __key: [item, multiplicity]
     number:
       single: int.Parse(<%= read %>)
       multi: <%= read %>.Split().Select(int.Parse).ToArray()
@@ -36,13 +37,6 @@ declaration:
     char:
       single: <%= read %>
       multi: <%= read %>.Split()
-  input: <%= render('input_tmpl', item.to_s, multiplicity) %>
-  type_tmpl:
-    number: int
-    decimal: double
-    string: string
-    char: string
-  type: <%= render('type_tmpl', item.to_s) %>
   decl_type: |
     <%
       case container
@@ -56,9 +50,16 @@ declaration:
         %><%= container.to_s %><%
       end
     -%>
+  type:
+    __key: [item]
+    number: int
+    decimal: double
+    string: string
+    char: string
   line_buf: <%= vs.join() %>
   arr_cnt: <%= vs.size - 1 %>
-  main_tmpl:
+  main:
+    __key: [decl_type]
     single_1: var <%= v %> = <%= input %>;
     single_n: |
       var <%= line_buf %> = <%= input %>;
@@ -149,4 +150,3 @@ declaration:
       <% end -%>
           }
       }
-  main: <%= render('main_tmpl', decl_type) %>

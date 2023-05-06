@@ -14,8 +14,18 @@ module AtCoderFriends
       end
 
       def render(*keys)
+        keys = keys.map(&:to_s)
         template = templates.dig(*keys) || (raise AppError, "fragment key #{keys} not found")
-        ERB.new(template, trim_mode: '-').result(binding)
+
+        return ERB.new(template, trim_mode: '-').result(binding) if template.is_a?(String)
+
+        if template.is_a?(Hash)
+          sub_key_props = template['__key'] || (raise AppError, "'__key' not found in fragment hash #{keys}")
+          sub_keys = sub_key_props.map { |k| send(k) }
+          return render(*keys, *sub_keys)
+        end
+
+        raise AppError, "can't render fragment #{keys}"
       end
 
       # delegate method calls to obj
@@ -23,7 +33,7 @@ module AtCoderFriends
         if @obj.respond_to?(name)
           @obj.send(name, *args, &block)
         elsif templates.key?(name.to_s)
-          render(name.to_s)
+          render(name)
         else
           super
         end
@@ -43,12 +53,16 @@ module AtCoderFriends
     # base class for constant declaration generator
     class ConstFragment < FragmentBase
       def generate
-        render(type.to_s)
+        render(type)
       end
     end
 
     # base class for variable declaration generator
     class InputFormatFragment < FragmentBase
+      def generate
+        render(:main)
+      end
+
       def vs
         names
       end
