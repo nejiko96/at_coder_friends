@@ -6,6 +6,7 @@ module AtCoderFriends
     class AnyBuiltin < Base
       include ConstFragmentMixin
       include DeclFragmentMixin
+      include InputFragmentMixin
 
       ACF_HOME = File.realpath(File.join(__dir__, '..', '..', '..'))
       TMPL_DIR = File.join(ACF_HOME, 'templates')

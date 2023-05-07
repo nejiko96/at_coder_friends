@@ -17,8 +17,10 @@ module AtCoderFriends
         ATTRS
       end
 
-      def constants
-        super.select { |c| c.type == :mod }
+      def gen_consts
+        pbm.constants
+          .select { |c| c.type == :mod }
+          .map { |c| gen_const(c) }
       end
 
       # deprecated, use ERB syntax

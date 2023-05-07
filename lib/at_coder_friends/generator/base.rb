@@ -6,29 +6,9 @@ require 'erb'
 module AtCoderFriends
   module Generator
     Attributes = Struct.new(:file_ext, :template, :fragments)
-    module ProblemWrapperMixin
-      # delegate method calls to pbm
-      def method_missing(name, *args, &block)
-        if @pbm.respond_to?(name)
-          @pbm.send(name, *args, &block)
-        else
-          super
-        end
-      end
-
-      def respond_to_missing?(name, include_private = false)
-        @pbm.respond_to?(name, include_private) || super
-      end
-
-      def inpdefs
-        formats
-      end
-    end
 
     # common behavior of generators
     class Base
-      include ProblemWrapperMixin
-
       ACF_HOME = File.realpath(File.join(__dir__, '..', '..', '..'))
       TMPL_DIR = File.join(ACF_HOME, 'templates')
 
@@ -80,7 +60,7 @@ module AtCoderFriends
 
     module ConstFragmentMixin
       def gen_consts
-        constants.map { |c| gen_const(c) }
+        pbm.constants.map { |c| gen_const(c) }
       end
 
       def gen_const(c)
@@ -90,7 +70,7 @@ module AtCoderFriends
 
     module DeclFragmentMixin
       def gen_decls
-        inpdefs.map { |inpdef| gen_decl(inpdef).split("\n") }.flatten
+        pbm.formats.map { |inpdef| gen_decl(inpdef).split("\n") }.flatten
       end
 
       def gen_decl(inpdef)
@@ -100,7 +80,7 @@ module AtCoderFriends
 
     module InputFragmentMixin
       def gen_inputs
-        inpdefs.map { |inpdef| gen_input(inpdef).split("\n") }.flatten
+        pbm.formats.map { |inpdef| gen_input(inpdef).split("\n") }.flatten
       end
 
       def gen_input(inpdef)
