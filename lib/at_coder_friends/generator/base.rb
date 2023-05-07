@@ -78,7 +78,7 @@ module AtCoderFriends
       end
     end
 
-    module CommonFragmentMixin
+    module ConstFragmentMixin
       def gen_consts
         constants.map { |c| gen_const(c) }
       end
@@ -86,13 +86,25 @@ module AtCoderFriends
       def gen_const(c)
         ConstFragment.new(c, fragments['constant']).generate
       end
+    end
 
+    module DeclFragmentMixin
       def gen_decls
         inpdefs.map { |inpdef| gen_decl(inpdef).split("\n") }.flatten
       end
 
       def gen_decl(inpdef)
         InputFormatFragment.new(inpdef, fragments['declaration']).generate
+      end
+    end
+
+    module InputFragmentMixin
+      def gen_inputs
+        inpdefs.map { |inpdef| gen_input(inpdef).split("\n") }.flatten
+      end
+
+      def gen_input(inpdef)
+        InputFormatFragment.new(inpdef, fragments['input']).generate
       end
     end
   end

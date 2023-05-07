@@ -4,7 +4,10 @@ module AtCoderFriends
   module Generator
     # generates C source from problem description
     class CBuiltin < Base
-      include CommonFragmentMixin
+      include ConstFragmentMixin
+      include DeclFragmentMixin
+      include InputFragmentMixin
+
       ACF_HOME = File.realpath(File.join(__dir__, '..', '..', '..'))
       TMPL_DIR = File.join(ACF_HOME, 'templates')
       TEMPLATE = File.join(TMPL_DIR, 'c_builtin.c.erb')
@@ -13,14 +16,6 @@ module AtCoderFriends
 
       def attrs
         ATTRS
-      end
-
-      def gen_inputs
-        inpdefs.map { |inpdef| gen_input(inpdef).split("\n") }.flatten
-      end
-
-      def gen_input(inpdef)
-        InputFormatFragment.new(inpdef, fragments['input']).generate
       end
     end
   end

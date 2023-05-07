@@ -4,7 +4,9 @@ module AtCoderFriends
   module Generator
     # generates Ruby source from problem description
     class RubyBuiltin < Base
-      include CommonFragmentMixin
+      include ConstFragmentMixin
+      include DeclFragmentMixin
+
       ACF_HOME = File.realpath(File.join(__dir__, '..', '..', '..'))
       TMPL_DIR = File.join(ACF_HOME, 'templates')
       TEMPLATE = File.join(TMPL_DIR, 'ruby_builtin.rb.erb')
