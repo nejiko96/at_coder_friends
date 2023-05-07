@@ -15,8 +15,8 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
     end
   end
 
-  describe '#select_file_ext' do
-    subject { generator.select_file_ext }
+  describe '#config_file_ext' do
+    subject { generator.config_file_ext }
 
     context 'with default configuration' do
       it 'returns file extension' do
@@ -35,8 +35,8 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
     end
   end
 
-  describe '#select_template' do
-    subject { generator.select_template }
+  describe '#config_template' do
+    subject { generator.config_template }
 
     context 'with default configuration' do
       it 'returns template file name' do
@@ -85,8 +85,8 @@ RSpec.describe AtCoderFriends::Generator::CxxBuiltin do
     end
   end
 
-  describe '#select_fragments' do
-    subject { generator.select_fragments }
+  describe '#config_fragments' do
+    subject { generator.config_fragments }
 
     context 'with default configuration' do
       it 'returns fragments file name' do

@@ -14,8 +14,8 @@ RSpec.describe AtCoderFriends::Generator::AnyBuiltin do
     end
   end
 
-  describe '#gen_consts' do
-    subject { generator.gen_consts(constants) }
+  describe '#gen_const' do
+    subject { constants.map { |c| generator.gen_const(c) } }
     let(:constants) do
       [
         AtCoderFriends::Problem::Constant.new('C_i', :max, '2*10^5'),
