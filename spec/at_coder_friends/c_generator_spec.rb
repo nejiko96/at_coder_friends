@@ -620,6 +620,18 @@ RSpec.describe AtCoderFriends::Generator::CBuiltin do
       end
     end
 
+    context 'for vertical expanded matrices of mixed types' do
+      let(:container) { :vmatrix }
+      let(:cols) { %i[number decimal string] }
+      let(:names) { %w[A B C] }
+      let(:size) { %w[N M] }
+      it 'generates decl' do
+        expect(subject).to eq(
+          'REP(i, N) REP(j, M) scanf("%d%lf%s", &A[i][j], &B[i][j], C[i][j]);'
+        )
+      end
+    end
+
     context 'for horizontally expanded matrices(number)' do
       let(:container) { :hmatrix }
       let(:cols) { %i[number] }

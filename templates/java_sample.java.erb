@@ -1,0 +1,25 @@
+// <%= pbm.url %>
+
+import java.util.*;
+
+public class Main {
+
+<% gen_consts.each do |line| -%>
+    <%= line %>
+<% end -%>
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+<% gen_decls.each do |line| -%>
+        <%= line %>
+<% end -%>
+
+<% if (vs = pbm.options.binary_values) -%>
+        boolean cond = false;
+        System.out.println(cond ? "<%= vs[0] %>" : "<%= vs[1] %>");
+<% else -%>
+        int ans = 0;
+        System.out.println(ans);
+<% end -%>
+    }
+}
