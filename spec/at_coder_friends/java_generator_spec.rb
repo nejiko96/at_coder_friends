@@ -2,16 +2,18 @@
 
 ACF_HOME = File.realpath(File.join(__dir__, '..', '..'))
 TMPL_DIR = File.join(ACF_HOME, 'templates')
-TEMPLATE = File.join(TMPL_DIR, 'java_sample.java.erb')
-FRAGMENTS = File.join(TMPL_DIR, 'java_sample_fragments.yml')
+JAVA_TEMPLATE = File.join(TMPL_DIR, 'java_sample.java.erb')
+JAVA_FRAGMENTS = File.join(TMPL_DIR, 'java_sample_fragments.yml')
 
 RSpec.describe AtCoderFriends::Generator::AnyBuiltin do
+context 'with java template specified' do
+
   subject(:generator) { described_class.new(cfg) }
   let(:cfg) do
     {
       'file_ext' => 'java',
-      'template' => TEMPLATE,
-      'fragments' => FRAGMENTS
+      'template' => JAVA_TEMPLATE,
+      'fragments' => JAVA_FRAGMENTS
     }
   end
 
@@ -614,4 +616,5 @@ RSpec.describe AtCoderFriends::Generator::AnyBuiltin do
       end
     end
   end
+end
 end
