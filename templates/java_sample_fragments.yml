@@ -1,0 +1,98 @@
+constant:
+  value_print: <%= value.sub(/\b10\^/, '(int)1e').sub(/\b2\^/, '1<<').gsub(',', '_') %>
+  max: 'public static final int <%= name.upcase %>_MAX = <%= value_print %>;'
+  mod: 'public static final int MOD = <%= value_print %>;'
+declaration:
+  type_body:
+    __key: [item]
+    number: int
+    decimal: double
+    string: String
+    char: char
+  type_after: <% if item == :char %>[]<% else %><% end %>
+  type: <%= type_body %><%= type_after %>
+  read:
+    __key: [item]
+    number: sc.nextInt()
+    decimal: sc.nextDouble()
+    string: sc.next()
+    char: sc.next().toCharArray()
+  dim_type: '<%= size.size - (item == :char ? 1 : 0) %>_dim'
+  decl_line:
+    __key: [dim_type]
+    0_dim: <%= type %> <%= v %> = <%= read %>;
+    1_dim: <%= type %>[] <%= v %> = new <%= type_body %>[<%= sz %>]<%= type_after %>;
+    2_dim: <%= type %>[][] <%= v %> = new <%= type %>[<%= sz1 %>][<%= sz2 %>];
+  jagged_array_decl: <%= type_body %>[][] <%= v %> = new <%= type_body %>[<%= sz1 %>][];
+  input_line:
+    __key: [dim_type]
+    1_dim: <%= v %>[i] = <%= read %>;
+    2_dim: <%= v %>[i][j] = <%= read %>;
+  decl_type: <% if components %><%= container.to_s %><% else %>plain<% end %>
+  decl_block:
+    __key: [decl_type]
+    plain: |
+      <% vars.each do |var| -%>
+      <%= var.decl_line %>
+      <% end -%>
+    varray_matrix: |
+      <%= components[0].decl_block -%>
+      <%= components[1].jagged_array_decl %>
+    matrix_varray: <% components.each do |cmp| %><%= cmp.decl_block %><% end %>
+  input_type: <% if components %><%= container.to_s %><% else %>plain<% end %>
+  input_block:
+    __key: [input_type, dim_type]
+    plain:
+      0_dim: ''
+      1_dim: |
+        for (int i = 0; i < <%= sz %>; i++) {
+        <% vars.each do |var| -%>
+            <%= var.input_line %>
+        <% end -%>
+        }
+      2_dim: |
+        for (int i = 0; i < <%= sz1 %>; i++) {
+            for (int j = 0; j < <%= sz2 %>; j++) {
+        <% vars.each do |var| -%>
+                <%= var.input_line %>
+        <% end -%>
+            }
+        }
+    varray_matrix:
+      1_dim: |
+        for (int i = 0; i < <%= sz %>; i++) {
+        <% components[0].vars.each do |var| -%>
+            <%= var.input_line %>
+        <% end -%>
+            <%= components[1].input_line %>
+        }
+      2_dim: |
+        for (int i = 0; i < <%= sz1 %>; i++) {
+        <% components[0].vars.each do |var| -%>
+            <%= var.input_line %>
+        <% end -%>
+        <% components[1].tap do |cmp| -%>
+            <%= cmp.v %>[i] = new <%= cmp.type %>[<%= v %>[i]];
+        <% end -%>
+            for (int j = 0; j < <%= v %>[i]; j++) {
+                <%= components[1].input_line %>
+            }
+        }
+    matrix_varray:
+      1_dim: |
+        for (int i = 0; i < <%= sz %>; i++) {
+            <%= components[0].input_line %>
+        <% components[1].vars.each do |var| -%>
+            <%= var.input_line %>
+        <% end -%>
+        }
+      2_dim: |
+        for (int i = 0; i < <%= sz1 %>; i++) {
+            for (int j = 0; j < <%= sz2 %>; j++) {
+                <%= components[0].input_line %>
+            }
+        <% components[1].vars.each do |var| -%>
+            <%= var.input_line %>
+        <% end -%>
+        }
+  main: <%= decl_block %><%= input_block %>
