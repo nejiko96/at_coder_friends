@@ -2,16 +2,18 @@
 
 ACF_HOME = File.realpath(File.join(__dir__, '..', '..'))
 TMPL_DIR = File.join(ACF_HOME, 'templates')
-TEMPLATE = File.join(TMPL_DIR, 'csharp_sample.cs.erb')
-FRAGMENTS = File.join(TMPL_DIR, 'csharp_sample_fragments.yml')
+CS_TEMPLATE = File.join(TMPL_DIR, 'csharp_sample.cs.erb')
+CS_FRAGMENTS = File.join(TMPL_DIR, 'csharp_sample_fragments.yml')
 
 RSpec.describe AtCoderFriends::Generator::AnyBuiltin do
+context 'with csharp template specified' do
   subject(:generator) { described_class.new(cfg) }
+
   let(:cfg) do
     {
       'file_ext' => 'cs',
-      'template' => TEMPLATE,
-      'fragments' => FRAGMENTS
+      'template' => CS_TEMPLATE,
+      'fragments' => CS_FRAGMENTS
     }
   end
 
@@ -68,7 +70,7 @@ RSpec.describe AtCoderFriends::Generator::AnyBuiltin do
       let(:container) { :single }
       let(:item) { :number }
       it 'generates decl' do
-        expect(subject).to eq('var A = int.Parse(Console.ReadLine());')
+        expect(subject).to eq('int A = int.Parse(Console.ReadLine());')
       end
     end
 
@@ -79,9 +81,9 @@ RSpec.describe AtCoderFriends::Generator::AnyBuiltin do
       it 'generates decl' do
         expect(subject).to eq(
           <<~SRC
-            var AB = Console.ReadLine().Split().Select(int.Parse).ToArray();
-            var A = AB[0];
-            var B = AB[1];
+            int[] AB = Console.ReadLine().Split().Select(int.Parse).ToArray();
+            int A = AB[0];
+            int B = AB[1];
           SRC
         )
       end
@@ -91,7 +93,7 @@ RSpec.describe AtCoderFriends::Generator::AnyBuiltin do
       let(:container) { :single }
       let(:item) { :decimal }
       it 'generates decl' do
-        expect(subject).to eq('var A = double.Parse(Console.ReadLine());')
+        expect(subject).to eq('double A = double.Parse(Console.ReadLine());')
       end
     end
 
@@ -102,9 +104,9 @@ RSpec.describe AtCoderFriends::Generator::AnyBuiltin do
       it 'generates decl' do
         expect(subject).to eq(
           <<~SRC
-            var AB = Console.ReadLine().Split().Select(double.Parse).ToArray();
-            var A = AB[0];
-            var B = AB[1];
+            double[] AB = Console.ReadLine().Split().Select(double.Parse).ToArray();
+            double A = AB[0];
+            double B = AB[1];
           SRC
         )
       end
@@ -114,7 +116,7 @@ RSpec.describe AtCoderFriends::Generator::AnyBuiltin do
       let(:container) { :single }
       let(:item) { :string }
       it 'generates decl' do
-        expect(subject).to eq('var A = Console.ReadLine();')
+        expect(subject).to eq('string A = Console.ReadLine();')
       end
     end
 
@@ -125,9 +127,9 @@ RSpec.describe AtCoderFriends::Generator::AnyBuiltin do
       it 'generates decl' do
         expect(subject).to eq(
           <<~SRC
-            var AB = Console.ReadLine().Split();
-            var A = AB[0];
-            var B = AB[1];
+            string[] AB = Console.ReadLine().Split();
+            string A = AB[0];
+            string B = AB[1];
           SRC
         )
       end
@@ -136,9 +138,10 @@ RSpec.describe AtCoderFriends::Generator::AnyBuiltin do
     context 'for a horizontal array of numbers' do
       let(:container) { :harray }
       let(:item) { :number }
+      let(:size) { %w[N] }
       it 'generates decl' do
         expect(subject).to eq(
-          'var A = Console.ReadLine().Split().Select(int.Parse).ToArray();'
+          'int[] A = Console.ReadLine().Split().Select(int.Parse).ToArray();'
         )
       end
     end
@@ -146,9 +149,10 @@ RSpec.describe AtCoderFriends::Generator::AnyBuiltin do
     context 'for a horizontal array of decimals' do
       let(:container) { :harray }
       let(:item) { :decimal }
+      let(:size) { %w[N] }
       it 'generates decl' do
         expect(subject).to eq(
-          'var A = Console.ReadLine().Split().Select(double.Parse).ToArray();'
+          'double[] A = Console.ReadLine().Split().Select(double.Parse).ToArray();'
         )
       end
     end
@@ -156,16 +160,22 @@ RSpec.describe AtCoderFriends::Generator::AnyBuiltin do
     context 'for a horizontal array of strings' do
       let(:container) { :harray }
       let(:item) { :string }
+      let(:size) { %w[N] }
       it 'generates decl' do
-        expect(subject).to eq('var A = Console.ReadLine().Split();')
+        expect(subject).to eq(
+          'string[] A = Console.ReadLine().Split();'
+        )
       end
     end
 
     context 'for a horizontal array of characters' do
       let(:container) { :harray }
       let(:item) { :char }
+      let(:size) { %w[N] }
       it 'generates decl' do
-        expect(subject).to eq('var A = Console.ReadLine();')
+        expect(subject).to eq(
+          'string A = Console.ReadLine();'
+        )
       end
     end
 
@@ -175,7 +185,7 @@ RSpec.describe AtCoderFriends::Generator::AnyBuiltin do
       let(:size) { %w[N] }
       it 'generates decl' do
         expect(subject).to eq(
-          'var A = Enumerable.Range(0, N).Select(_ => int.Parse(Console.ReadLine())).ToArray();'
+          'int[] A = Enumerable.Range(0, N).Select(_ => int.Parse(Console.ReadLine())).ToArray();'
         )
       end
     end
@@ -186,7 +196,7 @@ RSpec.describe AtCoderFriends::Generator::AnyBuiltin do
       let(:size) { %w[N] }
       it 'generates decl' do
         expect(subject).to eq(
-          'var A = Enumerable.Range(0, N).Select(_ => double.Parse(Console.ReadLine())).ToArray();'
+          'double[] A = Enumerable.Range(0, N).Select(_ => double.Parse(Console.ReadLine())).ToArray();'
         )
       end
     end
@@ -197,7 +207,7 @@ RSpec.describe AtCoderFriends::Generator::AnyBuiltin do
       let(:size) { %w[N] }
       it 'generates decl' do
         expect(subject).to eq(
-          'var A = Enumerable.Range(0, N).Select(_ => Console.ReadLine()).ToArray();'
+          'string[] A = Enumerable.Range(0, N).Select(_ => Console.ReadLine()).ToArray();'
         )
       end
     end
@@ -210,11 +220,11 @@ RSpec.describe AtCoderFriends::Generator::AnyBuiltin do
       it 'generates decl' do
         expect(subject).to eq(
           <<~SRC
-            var A = new int[N];
-            var B = new int[N];
+            int[] A = new int[N];
+            int[] B = new int[N];
             for (int i = 0; i < N; i++)
             {
-                var AB = Console.ReadLine().Split().Select(int.Parse).ToArray();
+                int[] AB = Console.ReadLine().Split().Select(int.Parse).ToArray();
                 A[i] = AB[0];
                 B[i] = AB[1];
             }
@@ -231,11 +241,11 @@ RSpec.describe AtCoderFriends::Generator::AnyBuiltin do
       it 'generates decl' do
         expect(subject).to eq(
           <<~SRC
-            var A = new double[N];
-            var B = new double[N];
+            double[] A = new double[N];
+            double[] B = new double[N];
             for (int i = 0; i < N; i++)
             {
-                var AB = Console.ReadLine().Split().Select(double.Parse).ToArray();
+                double[] AB = Console.ReadLine().Split().Select(double.Parse).ToArray();
                 A[i] = AB[0];
                 B[i] = AB[1];
             }
@@ -252,11 +262,11 @@ RSpec.describe AtCoderFriends::Generator::AnyBuiltin do
       it 'generates decl' do
         expect(subject).to eq(
           <<~SRC
-            var A = new string[N];
-            var B = new string[N];
+            string[] A = new string[N];
+            string[] B = new string[N];
             for (int i = 0; i < N; i++)
             {
-                var AB = Console.ReadLine().Split();
+                string[] AB = Console.ReadLine().Split();
                 A[i] = AB[0];
                 B[i] = AB[1];
             }
@@ -272,7 +282,7 @@ RSpec.describe AtCoderFriends::Generator::AnyBuiltin do
       it 'generates decl' do
         expect(subject).to eq(
           <<~SRC
-            var A = Enumerable.Range(0, R).Select(_ =>
+            int[][] A = Enumerable.Range(0, R).Select(_ =>
                 Console.ReadLine().Split().Select(int.Parse).ToArray()
             ).ToArray();
           SRC
@@ -287,7 +297,7 @@ RSpec.describe AtCoderFriends::Generator::AnyBuiltin do
       it 'generates decl' do
         expect(subject).to eq(
           <<~SRC
-            var A = Enumerable.Range(0, R).Select(_ =>
+            double[][] A = Enumerable.Range(0, R).Select(_ =>
                 Console.ReadLine().Split().Select(double.Parse).ToArray()
             ).ToArray();
           SRC
@@ -302,7 +312,7 @@ RSpec.describe AtCoderFriends::Generator::AnyBuiltin do
       it 'generates decl' do
         expect(subject).to eq(
           <<~SRC
-            var A = Enumerable.Range(0, R).Select(_ =>
+            string[][] A = Enumerable.Range(0, R).Select(_ =>
                 Console.ReadLine().Split()
             ).ToArray();
           SRC
@@ -317,7 +327,7 @@ RSpec.describe AtCoderFriends::Generator::AnyBuiltin do
       it 'generates decl' do
         expect(subject).to eq(
           <<~SRC
-            var A = Enumerable.Range(0, R).Select(_ =>
+            string[] A = Enumerable.Range(0, R).Select(_ =>
                 Console.ReadLine()
             ).ToArray();
           SRC
@@ -333,11 +343,11 @@ RSpec.describe AtCoderFriends::Generator::AnyBuiltin do
       it 'generates decl' do
         expect(subject).to eq(
           <<~SRC
-            var K = new int[N];
-            var A = new int[N][];
+            int[] K = new int[N];
+            int[][] A = new int[N][];
             for (int i = 0; i < N; i++)
             {
-                var KA = Console.ReadLine().Split().Select(int.Parse).ToArray();
+                int[] KA = Console.ReadLine().Split().Select(int.Parse).ToArray();
                 K[i] = KA[0];
                 A[i] = KA.Skip(1).ToArray();
             }
@@ -354,11 +364,11 @@ RSpec.describe AtCoderFriends::Generator::AnyBuiltin do
       it 'generates decl' do
         expect(subject).to eq(
           <<~SRC
-            var K = new double[N];
-            var A = new double[N][];
+            double[] K = new double[N];
+            double[][] A = new double[N][];
             for (int i = 0; i < N; i++)
             {
-                var KA = Console.ReadLine().Split().Select(double.Parse).ToArray();
+                double[] KA = Console.ReadLine().Split().Select(double.Parse).ToArray();
                 K[i] = KA[0];
                 A[i] = KA.Skip(1).ToArray();
             }
@@ -375,11 +385,11 @@ RSpec.describe AtCoderFriends::Generator::AnyBuiltin do
       it 'generates decl' do
         expect(subject).to eq(
           <<~SRC
-            var K = new string[Q];
-            var p = new string[Q];
+            string[] K = new string[Q];
+            string[] p = new string[Q];
             for (int i = 0; i < Q; i++)
             {
-                var Kp = Console.ReadLine().Split();
+                string[] Kp = Console.ReadLine().Split();
                 K[i] = Kp[0];
                 p[i] = Kp.Last();
             }
@@ -396,11 +406,11 @@ RSpec.describe AtCoderFriends::Generator::AnyBuiltin do
       it 'generates decl' do
         expect(subject).to eq(
           <<~SRC
-            var city = new int[M][];
-            var cost = new int[M];
+            int[][] city = new int[M][];
+            int[] cost = new int[M];
             for (int i = 0; i < M; i++)
             {
-                var citycost = Console.ReadLine().Split().Select(int.Parse).ToArray();
+                int[] citycost = Console.ReadLine().Split().Select(int.Parse).ToArray();
                 city[i] = citycost.Take(citycost.Count - 1).ToArray();
                 cost[i] = citycost[citycost.Count - 1];
             }
@@ -417,13 +427,13 @@ RSpec.describe AtCoderFriends::Generator::AnyBuiltin do
       it 'generates decl' do
         expect(subject).to eq(
           <<~SRC
-            var idol = new int[1][C_1];
-            var p = new int[1][C_1];
+            int[][] idol = new int[1][C_1];
+            int[][] p = new int[1][C_1];
             for (int i = 0; i < 1; i++)
             {
                 for (int j = 0; j < C_1; j++)
                 {
-                    var idolp = Console.ReadLine().Split().Select(int.Parse).ToArray();
+                    int[] idolp = Console.ReadLine().Split().Select(int.Parse).ToArray();
                     idol[i][j] = idolp[0];
                     p[i][j] = idolp[1];
                 }
@@ -441,11 +451,11 @@ RSpec.describe AtCoderFriends::Generator::AnyBuiltin do
       it 'generates decl' do
         expect(subject).to eq(
           <<~SRC
-            var x = new int[Q][2];
-            var y = new int[Q][2];
+            int[][] x = new int[Q][2];
+            int[][] y = new int[Q][2];
             for (int i = 0; i < Q; i++)
             {
-                var xy = Console.ReadLine().Split().Select(int.Parse).ToArray();
+                int[] xy = Console.ReadLine().Split().Select(int.Parse).ToArray();
                 for (int j = 0; j < 2; j++)
                 {
                     x[i][j] = xy[j * 2 + 0];
@@ -466,11 +476,11 @@ RSpec.describe AtCoderFriends::Generator::AnyBuiltin do
       it 'generates decl' do
         expect(subject).to eq(
           <<~SRC
-            var S = new int[N];
-            var E = new int[N];
+            int[] S = new int[N];
+            int[] E = new int[N];
             for (int i = 0; i < N; i++)
             {
-                var SE = Console.ReadLine().Replace('-', ' ').Split().Select(int.Parse).ToArray();
+                int[] SE = Console.ReadLine().Replace('-', ' ').Split().Select(int.Parse).ToArray();
                 S[i] = SE[0];
                 E[i] = SE[1];
             }
@@ -546,22 +556,22 @@ RSpec.describe AtCoderFriends::Generator::AnyBuiltin do
                     const int N_MAX = 100000;
                     const int MOD = (int)1e9+7;
 
-                    var N = int.Parse(Console.ReadLine());
-                    var x = new int[N];
-                    var y = new int[N];
+                    int N = int.Parse(Console.ReadLine());
+                    int[] x = new int[N];
+                    int[] y = new int[N];
                     for (int i = 0; i < N; i++)
                     {
-                        var xy = Console.ReadLine().Split().Select(int.Parse).ToArray();
+                        int[] xy = Console.ReadLine().Split().Select(int.Parse).ToArray();
                         x[i] = xy[0];
                         y[i] = xy[1];
                     }
-                    var Q = Console.ReadLine();
-                    var a = Console.ReadLine().Split();
-                    var K = new int[N];
-                    var A = new int[N][];
+                    string Q = Console.ReadLine();
+                    string[] a = Console.ReadLine().Split();
+                    int[] K = new int[N];
+                    int[][] A = new int[N][];
                     for (int i = 0; i < N; i++)
                     {
-                        var KA = Console.ReadLine().Split().Select(int.Parse).ToArray();
+                        int[] KA = Console.ReadLine().Split().Select(int.Parse).ToArray();
                         K[i] = KA[0];
                         A[i] = KA.Skip(1).ToArray();
                     }
@@ -613,7 +623,7 @@ RSpec.describe AtCoderFriends::Generator::AnyBuiltin do
                 {
                     const int N_MAX = 9;
 
-                    var N = int.Parse(Console.ReadLine());
+                    int N = int.Parse(Console.ReadLine());
 
                     bool cond = false;
                     Console.WriteLine(cond ? "YES" : "NO");
@@ -624,4 +634,5 @@ RSpec.describe AtCoderFriends::Generator::AnyBuiltin do
       end
     end
   end
+end
 end

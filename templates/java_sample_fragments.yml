@@ -3,14 +3,14 @@ constant:
   max: 'public static final int <%= name.upcase %>_MAX = <%= value_print %>;'
   mod: 'public static final int MOD = <%= value_print %>;'
 declaration:
-  type_body:
+  type_name:
     __key: [item]
     number: int
     decimal: double
     string: String
     char: char
-  type_after: <% if item == :char %>[]<% else %><% end %>
-  type: <%= type_body %><%= type_after %>
+  type_dim: <% if item == :char %>[]<% else %><% end %>
+  type: <%= type_name %><%= type_dim %>
   read:
     __key: [item]
     number: sc.nextInt()
@@ -21,9 +21,9 @@ declaration:
   decl_line:
     __key: [dim_type]
     0_dim: <%= type %> <%= v %> = <%= read %>;
-    1_dim: <%= type %>[] <%= v %> = new <%= type_body %>[<%= sz %>]<%= type_after %>;
+    1_dim: <%= type %>[] <%= v %> = new <%= type_name %>[<%= sz %>]<%= type_dim %>;
     2_dim: <%= type %>[][] <%= v %> = new <%= type %>[<%= sz1 %>][<%= sz2 %>];
-  jagged_array_decl: <%= type_body %>[][] <%= v %> = new <%= type_body %>[<%= sz1 %>][];
+  jagged_array_decl: <%= type_name %>[][] <%= v %> = new <%= type_name %>[<%= sz1 %>][];
   input_line:
     __key: [dim_type]
     1_dim: <%= v %>[i] = <%= read %>;
