@@ -20,7 +20,7 @@ AtCoderFriends automates tasks about [AtCoder](https://atcoder.jp/) programming 
 
 ## Dependencies
 
-- Ruby 2.5 or newer
+- Ruby 2.7 or newer
 - [Mechanize](https://github.com/sparklemotion/mechanize)
 
 ## Installation
@@ -84,107 +84,26 @@ at_coder_friends check-and-go  /path/to/contest/source_file
 ### Naming convention
 
 - Contest folder name will be used in the contest site URL.
-  For example, if ```arc001``` folder is specified, AtCoderFriends will use  ```https://atcoder.jp/contests/arc001/```.
-- Source file should be named ```[problem ID].[language specific extension]```(e.g. ```A.rb```),
+  For example, if `arc001` folder is specified, AtCoderFriends will use  `https://atcoder.jp/contests/arc001/`.
+- Source file should be named `[problem ID].[language specific extension]`(e.g. `A.rb`),
   in order to let AtCoderFriends find test cases or fill the submission form.
-- Suffixes (start with underscore) may be added to the file name (e.g. ```A_v2.rb```),
+- Suffixes (start with underscore) may be added to the file name (e.g. `A_v2.rb`),
   so that you can try multiple codes for one problem.
 
 ## Notes
 
 - Compilation is not supported.
-- Source generator supports Ruby and C++ in default, and can be added by plugin.
+- Source generator supports Ruby and C/C++ in default, and can be added by plugin.
 - Test runner and code submission are supported in 36 languages.
 
 
 ## Configuration
 
-See [Wiki](https://github.com/nejiko96/at_coder_friends/wiki/Configuration-Details) for details.
+See [Wiki](https://github.com/nejiko96/at_coder_friends/wiki/Configuration-details) for details.
 
-## For Sublime Text user
+## Customizing editor
 
-It is convenient to use AtCoderFriends from Sublime Text plugin.
-
-- [sublime_at_coder_friends](https://github.com/nejiko96/sublime_at_coder_friends)
-
-## For Visual Studio Code user
-
-- Run **Configure Tasks** from the global Terminal menu.
-- Select the **Create tasks.json file from template** entry.
-- Select **Others** from the list.
-- Add following settings to ```tasks.json```.
-
-```JSON
-{
-  "version": "2.0.0",
-  "tasks": [
-    {
-      "label": "AtCoderFriends:New Contest",
-      "type": "shell",
-      "command": "at_coder_friends",
-      "args": [
-        "setup",
-        "${input:contestName}"
-      ],
-      "problemMatcher": [],
-      "group": "none"
-    },
-    {
-      "label": "AtCoderFriends:Test One",
-      "type": "shell",
-      "command": "at_coder_friends",
-      "args": [
-        "test-one",
-        "${file}"
-      ],
-      "problemMatcher": [],
-      "group": "none"
-    },
-    {
-      "label": "AtCoderFriends:Test All",
-      "type": "shell",
-      "command": "at_coder_friends",
-      "args": [
-        "test-all",
-        "${file}"
-      ],
-      "problemMatcher": [],
-      "group": "none"
-    },
-    {
-      "label": "AtCoderFriends:Submit",
-      "type": "shell",
-      "command": "at_coder_friends",
-      "args": [
-        "submit",
-        "${file}"
-      ],
-      "problemMatcher": [],
-      "group": "none",
-    },
-    {
-      "label": "AtCoderFriends:Check & Go",
-      "type": "shell",
-      "command": "at_coder_friends",
-      "args": [
-        "check-and-go",
-        "${file}"
-      ],
-      "problemMatcher": [],
-      "group": "none",
-    },
-    ...
-  ],
-  "inputs": [
-    {
-      "id": "contestName",
-      "type": "promptString",
-      "default": "",
-      "description": "Contest Name"
-    }
-  ]
-}
-```
+See [Wiki](https://github.com/nejiko96/at_coder_friends/wiki/Customiing-editor) for details.
 
 ## Development
 

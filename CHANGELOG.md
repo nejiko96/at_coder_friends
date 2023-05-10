@@ -7,6 +7,7 @@
 - enable multiple configuration for one generator
 - add CBuiltin Generator
 - add Ruby3.2 to target version.
+- add C# and Java templates for AnyBuiltin Generator
 ### Deleted
 - drop Ruby2.6 from target version.
 
@@ -78,7 +79,7 @@
 
 ## 0.6.2 (2019-11-18)
 ### Added
-- add ```check-and-go``` command.
+- add `check-and-go` command.
 
 ### Changed
 - Enhancement in input format parser.
@@ -98,7 +99,7 @@
 - Add settings about source generation.
 
 ### Changed
-- Treat all ```A_*.in``` format files as sample input data
+- Treat all `A_*.in` format files as sample input data
 
 ## 0.5.2 (2019-10-14)
 ### Fixed
@@ -114,7 +115,7 @@
 
 ## 0.5.0 (2019-10-04)
 ### Added
-- User/password setting in ```.at_coder_friends.yml``` is no longer required.
+- User/password setting in `.at_coder_friends.yml` is no longer required.
 - Saving and restoring session feature.
 
 ## 0.4.0 (2019-09-16)
@@ -123,4 +124,4 @@
 
 ## 0.3.3 (2019-09-01)
 ### Added
-- Add ```open-contest-page``` command.
+- Add `open-contest-page` command.
