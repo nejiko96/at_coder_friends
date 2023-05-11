@@ -103,7 +103,7 @@ See [Wiki](https://github.com/nejiko96/at_coder_friends/wiki/Configuration-detai
 
 ## Customizing editor
 
-See [Wiki](https://github.com/nejiko96/at_coder_friends/wiki/Customiing-editor) for details.
+See [Wiki](https://github.com/nejiko96/at_coder_friends/wiki/Customizing-editor) for details.
 
 ## Development
 
