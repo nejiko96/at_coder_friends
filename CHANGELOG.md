@@ -1,6 +1,8 @@
 # Change log
 
 ## master (unreleased)
+
+## 0.7.0 (2023-05-12)
 ### Added
 - add AnyBuiltin Generator
 - add file extension to generator settings
@@ -10,7 +12,6 @@
 - add C# and Java templates for AnyBuiltin Generator
 ### Deleted
 - drop Ruby2.6 from target version.
-
 ### Changed
 - generators : externalize code fragments to YAML
 
