@@ -93,7 +93,7 @@ at_coder_friends check-and-go  /path/to/contest/source_file
 ## Notes
 
 - Compilation is not supported.
-- Source generator supports Ruby and C/C++ in default, and can be added by plugin.
+- Source generator supports Ruby, C/C++, C# and Java, and can be added by plugin or template.
 - Test runner and code submission are supported in 36 languages.
 
 
