@@ -46,14 +46,14 @@ ext_settings:
   'cr': # Crystal
     submit_lang:
       - '4014' # 0.33.0
-      - '5019' # crystal 1.7.2
+      - '5019' # crystal 1.7.3
   'cs': # C#
     submit_lang:
       # - '4010' # .NET Core 3.1.201
       - '4011' # Mono-mcs 6.8.0.105
       # - '4012' # Mono-csc 3.5.0
-      - '5003' # C# 11.0 (.NET SDK 7.0.102)
-      # - '5042' # C# 11.0 (.NET / native AOT 7.0.202)
+      - '5003' # C# 11.0 (.NET SDK 7.0.4)
+      # - '5042' # C# 11.0 AOT (.NET 7.0.4)
     test_cmd:
       default: 'mono "{dir}/{base}.exe"'
       windows: '"{dir}/{base}.exe"'
@@ -64,10 +64,10 @@ ext_settings:
       # - '4004' # C++ 20(Clang 10.0.0)
       # - '5001' # C++ 20(gcc 12.2)
       # - '5028' # C++ 23(gcc 12.2)
-      # - '5031' # C++ 23(Clang 16.0.0)
+      # - '5031' # C++ 23(Clang 16.0.1)
       - '5053' # C++ 17(gcc 12.2)
-      # - '5072' # C++ 17 (Clang 16.0.0)
-      # - '5073' # C++ 20 (Clang 16.0.0)
+      # - '5072' # C++ 17 (Clang 16.0.1)
+      # - '5073' # C++ 20 (Clang 16.0.1)
     test_cmd:
       default: '"{dir}/{base}"'
       windows: '"{dir}/{base}.exe"'
@@ -79,8 +79,9 @@ ext_settings:
       - '4015' # DMD 2.091.0
       # - '4016' # GDC 9.2.1
       # - '4017' # LDC 1.20.1
-      - '5012' # DMD 2.101.2
-      # - '5013' # LDC 1.30.0
+      - '5012' # DMD 2.103.0
+      # - '5013' # LDC 1.32.0
+      # - '5077' # GDC 12.2
   'dart': # Dart
     submit_lang:
       - '4018' # 2.7.2
@@ -94,25 +95,32 @@ ext_settings:
       - '5066' # ECLiPSe 7.1_13
   'el': # Emacs Lisp
     submit_lang:
-      - '5062' # (Native Compile) GNU Emacs 28.2
-      # - '5075' # (Byte Compile) GNU Emacs 28.2
+      - '5062' # (Native Compile) (GNU Emacs 28.2)
+      # - '5075' # (Byte Compile) (GNU Emacs 28.2)
+      # - '5088' # (No Compile) (GNU Emacs 28.2)
   'erl': # Erlang
     submit_lang:
       - '4020' # 22.3
       - '5051' # Erlang 25.2.3
+  'ex': # Elixir
+    submit_lang:
+      - '5085' # Elixir 1.14.4
   'f90': # Fortran
     submit_lang:
       - '4025' # GNU Fortran 9.2.1
-      - '5026' # gfortran 12.2.
+      - '5026' # gfortran 12.2
   'factor': # Factor
     submit_lang:
       - '5076' # Factor 0.98
+  'fish': # ><>
+    submit_lang:
+      - '5080' # fishr 0.1.0
   'fs': # F# / Forth
     submit_lang:
       # - '4022' # .NET Core 3.1.201
       - '4023' # Mono 10.2.3
       # - '4024' # gforth 0.7.3
-      - '5021' # .NET SDK 7.0.102
+      - '5021' # .NET 7.0.4
       # - '5049' # gforth 0.7.3
   'go': # Go
     submit_lang:
@@ -122,6 +130,9 @@ ext_settings:
     submit_lang:
       - '4027' # GHC 8.8.3
       - '5025' # GHC 9.4.4
+  'hx': # Haxe (JVM)
+    submit_lang:
+      - '5084' # Haxe 4.3.0
   'java': # Java
     submit_lang:
       - '4005' # OpenJDK 11.0.6
@@ -135,13 +146,13 @@ ext_settings:
       - '5022' # Julia 1.8.5
   'jq': # jq
     submit_lang:
-      - '5069' # jq aptにあるやつ
+      - '5069' # jq 1.6
   'js': # JavaScript
     submit_lang:
       - '4030' # Node.js 12.16.1
-      - '5009' # Node.js 18.15.0 LTS
+      - '5009' # Node.js 18.15.0
       # - '5010' # Deno 1.30.0
-  'kk': # koka
+  'kk': # Koka
     submit_lang:
       - '5057' # koka 2.4.0
   'kt': # Kotlin
@@ -151,26 +162,28 @@ ext_settings:
   'lisp': # Common Lisp
     submit_lang:
       - '4038' # SBCL 2.0.3
-      - '5029' # SBCL 2.3.2
+      - '5029' # SBCL 2.3.3
   'll': # LLVM IR
     submit_lang:
-      - '5074' # Clang 16.0.0
+      - '5074' # Clang 16.0.1
   'lua': # Lua
     submit_lang:
       # - '4033' # Lua 5.3.5
       - '4034' # LuaJIT 2.1.0
       - '5027' # LuaJIT 2.1.0-beta3
       # - '5043' # Lua 5.4.4
-  'm': # Octave
+  'm': # Octave / Mercury
     submit_lang:
       - '4040' # 5.2.0
+      - '5083' # GNU Octave 8.1.0
+      - '5086' # Mercury 22.01
   'ml': # OCaml
     submit_lang:
       - '4039' # 4.10.0
-      - '5059' # ocamlopt 4.14.1
+      - '5059' # ocamlopt 5.0.0
   'nako3': # なでしこ
     submit_lang:
-      - '5039' # cnako3 3.4.14
+      - '5039' # cnako3 3.4.19
   'nib': # Nibbles (literate form)
     submit_lang:
       - '5067' # nibbles 1.00+ (1259a34)
@@ -191,7 +204,7 @@ ext_settings:
       - '4042' # 5.26.1
       # - '4045' # SWI-Prolog 8.0.3
       - '5037' # perl  5.34
-      # - '5044' # SWI-Prolog 9.0.3
+      # - '5044' # SWI-Prolog 9.0.4
   'ps1': # PowerShell
     submit_lang:
       - '5045' # PowerShell 7.3.1
@@ -202,25 +215,30 @@ ext_settings:
       # - '4047' # PyPy3 (7.3.0)
       - '5055' # CPython 3.11.2
       # - '5063' # CPython 3.10.9 (Python 3.10)
+      # - '5078' # PyPy 7.3.11
+      # - '5082' # Cython 0.29.34
   'R': # R
     submit_lang:
       - '5011' # GNU R 4.2.1
   'raku': # Raku
     submit_lang:
-      - '5060' # Rakudo 6.d
+      - '5060' # Rakudo 2023.02
   'rb': # Ruby
     submit_lang:
       - '4049' # 2.7.1
-      - '5018' # ruby 3.2.1
+      - '5018' # ruby 3.2.2
     test_cmd:
       default: 'ruby "{dir}/{base}.rb"'
   'rdr': # プロデル
     submit_lang:
       - '5065' # mono版プロデル 1.8.1150
+  're': # ReasonML
+    submit_lang:
+      - '5081' # reason 3.8.2
   'rs': # Rust
     submit_lang:
       - '4050' # 1.42.0
-      - '5054' # Rust 1.68.1
+      - '5054' # rustc 1.68.2
   'sage': # SageMath
     submit_lang:
       - '5033' # SageMath 9.5
@@ -237,6 +255,9 @@ ext_settings:
     submit_lang:
       - '4066' # 4.4
       - '5034' # GNU sed 4.8
+  'sd7': # Seed7
+    submit_lang:
+      - '5087' # Seed7 3.1.775
   'sh': # Bash
   # 'bash': # Bash
     submit_lang:
@@ -250,21 +271,27 @@ ext_settings:
     submit_lang:
       - '4057' # 3.8
       # - '5052' # Deno 1.29.4
-      - '5058' # Node.js 5.0.2
+      - '5058' # TypeScript 5.0.4 (Node.js 18.15.0)
   'txt': # Text
     submit_lang:
       - '4056' # cat 8.28
       - '5024' # cat 8.32
+  'u': # Unison
+    submit_lang:
+      - '5089' # Unison M4i
   'v': # V
     submit_lang:
       - '5007' # V 0.3.3
   'vb': # Visual Basic
     submit_lang:
       - '4058' # .NET Core 3.1.101
-      - '5048' # .NET SDK 7.0.102
+      - '5048' # Visual Basic 16.9 (.NET 7.0.4)
   'vim': # Vim
     submit_lang:
       - '5061' # vim 9.0.0242
+  'ws': # WhiteSpace
+    submit_lang:
+      - '5079' # whitespacers 1.0.0
   'zig': # Zig
     submit_lang:
       - '5008' # Zig 0.10.1
