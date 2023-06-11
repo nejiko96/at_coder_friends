@@ -62,10 +62,10 @@ ext_settings:
     submit_lang:
       - '4003' # C++ 20(GCC 9.2.1)
       # - '4004' # C++ 20(Clang 10.0.0)
-      # - '5001' # C++ 20(gcc 12.2)
+      - '5001' # C++ 20(gcc 12.2)
       # - '5028' # C++ 23(gcc 12.2)
       # - '5031' # C++ 23(Clang 16.0.1)
-      - '5053' # C++ 17(gcc 12.2)
+      # - '5053' # C++ 17(gcc 12.2)
       # - '5072' # C++ 17 (Clang 16.0.1)
       # - '5073' # C++ 20 (Clang 16.0.1)
     test_cmd:
@@ -170,13 +170,13 @@ ext_settings:
     submit_lang:
       # - '4033' # Lua 5.3.5
       - '4034' # LuaJIT 2.1.0
-      - '5027' # LuaJIT 2.1.0-beta3
-      # - '5043' # Lua 5.4.4
+      # - '5027' # LuaJIT 2.1.0-beta3
+      - '5043' # Lua 5.4.4
   'm': # Octave / Mercury
     submit_lang:
       - '4040' # 5.2.0
       - '5083' # GNU Octave 8.1.0
-      - '5086' # Mercury 22.01
+      # - '5086' # Mercury 22.01
   'ml': # OCaml
     submit_lang:
       - '4039' # 4.10.0
