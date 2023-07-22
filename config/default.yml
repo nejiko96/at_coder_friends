@@ -47,7 +47,7 @@ ext_settings:
   'cr': # Crystal
     submit_lang:
       - '4014' # 0.33.0
-      - '5019' # crystal 1.8.2
+      - '5019' # crystal 1.9.0
   'cs': # C#
     submit_lang:
       # - '4010' # .NET Core 3.1.201
@@ -126,7 +126,7 @@ ext_settings:
   'go': # Go
     submit_lang:
       - '4026' # 1.14.1
-      - '5002' # go 1.20.5
+      - '5002' # go 1.20.6
   'hs': # Haskell
     submit_lang:
       - '4027' # GHC 8.8.3
@@ -144,15 +144,15 @@ ext_settings:
   'jl': # Julia
     submit_lang:
       - '4031' # 1.4.0
-      - '5022' # Julia 1.9.1
+      - '5022' # Julia 1.9.2
   'jq': # jq
     submit_lang:
       - '5069' # jq 1.6
   'js': # JavaScript
     submit_lang:
       - '4030' # Node.js 12.16.1
-      - '5009' # Node.js 18.16.0
-      # - '5010' # Deno 1.34.3
+      - '5009' # Node.js 18.16.1
+      # - '5010' # Deno 1.35.1
   'kk': # Koka
     submit_lang:
       - '5057' # koka 2.4.0
@@ -199,7 +199,7 @@ ext_settings:
   'php': # PHP7
     submit_lang:
       - '4044' # 7.4.4
-      - '5016' # php 8.2.7
+      - '5016' # php 8.2.8
   'pl': # Perl / Prolog
     submit_lang:
       - '4042' # 5.26.1
@@ -258,7 +258,7 @@ ext_settings:
       - '5034' # GNU sed 4.8
   'sd7': # Seed7
     submit_lang:
-      - '5087' # Seed7 3.1.781
+      - '5087' # Seed7 3.2.1
   'sh': # Bash
   # 'bash': # Bash
     submit_lang:
@@ -271,7 +271,7 @@ ext_settings:
   'ts': # TypeScript
     submit_lang:
       - '4057' # 3.8
-      # - '5052' # Deno 1.34.3
+      # - '5052' # Deno 1.35.1
       - '5058' # TypeScript 5.1 (Node.js 18.16.1)
   'txt': # Text
     submit_lang:
@@ -279,7 +279,7 @@ ext_settings:
       - '5024' # cat 8.32
   'u': # Unison
     submit_lang:
-      - '5089' # Unison M5a
+      - '5089' # Unison M5b
   'v': # V
     submit_lang:
       - '5007' # V 0.4
