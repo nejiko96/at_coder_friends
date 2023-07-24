@@ -4,162 +4,299 @@ generators:
   - RubyBuiltin
   - CxxBuiltin
 ext_settings:
-  'awk': # Awk (mawk)
+  'ada': # Ada
     submit_lang:
-      - '4009'
-      - '3506'
+      - '5068' # GNAT 12.2
+  'asm': # Assembly x64
+    submit_lang:
+      - '5040' # NASM 2.15.05
+  'awk': # Awk
+    submit_lang:
+      - '4009' # GNU Awk 4.1.4
+      - '5038' # GNU Awk 5.0.1
+  'bc': # bc
+    submit_lang:
+      - '4008' # 1.07.1
+      - '5035' # bc 1.07.1
   'bf': # Brainfuck
     submit_lang:
-      - '4062'
-      - '3507'
-  'c': # C (GCC)
+      - '4062' # bf 20041219
+      - '5020' # Brainfuck 20041219
+  'c': # C
     submit_lang:
-      - '4001'
-      - '3002'
+      - '4001' # GCC 9.2.1
+      # - '4002' # Clang 10.0.0
+      - '5017' # gcc 12.2.0
     test_cmd:
       default: '"{dir}/{base}"'
       windows: '"{dir}/{base}.exe"'
-  'cbl': # COBOL - Free
+  'carp': # Carp
     submit_lang:
-      - '4061'
-      - '3526'
+      - '5071' # Carp 0.5.5
+  'cbl': # COBOL
+    submit_lang:
+      # - '4060' # COBOL - Fixed (OpenCOBOL 1.1.0)
+      - '4061' # COBOL - Free (OpenCOBOL 1.1.0)
+      - '5030' # GnuCOBOL 3.1.2
+      # - '5090' # GnuCOBOL(Fixed) 3.1.2
   'clj': # Clojure
     submit_lang:
-      - '4013'
-      - '3007'
+      - '4013' # 1.10.1.536
+      - '5050' # babashka 1.3.181
+      # - '5064' # clojure 1.11.1
   'cr': # Crystal
     submit_lang:
-      - '4014'
-      - '3511'
-  'cs': # C# (Mono-mcs)
+      - '4014' # 0.33.0
+      - '5019' # crystal 1.9.0
+  'cs': # C#
     submit_lang:
-      - '4011'
-      - '3006'
+      # - '4010' # .NET Core 3.1.201
+      - '4011' # Mono-mcs 6.8.0.105
+      # - '4012' # Mono-csc 3.5.0
+      - '5003' # C# 11.0 (.NET SDK 7.0.7)
+      # - '5042' # C# 11.0 AOT (.NET 7.0.7)
     test_cmd:
       default: 'mono "{dir}/{base}.exe"'
       windows: '"{dir}/{base}.exe"'
-  'cxx': # C++ (GCC)
+  'cxx': # C++
+  # 'cpp': # C++
     submit_lang:
-      - '4003'
-      - '3003'
+      - '4003' # C++ 20(GCC 9.2.1)
+      # - '4004' # C++ 20(Clang 10.0.0)
+      - '5001' # C++ 20(gcc 12.2)
+      # - '5028' # C++ 23(gcc 12.2)
+      # - '5031' # C++ 23(Clang 16.0.5)
+      # - '5053' # C++ 17(gcc 12.2)
+      # - '5072' # C++ 17 (Clang 16.0.5)
+      # - '5073' # C++ 20 (Clang 16.0.5)
     test_cmd:
       default: '"{dir}/{base}"'
       windows: '"{dir}/{base}.exe"'
-  'd': # D (DMD64)
+  'cy': # Cyber
     submit_lang:
-      - '4015'
-      - '3009'
+      - '5070' # Cyber v0.2-Latest
+  'd': # D
+    submit_lang:
+      - '4015' # DMD 2.091.0
+      # - '4016' # GDC 9.2.1
+      # - '4017' # LDC 1.20.1
+      - '5012' # DMD 2.104.0
+      # - '5013' # LDC 1.32.2
+      # - '5077' # GDC 12.2
   'dart': # Dart
-    submit_lang: '4018'
-  'f90': # Fortran (gfortran)
     submit_lang:
-      - '4025'
-      - '3012'
-  'fs': # F# (Mono)
+      - '4018' # 2.7.2
+      - '5015' # Dart 3.0.5
+  'dc': # dc
     submit_lang:
-      - '4023'
-      - '3512'
+      - '4019' # 1.4.1
+      - '5036' # dc 1.07.1
+  'ecl': # ECLiPSe
+    submit_lang:
+      - '5066' # ECLiPSe 7.1_13
+  'el': # Emacs Lisp
+    submit_lang:
+      - '5062' # (Native Compile) (GNU Emacs 28.2)
+      # - '5075' # (Byte Compile) (GNU Emacs 28.2)
+      # - '5088' # (No Compile) (GNU Emacs 28.2)
+  'erl': # Erlang
+    submit_lang:
+      - '4020' # 22.3
+      - '5051' # Erlang 26.0.2
+  'ex': # Elixir
+    submit_lang:
+      - '5085' # Elixir 1.15.2
+  'f90': # Fortran
+    submit_lang:
+      - '4025' # GNU Fortran 9.2.1
+      - '5026' # gfortran 12.2
+  'factor': # Factor
+    submit_lang:
+      - '5076' # Factor 0.98
+  'fish': # ><>
+    submit_lang:
+      - '5080' # fishr 0.1.0
+  'fs': # F# / Forth
+    submit_lang:
+      # - '4022' # .NET Core 3.1.201
+      - '4023' # Mono 10.2.3
+      # - '4024' # gforth 0.7.3
+      - '5021' # .NET 7.0.7
+      # - '5049' # gforth 0.7.3
   'go': # Go
     submit_lang:
-      - '4026'
-      - '3013'
-  'hs': # Haskell (GHC)
+      - '4026' # 1.14.1
+      - '5002' # go 1.20.6
+  'hs': # Haskell
     submit_lang:
-      - '4027'
-      - '3014'
-  'java': # Java (OpenJDK)
+      - '4027' # GHC 8.8.3
+      - '5025' # GHC 9.4.5
+  'hx': # Haxe (JVM)
     submit_lang:
-      - '4005'
-      - '3016'
+      - '5084' # Haxe 4.3.1
+  'java': # Java
+    submit_lang:
+      - '4005' # OpenJDK 11.0.6
+      # - '4052' # OpenJDK 1.8.0
+      - '5005' # OpenJDK 17
     test_cmd:
       default: 'java -cp "{dir}" Main'
   'jl': # Julia
     submit_lang:
-      - '4031'
-      - '3518'
-  'js': # JavaScript (node.js)
+      - '4031' # 1.4.0
+      - '5022' # Julia 1.9.2
+  'jq': # jq
     submit_lang:
-      - '4030'
-      - '3017'
+      - '5069' # jq 1.6
+  'js': # JavaScript
+    submit_lang:
+      - '4030' # Node.js 12.16.1
+      - '5009' # Node.js 18.16.1
+      # - '5010' # Deno 1.35.1
+  'kk': # Koka
+    submit_lang:
+      - '5057' # koka 2.4.0
   'kt': # Kotlin
     submit_lang:
-      - '4032'
-      - '3523'
+      - '4032' # 1.3.71
+      - '5004' # Kotlin/JVM 1.8.20
   'lisp': # Common Lisp
     submit_lang:
-      - '4038'
-      - '3008'
-  'lua': # LuaJIT
+      - '4038' # SBCL 2.0.3
+      - '5029' # SBCL 2.3.6
+  'll': # LLVM IR
     submit_lang:
-      - '4034'
-      - '3515'
-  'm': # Octave
+      - '5074' # Clang 16.0.5
+  'lua': # Lua
     submit_lang:
-      - '4040'
-      - '3519'
+      # - '4033' # Lua 5.3.5
+      - '4034' # LuaJIT 2.1.0
+      # - '5027' # LuaJIT 2.1.0-beta3
+      - '5043' # Lua 5.4.6
+  'm': # Octave / Mercury
+    submit_lang:
+      - '4040' # 5.2.0
+      - '5083' # GNU Octave 8.2.0
+      # - '5086' # Mercury 22.01.6
   'ml': # OCaml
     submit_lang:
-      - '4039'
-      - '3018'
+      - '4039' # 4.10.0
+      - '5059' # ocamlopt 5.0.0
+  'nako3': # なでしこ
+    submit_lang:
+      - '5039' # cnako3 3.4.20
+  'nib': # Nibbles (literate form)
+    submit_lang:
+      - '5067' # nibbles 1.01
   'nim': # Nim
     submit_lang:
-      - '4036'
-      - '3520'
-  'pas': # Pascal (FPC)
+      - '4036' # 1.0.6
+      - '5006' # Nim 1.6.14
+  'pas': # Pascal
     submit_lang:
-      - '4041'
-      - '3019'
+      - '4041' # FPC 3.0.4
+      - '5041' # fpc 3.2.2
   'php': # PHP7
     submit_lang:
-      - '4044'
-      - '3524'
-  'pl': # Perl
+      - '4044' # 7.4.4
+      - '5016' # php 8.2.8
+  'pl': # Perl / Prolog
     submit_lang:
-      - '4042'
-      - '3020'
+      - '4042' # 5.26.1
+      # - '4045' # SWI-Prolog 8.0.3
+      - '5037' # perl  5.34
+      # - '5044' # SWI-Prolog 9.0.4
+  'ps1': # PowerShell
+    submit_lang:
+      - '5045' # PowerShell 7.3.1
   'py': # Python3
     submit_lang:
-      - '4006'
-      - '3023'
+      - '4006' # 3.8.2
+      # - '4046' # PyPy2 (7.3.0)
+      # - '4047' # PyPy3 (7.3.0)
+      - '5055' # CPython 3.11.4
+      # - '5063' # Mambaforge / CPython 3.10.10
+      # - '5078' # PyPy 3.10-v7.3.12
+      # - '5082' # Cython 0.29.34
+  'R': # R
+    submit_lang:
+      - '5011' # GNU R 4.2.1
+  'raku': # Raku
+    submit_lang:
+      - '5060' # Rakudo 2023.06
   'rb': # Ruby
     submit_lang:
-      - '4049'
-      - '3024'
+      - '4049' # 2.7.1
+      - '5018' # ruby 3.2.2
     test_cmd:
       default: 'ruby "{dir}/{base}.rb"'
+  'rdr': # プロデル
+    submit_lang:
+      - '5065' # mono版プロデル 1.9.1182
+  're': # ReasonML
+    submit_lang:
+      - '5081' # reason 3.9.0
   'rs': # Rust
     submit_lang:
-      - '4050'
-      - '3504'
+      - '4050' # 1.42.0
+      - '5054' # rustc 1.70.0
+  'sage': # SageMath
+    submit_lang:
+      - '5033' # SageMath 9.5
   'scala': # Scala
     submit_lang:
-      - '4051'
-      - '3025'
-  'scm': # Scheme (Gauche)
+      - '4051' # 2.13.1
+      - '5047' # Scala Native 0.4.14
+      # - '5056' # Dotty 3.3.0
+  'scm': # Scheme
     submit_lang:
-      - '4053'
-      - '3026'
-  'sed': # Sed (GNU sed)
+      - '4053' # Gauche 0.9.9
+      - '5046' # Gauche 0.9.12
+  'sed': # Sed
     submit_lang:
-      - '4066'
-      - '3505'
-  'sh': # Bash (GNU bash)
+      - '4066' # 4.4
+      - '5034' # GNU sed 4.8
+  'sd7': # Seed7
     submit_lang:
-      - '4007'
-      - '3001'
+      - '5087' # Seed7 3.2.1
+  'sh': # Bash
+  # 'bash': # Bash
+    submit_lang:
+      - '4007' # Bash (5.0.11)
+      - '5023' # bash 5.2.2
   'swift': # Swift
     submit_lang:
-      - '4055'
-      - '3503'
+      - '4055' # 5.2.1
+      - '5014' # swift 5.8.1
   'ts': # TypeScript
     submit_lang:
-      - '4057'
-      - '3521'
-  'txt': # Text (cat)
+      - '4057' # 3.8
+      # - '5052' # Deno 1.35.1
+      - '5058' # TypeScript 5.1 (Node.js 18.16.1)
+  'txt': # Text
     submit_lang:
-      - '4056'
-      - '3027'
-  'vb': # Visual Basic (Mono)
+      - '4056' # cat 8.28
+      - '5024' # cat 8.32
+  'u': # Unison
     submit_lang:
-      - '4058'
-      - '3028'
+      - '5089' # Unison M5b
+  'v': # V
+    submit_lang:
+      - '5007' # V 0.4
+  'vb': # Visual Basic
+    submit_lang:
+      - '4058' # .NET Core 3.1.101
+      - '5048' # Visual Basic 16.9 (.NET 7.0.7)
+  'vim': # Vim
+    submit_lang:
+      - '5061' # vim 9.0.0242
+  'ws': # WhiteSpace
+    submit_lang:
+      - '5079' # whitespacers 1.0.0
+  'zig': # Zig
+    submit_lang:
+      - '5008' # Zig 0.10.1
+  'zsh': # Zsh
+    submit_lang:
+      - '4059' # Zsh (5.4.2)
+      - '5032' # Zsh 5.9
