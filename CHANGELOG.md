@@ -1,6 +1,8 @@
 # Change log
 
 ## master (unreleased)
+
+## 0.7.1 (2023-07-25)
 ### Added
 - language update(2023-07-21) support
 
