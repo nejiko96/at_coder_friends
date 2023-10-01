@@ -16,12 +16,22 @@
 	<meta name="format-detection" content="telephone=no">
 	<meta name="google-site-verification" content="nXGC_JxO0yoP1qBzMnYD_xgufO6leSLw1kyNo2HZltM" />
 
-	
+
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-RC512FD18N"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+
+		gtag('config', 'G-RC512FD18N');
+	</script>
+
+
 	<meta name="description" content="AtCoder is a programming contest site for anyone from beginners to experts. We hold weekly programming contests online.">
 	<meta name="author" content="AtCoder Inc.">
 
 	<meta property="og:site_name" content="AtCoder">
-	
+
 	<meta property="og:title" content="L - べき乗数" />
 	<meta property="og:description" content="AtCoder is a programming contest site for anyone from beginners to experts. We hold weekly programming contests online." />
 	<meta property="og:type" content="website" />
@@ -29,29 +39,29 @@
 	<meta property="og:image" content="https://img.atcoder.jp/assets/atcoder.png" />
 	<meta name="twitter:card" content="summary" />
 	<meta name="twitter:site" content="@atcoder" />
-	
+
 	<meta property="twitter:title" content="L - べき乗数" />
 
 	<link href="//fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet" type="text/css">
-	<link rel="stylesheet" type="text/css" href="//img.atcoder.jp/public/bee38eb/css/bootstrap.min.css">
-	<link rel="stylesheet" type="text/css" href="//img.atcoder.jp/public/bee38eb/css/base.css">
+	<link rel="stylesheet" type="text/css" href="//img.atcoder.jp/public/8cd1ac6/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="//img.atcoder.jp/public/8cd1ac6/css/base.css">
 	<link rel="shortcut icon" type="image/png" href="//img.atcoder.jp/assets/favicon.png">
 	<link rel="apple-touch-icon" href="//img.atcoder.jp/assets/atcoder.png">
-	<script src="//img.atcoder.jp/public/bee38eb/js/lib/jquery-1.9.1.min.js"></script>
-	<script src="//img.atcoder.jp/public/bee38eb/js/lib/bootstrap.min.js"></script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/js-cookie/2.1.4/js.cookie.min.js"></script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/locale/ja.js"></script>
+	<script src="//img.atcoder.jp/public/8cd1ac6/js/lib/jquery-1.9.1.min.js"></script>
+	<script src="//img.atcoder.jp/public/8cd1ac6/js/lib/bootstrap.min.js"></script>
+	<script src="//img.atcoder.jp/public/8cd1ac6/js/cdn/js.cookie.min.js"></script>
+	<script src="//img.atcoder.jp/public/8cd1ac6/js/cdn/moment.min.js"></script>
+	<script src="//img.atcoder.jp/public/8cd1ac6/js/cdn/moment_js-ja.js"></script>
 	<script>
 		var LANG = "en";
-		var userScreenName = "";
+		var userScreenName = "nejiko96";
 		var csrfToken = "Z66S2ieHP1AC3P9JfCbHCzGdYA/JhAStb0KsQ0kOC0s="
 	</script>
-	<script src="//img.atcoder.jp/public/bee38eb/js/utils.js"></script>
-	
-	
-		<script src="//img.atcoder.jp/public/bee38eb/js/contest.js"></script>
-		<link href="//img.atcoder.jp/public/bee38eb/css/contest.css" rel="stylesheet" />
+	<script src="//img.atcoder.jp/public/8cd1ac6/js/utils.js"></script>
+
+
+		<script src="//img.atcoder.jp/public/8cd1ac6/js/contest.js"></script>
+		<link href="//img.atcoder.jp/public/8cd1ac6/css/contest.css" rel="stylesheet" />
 		<script>
 			var contestScreenName = "kupc2014";
 			var remainingText = "Remaining Time";
@@ -60,36 +70,48 @@
 			var endTime = moment("2014-07-05T18:00:00+09:00");
 		</script>
 		<style></style>
-	
-	
-		<script type="text/x-mathjax-config">MathJax.Hub.Config({messageStyle:"none",tex2jax:{skipTags:["script","noscript","style","textarea","code"],inlineMath:[['\\(','\\)']]},delayStartupUntil:"onload"});</script>
-		<script src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-		<script>$(function(){$('var').each(function(){$(this).html('\\('+$(this).html()+'\\)');});});</script>
-	
-	
-		<link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
-		<link href="//cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css" rel="stylesheet" />
-		<script src="//img.atcoder.jp/public/bee38eb/js/lib/select2.min.js"></script>
-	
-	
-		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.38.0/codemirror.min.css">
-		<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.38.0/codemirror.min.js"></script>
-		<script src="//img.atcoder.jp/public/bee38eb/js/codeMirror/merged.js"></script>
-	
-	
-		<script src="//cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<script src="//img.atcoder.jp/public/bee38eb/js/base.js"></script>
-	<script src="//img.atcoder.jp/public/bee38eb/js/ga.js"></script>
+
+
+		<link href="//img.atcoder.jp/public/8cd1ac6/css/cdn/select2.min.css" rel="stylesheet" />
+		<link href="//img.atcoder.jp/public/8cd1ac6/css/cdn/select2-bootstrap.min.css" rel="stylesheet" />
+		<script src="//img.atcoder.jp/public/8cd1ac6/js/lib/select2.min.js"></script>
+
+
+		<script src="//img.atcoder.jp/public/8cd1ac6/js/ace/ace.js"></script>
+		<script src="//img.atcoder.jp/public/8cd1ac6/js/ace/ext-language_tools.js"></script>
+
+
+		<script src="//img.atcoder.jp/public/8cd1ac6/js/cdn/run_prettify.js"></script>
+
+
+		<link rel="stylesheet" href="//img.atcoder.jp/public/8cd1ac6/css/cdn/katex.min.css">
+		<script defer src="//img.atcoder.jp/public/8cd1ac6/js/cdn/katex.min.js"></script>
+		<script defer src="//img.atcoder.jp/public/8cd1ac6/js/cdn/auto-render.min.js"></script>
+		<script>$(function(){$('var').each(function(){var html=$(this).html().replace(/<sub>/g,'_{').replace(/<\/sub>/g,'}');$(this).html('\\('+html+'\\)');});});</script>
+		<script>
+			var katexOptions = {
+				delimiters: [
+					{left: "$$", right: "$$", display: true},
+
+					{left: "\\(", right: "\\)", display: false},
+					{left: "\\[", right: "\\]", display: true}
+				],
+      	ignoredTags: ["script", "noscript", "style", "textarea", "code", "option"],
+				ignoredClasses: ["prettyprint", "source-code-for-copy"],
+				throwOnError: false
+			};
+			document.addEventListener("DOMContentLoaded", function() { renderMathInElement(document.body, katexOptions);});
+		</script>
+
+
+
+
+
+
+
+
+
+	<script src="//img.atcoder.jp/public/8cd1ac6/js/base.js"></script>
 </head>
 
 <body>
@@ -112,9 +134,9 @@
 				<p>京都大学プログラミングコンテスト2014 has begun.</p>
 			</div>
 			<div class="modal-footer">
-				
+
 					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-				
+
 			</div>
 		</div>
 	</div>
@@ -148,12 +170,12 @@
 			</div>
 			<div class="collapse navbar-collapse" id="navbar-collapse">
 				<ul class="nav navbar-nav">
-				
+
 					<li><a class="contest-title" href="/contests/kupc2014">京都大学プログラミングコンテスト2014</a></li>
-				
+
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
-					
+
 					<li class="dropdown">
 						<a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
 							<img src='//img.atcoder.jp/assets/top/img/flag-lang/en.png'> English <span class="caret"></span>
@@ -163,11 +185,27 @@
 							<li><a href="/contests/kupc2014/tasks/kupc2014_l?lang=en"><img src='//img.atcoder.jp/assets/top/img/flag-lang/en.png'> English</a></li>
 						</ul>
 					</li>
-					
-					
-						<li><a href="/register?continue=https%3A%2F%2Fatcoder.jp%2Fcontests%2Fkupc2014%2Ftasks%2Fkupc2014_l">Sign Up</a></li>
-						<li><a href="/login?continue=https%3A%2F%2Fatcoder.jp%2Fcontests%2Fkupc2014%2Ftasks%2Fkupc2014_l">Sign In</a></li>
-					
+
+
+						<li class="dropdown">
+							<a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+								<span class="glyphicon glyphicon-cog" aria-hidden="true"></span> ねじこ (Guest) <span class="caret"></span>
+							</a>
+							<ul class="dropdown-menu">
+								<li><a href="/users/nejiko96"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> My Profile</a></li>
+								<li class="divider"></li>
+								<li><a href="/settings"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> General Settings</a></li>
+								<li><a href="/settings/icon"><span class="glyphicon glyphicon-picture" aria-hidden="true"></span> Change Photo</a></li>
+								<li><a href="/settings/password"><span class="glyphicon glyphicon-lock" aria-hidden="true"></span> Change Password</a></li>
+								<li><a href="/settings/fav"><span class="glyphicon glyphicon-star" aria-hidden="true"></span> Manage Fav</a></li>
+
+
+
+								<li class="divider"></li>
+								<li><a href="javascript:void(form_logout.submit())"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span> Sign Out</a></li>
+							</ul>
+						</li>
+
 				</ul>
 			</div>
 		</div>
@@ -178,65 +216,81 @@
 	</form>
 	<div id="main-container" class="container"
 		 	style="padding-top:50px;">
-		
+
+
 
 <div class="row">
 	<div id="contest-nav-tabs" class="col-sm-12 mb-2 cnvtb-fixed">
 	<div>
 		<small class="contest-duration">
-			
+
 				Contest Duration:
-				<a href='http://www.timeanddate.com/worldclock/fixedtime.html?iso=20140705T1300&p1=248' target='blank'><time class='fixtime fixtime-full'>2014-07-05 13:00:00+0900</time></a> ~ <a href='http://www.timeanddate.com/worldclock/fixedtime.html?iso=20140705T1800&p1=248' target='blank'><time class='fixtime fixtime-full'>2014-07-05 18:00:00+0900</time></a> (local time)
+				<a href='http://www.timeanddate.com/worldclock/fixedtime.html?iso=20140705T1300&p1=248' target='blank'><time class='fixtime fixtime-full'>2014-07-05 13:00:00+0900</time></a> - <a href='http://www.timeanddate.com/worldclock/fixedtime.html?iso=20140705T1800&p1=248' target='blank'><time class='fixtime fixtime-full'>2014-07-05 18:00:00+0900</time></a> (local time)
 				(300 minutes)
-			
+
 		</small>
 		<small class="back-to-home pull-right"><a href="/home">Back to Home</a></small>
 	</div>
 	<ul class="nav nav-tabs">
 		<li><a href="/contests/kupc2014"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Top</a></li>
-		
+
 			<li class="active"><a href="/contests/kupc2014/tasks"><span class="glyphicon glyphicon-tasks" aria-hidden="true"></span> Tasks</a></li>
-		
 
-		
+
+
 			<li><a href="/contests/kupc2014/clarifications"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> Clarifications <span id="clar-badge" class="badge"></span></a></li>
-		
 
-		
 
-		
+
+			<li><a href="/contests/kupc2014/submit?taskScreenName=kupc2014_l"><span class="glyphicon glyphicon-send" aria-hidden="true"></span> Submit</a></li>
+
+
+
 			<li>
 				<a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-list" aria-hidden="true"></span> Results<span class="caret"></span></a>
 				<ul class="dropdown-menu">
 					<li><a href="/contests/kupc2014/submissions"><span class="glyphicon glyphicon-globe" aria-hidden="true"></span> All Submissions</a></li>
-					
+
+						<li><a href="/contests/kupc2014/submissions/me"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> My Submissions</a></li>
+						<li class="divider"></li>
+						<li><a href="/contests/kupc2014/score"><span class="glyphicon glyphicon-dashboard" aria-hidden="true"></span> My Score</a></li>
+
 				</ul>
 			</li>
-		
 
-		
-			
-				
+
+
+
+
 					<li><a href="/contests/kupc2014/standings"><span class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span> Standings</a></li>
-				
-			
-				
+
+
+
 					<li><a href="/contests/kupc2014/standings/virtual"><span class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span> Virtual Standings</a></li>
-				
-			
-		
 
-		
 
-		
-		
+
+
+
+			<li><a href="/contests/kupc2014/custom_test"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Custom Test</a></li>
+
+
+
+			<li><a href="/contests/kupc2014/editorial"><span class="glyphicon glyphicon-book" aria-hidden="true"></span> Editorial</a></li>
+
+
+
+
+
 
 		<li class="pull-right"><a id="fix-cnvtb" href="javascript:void(0)"><span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span></a></li>
 	</ul>
 </div>
 	<div class="col-sm-12">
-		<span class="h2">L - べき乗数</span>
-		
+		<span class="h2">
+			L - べき乗数
+			<a class="btn btn-default btn-sm" href="/contests/kupc2014/tasks/kupc2014_l/editorial">Editorial</a>
+		</span>
 		<span id="task-lang-btn" class="pull-right"><span data-lang="ja"><img src='//img.atcoder.jp/assets/top/img/flag-lang/ja.png'></span> / <span data-lang="en"><img src='//img.atcoder.jp/assets/top/img/flag-lang/en.png'></span></span>
 		<script>
 			$(function() {
@@ -273,10 +327,13 @@
 			});
 		</script>
 		<hr/>
-		<p>Time Limit: 2 sec / Memory Limit: 256 MB</p>
+		<p>
+			Time Limit: 2 sec / Memory Limit: 256 MB
+
+		</p>
 
 		<div id="task-statement">
-			
+
 			  <p>
 	べき乗数の数の集合を以下で定める.
 	<ul>
@@ -290,7 +347,7 @@
   <p>
     (注) <var>{b_1}\^{b_2}\^...\^{b_N}</var> はべき乗を右から優先して計算した値を意味する. 例えば <var>2\^3\^2=2\^9=512</var> である.
   </p>
- 
+
 <div class="io-style">
 <h2>入力形式</h2>
 <p>
@@ -399,49 +456,285 @@
 
 		</div>
 
-		
+
 			<hr/>
 			<h3>Source Name</h3>
 			<a href="http://www.kupc.jp/" target="blank">京都大学プログラミングコンテスト2014</a>
-		
 
-		
+
+
+		<hr/>
+		<form class="form-horizontal form-code-submit" action="/contests/kupc2014/submit" method="POST">
+			<input type="hidden" name="data.TaskScreenName" value="kupc2014_l" />
+
+			<div class="form-group ">
+				<label class="control-label col-sm-3 col-md-2" for="select-lang">Language</label>
+				<div id="select-lang" class="col-sm-5" data-name="data.LanguageId">
+					<select class="form-control current" data-placeholder="-" name="data.LanguageId" required>
+						<option></option>
+
+							<option value="5001" data-ace-mode="c_cpp">C&#43;&#43; 20 (gcc 12.2)</option>
+
+							<option value="5002" data-ace-mode="golang">Go (go 1.20.6)</option>
+
+							<option value="5003" data-ace-mode="csharp">C# 11.0 (.NET 7.0.7)</option>
+
+							<option value="5004" data-ace-mode="kotlin">Kotlin (Kotlin/JVM 1.8.20)</option>
+
+							<option value="5005" data-ace-mode="java">Java (OpenJDK 17)</option>
+
+							<option value="5006" data-ace-mode="nim">Nim (Nim 1.6.14)</option>
+
+							<option value="5007" data-ace-mode="text">V (V 0.4)</option>
+
+							<option value="5008" data-ace-mode="text">Zig (Zig 0.10.1)</option>
+
+							<option value="5009" data-ace-mode="javascript">JavaScript (Node.js 18.16.1)</option>
+
+							<option value="5010" data-ace-mode="javascript">JavaScript (Deno 1.35.1)</option>
+
+							<option value="5011" data-ace-mode="r">R (GNU R 4.2.1)</option>
+
+							<option value="5012" data-ace-mode="d">D (DMD 2.104.0)</option>
+
+							<option value="5013" data-ace-mode="d">D (LDC 1.32.2)</option>
+
+							<option value="5014" data-ace-mode="swift">Swift (swift 5.8.1)</option>
+
+							<option value="5015" data-ace-mode="dart">Dart (Dart 3.0.5)</option>
+
+							<option value="5016" data-ace-mode="php">PHP (php 8.2.8)</option>
+
+							<option value="5017" data-ace-mode="c_cpp">C (gcc 12.2.0)</option>
+
+							<option value="5018" data-ace-mode="ruby">Ruby (ruby 3.2.2)</option>
+
+							<option value="5019" data-ace-mode="crystal">Crystal (Crystal 1.9.1)</option>
+
+							<option value="5020" data-ace-mode="text">Brainfuck (bf 20041219)</option>
+
+							<option value="5021" data-ace-mode="fsharp">F# 7.0 (.NET 7.0.7)</option>
+
+							<option value="5022" data-ace-mode="julia">Julia (Julia 1.9.2)</option>
+
+							<option value="5023" data-ace-mode="sh">Bash (bash 5.2.2)</option>
+
+							<option value="5024" data-ace-mode="text">Text (cat 8.32)</option>
+
+							<option value="5025" data-ace-mode="haskell">Haskell (GHC 9.4.5)</option>
+
+							<option value="5026" data-ace-mode="fortran">Fortran (gfortran 12.2)</option>
+
+							<option value="5027" data-ace-mode="lua">Lua (LuaJIT 2.1.0-beta3)</option>
+
+							<option value="5028" data-ace-mode="c_cpp">C&#43;&#43; 23 (gcc 12.2)</option>
+
+							<option value="5029" data-ace-mode="lisp">Common Lisp (SBCL 2.3.6)</option>
+
+							<option value="5030" data-ace-mode="cobol">COBOL (Free) (GnuCOBOL 3.1.2)</option>
+
+							<option value="5031" data-ace-mode="c_cpp">C&#43;&#43; 23 (Clang 16.0.6)</option>
+
+							<option value="5032" data-ace-mode="sh">Zsh (Zsh 5.9)</option>
+
+							<option value="5033" data-ace-mode="python">SageMath (SageMath 9.5)</option>
+
+							<option value="5034" data-ace-mode="sh">Sed (GNU sed 4.8)</option>
+
+							<option value="5035" data-ace-mode="text">bc (bc 1.07.1)</option>
+
+							<option value="5036" data-ace-mode="text">dc (dc 1.07.1)</option>
+
+							<option value="5037" data-ace-mode="perl">Perl (perl  5.34)</option>
+
+							<option value="5038" data-ace-mode="sh">AWK (GNU Awk 5.0.1)</option>
+
+							<option value="5039" data-ace-mode="text">なでしこ (cnako3 3.4.20)</option>
+
+							<option value="5040" data-ace-mode="text">Assembly x64 (NASM 2.15.05)</option>
+
+							<option value="5041" data-ace-mode="pascal">Pascal (fpc 3.2.2)</option>
+
+							<option value="5042" data-ace-mode="csharp">C# 11.0 AOT (.NET 7.0.7)</option>
+
+							<option value="5043" data-ace-mode="lua">Lua (Lua 5.4.6)</option>
+
+							<option value="5044" data-ace-mode="prolog">Prolog (SWI-Prolog 9.0.4)</option>
+
+							<option value="5045" data-ace-mode="sh">PowerShell (PowerShell 7.3.1)</option>
+
+							<option value="5046" data-ace-mode="scheme">Scheme (Gauche 0.9.12)</option>
+
+							<option value="5047" data-ace-mode="scala">Scala 3.3.0 (Scala Native 0.4.14)</option>
+
+							<option value="5048" data-ace-mode="vbscript">Visual Basic 16.9 (.NET 7.0.7)</option>
+
+							<option value="5049" data-ace-mode="text">Forth (gforth 0.7.3)</option>
+
+							<option value="5050" data-ace-mode="clojure">Clojure (babashka 1.3.181)</option>
+
+							<option value="5051" data-ace-mode="erlang">Erlang (Erlang 26.0.2)</option>
+
+							<option value="5052" data-ace-mode="typescript">TypeScript 5.1 (Deno 1.35.1)</option>
+
+							<option value="5053" data-ace-mode="c_cpp">C&#43;&#43; 17 (gcc 12.2)</option>
+
+							<option value="5054" data-ace-mode="rust">Rust (rustc 1.70.0)</option>
+
+							<option value="5055" data-ace-mode="python">Python (CPython 3.11.4)</option>
+
+							<option value="5056" data-ace-mode="scala">Scala (Dotty 3.3.0)</option>
+
+							<option value="5057" data-ace-mode="text">Koka (koka 2.4.0)</option>
+
+							<option value="5058" data-ace-mode="typescript">TypeScript 5.1 (Node.js 18.16.1)</option>
+
+							<option value="5059" data-ace-mode="ocaml">OCaml (ocamlopt 5.0.0)</option>
+
+							<option value="5060" data-ace-mode="raku">Raku (Rakudo 2023.06)</option>
+
+							<option value="5061" data-ace-mode="text">Vim (vim 9.0.0242)</option>
+
+							<option value="5062" data-ace-mode="lisp">Emacs Lisp (Native Compile) (GNU Emacs 28.2)</option>
+
+							<option value="5063" data-ace-mode="python">Python (Mambaforge / CPython 3.10.10)</option>
+
+							<option value="5064" data-ace-mode="clojure">Clojure (clojure 1.11.1)</option>
+
+							<option value="5065" data-ace-mode="text">プロデル (mono版プロデル 1.9.1182)</option>
+
+							<option value="5066" data-ace-mode="text">ECLiPSe (ECLiPSe 7.1_13)</option>
+
+							<option value="5067" data-ace-mode="text">Nibbles (literate form) (nibbles 1.01)</option>
+
+							<option value="5068" data-ace-mode="ada">Ada (GNAT 12.2)</option>
+
+							<option value="5069" data-ace-mode="text">jq (jq 1.6)</option>
+
+							<option value="5070" data-ace-mode="text">Cyber (Cyber v0.2-Latest)</option>
+
+							<option value="5071" data-ace-mode="clojure">Carp (Carp 0.5.5)</option>
+
+							<option value="5072" data-ace-mode="c_cpp">C&#43;&#43; 17 (Clang 16.0.6)</option>
+
+							<option value="5073" data-ace-mode="c_cpp">C&#43;&#43; 20 (Clang 16.0.6)</option>
+
+							<option value="5074" data-ace-mode="text">LLVM IR (Clang 16.0.6)</option>
+
+							<option value="5075" data-ace-mode="lisp">Emacs Lisp (Byte Compile) (GNU Emacs 28.2)</option>
+
+							<option value="5076" data-ace-mode="text">Factor (Factor 0.98)</option>
+
+							<option value="5077" data-ace-mode="d">D (GDC 12.2)</option>
+
+							<option value="5078" data-ace-mode="python">Python (PyPy 3.10-v7.3.12)</option>
+
+							<option value="5079" data-ace-mode="text">Whitespace (whitespacers 1.0.0)</option>
+
+							<option value="5080" data-ace-mode="text">&gt;&lt;&gt; (fishr 0.1.0)</option>
+
+							<option value="5081" data-ace-mode="ocaml">ReasonML (reason 3.9.0)</option>
+
+							<option value="5082" data-ace-mode="python">Python (Cython 0.29.34)</option>
+
+							<option value="5083" data-ace-mode="matlab">Octave (GNU Octave 8.2.0)</option>
+
+							<option value="5084" data-ace-mode="haxe">Haxe (JVM) (Haxe 4.3.1)</option>
+
+							<option value="5085" data-ace-mode="elixir">Elixir (Elixir 1.15.2)</option>
+
+							<option value="5086" data-ace-mode="text">Mercury (Mercury 22.01.6)</option>
+
+							<option value="5087" data-ace-mode="text">Seed7 (Seed7 3.2.1)</option>
+
+							<option value="5088" data-ace-mode="lisp">Emacs Lisp (No Compile) (GNU Emacs 28.2)</option>
+
+							<option value="5089" data-ace-mode="text">Unison (Unison M5b)</option>
+
+							<option value="5090" data-ace-mode="cobol">COBOL (GnuCOBOL(Fixed) 3.1.2)</option>
+
+					</select>
+					<span class="error"></span>
+				</div>
+			</div>
+			<script>var currentLang = getLS('defaultLang');</script>
+
+
+<div class="form-group">
+	<div class="col-sm-3 col-md-2 editor-label">
+		<label class="control-label" for="sourceCode">Source Code</label>
+		<div class="editor-buttons">
+			<button id="btn-open-file" type="button" class="btn btn-default btn-sm">
+				<span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span> &nbsp; Open File
+			</button>
+			<button id="btn-customize" type="button" class="btn btn-default btn-sm">
+				<span class="glyphicon glyphicon-cog" aria-hidden="true"></span> &nbsp; Customize
+			</button>
+			<button type="button" class="btn btn-default btn-sm btn-toggle-editor" data-toggle="button" autocomplete="off">
+				Toggle Editor
+			</button>
+			<button type="button" class="btn btn-default btn-sm btn-auto-height" data-toggle="button" autocomplete="off">
+				Auto Height
+			</button>
+		</div>
+	</div>
+	<div class="col-sm-9 col-md-10" id="sourceCode">
+		<div id="editor"></div>
+		<textarea id="plain-textarea" class="form-control" style="display:none;" name="sourceCode"></textarea>
+		<p>
+			<span class="gray">* at most 512 KiB</span><br>
+			<span class="gray">* Your source code will be saved as Main.<i>extension</i>.</span>
+		</p>
+	</div>
+	<input id="input-open-file" type="file" style="display:none;">
+</div>
+
+
+			<input type="hidden" name="csrf_token" value="Z66S2ieHP1AC3P9JfCbHCzGdYA/JhAStb0KsQ0kOC0s=" />
+			<div class="form-group">
+				<label class="control-label col-sm-3 col-md-2" for="submit"></label>
+				<div class="col-sm-5">
+					<button type="submit" class="btn btn-primary" id="submit">Submit</button>
+				</div>
+			</div>
+		</form>
+
 	</div>
 </div>
 
 
 
 
-		
+
 			<hr>
-			
-			
-			
+
+
+
 <div class="a2a_kit a2a_kit_size_20 a2a_default_style pull-right" data-a2a-url="https://atcoder.jp/contests/kupc2014/tasks/kupc2014_l?lang=en" data-a2a-title="L - べき乗数">
 	<a class="a2a_button_facebook"></a>
 	<a class="a2a_button_twitter"></a>
-	
+
 		<a class="a2a_button_telegram"></a>
-	
+
 	<a class="a2a_dd" href="https://www.addtoany.com/share"></a>
 </div>
 
-		
+
 		<script async src="//static.addtoany.com/menu/page.js"></script>
-		
-	</div> 
+
+	</div>
 	<hr>
-</div> 
+</div>
 
 	<div class="container" style="margin-bottom: 80px;">
 			<footer class="footer">
-			
+
 				<ul>
 					<li><a href="/contests/kupc2014/rules">Rule</a></li>
 					<li><a href="/contests/kupc2014/glossary">Glossary</a></li>
-					
+
 				</ul>
-			
+
 			<ul>
 				<li><a href="/tos">Terms of service</a></li>
 				<li><a href="/privacy">Privacy Policy</a></li>
@@ -449,7 +742,7 @@
 				<li><a href="/company">Company</a></li>
 				<li><a href="/faq">FAQ</a></li>
 				<li><a href="/contact">Contact</a></li>
-				
+
 			</ul>
 			<div class="text-center">
 					<small id="copyright">Copyright Since 2012 &copy;<a href="http://atcoder.co.jp">AtCoder Inc.</a> All rights reserved.</small>
@@ -461,4 +754,3 @@
 
 </body>
 </html>
-

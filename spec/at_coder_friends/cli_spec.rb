@@ -124,7 +124,7 @@ RSpec.describe AtCoderFriends::CLI do
             <<~OUTPUT
               ***** fetch_all practice *****
               fetch list from https://atcoder.jp/contests/practice/tasks ...
-              logged in as foo (Contestant)
+              logged in as ねじこ (Contestant)
               fetch problem from /contests/practice/tasks/practice_1 ...
               A_001.in
               A_001.exp
@@ -317,7 +317,7 @@ RSpec.describe AtCoderFriends::CLI do
         expect { subject }.to output(
           <<~OUTPUT
             ***** submit A.rb *****
-            logged in as foo (Contestant)
+            logged in as ねじこ (Contestant)
             submission status : https://atcoder.jp/contests/practice/submissions/me
           OUTPUT
         ).to_stdout
@@ -389,7 +389,7 @@ RSpec.describe AtCoderFriends::CLI do
             6 test
             \e[0;32;49m<< OK >>\e[0m
             ***** submit A.rb *****
-            logged in as foo (Contestant)
+            logged in as ねじこ (Contestant)
             submission status : https://atcoder.jp/contests/practice/submissions/me
           OUTPUT
         ).to_stdout

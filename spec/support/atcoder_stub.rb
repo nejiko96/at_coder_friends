@@ -4,9 +4,11 @@ require 'cgi'
 
 StubRequest = Struct.new(:mtd, :path, :param, :result) do
   BASE_URL = 'https://atcoder.jp/'
+  CSRF_TOKEN = 'Z66S2ieHP1AC3P9JfCbHCzGdYA/JhAStb0KsQ0kOC0s='
 
   def initialize(mtd, path, result: nil, **param)
     super(mtd, path, param, result)
+    param && param['csrf_token'] = CSRF_TOKEN if mtd == :post
   end
 
   def url
@@ -117,6 +119,8 @@ StubRequest = Struct.new(:mtd, :path, :param, :result) do
   end
 end
 
+LANGUAGE_ID_RUBY = '5018'
+LANGUAGE_ID_PYTHON = '5055'
 REQS = [
   StubRequest.new(
     :get, 'login',
@@ -126,13 +130,11 @@ REQS = [
     :post, 'login?continue=@',
     username: 'foo',
     password: 'bar',
-    csrf_token: 'Z66S2ieHP1AC3P9JfCbHCzGdYA/JhAStb0KsQ0kOC0s='
   ),
   StubRequest.new(
     :post, 'login?continue=@',
     username: 'hoge',
     password: 'piyo',
-    csrf_token: 'Z66S2ieHP1AC3P9JfCbHCzGdYA/JhAStb0KsQ0kOC0s='
   ),
   StubRequest.new(:get, 'contests/practice/tasks'),
   StubRequest.new(:get, 'contests/practice/tasks/practice_1'),
@@ -141,8 +143,7 @@ REQS = [
   StubRequest.new(
     :post, 'contests/practice/submit',
     'data.TaskScreenName': 'practice_1',
-    'data.LanguageId': '4049',
-    csrf_token: 'Z66S2ieHP1AC3P9JfCbHCzGdYA/JhAStb0KsQ0kOC0s=',
+    'data.LanguageId': LANGUAGE_ID_RUBY,
     sourceCode:
       <<~SRC
         a = gets.to_i
@@ -155,8 +156,7 @@ REQS = [
   StubRequest.new(:get, 'contests/practice/custom_test'),
   StubRequest.new(
     :post, 'contests/practice/custom_test/submit/json',
-    'data.LanguageId': '4006',
-    csrf_token: 'Z66S2ieHP1AC3P9JfCbHCzGdYA/JhAStb0KsQ0kOC0s=',
+    'data.LanguageId': LANGUAGE_ID_PYTHON,
     sourceCode:
       <<~SRC,
         # -*- coding: utf-8 -*-
@@ -174,8 +174,7 @@ REQS = [
   ),
   StubRequest.new(
     :post, 'contests/practice/custom_test/submit/json',
-    'data.LanguageId': '4006',
-    csrf_token: 'Z66S2ieHP1AC3P9JfCbHCzGdYA/JhAStb0KsQ0kOC0s=',
+    'data.LanguageId': LANGUAGE_ID_PYTHON,
     sourceCode:
       <<~SRC,
         # -*- coding: utf-8 -*-
@@ -193,8 +192,7 @@ REQS = [
   ),
   StubRequest.new(
     :post, 'contests/practice/custom_test/submit/json',
-    'data.LanguageId': '4006',
-    csrf_token: 'Z66S2ieHP1AC3P9JfCbHCzGdYA/JhAStb0KsQ0kOC0s=',
+    'data.LanguageId': LANGUAGE_ID_PYTHON,
     sourceCode:
       <<~SRC,
         # -*- coding: utf-8 -*-
@@ -214,7 +212,6 @@ REQS = [
     :post, 'contests/practice/custom_test/submit/json',
     result: 'ERROR',
     'data.LanguageId': '0000',
-    csrf_token: 'Z66S2ieHP1AC3P9JfCbHCzGdYA/JhAStb0KsQ0kOC0s=',
     sourceCode:
       <<~SRC,
         # -*- coding: utf-8 -*-
@@ -232,8 +229,7 @@ REQS = [
   ),
   StubRequest.new(
     :post, 'contests/practice/custom_test/submit/json',
-    'data.LanguageId': '4006',
-    csrf_token: 'Z66S2ieHP1AC3P9JfCbHCzGdYA/JhAStb0KsQ0kOC0s=',
+    'data.LanguageId': LANGUAGE_ID_PYTHON,
     sourceCode:
       <<~SRC,
         # -*- coding: utf-8 -*-
