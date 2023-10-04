@@ -8,7 +8,7 @@ module AtCoderFriends
     URL_BASE = 'https://atcoder.jp/'
     ACF_HOME = File.expand_path(File.join(__dir__, '..', '..'))
     MOCK_BASE = File.join(ACF_HOME, 'spec', 'mocks')
-    MOCK_PAGES = %w[
+    MOCK_PATHS = %w[
       /login
       /contests/abc003/tasks/abc003_4
       /contests/arc001/tasks
@@ -27,10 +27,11 @@ module AtCoderFriends
       /contests/practice/custom_test
       /contests/practice/submit
     ].freeze
+    CSRF_TOKEN = 'Z66S2ieHP1AC3P9JfCbHCzGdYA/JhAStb0KsQ0kOC0s='
 
     def update_mocks
       agent = Context.new({}, __FILE__).scraping_agent
-      MOCK_PAGES.each do |path|
+      MOCK_PATHS.each do |path|
         url = File.join(URL_BASE, path)
         file = File.join(MOCK_BASE, "#{path}.html")
         puts "#{url} -> #{file}"
@@ -41,7 +42,14 @@ module AtCoderFriends
             agent.fetch_raw(url)
           end
         )
-        File.binwrite(file, page.body)
+        body = page
+          .body
+          .gsub(
+            %r!(name="csrf_token" value=|var csrfToken = )"([^"]+)"!,
+            "\\1\"#{CSRF_TOKEN}\""
+          )
+
+        File.binwrite(file, body)
       end
     end
   end
